@@ -10,6 +10,7 @@ ENV PUBLIC_SHOW_COOLIFY=true
 RUN pnpm install --frozen-lockfile
 COPY --chown=node:node frontend/ .
 RUN pnpm run build
+RUN cp frontend/static/reticulum-go.wasm frontend/build/ && cp frontend/static/wasm_exec.js frontend/build/ || true
 
 # Stage 2: Build the Go binary with embedded assets
 FROM cgr.dev/chainguard/go:latest-dev AS go-builder
