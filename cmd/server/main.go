@@ -80,6 +80,24 @@ func injectNonceIntoHTML(content string, nonce string) string {
 		return strings.Replace(match, `<style`, fmt.Sprintf(`<style nonce="%s"`, nonce), 1)
 	})
 
+	content = injectCriticalCSS(content, nonce)
+
+	return content
+}
+
+// injectCriticalCSS injects critical CSS to prevent white flash on initial load.
+func injectCriticalCSS(content string, nonce string) string {
+	criticalCSS := fmt.Sprintf(`<style nonce="%s">html,body{background-color:#000;color:rgba(255,255,255,0.86);margin:0;padding:0}body{min-height:100vh}@media(prefers-color-scheme:light){html,body{background-color:#fff;color:#000}}</style>`, nonce)
+
+	if strings.Contains(content, "</head>") {
+		content = strings.Replace(content, "</head>", criticalCSS+"</head>", 1)
+	} else if strings.Contains(content, "<head>") {
+		headRegex := regexp.MustCompile(`<head[^>]*>`)
+		content = headRegex.ReplaceAllStringFunc(content, func(match string) string {
+			return match + criticalCSS
+		})
+	}
+
 	return content
 }
 
