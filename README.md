@@ -1,6 +1,6 @@
 # Reticulum-Go Website
 
-The official website for the Reticulum-Go project, featuring documentation and a WebAssembly-based example.
+The official website for the Reticulum-Go project, with documentation and a WebAssembly-based example.
 
 ## Self-host the website
 
