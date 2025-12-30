@@ -5,7 +5,7 @@
 	import { Rss } from 'lucide-svelte';
 	import * as env from '$env/static/public';
 
-	const showCoolify = (env as any).PUBLIC_SHOW_COOLIFY === 'true';
+	const showCoolify = 'PUBLIC_SHOW_COOLIFY' in env && env.PUBLIC_SHOW_COOLIFY === 'true';
 	const currentYear = new Date().getFullYear();
 	let latestTag = $state<string | null>(null);
 	let repoUpdatedAt = $state<string | null>(null);
@@ -111,6 +111,12 @@
 			<h3 class="font-bold mb-4">Links</h3>
 			<ul class="space-y-2 text-sm text-zinc-500 dark:text-zinc-400">
 				<li><a href="/" class="hover:text-zinc-900 dark:hover:text-zinc-100">Home</a></li>
+				<li><a href="/docs" class="hover:text-zinc-900 dark:hover:text-zinc-100">Docs</a></li>
+				<li>
+					<a href="/interactive" class="hover:text-zinc-900 dark:hover:text-zinc-100">Interactive</a
+					>
+				</li>
+				<li><a href="/apps" class="hover:text-zinc-900 dark:hover:text-zinc-100">Apps</a></li>
 				<li>
 					<a
 						href="/wasm-example"

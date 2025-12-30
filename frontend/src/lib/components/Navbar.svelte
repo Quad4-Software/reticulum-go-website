@@ -6,7 +6,6 @@
 	import { Languages, Menu, X } from 'lucide-svelte';
 	import { slide } from 'svelte/transition';
 
-	const isWasmRoute = $derived(page.url.pathname.startsWith('/wasm-example'));
 	let isMobileMenuOpen = $state(false);
 
 	function toggleMobileMenu() {
@@ -43,35 +42,21 @@
 						: ''}">{$t('common.docs')}</a
 				>
 				<a
-					href="/wasm-example"
-					class="flex items-center gap-2 hover:text-zinc-900 dark:hover:text-white transition-colors {isWasmRoute
+					href="/interactive"
+					class="hover:text-zinc-900 dark:hover:text-white transition-colors {page.url.pathname.startsWith(
+						'/interactive'
+					)
 						? 'text-zinc-900 dark:text-white'
-						: ''}"
-					>{$t('common.wasm_example')}
-					<span
-						class="px-1.5 py-0.5 text-[10px] font-semibold rounded bg-orange-500 text-white uppercase"
-						>WIP</span
-					></a
+						: ''}">{$t('common.interactive')}</a
 				>
-
-				{#if isWasmRoute}
-					<div class="h-4 w-[1px] bg-zinc-200 dark:bg-zinc-800"></div>
-					<a
-						href="/wasm-example/identity"
-						class="hover:text-zinc-900 dark:hover:text-white transition-colors {page.url
-							.pathname === '/wasm-example/identity'
-							? 'text-zinc-900 dark:text-white'
-							: ''}">{$t('common.identity')}</a
-					>
-					<a
-						href="/wasm-example/settings"
-						class="hover:text-zinc-900 dark:hover:text-white transition-colors {page.url
-							.pathname === '/wasm-example/settings'
-							? 'text-zinc-900 dark:text-white'
-							: ''}">{$t('common.settings')}</a
-					>
-				{/if}
-
+				<a
+					href="/apps"
+					class="hover:text-zinc-900 dark:hover:text-white transition-colors {page.url.pathname.startsWith(
+						'/apps'
+					)
+						? 'text-zinc-900 dark:text-white'
+						: ''}">{$t('common.apps')}</a
+				>
 				<a
 					href="/contact"
 					class="hover:text-zinc-900 dark:hover:text-white transition-colors {page.url.pathname ===
@@ -151,17 +136,26 @@
 					{$t('common.docs')}
 				</a>
 				<a
-					href="/wasm-example"
+					href="/interactive"
 					onclick={() => (isMobileMenuOpen = false)}
-					class="flex items-center justify-between px-3 py-2 rounded-lg text-base font-medium {isWasmRoute
+					class="block px-3 py-2 rounded-lg text-base font-medium {page.url.pathname.startsWith(
+						'/interactive'
+					)
 						? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white'
 						: 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900'}"
 				>
-					<span>{$t('common.wasm_example')}</span>
-					<span
-						class="px-1.5 py-0.5 text-[10px] font-semibold rounded bg-orange-500 text-white uppercase"
-						>WIP</span
-					>
+					{$t('common.interactive')}
+				</a>
+				<a
+					href="/apps"
+					onclick={() => (isMobileMenuOpen = false)}
+					class="block px-3 py-2 rounded-lg text-base font-medium {page.url.pathname.startsWith(
+						'/apps'
+					)
+						? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white'
+						: 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900'}"
+				>
+					{$t('common.apps')}
 				</a>
 				<a
 					href="/donate"
