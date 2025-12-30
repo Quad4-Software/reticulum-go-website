@@ -1,12 +1,16 @@
+<script lang="ts">
+	import { t } from 'svelte-i18n';
+</script>
+
 <svelte:head>
-	<title>Donate | Reticulum-Go</title>
+	<title>{$t('donate.title')} | Reticulum-Go</title>
 </svelte:head>
 
 <div class="max-w-3xl mx-auto space-y-12 py-12">
 	<div class="text-center space-y-4">
-		<h1 class="text-4xl font-bold">Donate</h1>
+		<h1 class="text-4xl font-bold">{$t('donate.title')}</h1>
 		<p class="text-xl text-zinc-600 dark:text-zinc-400">
-			Support the development and maintenance of Reticulum.
+			{$t('donate.subtitle')}
 		</p>
 	</div>
 
@@ -14,17 +18,16 @@
 		class="p-8 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 space-y-6"
 	>
 		<p class="text-lg leading-relaxed">
-			Reticulum-Go is supported by <a
-				href="https://quad4.io"
-				target="_blank"
-				rel="noopener noreferrer"
-				class="text-[#00ADD8] font-bold hover:underline">Quad4</a
-			> for long-term sustainable development of the implementation.
+			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+			{@html $t('donate.supported_by', {
+				values: {
+					quad4: `<a href="https://quad4.io" target="_blank" rel="noopener noreferrer" class="text-[#00ADD8] font-bold hover:underline">Quad4</a>`
+				}
+			})}
 		</p>
 
 		<p class="text-lg leading-relaxed">
-			We do not accept donations ourselves. Instead, please consider donating to the original author
-			of the Reticulum Network Stack:
+			{$t('donate.no_direct_donations')}
 		</p>
 
 		<div class="pt-4 text-center">
@@ -34,7 +37,7 @@
 				rel="noopener noreferrer"
 				class="inline-flex items-center gap-3 px-8 py-4 bg-[#00ADD8] text-white font-bold rounded-xl shadow-lg hover:shadow-[#00ADD8]/20 transition-all active:scale-95"
 			>
-				Donate to unsigned.io
+				{$t('donate.cta')}
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					class="w-5 h-5"

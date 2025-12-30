@@ -8,7 +8,24 @@
 		"identity": "Identity",
 		"settings": "Settings",
 		"source_code": "Source Code",
-		"loading": "Loading..."
+		"loading": "Loading...",
+		"donate": "Donate",
+		"last_activity": "Last activity: {time} ago"
+	},
+	"time": {
+		"seconds": "seconds",
+		"minutes": "minutes",
+		"hours": "hours",
+		"days": "days",
+		"months": "months",
+		"years": "years"
+	},
+	"donate": {
+		"title": "Donate",
+		"subtitle": "Support the development and maintenance of Reticulum.",
+		"supported_by": "Reticulum-Go, the Golang implementation of the Python reference is supported by other {quad4} ventures for long-term sustainable development of the implementation.",
+		"no_direct_donations": "We do not accept donations ourselves. Instead, please consider donating to the original author of the Reticulum Network Stack:",
+		"cta": "Markqvist"
 	},
 	"home": {
 		"title": "Reticulum-Go",
@@ -22,7 +39,7 @@
 			},
 			"resilient": {
 				"title": "Resilient & Sovereign",
-				"description": "No central authorities, no servers to shut down. Build your own infrastructure over any medium—radio, fiber, or the internet."
+				"description": "No central authorities, no servers to shut down. Build your own infrastructure over any medium—radio, fiber, satellite, landlines, or the internet."
 			},
 			"go": {
 				"title": "Go Implementation",

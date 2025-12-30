@@ -8,7 +8,24 @@
 		"identity": "Identität",
 		"settings": "Einstellungen",
 		"source_code": "Quellcode",
-		"loading": "Laden..."
+		"loading": "Laden...",
+		"donate": "Spenden",
+		"last_activity": "Letzte Aktivität: vor {time}"
+	},
+	"time": {
+		"seconds": "Sekunden",
+		"minutes": "Minuten",
+		"hours": "Stunden",
+		"days": "Tagen",
+		"months": "Monaten",
+		"years": "Jahren"
+	},
+	"donate": {
+		"title": "Spenden",
+		"subtitle": "Unterstützen Sie die Entwicklung und Wartung von Reticulum.",
+		"supported_by": "Reticulum-Go, die Golang-Implementierung der Python-Referenz, wird von anderen {quad4}-Unternehmen für eine langfristig nachhaltige Entwicklung der Implementierung unterstützt.",
+		"no_direct_donations": "Wir nehmen selbst keine Spenden an. Bitte erwägen Sie stattdessen eine Spende an den ursprünglichen Autor des Reticulum Network Stack:",
+		"cta": "Markqvist"
 	},
 	"home": {
 		"title": "Reticulum-Go",
@@ -22,7 +39,7 @@
 			},
 			"resilient": {
 				"title": "Belastbar & Souverän",
-				"description": "Keine zentralen Autoritäten, keine Server zum Abschalten. Bauen Sie Ihre eigene Infrastruktur über jedes Medium—Funk, Glasfaser oder Internet."
+				"description": "Keine zentralen Autoritäten, keine Server zum Abschalten. Bauen Sie Ihre eigene Infrastruktur über jedes Medium—Funk, Glasfaser, Satellit, Festnetz oder Internet."
 			},
 			"go": {
 				"title": "Go Implementierung",
@@ -36,4 +53,3 @@
 		}
 	}
 }
-

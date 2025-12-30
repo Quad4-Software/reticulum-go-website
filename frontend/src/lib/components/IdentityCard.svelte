@@ -69,7 +69,7 @@
 		<div class="space-y-4">
 			<div>
 				<span class="text-xs font-medium text-zinc-500 uppercase tracking-wider block mb-1"
-					>Address</span
+					>Identity</span
 				>
 				<div
 					class="font-mono text-sm break-all p-2 bg-zinc-50 dark:bg-zinc-950 rounded border border-zinc-200 dark:border-zinc-800"

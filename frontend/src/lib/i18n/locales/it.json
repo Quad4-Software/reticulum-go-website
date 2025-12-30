@@ -1,0 +1,55 @@
+{
+	"common": {
+		"home": "Home",
+		"docs": "Documentazione",
+		"wasm_example": "Esempio WASM",
+		"contact": "Contatti",
+		"search": "Cerca...",
+		"identity": "Identità",
+		"settings": "Impostazioni",
+		"source_code": "Codice Sorgente",
+		"loading": "Caricamento...",
+		"donate": "Dona",
+		"last_activity": "Ultima attività: {time} fa"
+	},
+	"time": {
+		"seconds": "secondi",
+		"minutes": "minuti",
+		"hours": "ore",
+		"days": "giorni",
+		"months": "mesi",
+		"years": "anni"
+	},
+	"donate": {
+		"title": "Dona",
+		"subtitle": "Supporta lo sviluppo e la manutenzione di Reticulum.",
+		"supported_by": "Reticulum-Go, l'implementazione Golang del riferimento Python, è supportato da altre imprese {quad4} per uno sviluppo sostenibile a lungo termine dell'implementazione.",
+		"no_direct_donations": "Non accettiamo donazioni direttamente. Invece, considera di donare all'autore originale del Reticulum Network Stack:",
+		"cta": "Markqvist"
+	},
+	"home": {
+		"title": "Reticulum-Go",
+		"subtitle": "Lo stack di networking resiliente e sovrano per tutti. Ora implementato in Go per alte prestazioni e portabilità.",
+		"try_wasm": "Prova la Demo WASM",
+		"view_source": "Visualizza Codice Sorgente",
+		"features": {
+			"encrypted": {
+				"title": "Criptato di Default",
+				"description": "Tutto in Reticulum è criptato con primitive forti e moderne. Nessun traffico non criptato lascia mai il tuo dispositivo."
+			},
+			"resilient": {
+				"title": "Resiliente e Sovrano",
+				"description": "Nessuna autorità centrale, nessun server da spegnere. Costruisci la tua infrastruttura su qualsiasi mezzo: radio, fibra, satellite, linee telefoniche fisse o internet."
+			},
+			"go": {
+				"title": "Implementazione Go",
+				"description": "Costruito con Go per massime prestazioni, sicurezza e compatibilità cross-platform. Eseguilo ovunque, dai piccoli SBC ai server cloud."
+			}
+		},
+		"wasm_promo": {
+			"title": "Prova Reticulum-Go nel tuo Browser",
+			"description": "Sperimenta la potenza di Reticulum direttamente nel tuo browser. La nostra build WASM ti permette di interagire con la rete senza installare nulla.",
+			"cta": "Vai all'Esempio WASM"
+		}
+	}
+}

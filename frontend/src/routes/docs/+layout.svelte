@@ -2,6 +2,7 @@
 	import { page } from '$app/state';
 	import { BookOpen, FileText, ChevronRight } from 'lucide-svelte';
 	import { t } from 'svelte-i18n';
+	import Search from '$lib/components/Search.svelte';
 
 	let { children } = $props();
 
@@ -23,6 +24,9 @@
 	<!-- Sidebar -->
 	<aside class="w-full md:w-64 shrink-0">
 		<nav class="sticky top-24 space-y-1">
+			<div class="mb-6">
+				<Search />
+			</div>
 			<p class="px-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-4">
 				{$t('common.docs')}
 			</p>

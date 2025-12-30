@@ -1,15 +1,26 @@
 import { error } from '@sveltejs/kit';
+import { browser } from '$app/environment';
+import { get } from 'svelte/store';
+import { locale } from 'svelte-i18n';
 
-export const load = async ({ params }) => {
+export const load = async ({ params, depends }) => {
 	const { slug } = params;
+	depends('app:locale');
 
 	const cleanSlug = slug.endsWith('/') ? slug.slice(0, -1) : slug;
-	const modules = import.meta.glob('../../../lib/docs/**/*.{svx,md}');
+	const modules = import.meta.glob('../../../lib/docs/**/*.{mdx,md}');
+
+	const currentLocale = (browser ? localStorage.getItem('locale') : null) || get(locale) || 'en';
 
 	let match: (() => Promise<unknown>) | undefined;
 
-	// Try .md then .svx
-	const paths = [`../../../lib/docs/${cleanSlug}.md`, `../../../lib/docs/${cleanSlug}.svx`];
+	// Try locale-specific then generic
+	const paths = [
+		`../../../lib/docs/${cleanSlug}.${currentLocale}.md`,
+		`../../../lib/docs/${cleanSlug}.${currentLocale}.mdx`,
+		`../../../lib/docs/${cleanSlug}.md`,
+		`../../../lib/docs/${cleanSlug}.mdx`
+	];
 
 	for (const path of paths) {
 		const module = modules[path];

@@ -1,2 +1,22 @@
 @import 'tailwindcss';
 @plugin "@tailwindcss/typography";
+
+@layer base {
+	.prose h1 a,
+	.prose h2 a,
+	.prose h3 a,
+	.prose h4 a,
+	.prose h5 a,
+	.prose h6 a {
+		@apply no-underline hover:underline;
+	}
+
+	.prose :is(h1, h2, h3, h4, h5, h6) a::after {
+		content: '#';
+		@apply ml-2 opacity-0 transition-opacity;
+	}
+
+	.prose :is(h1, h2, h3, h4, h5, h6):hover a::after {
+		@apply opacity-50;
+	}
+}

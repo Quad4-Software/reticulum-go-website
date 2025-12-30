@@ -53,7 +53,7 @@
 	<div class="lg:col-span-8 space-y-8">
 		<section>
 			<h1 class="text-4xl font-extrabold tracking-tight mb-4 text-zinc-900 dark:text-zinc-50">
-				Global Resilient Network
+				WASM Chat Example
 			</h1>
 			<p class="text-xl text-zinc-600 dark:text-zinc-400 max-w-2xl leading-relaxed">
 				Reticulum-Go running in your browser using websockets as transport medium.

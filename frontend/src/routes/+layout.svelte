@@ -10,6 +10,7 @@
 
 	let i18nReady = $state(false);
 	let isDark = $state(false);
+	let themeInitialized = $state(false);
 
 	setContext('theme', {
 		get isDark() {
@@ -17,21 +18,32 @@
 		},
 		toggle: () => {
 			isDark = !isDark;
-			applyTheme();
 		}
 	});
 
-	function applyTheme() {
-		if (isDark) {
-			document.documentElement.classList.add('dark');
-			localStorage.setItem('color-theme', 'dark');
-		} else {
-			document.documentElement.classList.remove('dark');
-			localStorage.setItem('color-theme', 'light');
+	// Reactive theme application
+	$effect(() => {
+		if (typeof document !== 'undefined' && themeInitialized) {
+			if (isDark) {
+				document.documentElement.classList.add('dark');
+				localStorage.setItem('theme', 'dark');
+			} else {
+				document.documentElement.classList.remove('dark');
+				localStorage.setItem('theme', 'light');
+			}
 		}
-	}
+	});
 
 	onMount(async () => {
+		// Initialize theme from storage or preference
+		const stored = localStorage.getItem('theme');
+		if (stored) {
+			isDark = stored === 'dark';
+		} else {
+			isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+		}
+		themeInitialized = true;
+
 		// Initialize i18n
 		try {
 			await waitLocale();
@@ -40,15 +52,6 @@
 		} finally {
 			i18nReady = true;
 		}
-
-		// Initialize theme
-		const stored = localStorage.getItem('color-theme');
-		if (stored) {
-			isDark = stored === 'dark';
-		} else {
-			isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-		}
-		applyTheme();
 	});
 </script>
 

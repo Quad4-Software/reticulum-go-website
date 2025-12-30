@@ -1,11 +1,17 @@
 <script lang="ts">
-	import ThemeToggle from './ThemeToggle.svelte';
+	// import ThemeToggle from './ThemeToggle.svelte';
 	import Logo from './Logo.svelte';
 	import { page } from '$app/state';
 	import { t, locale, locales } from 'svelte-i18n';
-	import { Languages } from 'lucide-svelte';
+	import { Languages, Menu, X } from 'lucide-svelte';
+	import { slide } from 'svelte/transition';
 
 	const isWasmRoute = $derived(page.url.pathname.startsWith('/wasm-example'));
+	let isMobileMenuOpen = $state(false);
+
+	function toggleMobileMenu() {
+		isMobileMenuOpen = !isMobileMenuOpen;
+	}
 </script>
 
 <nav
@@ -80,7 +86,7 @@
 						class="absolute inset-0 w-full h-full opacity-0 cursor-pointer appearance-none"
 						aria-label="Select Language"
 					>
-						{#each $locales as l}
+						{#each $locales as l (l)}
 							<option value={l} class="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">
 								{l.toUpperCase()}
 							</option>
@@ -96,27 +102,77 @@
 				>
 					<img src="/gitea.svg" alt="Gitea" class="w-5 h-5" />
 				</a>
-				<ThemeToggle />
-				<button class="md:hidden p-2 text-zinc-600 dark:text-zinc-400" aria-label="Toggle menu">
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						width="24"
-						height="24"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="6" x2="21" y2="6" /><line
-							x1="3"
-							y1="18"
-							x2="21"
-							y2="18"
-						/></svg
-					>
+				<!-- <ThemeToggle /> -->
+				<button
+					onclick={toggleMobileMenu}
+					class="md:hidden p-2 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
+					aria-label="Toggle menu"
+				>
+					{#if isMobileMenuOpen}
+						<X class="w-6 h-6" />
+					{:else}
+						<Menu class="w-6 h-6" />
+					{/if}
 				</button>
 			</div>
 		</div>
 	</div>
+
+	<!-- Mobile Menu -->
+	{#if isMobileMenuOpen}
+		<div
+			transition:slide
+			class="md:hidden border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950"
+		>
+			<div class="px-4 pt-2 pb-6 space-y-1">
+				<a
+					href="/"
+					onclick={() => (isMobileMenuOpen = false)}
+					class="block px-3 py-2 rounded-lg text-base font-medium {page.url.pathname === '/'
+						? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white'
+						: 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900'}"
+				>
+					{$t('common.home')}
+				</a>
+				<a
+					href="/docs"
+					onclick={() => (isMobileMenuOpen = false)}
+					class="block px-3 py-2 rounded-lg text-base font-medium {page.url.pathname.startsWith(
+						'/docs'
+					)
+						? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white'
+						: 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900'}"
+				>
+					{$t('common.docs')}
+				</a>
+				<a
+					href="/wasm-example"
+					onclick={() => (isMobileMenuOpen = false)}
+					class="block px-3 py-2 rounded-lg text-base font-medium {isWasmRoute
+						? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white'
+						: 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900'}"
+				>
+					{$t('common.wasm_example')}
+				</a>
+				<a
+					href="/donate"
+					onclick={() => (isMobileMenuOpen = false)}
+					class="block px-3 py-2 rounded-lg text-base font-medium {page.url.pathname === '/donate'
+						? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white'
+						: 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900'}"
+				>
+					{$t('common.donate')}
+				</a>
+				<a
+					href="/contact"
+					onclick={() => (isMobileMenuOpen = false)}
+					class="block px-3 py-2 rounded-lg text-base font-medium {page.url.pathname === '/contact'
+						? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white'
+						: 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900'}"
+				>
+					{$t('common.contact')}
+				</a>
+			</div>
+		</div>
+	{/if}
 </nav>

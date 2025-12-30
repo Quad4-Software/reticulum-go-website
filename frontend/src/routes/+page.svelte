@@ -1,5 +1,15 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { t } from 'svelte-i18n';
+	import { getRepoUpdatedAt, calculateTimeAgo } from '$lib/version';
+
+	let repoUpdatedAt = $state<string | null>(null);
+	let timeAgo = $derived.by(() => calculateTimeAgo(repoUpdatedAt));
+	let showActivity = $state(false);
+
+	onMount(async () => {
+		repoUpdatedAt = await getRepoUpdatedAt();
+	});
 </script>
 
 <svelte:head>
@@ -30,15 +40,28 @@
 			>
 				{$t('home.try_wasm')}
 			</a>
-			<a
-				href="https://git.quad4.io/Networks/Reticulum-Go"
-				target="_blank"
-				rel="noopener noreferrer"
-				class="px-8 py-4 border border-zinc-200 dark:border-zinc-800 font-bold rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-all active:scale-95 flex items-center gap-2"
-			>
-				<img src="/gitea.svg" alt="" class="w-5 h-5 dark:invert" />
-				{$t('home.view_source')}
-			</a>
+			<div class="relative group">
+				<a
+					href="https://git.quad4.io/Networks/Reticulum-Go"
+					target="_blank"
+					rel="noopener noreferrer"
+					class="px-8 py-4 border border-zinc-200 dark:border-zinc-800 font-bold rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-all active:scale-95 flex items-center gap-2"
+					onmouseenter={() => (showActivity = true)}
+					onmouseleave={() => (showActivity = false)}
+				>
+					<img src="/gitea.svg" alt="" class="w-5 h-5" />
+					{$t('home.view_source')}
+				</a>
+				{#if showActivity && timeAgo}
+					<div
+						class="absolute top-full left-0 right-0 mt-2 text-xs text-zinc-500 dark:text-zinc-400 animate-in fade-in slide-in-from-top-1 duration-200"
+					>
+						{$t('common.last_activity', {
+							values: { time: `${timeAgo.value} ${$t(timeAgo.unit)}` }
+						})}
+					</div>
+				{/if}
+			</div>
 		</div>
 	</section>
 
