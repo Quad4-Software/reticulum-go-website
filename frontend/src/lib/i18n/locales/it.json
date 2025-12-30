@@ -2,6 +2,8 @@
 	"common": {
 		"home": "Home",
 		"docs": "Documentazione",
+		"interactive": "Interattivo",
+		"apps": "App",
 		"wasm_example": "Esempio WASM",
 		"contact": "Contatti",
 		"search": "Cerca...",
@@ -17,7 +19,22 @@
 		"download_all": "Scarica tutti i documenti",
 		"export": "Esporta",
 		"export_md": "MD",
-		"export_txt": "TXT"
+		"export_txt": "TXT",
+		"coming_soon": "Prossimamente",
+		"explore": "Esplora",
+		"learn_more": "Scopri di più",
+		"no_examples_found": "Nessun esempio trovato corrispondente alla tua ricerca.",
+		"no_apps_found": "Nessuna applicazione trovata corrispondente alla tua ricerca."
+	},
+	"interactive": {
+		"title": "Esempi Interattivi",
+		"description": "Esplora tutorial pratici, dimostrazioni ed esempi interattivi di Reticulum-Go in azione.",
+		"search_placeholder": "Cerca esempi..."
+	},
+	"apps": {
+		"title": "Applicazioni",
+		"description": "Scopri applicazioni e strumenti costruiti con Reticulum-Go per varie piattaforme e casi d'uso.",
+		"search_placeholder": "Cerca applicazioni..."
 	},
 	"time": {
 		"seconds": "secondi",

@@ -2,6 +2,8 @@
 	"common": {
 		"home": "Home",
 		"docs": "Docs",
+		"interactive": "Interactive",
+		"apps": "Apps",
 		"wasm_example": "WASM Example",
 		"contact": "Contact",
 		"search": "Search...",
@@ -17,7 +19,22 @@
 		"download_all": "Download All Docs",
 		"export": "Export",
 		"export_md": "MD",
-		"export_txt": "TXT"
+		"export_txt": "TXT",
+		"coming_soon": "Coming Soon",
+		"explore": "Explore",
+		"learn_more": "Learn more",
+		"no_examples_found": "No examples found matching your search.",
+		"no_apps_found": "No applications found matching your search."
+	},
+	"interactive": {
+		"title": "Interactive Examples",
+		"description": "Explore hands-on tutorials, demonstrations, and interactive examples of Reticulum-Go in action.",
+		"search_placeholder": "Search examples..."
+	},
+	"apps": {
+		"title": "Applications",
+		"description": "Discover applications and tools built with Reticulum-Go for various platforms and use cases.",
+		"search_placeholder": "Search applications..."
 	},
 	"time": {
 		"seconds": "seconds",
