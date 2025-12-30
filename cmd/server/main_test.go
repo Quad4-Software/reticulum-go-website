@@ -43,7 +43,7 @@ func TestNewHandler(t *testing.T) {
 	}
 
 	mockCache := web.NewCache("", "", "", 5*time.Minute)
-	handler, err := NewHandler(mockFS, "example.com", mockCache, "https://api.example.com", "owner", "repo")
+	handler, err := NewHandler(mockFS, "example.com", mockCache, "https://api.example.com", "owner", "repo", false)
 	if err != nil {
 		t.Fatalf("failed to create handler: %v", err)
 	}
@@ -151,7 +151,7 @@ func TestSecurityPathTraversal(t *testing.T) {
 	}
 
 	mockCache := web.NewCache("", "", "", 5*time.Minute)
-	handler, _ := NewHandler(mockFS, "", mockCache, "https://api.example.com", "owner", "repo")
+	handler, _ := NewHandler(mockFS, "", mockCache, "https://api.example.com", "owner", "repo", false)
 
 	tests := []struct {
 		name           string
@@ -285,7 +285,7 @@ func TestHealthCheckEndpoints(t *testing.T) {
 
 	t.Run("Health endpoint with empty cache", func(t *testing.T) {
 		mockCache := web.NewCache("", "", "", 5*time.Minute)
-		handler, err := NewHandler(mockFS, "", mockCache, "https://api.example.com", "owner", "repo")
+		handler, err := NewHandler(mockFS, "", mockCache, "https://api.example.com", "owner", "repo", false)
 		if err != nil {
 			t.Fatalf("failed to create handler: %v", err)
 		}
@@ -337,7 +337,7 @@ func TestHealthCheckEndpoints(t *testing.T) {
 			t.Fatalf("failed to populate cache: %v", err)
 		}
 
-		handler, err := NewHandler(mockFS, "", mockCache, server.URL, "test-owner", "test-repo")
+		handler, err := NewHandler(mockFS, "", mockCache, server.URL, "test-owner", "test-repo", false)
 		if err != nil {
 			t.Fatalf("failed to create handler: %v", err)
 		}
@@ -389,7 +389,7 @@ func TestHealthCheckEndpoints(t *testing.T) {
 			t.Fatalf("failed to populate cache: %v", err)
 		}
 
-		handler, err := NewHandler(mockFS, "", mockCache, server.URL, "test-owner", "test-repo")
+		handler, err := NewHandler(mockFS, "", mockCache, server.URL, "test-owner", "test-repo", false)
 		if err != nil {
 			t.Fatalf("failed to create handler: %v", err)
 		}
@@ -436,7 +436,7 @@ func TestCSPWithNonce(t *testing.T) {
 	}
 
 	mockCache := web.NewCache("", "", "", 5*time.Minute)
-	handler, err := NewHandler(mockFS, "", mockCache, "https://api.example.com", "owner", "repo")
+	handler, err := NewHandler(mockFS, "", mockCache, "https://api.example.com", "owner", "repo", false)
 	if err != nil {
 		t.Fatalf("failed to create handler: %v", err)
 	}
@@ -502,7 +502,7 @@ func TestRequestSizeLimits(t *testing.T) {
 	}
 
 	mockCache := web.NewCache("", "", "", 5*time.Minute)
-	handler, err := NewHandler(mockFS, "", mockCache, "https://api.example.com", "owner", "repo")
+	handler, err := NewHandler(mockFS, "", mockCache, "https://api.example.com", "owner", "repo", false)
 	if err != nil {
 		t.Fatalf("failed to create handler: %v", err)
 	}
@@ -538,7 +538,7 @@ func TestRequestSizeLimitsEnforcedOnRead(t *testing.T) {
 	}
 
 	mockCache := web.NewCache("", "", "", 5*time.Minute)
-	handler, err := NewHandler(mockFS, "", mockCache, "https://api.example.com", "owner", "repo")
+	handler, err := NewHandler(mockFS, "", mockCache, "https://api.example.com", "owner", "repo", false)
 	if err != nil {
 		t.Fatalf("failed to create handler: %v", err)
 	}
