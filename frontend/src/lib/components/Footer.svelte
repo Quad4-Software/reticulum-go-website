@@ -1,29 +1,34 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { getLatestTag, calculateTimeAgo } from '$lib/version';
+	import { getLatestTag, getRepoUpdatedAt, calculateTimeAgo } from '$lib/version';
 	import { t } from 'svelte-i18n';
+	import { Rss } from 'lucide-svelte';
 
 	const showCoolify = import.meta.env.PUBLIC_SHOW_COOLIFY === 'true';
 	const currentYear = new Date().getFullYear();
 	let latestTag = $state<string | null>(null);
 	let repoUpdatedAt = $state<string | null>(null);
+	let copiedRss = $state<string | null>(null);
 
 	let timeAgo = $derived.by(() => calculateTimeAgo(repoUpdatedAt));
 
 	onMount(async () => {
-		latestTag = await getLatestTag();
-		try {
-			const res = await fetch('https://git.quad4.io/api/v1/repos/Networks/Reticulum-Go');
-			if (res.ok) {
-				const data = await res.json();
-				if (data.updated_at) {
-					repoUpdatedAt = data.updated_at;
-				}
-			}
-		} catch (e) {
-			console.error('Failed to fetch repo stats:', e);
-		}
+		const [tag, updatedAt] = await Promise.all([getLatestTag(), getRepoUpdatedAt()]);
+		latestTag = tag;
+		repoUpdatedAt = updatedAt;
 	});
+
+	async function copyRssLink(url: string, type: 'development' | 'releases') {
+		try {
+			await navigator.clipboard.writeText(url);
+			copiedRss = type;
+			setTimeout(() => {
+				copiedRss = null;
+			}, 2000);
+		} catch (err) {
+			console.error('Failed to copy RSS link:', err);
+		}
+	}
 </script>
 
 <footer class="mt-20 border-t border-zinc-200 dark:border-zinc-800 py-12 px-4">
@@ -64,6 +69,41 @@
 					</p>
 				{/if}
 			</div>
+			<div class="pt-4 border-t border-zinc-200 dark:border-zinc-800">
+				<h4 class="font-semibold mb-2 text-xs text-zinc-400 dark:text-zinc-500">
+					Follow Development
+				</h4>
+				<ul class="space-y-2 text-sm">
+					<li>
+						<button
+							type="button"
+							onclick={() =>
+								copyRssLink('https://git.quad4.io/Networks/Reticulum-Go.rss', 'development')}
+							class="flex items-center gap-2 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors group"
+						>
+							<Rss class="w-4 h-4" />
+							<span>{$t('common.rss_development')}</span>
+							{#if copiedRss === 'development'}
+								<span class="text-xs text-[#00ADD8]">{$t('common.rss_copied')}</span>
+							{/if}
+						</button>
+					</li>
+					<li>
+						<button
+							type="button"
+							onclick={() =>
+								copyRssLink('https://git.quad4.io/Networks/Reticulum-Go/releases.rss', 'releases')}
+							class="flex items-center gap-2 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors group"
+						>
+							<Rss class="w-4 h-4" />
+							<span>{$t('common.rss_releases')}</span>
+							{#if copiedRss === 'releases'}
+								<span class="text-xs text-[#00ADD8]">{$t('common.rss_copied')}</span>
+							{/if}
+						</button>
+					</li>
+				</ul>
+			</div>
 		</div>
 
 		<div>
@@ -71,9 +111,16 @@
 			<ul class="space-y-2 text-sm text-zinc-500 dark:text-zinc-400">
 				<li><a href="/" class="hover:text-zinc-900 dark:hover:text-zinc-100">Home</a></li>
 				<li>
-					<a href="/wasm-example" class="hover:text-zinc-900 dark:hover:text-zinc-100"
-						>WASM Example</a
+					<a
+						href="/wasm-example"
+						class="flex items-center gap-2 hover:text-zinc-900 dark:hover:text-zinc-100"
 					>
+						<span>WASM Example</span>
+						<span
+							class="px-1.5 py-0.5 text-[10px] font-semibold rounded bg-orange-500 text-white uppercase"
+							>WIP</span
+						>
+					</a>
 				</li>
 				<li><a href="/donate" class="hover:text-zinc-900 dark:hover:text-zinc-100">Donate</a></li>
 				<li><a href="/contact" class="hover:text-zinc-900 dark:hover:text-zinc-100">Contact</a></li>

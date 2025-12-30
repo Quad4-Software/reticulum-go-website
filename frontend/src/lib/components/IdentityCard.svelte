@@ -8,6 +8,7 @@
 	let loading = $state(false);
 
 	onMount(async () => {
+		await reticulum.ensureWasmLoaded();
 		const identity = await loadIdentity();
 		if (identity) {
 			userName = localStorage.getItem('reticulum_username') || '';

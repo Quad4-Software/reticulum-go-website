@@ -10,7 +10,14 @@
 		"source_code": "Quellcode",
 		"loading": "Laden...",
 		"donate": "Spenden",
-		"last_activity": "Letzte Aktivität: vor {time}"
+		"last_activity": "Letzte Aktivität: vor {time}",
+		"rss_development": "RSS: Entwicklung",
+		"rss_releases": "RSS: Releases",
+		"rss_copied": "RSS-Link kopiert!",
+		"download_all": "Alle Docs herunterladen",
+		"export": "Exportieren",
+		"export_md": "MD",
+		"export_txt": "TXT"
 	},
 	"time": {
 		"seconds": "Sekunden",
@@ -43,7 +50,7 @@
 			},
 			"go": {
 				"title": "Go Implementierung",
-				"description": "Gebaut mit Go für maximale Performance, Sicherheit und plattformübergreifende Kompatibilität. Läuft überall, von winzigen SBCs bis hin zu Cloud-Servern."
+				"description": "Gebaut mit Go für maximale Performance, Sicherheit und plattformübergreifende Kompatibilität. Läuft überall, von Embedded-Systemen bis hin zu Cloud-Servern."
 			}
 		},
 		"wasm_promo": {

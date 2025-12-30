@@ -1,0 +1,71 @@
+name: Publish Docs
+
+on:
+  push:
+    paths:
+      - 'frontend/src/lib/docs/**'
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  release-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: https://git.quad4.io/actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+
+      - name: Setup Node.js
+        uses: https://git.quad4.io/actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        with:
+          node-version: 22
+
+      - name: Setup Task
+        uses: https://git.quad4.io/actions/setup-task@83d4977c2df5fa410d8f7cff05d3e1d14d79ff41 # v1
+        with:
+          version: '3.46.3'
+
+      - name: Get Metadata and Package Docs
+        id: prepare
+        run: |
+          # Get Date for Release Name
+          RELEASE_DATE=$(date +'%Y-%m-%d')
+          RELEASE_TAG="docs-${RELEASE_DATE}-$(date +'%H%M%S')"
+          echo "date=${RELEASE_DATE}" >> $GITHUB_OUTPUT
+          echo "tag=${RELEASE_TAG}" >> $GITHUB_OUTPUT
+
+          # Fetch commit details from Gitea API
+          RESPONSE=$(curl -s -H "Authorization: token ${{ secrets.GITEA_TOKEN }}" \
+            "https://git.quad4.io/api/v1/repos/${{ github.repository }}/commits/${{ github.sha }}")
+          
+          FULL_HASH=$(echo "$RESPONSE" | jq -r '.sha')
+          COMMIT_MSG=$(echo "$RESPONSE" | jq -r '.commit.message')
+          
+          echo "full_hash=${FULL_HASH}" >> $GITHUB_OUTPUT
+          echo "commit_msg<<EOF" >> $GITHUB_OUTPUT
+          echo "${COMMIT_MSG}" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+          # Run Task to package docs
+          task docs:zip
+        env:
+          GITEA_TOKEN: ${{ secrets.GITEA_TOKEN }}
+
+      - name: Create Gitea Release
+        uses: https://git.quad4.io/actions/gitea-release-action@fe8e0322804b48e34e3bddbbf6335bd2b1046eb7 # v1
+        with:
+          server_url: https://git.quad4.io
+          token: ${{ secrets.GITEA_TOKEN }}
+          files: |
+            releases/docs-en.zip
+            releases/docs-ru.zip
+            releases/docs-de.zip
+            releases/docs-it.zip
+          name: ${{ steps.prepare.outputs.date }}
+          tag_name: ${{ steps.prepare.outputs.tag }}
+          body: |
+            Commit: ${{ steps.prepare.outputs.full_hash }}
+            
+            ${{ steps.prepare.outputs.commit_msg }}
+        env:
+          GITEA_TOKEN: ${{ secrets.GITEA_TOKEN }}

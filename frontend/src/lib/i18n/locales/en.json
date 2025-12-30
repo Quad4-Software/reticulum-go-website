@@ -10,7 +10,14 @@
 		"source_code": "Source Code",
 		"loading": "Loading...",
 		"donate": "Donate",
-		"last_activity": "Last activity: {time} ago"
+		"last_activity": "Last activity: {time} ago",
+		"rss_development": "RSS: Development",
+		"rss_releases": "RSS: Releases",
+		"rss_copied": "RSS link copied!",
+		"download_all": "Download All Docs",
+		"export": "Export",
+		"export_md": "MD",
+		"export_txt": "TXT"
 	},
 	"time": {
 		"seconds": "seconds",
@@ -43,7 +50,7 @@
 			},
 			"go": {
 				"title": "Go Implementation",
-				"description": "Built with Go for maximum performance, safety, and cross-platform compatibility. Run it anywhere from tiny SBCs to cloud servers."
+				"description": "Built with Go for maximum performance, safety, and cross-platform compatibility. Run it anywhere from embedded to cloud servers."
 			}
 		},
 		"wasm_promo": {

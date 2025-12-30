@@ -36,9 +36,13 @@
 		<div class="flex flex-wrap justify-center gap-4">
 			<a
 				href="/wasm-example"
-				class="px-8 py-4 bg-[#00ADD8] text-white font-bold rounded-xl shadow-lg hover:shadow-[#00ADD8]/20 transition-all active:scale-95"
+				class="relative px-8 py-4 bg-[#00ADD8] text-white font-bold rounded-xl shadow-lg hover:shadow-[#00ADD8]/20 transition-all active:scale-95"
 			>
 				{$t('home.try_wasm')}
+				<span
+					class="absolute -top-2 -right-2 px-1.5 py-0.5 text-[10px] font-semibold rounded bg-orange-500 text-white uppercase"
+					>WIP</span
+				>
 			</a>
 			<div class="relative group">
 				<a
@@ -151,7 +155,7 @@
 		<div class="pt-4">
 			<a
 				href="/wasm-example"
-				class="inline-flex items-center gap-2 px-8 py-3 bg-white text-zinc-900 font-bold rounded-xl hover:bg-zinc-100 transition-colors"
+				class="relative inline-flex items-center gap-2 px-8 py-3 bg-white text-zinc-900 font-bold rounded-xl hover:bg-zinc-100 transition-colors"
 			>
 				{$t('home.wasm_promo.cta')}
 				<svg
@@ -164,6 +168,10 @@
 					stroke-linecap="round"
 					stroke-linejoin="round"
 					><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg
+				>
+				<span
+					class="absolute -top-2 -right-2 px-1.5 py-0.5 text-[10px] font-semibold rounded bg-orange-500 text-white uppercase"
+					>WIP</span
 				>
 			</a>
 		</div>

@@ -23,7 +23,7 @@ tasks:
   server:build:
     deps: [server:prepare]
     cmds:
-      - go build -o reticulum-go-web ./cmd/server
+      - CGO_ENABLED=0 go build -ldflags="-s -w" -o reticulum-go-web ./cmd/server
     sources:
       - cmd/server/*.go
     generates:
@@ -41,9 +41,15 @@ tasks:
       - rm -f reticulum-go-web
 
   format:
-    dir: frontend
+    desc: Format code (frontend and go)
     cmds:
-      - pnpm exec prettier --write .
+      - cd frontend && pnpm exec prettier --write .
+      - go fmt ./...
+
+  test:
+    desc: Run tests
+    cmds:
+      - go test -v ./...
 
   lint:
     dir: frontend
@@ -99,4 +105,23 @@ tasks:
     desc: Run Docker container
     cmds:
       - docker run -p 8080:8080 reticulum-go-web
+
+  docs:zip:
+    desc: Package documentation into ZIP files
+    cmds:
+      - mkdir -p releases
+      - zip -j releases/docs-en.zip frontend/src/lib/docs/introduction.md frontend/src/lib/docs/usage.md
+      - zip -j releases/docs-ru.zip frontend/src/lib/docs/introduction.ru.md frontend/src/lib/docs/usage.ru.md
+      - zip -j releases/docs-de.zip frontend/src/lib/docs/introduction.de.md frontend/src/lib/docs/usage.de.md
+      - zip -j releases/docs-it.zip frontend/src/lib/docs/introduction.it.md frontend/src/lib/docs/usage.it.md
+
+  validate:
+    desc: Run all quality checks (format, test, lint, check, scan, audit)
+    cmds:
+      - task: format
+      - task: test
+      - task: lint
+      - task: check
+      - task: scan
+      - task: audit
 

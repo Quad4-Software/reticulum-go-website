@@ -1,12 +1,46 @@
 <script lang="ts">
-	import { locale } from 'svelte-i18n';
+	import { locale, t } from 'svelte-i18n';
+	import { FileCode, FileType } from 'lucide-svelte';
+	import { exportDoc } from '$lib/docs-service';
+	import { page } from '$app/state';
+
 	let { data } = $props();
+
+	const slug = $derived(page.params.slug ?? '');
 </script>
 
-<div class="prose prose-zinc dark:prose-invert max-w-none">
-	{#if data.content}
-		{#key `${$locale}-${data.content}`}
-			<data.content />
-		{/key}
-	{/if}
+<div class="flex flex-col gap-8">
+	<div class="flex justify-end">
+		<div
+			class="flex items-center gap-1 p-1 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg shadow-sm"
+		>
+			<span class="px-2 text-[10px] font-bold uppercase tracking-wider text-zinc-500">
+				{$t('common.export')}
+			</span>
+			<div class="flex gap-1">
+				<button
+					onclick={() => slug && exportDoc(slug, $locale || 'en', 'md')}
+					class="flex items-center gap-1.5 px-2 py-1 text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-800 rounded-md transition-colors"
+				>
+					<FileCode class="w-3 h-3" />
+					{$t('common.export_md')}
+				</button>
+				<button
+					onclick={() => slug && exportDoc(slug, $locale || 'en', 'txt')}
+					class="flex items-center gap-1.5 px-2 py-1 text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-800 rounded-md transition-colors"
+				>
+					<FileType class="w-3 h-3" />
+					{$t('common.export_txt')}
+				</button>
+			</div>
+		</div>
+	</div>
+
+	<div class="prose prose-zinc dark:prose-invert max-w-none">
+		{#if data.content}
+			{#key `${$locale}-${data.content}`}
+				<data.content />
+			{/key}
+		{/if}
+	</div>
 </div>

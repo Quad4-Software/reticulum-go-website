@@ -2,6 +2,7 @@ import { error } from '@sveltejs/kit';
 import { browser } from '$app/environment';
 import { get } from 'svelte/store';
 import { locale } from 'svelte-i18n';
+import { syncDoc } from '$lib/docs-service';
 
 export const load = async ({ params, depends }) => {
 	const { slug } = params;
@@ -11,6 +12,11 @@ export const load = async ({ params, depends }) => {
 	const modules = import.meta.glob('../../../lib/docs/**/*.{mdx,md}');
 
 	const currentLocale = (browser ? localStorage.getItem('locale') : null) || get(locale) || 'en';
+
+	// Sync in background if online and browser
+	if (browser && navigator.onLine) {
+		syncDoc(cleanSlug, currentLocale).catch(console.error);
+	}
 
 	let match: (() => Promise<unknown>) | undefined;
 

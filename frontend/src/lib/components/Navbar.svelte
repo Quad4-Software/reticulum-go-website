@@ -44,9 +44,14 @@
 				>
 				<a
 					href="/wasm-example"
-					class="hover:text-zinc-900 dark:hover:text-white transition-colors {isWasmRoute
+					class="flex items-center gap-2 hover:text-zinc-900 dark:hover:text-white transition-colors {isWasmRoute
 						? 'text-zinc-900 dark:text-white'
-						: ''}">{$t('common.wasm_example')}</a
+						: ''}"
+					>{$t('common.wasm_example')}
+					<span
+						class="px-1.5 py-0.5 text-[10px] font-semibold rounded bg-orange-500 text-white uppercase"
+						>WIP</span
+					></a
 				>
 
 				{#if isWasmRoute}
@@ -148,11 +153,15 @@
 				<a
 					href="/wasm-example"
 					onclick={() => (isMobileMenuOpen = false)}
-					class="block px-3 py-2 rounded-lg text-base font-medium {isWasmRoute
+					class="flex items-center justify-between px-3 py-2 rounded-lg text-base font-medium {isWasmRoute
 						? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white'
 						: 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900'}"
 				>
-					{$t('common.wasm_example')}
+					<span>{$t('common.wasm_example')}</span>
+					<span
+						class="px-1.5 py-0.5 text-[10px] font-semibold rounded bg-orange-500 text-white uppercase"
+						>WIP</span
+					>
 				</a>
 				<a
 					href="/donate"

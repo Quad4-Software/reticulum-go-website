@@ -10,7 +10,14 @@
 		"source_code": "Codice Sorgente",
 		"loading": "Caricamento...",
 		"donate": "Dona",
-		"last_activity": "Ultima attività: {time} fa"
+		"last_activity": "Ultima attività: {time} fa",
+		"rss_development": "RSS: Sviluppo",
+		"rss_releases": "RSS: Release",
+		"rss_copied": "Link RSS copiato!",
+		"download_all": "Scarica tutti i documenti",
+		"export": "Esporta",
+		"export_md": "MD",
+		"export_txt": "TXT"
 	},
 	"time": {
 		"seconds": "secondi",
@@ -43,7 +50,7 @@
 			},
 			"go": {
 				"title": "Implementazione Go",
-				"description": "Costruito con Go per massime prestazioni, sicurezza e compatibilità cross-platform. Eseguilo ovunque, dai piccoli SBC ai server cloud."
+				"description": "Costruito con Go per massime prestazioni, sicurezza e compatibilità cross-platform. Eseguilo ovunque, dai sistemi embedded ai server cloud."
 			}
 		},
 		"wasm_promo": {

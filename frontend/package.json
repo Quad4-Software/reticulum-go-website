@@ -1,7 +1,7 @@
 {
 	"name": "frontend",
 	"private": true,
-	"version": "0.0.1",
+	"version": "1.0.0",
 	"type": "module",
 	"pnpm": {
 		"overrides": {
@@ -11,7 +11,7 @@
 	},
 	"scripts": {
 		"dev": "vite dev",
-		"build": "vite build",
+		"build": "vite build && node scripts/generate-sri.js",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
@@ -43,10 +43,12 @@
 		"tailwindcss": "^4.1.18",
 		"typescript": "^5.9.3",
 		"typescript-eslint": "^8.51.0",
-		"vite": "^7.3.0"
+		"vite": "^7.3.0",
+		"vite-plugin-pwa": "^1.2.0"
 	},
 	"dependencies": {
 		"fuse.js": "^7.1.0",
+		"jszip": "^3.10.1",
 		"svelte-i18n": "^4.0.1"
 	}
 }

@@ -60,12 +60,15 @@ The project uses [Task](https://taskfile.dev/) for all development tasks.
 | Task           | Description                              |
 |----------------|------------------------------------------|
 | dev            | Run Vite development server              |
+| validate       | Run all quality checks                   |
 | frontend:build | Build frontend only                      |
 | server:build   | Build server binary                      |
 | docker-build   | Build Docker image                       |
 | docker-run     | Run Docker container                     |
+| docs:zip       | Package documentation into ZIP files     |
 | clean          | Clean build artifacts                    |
 | format         | Format code                              |
+| test           | Run tests                                |
 | lint           | Run linter                               |
 | check          | Run type checking                        |
 | audit          | Run pnpm audit                           |

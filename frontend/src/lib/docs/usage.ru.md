@@ -1,26 +1,71 @@
 # Использование
 
-Использование Reticulum-Go в вашем проекте очень простое.
+Reticulum-Go можно использовать как отдельное приложение, интегрировать в ваши проекты на Go или запускать в браузере через WebAssembly.
+
+## Получение исходного кода
+
+Клонируйте репозиторий, чтобы начать:
+
+```bash
+git clone https://git.quad4.io/Networks/Reticulum-Go
+cd Reticulum-Go
+```
 
 ## Установка
 
+### Предварительные условия
+
+- Go 1.24 или новее
+- [Task](https://taskfile.dev/) для автоматизации сборки
+
+### Среда разработки
+
+Если у вас установлен Nix, вы можете использовать оболочку разработки:
+
 ```bash
-pnpm add reticulum-go-wasm
+nix develop
 ```
 
-## Инициализация
+## Сборка и запуск
 
-```typescript
-import { initReticulum } from 'reticulum-go-wasm';
+### Сборка исполняемого файла
 
-await initReticulum();
+```bash
+task build
 ```
 
-## Создание личности
+Скомпилированный файл будет находиться в `bin/reticulum-go`.
 
-```typescript
-import { Identity } from 'reticulum-go-wasm';
+### Запуск приложения
 
-const identity = new Identity();
-console.log('Мой адрес:', identity.address);
+```bash
+task run
+```
+
+### Запуск тестов
+
+```bash
+task test
+```
+
+## Кроссплатформенная сборка
+
+Сборка для всех архитектур Linux (amd64, arm64, arm, riscv64):
+
+```bash
+task build-all
+```
+
+Сборка для конкретных архитектур:
+
+```bash
+task build-linux
+```
+
+## Экспериментальные функции
+
+Сборка с экспериментальным сборщиком мусора Green Tea (требуется Go 1.25+):
+
+```bash
+task build-experimental
 ```

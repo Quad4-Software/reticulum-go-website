@@ -3,12 +3,12 @@ export async function getLatestTag() {
 		const response = await fetch('https://git.quad4.io/api/v1/repos/Networks/Reticulum-Go/tags');
 		if (response.ok) {
 			const tags = await response.json();
-			if (tags && tags.length > 0) {
+			if (Array.isArray(tags) && tags.length > 0) {
 				return tags[0].name;
 			}
 		}
-	} catch (e) {
-		console.error('Failed to fetch latest tag:', e);
+	} catch {
+		// Silent fail, don't show if fetch fails
 	}
 	return null;
 }
@@ -20,8 +20,8 @@ export async function getRepoUpdatedAt() {
 			const data = await response.json();
 			return data.updated_at || null;
 		}
-	} catch (e) {
-		console.error('Failed to fetch repo stats:', e);
+	} catch {
+		// Silent fail, don't show if fetch fails
 	}
 	return null;
 }

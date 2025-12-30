@@ -1,10 +1,15 @@
 <script lang="ts">
 	import IdentityCard from '$lib/components/IdentityCard.svelte';
 	import { reticulum } from '$lib/reticulum.svelte';
+	import { onMount } from 'svelte';
 
 	let messageInput = $state('');
 	let showToast = $state(false);
 	let toastMessage = $state('');
+
+	onMount(async () => {
+		await reticulum.ensureWasmLoaded();
+	});
 
 	const peers = $derived(Array.from(reticulum.peers.values()));
 	const currentMessages = $derived(

@@ -61,6 +61,8 @@ declare global {
 class ReticulumService {
 	initialized = $state(false);
 	connected = $state(false);
+	isLoading = $state(false);
+	error = $state<string | null>(null);
 	identity = $state<Identity | null>(null);
 	peers = new SvelteMap<string, Peer>();
 	messages = new SvelteMap<string, ChatMessage[]>();
@@ -73,11 +75,20 @@ class ReticulumService {
 	});
 	logs = $state<{ msg: string; type: string; time: string }[]>([]);
 
+	private wasmLoadingPromise: Promise<void> | null = null;
+
 	constructor() {
 		if (browser) {
 			this.setupCallbacks();
-			this.loadWasm();
 		}
+	}
+
+	async ensureWasmLoaded() {
+		if (!browser || this.initialized || window.reticulum) return;
+		if (this.wasmLoadingPromise) return this.wasmLoadingPromise;
+
+		this.wasmLoadingPromise = this.loadWasm();
+		return this.wasmLoadingPromise;
 	}
 
 	private setupCallbacks() {
@@ -136,7 +147,21 @@ class ReticulumService {
 
 		const go = new window.Go();
 		try {
-			const response = await fetch('/reticulum-go.wasm');
+			// Try to get SRI hash from manifest
+			let integrity: string | undefined;
+			try {
+				const manifestRes = await fetch('/sri-manifest.json');
+				if (manifestRes.ok) {
+					const manifest = await manifestRes.json();
+					integrity = manifest['/reticulum-go.wasm'];
+				}
+			} catch (e) {
+				console.warn('Failed to load SRI manifest, proceeding without SRI:', e);
+			}
+
+			// integrity is part of RequestInit, but crossorigin is crossOrigin
+			const fetchOptions: RequestInit = integrity ? { integrity, mode: 'cors' } : {};
+			const response = await fetch('/reticulum-go.wasm', fetchOptions);
 			if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
 			const result = await WebAssembly.instantiateStreaming(response, go.importObject);
@@ -149,6 +174,7 @@ class ReticulumService {
 	}
 
 	async init(wsUrl: string, userName: string) {
+		await this.ensureWasmLoaded();
 		if (!window.reticulum) {
 			throw new Error('Reticulum WASM not loaded');
 		}
@@ -176,6 +202,7 @@ class ReticulumService {
 	}
 
 	async connect() {
+		await this.ensureWasmLoaded();
 		if (!window.reticulum) return;
 		const result = window.reticulum.connect();
 		if (result.error) {
