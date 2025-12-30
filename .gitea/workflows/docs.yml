@@ -34,12 +34,9 @@ jobs:
           echo "date=${RELEASE_DATE}" >> $GITHUB_OUTPUT
           echo "tag=${RELEASE_TAG}" >> $GITHUB_OUTPUT
 
-          # Fetch commit details from Gitea API
-          RESPONSE=$(curl -s -H "Authorization: token ${{ secrets.GITEA_TOKEN }}" \
-            "https://git.quad4.io/api/v1/repos/${{ github.repository }}/commits/${{ github.sha }}")
-          
-          FULL_HASH=$(echo "$RESPONSE" | jq -r '.sha')
-          COMMIT_MSG=$(echo "$RESPONSE" | jq -r '.commit.message')
+          # Get commit details from git
+          FULL_HASH="${{ github.sha }}"
+          COMMIT_MSG=$(git log -1 --format=%B "${{ github.sha }}" || echo "Documentation update")
           
           echo "full_hash=${FULL_HASH}" >> $GITHUB_OUTPUT
           echo "commit_msg<<EOF" >> $GITHUB_OUTPUT
