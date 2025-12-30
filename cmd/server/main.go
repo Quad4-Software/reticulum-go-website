@@ -101,7 +101,7 @@ func injectCriticalCSS(content string, nonce string) string {
 	return content
 }
 
-func NewHandler(dist fs.FS, domain string, cache *web.Cache, apiBase, repoOwner, repoName string) (http.Handler, error) {
+func NewHandler(dist fs.FS, domain string, cache *web.Cache, apiBase, repoOwner, repoName string, disableSecurityHeaders bool) (http.Handler, error) {
 	fileHandler, err := newFileHandler(dist)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create file handler: %w", err)
@@ -119,19 +119,23 @@ func NewHandler(dist fs.FS, domain string, cache *web.Cache, apiBase, repoOwner,
 
 	handler := pathNormalizationMiddleware(mux)
 	handler = requestSizeLimitMiddleware(handler)
-	handler = securityHeadersMiddleware(domain, handler)
+	handler = nonceMiddleware(handler)
+	if !disableSecurityHeaders {
+		handler = securityHeadersMiddleware(domain, handler)
+	}
 
 	return handler, nil
 }
 
 func main() {
 	var (
-		host      string
-		port      string
-		domain    string
-		apiBase   string
-		repoOwner string
-		repoName  string
+		host                   string
+		port                   string
+		domain                 string
+		apiBase                string
+		repoOwner              string
+		repoName               string
+		disableSecurityHeaders bool
 	)
 
 	flag.StringVar(&host, "host", getEnv("HOST", defaultHost), "Host to bind to")
@@ -140,6 +144,8 @@ func main() {
 	flag.StringVar(&apiBase, "api-base", getEnv("API_BASE", defaultAPIBase), "API base URL")
 	flag.StringVar(&repoOwner, "repo-owner", getEnv("REPO_OWNER", defaultRepoOwner), "Repository owner")
 	flag.StringVar(&repoName, "repo-name", getEnv("REPO_NAME", defaultRepoName), "Repository name")
+	disableSecurityHeadersEnv := getEnv("DISABLE_SECURITY_HEADERS", "false")
+	flag.BoolVar(&disableSecurityHeaders, "disable-security-headers", disableSecurityHeadersEnv == "true" || disableSecurityHeadersEnv == "1", "Disable security headers (CSP, X-Frame-Options, etc.)")
 	flag.Parse()
 
 	addr := fmt.Sprintf("%s:%s", host, port)
@@ -159,7 +165,7 @@ func main() {
 
 	cache.StartBackgroundRefresh()
 
-	handler, err := NewHandler(frontendDist, domain, cache, apiBase, repoOwner, repoName)
+	handler, err := NewHandler(frontendDist, domain, cache, apiBase, repoOwner, repoName, disableSecurityHeaders)
 	if err != nil {
 		log.Fatalf("Failed to create handler: %v", err)
 	}
