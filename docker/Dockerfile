@@ -17,6 +17,7 @@ WORKDIR /app
 COPY go.mod ./
 RUN go mod download
 COPY cmd/ ./cmd/
+COPY internal/ ./internal/
 COPY --from=node-builder /app/frontend/build ./cmd/server/dist
 RUN CGO_ENABLED=0 go build -ldflags="-s -w" -o reticulum-go-web ./cmd/server
 
