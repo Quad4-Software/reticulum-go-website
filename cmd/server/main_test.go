@@ -462,12 +462,12 @@ func TestCSPWithNonce(t *testing.T) {
 		t.Error("CSP should include style-src with nonce")
 	}
 
-	if strings.Contains(csp, "'unsafe-inline'") {
-		t.Error("CSP should not contain 'unsafe-inline'")
+	if !strings.Contains(csp, "'unsafe-inline'") {
+		t.Error("CSP should contain 'unsafe-inline' for inline styles")
 	}
 
-	if strings.Contains(csp, "'unsafe-eval'") {
-		t.Error("CSP should not contain 'unsafe-eval'")
+	if !strings.Contains(csp, "'unsafe-eval'") {
+		t.Error("CSP should contain 'unsafe-eval' for WebAssembly")
 	}
 
 	body := rr.Body.String()
