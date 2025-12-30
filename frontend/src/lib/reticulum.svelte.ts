@@ -85,9 +85,21 @@ class ReticulumService {
 
 	async ensureWasmLoaded() {
 		if (!browser || this.initialized || window.reticulum) return;
+
+		// Check for WebAssembly support
+		if (typeof WebAssembly === 'undefined') {
+			this.error = 'WebAssembly is not supported in this browser';
+			this.log(this.error, 'error');
+			return;
+		}
+
 		if (this.wasmLoadingPromise) return this.wasmLoadingPromise;
 
-		this.wasmLoadingPromise = this.loadWasm();
+		this.isLoading = true;
+		this.error = null;
+		this.wasmLoadingPromise = this.loadWasm().finally(() => {
+			this.isLoading = false;
+		});
 		return this.wasmLoadingPromise;
 	}
 
@@ -143,7 +155,10 @@ class ReticulumService {
 	}
 
 	private async loadWasm() {
-		if (typeof window.Go === 'undefined') return;
+		if (typeof window.Go === 'undefined') {
+			this.error = 'Go WASM runtime (wasm_exec.js) not found';
+			return;
+		}
 
 		const go = new window.Go();
 		try {
@@ -169,7 +184,9 @@ class ReticulumService {
 			this.log('Reticulum-Go loaded', 'success');
 		} catch (err: unknown) {
 			const message = err instanceof Error ? err.message : String(err);
-			this.log(`Failed to load WASM: ${message}`, 'error');
+			this.error = `Failed to load WASM: ${message}`;
+			this.log(this.error, 'error');
+			throw err;
 		}
 	}
 
