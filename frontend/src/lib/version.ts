@@ -1,11 +1,9 @@
 export async function getLatestTag() {
 	try {
-		const response = await fetch('https://git.quad4.io/api/v1/repos/Networks/Reticulum-Go/tags');
+		const response = await fetch('/api/repo-info');
 		if (response.ok) {
-			const tags = await response.json();
-			if (Array.isArray(tags) && tags.length > 0) {
-				return tags[0].name;
-			}
+			const data = await response.json();
+			return data.latest_tag || null;
 		}
 	} catch {
 		// Silent fail, don't show if fetch fails
@@ -15,7 +13,7 @@ export async function getLatestTag() {
 
 export async function getRepoUpdatedAt() {
 	try {
-		const response = await fetch('https://git.quad4.io/api/v1/repos/Networks/Reticulum-Go');
+		const response = await fetch('/api/repo-info');
 		if (response.ok) {
 			const data = await response.json();
 			return data.updated_at || null;
