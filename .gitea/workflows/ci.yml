@@ -32,6 +32,8 @@ jobs:
         run: task lint
       - name: Frontend checks
         run: task check
+      - name: Install gosec
+        run: go install github.com/securego/gosec/v2/cmd/gosec@latest
       - name: Security scan
         run: task scan
 
