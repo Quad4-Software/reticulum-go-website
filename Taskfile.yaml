@@ -99,7 +99,7 @@ tasks:
   docker-build:
     desc: Build Docker image
     cmds:
-      - docker build -f docker/Dockerfile -t reticulum-go-web .
+      - docker build -f Dockerfile -t reticulum-go-web .
 
   docker-run:
     desc: Run Docker container
