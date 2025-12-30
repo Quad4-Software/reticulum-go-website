@@ -1,0 +1,68 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+README.md
+LICENSE
+*.md
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+.circleci/
+
+# Build artifacts (built in Docker)
+frontend/build/
+frontend/.svelte-kit/
+cmd/server/dist/
+server
+reticulum-go-web
+
+# Dependencies (installed in Docker)
+frontend/node_modules/
+vendor/
+
+# Test files
+*_test.go
+*.test
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Nix
+flake.nix
+flake.lock
+result
+result-*
+
+# Task runner
+Taskfile.yaml
+

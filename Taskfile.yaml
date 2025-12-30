@@ -1,0 +1,102 @@
+version: '3'
+
+tasks:
+  frontend:build:
+    dir: frontend
+    cmds:
+      - pnpm install
+      - pnpm build
+    sources:
+      - src/**/*
+      - package.json
+      - vite.config.ts
+    generates:
+      - build/**/*
+
+  server:prepare:
+    deps: [frontend:build]
+    cmds:
+      - rm -rf cmd/server/dist
+      - mkdir -p cmd/server/dist
+      - cp -r frontend/build/* cmd/server/dist/
+
+  server:build:
+    deps: [server:prepare]
+    cmds:
+      - go build -o reticulum-go-web ./cmd/server
+    sources:
+      - cmd/server/*.go
+    generates:
+      - reticulum-go-web
+
+  dev:
+    dir: frontend
+    cmds:
+      - pnpm dev
+
+  clean:
+    cmds:
+      - rm -rf frontend/build
+      - rm -rf cmd/server/dist
+      - rm -f reticulum-go-web
+
+  format:
+    dir: frontend
+    cmds:
+      - pnpm exec prettier --write .
+
+  lint:
+    dir: frontend
+    cmds:
+      - pnpm exec eslint .
+
+  check:
+    dir: frontend
+    cmds:
+      - pnpm run check
+
+  audit:
+    desc: Run pnpm audit
+    dir: frontend
+    cmds:
+      - pnpm audit
+
+  update:
+    desc: Update pnpm dependencies
+    dir: frontend
+    cmds:
+      - pnpm update
+
+  update:latest:
+    desc: Update pnpm dependencies to latest versions
+    dir: frontend
+    cmds:
+      - pnpm update --latest
+
+  outdated:
+    desc: Show outdated pnpm dependencies
+    dir: frontend
+    cmds:
+      - pnpm outdated
+
+  install:
+    desc: Install pnpm dependencies
+    dir: frontend
+    cmds:
+      - pnpm install
+
+  scan:
+    desc: Run gosec security scanner
+    cmds:
+      - gosec ./...
+
+  docker-build:
+    desc: Build Docker image
+    cmds:
+      - docker build -f docker/Dockerfile -t reticulum-go-web .
+
+  docker-run:
+    desc: Run Docker container
+    cmds:
+      - docker run -p 8080:8080 reticulum-go-web
+

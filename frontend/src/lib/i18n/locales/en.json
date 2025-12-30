@@ -1,0 +1,38 @@
+{
+	"common": {
+		"home": "Home",
+		"docs": "Docs",
+		"wasm_example": "WASM Example",
+		"contact": "Contact",
+		"search": "Search...",
+		"identity": "Identity",
+		"settings": "Settings",
+		"source_code": "Source Code",
+		"loading": "Loading..."
+	},
+	"home": {
+		"title": "Reticulum-Go",
+		"subtitle": "The resilient, sovereign networking stack for everyone. Now implemented in Go for high performance and portability.",
+		"try_wasm": "Try WASM Demo",
+		"view_source": "View Source Code",
+		"features": {
+			"encrypted": {
+				"title": "Encrypted by Default",
+				"description": "Everything in Reticulum is encrypted with strong, modern primitives. No unencrypted traffic ever leaves your device."
+			},
+			"resilient": {
+				"title": "Resilient & Sovereign",
+				"description": "No central authorities, no servers to shut down. Build your own infrastructure over any medium—radio, fiber, or the internet."
+			},
+			"go": {
+				"title": "Go Implementation",
+				"description": "Built with Go for maximum performance, safety, and cross-platform compatibility. Run it anywhere from tiny SBCs to cloud servers."
+			}
+		},
+		"wasm_promo": {
+			"title": "Try Reticulum-Go in your Browser",
+			"description": "Experience the power of Reticulum directly in your browser. Our WASM build allows you to interact with the network without installing anything.",
+			"cta": "Go to WASM Example"
+		}
+	}
+}

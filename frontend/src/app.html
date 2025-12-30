@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+		<!-- SEO & Meta Tags -->
+		<title>Reticulum-Go | Resilient, Sovereign Networking</title>
+		<meta
+			name="description"
+			content="Reticulum-Go is a high-performance Go implementation of the Reticulum Network Stack. Build resilient, encrypted, and decentralised communication networks."
+		/>
+		<meta
+			name="keywords"
+			content="reticulum, reticulum-go, mesh network, cryptography, p2p, decentralised, go, wasm, quad4"
+		/>
+
+		<!-- Open Graph / Facebook -->
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="https://reticulum.quad4.io/" />
+		<meta property="og:title" content="Reticulum-Go | Resilient, Sovereign Networking" />
+		<meta
+			property="og:description"
+			content="Reticulum-Go is a high-performance Go implementation of the Reticulum Network Stack. Build resilient, encrypted, and decentralised communication networks."
+		/>
+
+		<!-- Twitter -->
+		<meta property="twitter:card" content="summary_large_image" />
+		<meta property="twitter:url" content="https://reticulum.quad4.io/" />
+		<meta property="twitter:title" content="Reticulum-Go | Resilient, Sovereign Networking" />
+		<meta
+			property="twitter:description"
+			content="Reticulum-Go is a high-performance Go implementation of the Reticulum Network Stack. Build resilient, encrypted, and decentralised communication networks."
+		/>
+
+		<script>
+			// On page load or when changing themes, best to add inline in `head` to avoid FOUC
+			if (
+				localStorage.getItem('color-theme') === 'dark' ||
+				(!('color-theme' in localStorage) &&
+					window.matchMedia('(prefers-color-scheme: dark)').matches)
+			) {
+				document.documentElement.classList.add('dark');
+			} else {
+				document.documentElement.classList.remove('dark');
+			}
+			window.reticulumReady = function () {
+				console.log('Reticulum WASM initialized');
+			};
+		</script>
+		<script src="/wasm_exec.js"></script>
+		%sveltekit.head%
+	</head>
+	<body data-sveltekit-preload-data="hover">
+		<div style="display: contents">%sveltekit.body%</div>
+	</body>
+</html>
