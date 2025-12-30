@@ -45,7 +45,14 @@
 >
 	<div class="flex items-center justify-between mb-6">
 		<h2 class="text-lg font-semibold">Network Identity</h2>
-		{#if reticulum.connected}
+		{#if reticulum.isLoading}
+			<div class="flex items-center gap-2">
+				<div
+					class="w-3 h-3 border-2 border-[#00ADD8] border-t-transparent rounded-full animate-spin"
+				></div>
+				<span class="text-xs text-zinc-500">Loading WASM...</span>
+			</div>
+		{:else if reticulum.connected}
 			<span
 				class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
 			>
@@ -65,6 +72,15 @@
 			</span>
 		{/if}
 	</div>
+
+	{#if reticulum.error}
+		<div
+			class="mb-6 p-3 rounded-lg bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-400 text-xs"
+		>
+			<strong>WASM Error:</strong>
+			{reticulum.error}
+		</div>
+	{/if}
 
 	{#if reticulum.identity}
 		<div class="space-y-4">
