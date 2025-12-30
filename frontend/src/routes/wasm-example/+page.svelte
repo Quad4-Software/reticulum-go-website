@@ -63,6 +63,45 @@
 			<p class="text-xl text-zinc-600 dark:text-zinc-400 max-w-2xl leading-relaxed">
 				Reticulum-Go running in your browser using websockets as transport medium.
 			</p>
+
+			{#if reticulum.isLoading}
+				<div
+					class="mt-8 flex items-center gap-4 p-4 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 animate-pulse"
+				>
+					<div
+						class="w-5 h-5 border-2 border-[#00ADD8] border-t-transparent rounded-full animate-spin"
+					></div>
+					<span class="text-sm font-medium text-zinc-600 dark:text-zinc-400"
+						>Loading Reticulum WASM...</span
+					>
+				</div>
+			{:else if reticulum.error}
+				<div
+					class="mt-8 p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-400"
+				>
+					<div class="flex items-center gap-2 font-bold mb-1">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="w-5 h-5"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line
+								x1="12"
+								y1="16"
+								x2="12.01"
+								y2="16"
+							/></svg
+						>
+						WASM Error
+					</div>
+					<p class="text-sm">{reticulum.error}</p>
+				</div>
+			{/if}
+
 			<div
 				class="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-[10px] uppercase tracking-widest font-bold text-zinc-400 dark:text-zinc-500"
 			>
