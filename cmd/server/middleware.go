@@ -48,7 +48,7 @@ func securityHeadersMiddleware(domain string, next http.Handler) http.Handler {
 		w.Header().Set("X-Content-Type-Options", "nosniff")
 		w.Header().Set("X-Frame-Options", "DENY")
 		w.Header().Set("Referrer-Policy", "strict-origin-when-cross-origin")
-		csp := fmt.Sprintf("default-src 'self'; script-src 'self' 'nonce-%s'; style-src 'self' 'nonce-%s'; img-src 'self' data: https://*.quad4.io; connect-src 'self' ws: wss: https://*.quad4.io;", nonce, nonce)
+		csp := fmt.Sprintf("default-src 'self'; script-src 'self' 'nonce-%s'; style-src 'self' 'nonce-%s' 'unsafe-hashes'; img-src 'self' data: https://*.quad4.io; connect-src 'self' ws: wss: https://*.quad4.io;", nonce, nonce)
 		w.Header().Set("Content-Security-Policy", csp)
 
 		if domain != "" {
