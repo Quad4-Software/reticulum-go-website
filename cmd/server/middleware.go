@@ -36,6 +36,21 @@ func requestSizeLimitMiddleware(next http.Handler) http.Handler {
 	})
 }
 
+func nonceMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Header.Get("X-Nonce") == "" {
+			nonce, err := generateNonce()
+			if err != nil {
+				log.Printf("Error generating nonce: %v", err)
+				http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+				return
+			}
+			r.Header.Set("X-Nonce", nonce)
+		}
+		next.ServeHTTP(w, r)
+	})
+}
+
 func securityHeadersMiddleware(domain string, next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		nonce, err := generateNonce()
