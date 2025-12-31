@@ -139,7 +139,7 @@
 			</div>
 			<div>
 				<label for="wsurl" class="text-xs font-medium text-zinc-500 uppercase tracking-wider"
-					>Relay Server</label
+					>Websockets server</label
 				>
 				<input
 					id="wsurl"

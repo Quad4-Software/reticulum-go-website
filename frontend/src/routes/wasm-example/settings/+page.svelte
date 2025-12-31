@@ -24,7 +24,7 @@
 			<label
 				for="ws-url"
 				class="text-sm font-medium text-zinc-500 uppercase tracking-wider block mb-2"
-				>Relay Server (WSS)</label
+				>Websockets server (WSS)</label
 			>
 			<input
 				id="ws-url"
