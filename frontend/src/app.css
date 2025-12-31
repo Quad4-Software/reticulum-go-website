@@ -1,16 +1,63 @@
 @import 'tailwindcss';
 @plugin "@tailwindcss/typography";
 
-@layer base {
+@layer components {
+	.prose a,
+	.prose-zinc a,
+	.dark .prose-invert a {
+		text-decoration: none !important;
+	}
+
+	.prose a:hover,
+	.prose-zinc a:hover,
+	.dark .prose-invert a:hover {
+		text-decoration: none !important;
+	}
+
 	.prose h1 a,
 	.prose h2 a,
 	.prose h3 a,
 	.prose h4 a,
 	.prose h5 a,
-	.prose h6 a {
-		@apply no-underline hover:underline;
+	.prose h6 a,
+	.prose-zinc h1 a,
+	.prose-zinc h2 a,
+	.prose-zinc h3 a,
+	.prose-zinc h4 a,
+	.prose-zinc h5 a,
+	.prose-zinc h6 a,
+	.dark .prose-invert h1 a,
+	.dark .prose-invert h2 a,
+	.dark .prose-invert h3 a,
+	.dark .prose-invert h4 a,
+	.dark .prose-invert h5 a,
+	.dark .prose-invert h6 a {
+		text-decoration: none !important;
 	}
 
+	.prose h1 a:hover,
+	.prose h2 a:hover,
+	.prose h3 a:hover,
+	.prose h4 a:hover,
+	.prose h5 a:hover,
+	.prose h6 a:hover,
+	.prose-zinc h1 a:hover,
+	.prose-zinc h2 a:hover,
+	.prose-zinc h3 a:hover,
+	.prose-zinc h4 a:hover,
+	.prose-zinc h5 a:hover,
+	.prose-zinc h6 a:hover,
+	.dark .prose-invert h1 a:hover,
+	.dark .prose-invert h2 a:hover,
+	.dark .prose-invert h3 a:hover,
+	.dark .prose-invert h4 a:hover,
+	.dark .prose-invert h5 a:hover,
+	.dark .prose-invert h6 a:hover {
+		text-decoration: none !important;
+	}
+}
+
+@layer base {
 	.prose :is(h1, h2, h3, h4, h5, h6) a::after {
 		content: '#';
 		@apply ml-2 opacity-0 transition-opacity;
