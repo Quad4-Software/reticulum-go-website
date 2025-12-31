@@ -36,19 +36,21 @@
 
 		<script>
 			// On page load or when changing themes, best to add inline in `head` to avoid FOUC
-			if (
-				localStorage.getItem('theme') === 'dark' ||
-				(!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
-			) {
-				document.documentElement.classList.add('dark');
-			} else {
-				document.documentElement.classList.remove('dark');
+			if (typeof window !== 'undefined') {
+				if (
+					localStorage.getItem('theme') === 'dark' ||
+					(!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
+				) {
+					document.documentElement.classList.add('dark');
+				} else {
+					document.documentElement.classList.remove('dark');
+				}
+				window.reticulumReady = function () {
+					console.log('Reticulum WASM initialized');
+				};
 			}
-			window.reticulumReady = function () {
-				console.log('Reticulum WASM initialized');
-			};
 		</script>
-		<script src="/wasm_exec.js"></script>
+		<script src="/wasm_exec.js" defer></script>
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">

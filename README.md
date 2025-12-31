@@ -20,12 +20,25 @@ task server:build
 
 ### Using Docker
 
+Yes we support both SPA and SSR builds!
+
+**Standard build (SPA with Go server):**
+
 ```sh
 task docker-build
 task docker-run
 ```
 
 Then open your browser at `http://localhost:8080`
+
+**SSR build (Node.js server with server-side rendering):**
+
+```sh
+task docker-build-ssr
+task docker-run-ssr
+```
+
+Then open your browser at `http://localhost:3000`
 
 ## Development
 
@@ -57,26 +70,28 @@ task dev
 The project uses [Task](https://taskfile.dev/) for all development tasks.
 
 ```
-| Task           | Description                              |
-|----------------|------------------------------------------|
-| dev            | Run Vite development server              |
-| validate       | Run all quality checks                   |
-| frontend:build | Build frontend only                      |
-| server:build   | Build server binary                      |
-| docker-build   | Build Docker image                       |
-| docker-run     | Run Docker container                     |
-| docs:zip       | Package documentation into ZIP files     |
-| clean          | Clean build artifacts                    |
-| format         | Format code                              |
-| test           | Run tests                                |
-| lint           | Run linter                               |
-| check          | Run type checking                        |
-| audit          | Run pnpm audit                           |
-| scan           | Run gosec security scanner               |
-| install        | Install pnpm dependencies                |
-| update         | Update pnpm dependencies                 |
-| update:latest  | Update pnpm dependencies to latest       |
-| outdated       | Show outdated pnpm dependencies          |
+| Task            | Description                              |
+|-----------------|------------------------------------------|
+| dev             | Run Vite development server              |
+| validate        | Run all quality checks                   |
+| frontend:build  | Build frontend only                      |
+| server:build    | Build server binary                      |
+| docker-build    | Build Docker image                       |
+| docker-run      | Run Docker container                     |
+| docker-build-ssr| Build SSR Docker image                   |
+| docker-run-ssr  | Run SSR Docker container                 |
+| docs:zip        | Package documentation into ZIP files     |
+| clean           | Clean build artifacts                    |
+| format          | Format code                              |
+| test            | Run tests                                |
+| lint            | Run linter                               |
+| check           | Run type checking                        |
+| audit           | Run pnpm audit                           |
+| scan            | Run gosec security scanner               |
+| install         | Install pnpm dependencies                |
+| update          | Update pnpm dependencies                 |
+| update:latest   | Update pnpm dependencies to latest       |
+| outdated        | Show outdated pnpm dependencies          |
 ```
 
 example: `task dev`

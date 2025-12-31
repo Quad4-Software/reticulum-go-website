@@ -122,7 +122,22 @@ class ReticulumService {
 
 		window.onChatMessage = (msg) => {
 			console.log('Received message:', msg);
-			const peerHash = msg.from || this.selectedPeerHash || 'unknown';
+			const peerHash = msg.from || 'unknown';
+
+			// Ensure peer exists even if not announced
+			if (!this.peers.has(peerHash)) {
+				this.peers.set(peerHash, {
+					hash: peerHash,
+					name: peerHash === 'unknown' ? 'Unknown Sender' : `Peer ${peerHash.substring(0, 8)}`,
+					hops: 0,
+					lastSeen: new Date()
+				});
+				this.log(
+					`Received message from ${peerHash === 'unknown' ? 'unknown sender' : 'new peer: ' + peerHash.substring(0, 8)}`,
+					'info'
+				);
+			}
+
 			const peer = this.peers.get(peerHash);
 			const peerName = peer ? peer.name : 'Unknown';
 
@@ -137,11 +152,7 @@ class ReticulumService {
 			const history = this.messages.get(peerHash) || [];
 			this.messages.set(peerHash, [...history, message]);
 
-			if (peerName === 'Unknown') {
-				this.log(`Received packet from ${peerHash.substring(0, 8)}...`, 'info');
-			} else {
-				this.log(`New message from ${peerName}`, 'info');
-			}
+			this.log(`New message from ${peerName}`, 'info');
 		};
 
 		window.log = (msg: string, type: string = 'info') => {

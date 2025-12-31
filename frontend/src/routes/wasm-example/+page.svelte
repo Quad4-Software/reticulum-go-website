@@ -215,12 +215,15 @@
 								<input
 									type="text"
 									bind:value={messageInput}
-									placeholder="Enter message..."
-									class="flex-1 bg-zinc-50 dark:bg-zinc-900 border-none rounded-lg px-3 py-2 text-sm outline-none focus:ring-1 ring-[#00ADD8]"
+									placeholder={reticulum.selectedPeerHash === 'unknown'
+										? 'Cannot reply to unknown sender'
+										: 'Enter message...'}
+									disabled={reticulum.selectedPeerHash === 'unknown'}
+									class="flex-1 bg-zinc-50 dark:bg-zinc-900 border-none rounded-lg px-3 py-2 text-sm outline-none focus:ring-1 ring-[#00ADD8] disabled:opacity-50"
 								/>
 								<button
 									type="submit"
-									disabled={!messageInput.trim()}
+									disabled={!messageInput.trim() || reticulum.selectedPeerHash === 'unknown'}
 									class="px-4 py-2 bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 text-white rounded-lg text-sm font-bold disabled:opacity-50 transition-all active:scale-95"
 								>
 									Send

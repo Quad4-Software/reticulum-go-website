@@ -106,6 +106,16 @@ tasks:
     cmds:
       - docker run -p 8080:8080 reticulum-go-web
 
+  docker-build-ssr:
+    desc: Build SSR Docker image
+    cmds:
+      - docker build -f docker/Dockerfile.Node -t reticulum-go-ssr .
+
+  docker-run-ssr:
+    desc: Run SSR Docker container
+    cmds:
+      - docker run -p 3000:3000 reticulum-go-ssr
+
   docs:zip:
     desc: Package documentation into ZIP files
     cmds:
