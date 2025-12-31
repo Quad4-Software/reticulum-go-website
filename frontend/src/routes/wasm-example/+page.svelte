@@ -387,6 +387,64 @@
 								{/each}
 							</div>
 
+							{#if reticulum.selectedPeerHash && reticulum.peerKeyStatus.get(reticulum.selectedPeerHash) === 'unknown'}
+								<div
+									class="px-6 py-3 bg-amber-50 dark:bg-amber-900/20 border-t border-amber-200 dark:border-amber-900/50 flex items-center justify-between gap-4"
+								>
+									<div class="flex items-center gap-3 text-amber-700 dark:text-amber-400">
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											class="w-5 h-5"
+											viewBox="0 0 24 24"
+											fill="none"
+											stroke="currentColor"
+											stroke-width="2"
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path
+												d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"
+											/></svg
+										>
+										<div class="text-xs font-bold">
+											Keys unknown for this peer. Please wait for an announce or try to fetch them.
+										</div>
+									</div>
+									<button
+										onclick={async () => {
+											try {
+												await reticulum.fetchKeys(reticulum.selectedPeerHash);
+												triggerToast('Path request sent to network...');
+
+												// Auto-reset fetching state after 30s if no announce received
+												setTimeout(() => {
+													if (
+														reticulum.peerKeyStatus.get(reticulum.selectedPeerHash) === 'fetching'
+													) {
+														reticulum.peerKeyStatus.set(reticulum.selectedPeerHash, 'unknown');
+														triggerToast('Key fetch timed out. Waiting for peer announce.');
+													}
+												}, 30000);
+											} catch (e) {
+												triggerToast('Failed to request keys');
+												console.error(e);
+											}
+										}}
+										class="px-3 py-1 bg-amber-100 dark:bg-amber-900/40 hover:bg-amber-200 dark:hover:bg-amber-900/60 text-amber-800 dark:text-amber-300 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all"
+									>
+										Fetch Keys
+									</button>
+								</div>
+							{:else if reticulum.selectedPeerHash && reticulum.peerKeyStatus.get(reticulum.selectedPeerHash) === 'fetching'}
+								<div
+									class="px-6 py-3 bg-blue-50 dark:bg-blue-900/20 border-t border-blue-200 dark:border-blue-900/50 flex items-center gap-3 text-blue-700 dark:text-blue-400"
+								>
+									<div
+										class="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"
+									></div>
+									<div class="text-xs font-bold">Attempting to fetch keys from network...</div>
+								</div>
+							{/if}
+
 							<form
 								onsubmit={(e) => {
 									e.preventDefault();
