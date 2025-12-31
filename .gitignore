@@ -4,21 +4,10 @@
 *.dll
 *.so
 *.dylib
-reticulum-go-web
-
-# Test binary, built with `go test -c`
-*.test
-
-# Output of the go coverage tool
-*.out
-
-# Go workspace file
-go.work
 
 # Build artifacts
 frontend/build/
 frontend/.svelte-kit/
-cmd/server/dist/
 
 # Dependencies
 frontend/node_modules/

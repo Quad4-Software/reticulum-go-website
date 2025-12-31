@@ -38,10 +38,16 @@ const getInitialLocale = () => {
 	return defaultLocale;
 };
 
+const initialLocale = getInitialLocale();
+
 init({
 	fallbackLocale: defaultLocale,
-	initialLocale: getInitialLocale()
+	initialLocale: initialLocale
 });
+
+if (!browser) {
+	locale.set(initialLocale);
+}
 
 if (browser) {
 	locale.subscribe((value) => {

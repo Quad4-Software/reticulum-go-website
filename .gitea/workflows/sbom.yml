@@ -23,11 +23,6 @@ jobs:
           cache: pnpm
           cache-dependency-path: frontend/pnpm-lock.yaml
 
-      - name: Setup Go
-        uses: https://git.quad4.io/actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
-        with:
-          go-version: '1.25.5'
-
       - name: Setup Task
         uses: https://git.quad4.io/actions/setup-task@0ab1b2a65bc55236a3bc64cde78f80e20e8885c2 # v1
         with:

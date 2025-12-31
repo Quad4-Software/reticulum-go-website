@@ -1,16 +1,16 @@
 <script lang="ts">
 	import '../app.css';
+	import { isLoading } from 'svelte-i18n';
 	import '../lib/i18n';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import Footer from '$lib/components/Footer.svelte';
 	import { onMount, setContext } from 'svelte';
-	import { waitLocale } from 'svelte-i18n';
 
 	let { children } = $props();
 
-	let i18nReady = $state(false);
 	let isDark = $state(false);
 	let themeInitialized = $state(false);
+	let i18nReady = $derived(!$isLoading);
 
 	setContext('theme', {
 		get isDark() {
@@ -34,23 +34,16 @@
 		}
 	});
 
-	onMount(async () => {
+	onMount(() => {
 		// Initialize theme from storage or preference
-		const stored = localStorage.getItem('theme');
-		if (stored) {
-			isDark = stored === 'dark';
-		} else {
-			isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-		}
-		themeInitialized = true;
-
-		// Initialize i18n
-		try {
-			await waitLocale();
-		} catch (e) {
-			console.error('Failed to load i18n:', e);
-		} finally {
-			i18nReady = true;
+		if (typeof window !== 'undefined') {
+			const stored = localStorage.getItem('theme');
+			if (stored) {
+				isDark = stored === 'dark';
+			} else {
+				isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+			}
+			themeInitialized = true;
 		}
 	});
 </script>
