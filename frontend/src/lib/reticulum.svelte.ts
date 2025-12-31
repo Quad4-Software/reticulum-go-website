@@ -45,6 +45,7 @@ interface ReticulumWasm {
 	disconnect: () => { error?: string };
 	announce: (name: string) => { error?: string };
 	sendMessage: (peerHash: string, text: string) => { error?: string };
+	requestPath: (peerHash: string) => { error?: string };
 	getStats: () => ReticulumStats;
 	isConnected: () => boolean;
 }
@@ -64,6 +65,8 @@ declare global {
 	}
 }
 
+export type KeyStatus = 'known' | 'unknown' | 'fetching';
+
 class ReticulumService {
 	initialized = $state(false);
 	connected = $state(false);
@@ -73,6 +76,7 @@ class ReticulumService {
 	peers = new SvelteMap<string, Peer>();
 	messages = new SvelteMap<string, ChatMessage[]>();
 	unreadCounts = new SvelteMap<string, number>();
+	peerKeyStatus = new SvelteMap<string, KeyStatus>();
 	selectedPeerHash = $state('');
 	stats = $state<ReticulumStats>({
 		packetsSent: 0,
@@ -149,6 +153,7 @@ class ReticulumService {
 			if (!existing) {
 				this.log(`Discovered peer: ${peerName}`, 'success');
 			}
+			this.peerKeyStatus.set(peer.hash, 'known');
 		};
 
 		window.onChatMessage = (msg) => {
@@ -188,6 +193,7 @@ class ReticulumService {
 				this.unreadCounts.set(peerHash, currentCount + 1);
 			}
 
+			this.peerKeyStatus.set(peerHash, 'known');
 			this.log(`New message from ${peerName}`, 'info');
 		};
 
@@ -260,6 +266,35 @@ class ReticulumService {
 		await saveIdentity(newIdentity);
 		this.identity = newIdentity;
 		this.initialized = true;
+
+		// Register callbacks with WASM
+		if (window.reticulum) {
+			// @ts-expect-error - WASM API methods may not be in type definitions
+			if (window.reticulum.setAnnounceCallback) {
+				// @ts-expect-error - WASM API methods may not be in type definitions
+				window.reticulum.setAnnounceCallback(window.onPeerDiscovered);
+			}
+			// @ts-expect-error - WASM API methods may not be in type definitions
+			if (window.reticulum.setPacketCallback) {
+				// @ts-expect-error - WASM API methods may not be in type definitions
+				window.reticulum.setPacketCallback((data: Uint8Array) => {
+					// The data is a Uint8Array. For chat, it should be a packed MF message.
+					// We'll try to unpack it and call onChatMessage.
+					try {
+						// Simple unpacking for now: [16 bytes sender][text]
+						if (data.length >= 16) {
+							const senderHash = Array.from(data.slice(0, 16))
+								.map((b) => b.toString(16).padStart(2, '0'))
+								.join('');
+							const text = new TextDecoder().decode(data.slice(16));
+							window.onChatMessage({ from: senderHash, text });
+						}
+					} catch (e) {
+						console.error('Failed to parse incoming packet:', e);
+					}
+				});
+			}
+		}
 
 		// Load auto-announce setting
 		try {
@@ -338,12 +373,22 @@ class ReticulumService {
 
 	async sendMessage(peerHash: string, text: string) {
 		if (!window.reticulum) return;
+
 		const result = window.reticulum.sendMessage(peerHash, text);
 		if (result.error) {
+			const errorMsg = result.error.toLowerCase();
+			if (
+				errorMsg.includes('identity not found') ||
+				errorMsg.includes('unknown') ||
+				errorMsg.includes('key')
+			) {
+				this.peerKeyStatus.set(peerHash, 'unknown');
+			}
 			this.log(`Send failed: ${result.error}`, 'error');
 			throw new Error(result.error);
 		}
 
+		this.peerKeyStatus.set(peerHash, 'known');
 		const message: ChatMessage = {
 			text,
 			from: 'Me',
@@ -354,6 +399,23 @@ class ReticulumService {
 
 		const history = this.messages.get(peerHash) || [];
 		this.messages.set(peerHash, [...history, message]);
+	}
+
+	async fetchKeys(peerHash: string) {
+		if (!window.reticulum) return;
+
+		this.peerKeyStatus.set(peerHash, 'fetching');
+		this.log(`Requesting keys for ${peerHash.substring(0, 8)}...`, 'info');
+
+		const result = window.reticulum.requestPath(peerHash);
+		if (result.error) {
+			this.peerKeyStatus.set(peerHash, 'unknown');
+			this.log(`Key request failed: ${result.error}`, 'error');
+			throw new Error(result.error);
+		}
+
+		// The peer status will be updated to 'known' automatically
+		// when an announce is received via onPeerDiscovered
 	}
 
 	private startStatsLoop() {
