@@ -94,6 +94,8 @@ tasks:
   scan:
     desc: Run gosec security scanner
     cmds:
+      - mkdir -p cmd/server/dist
+      - touch cmd/server/dist/placeholder
       - gosec ./...
 
   docker-build:

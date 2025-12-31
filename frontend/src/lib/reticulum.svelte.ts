@@ -1,6 +1,12 @@
 import { browser } from '$app/environment';
 import { SvelteMap } from 'svelte/reactivity';
-import { loadIdentity, saveIdentity, type Identity } from './identity';
+import {
+	loadIdentity,
+	saveIdentity,
+	type Identity,
+	saveAutoAnnounce,
+	loadAutoAnnounce
+} from './identity';
 
 export interface Peer {
 	hash: string;
@@ -66,6 +72,7 @@ class ReticulumService {
 	identity = $state<Identity | null>(null);
 	peers = new SvelteMap<string, Peer>();
 	messages = new SvelteMap<string, ChatMessage[]>();
+	unreadCounts = new SvelteMap<string, number>();
 	selectedPeerHash = $state('');
 	stats = $state<ReticulumStats>({
 		packetsSent: 0,
@@ -74,8 +81,10 @@ class ReticulumService {
 		bytesReceived: 0
 	});
 	logs = $state<{ msg: string; type: string; time: string }[]>([]);
+	autoAnnounce = $state(false);
 
 	private wasmLoadingPromise: Promise<void> | null = null;
+	private announceInterval: number | null = null;
 
 	constructor() {
 		if (browser) {
@@ -105,8 +114,30 @@ class ReticulumService {
 
 	private setupCallbacks() {
 		window.onPeerDiscovered = (peer) => {
+			// Skip our own announcements
+			if (this.identity && peer.hash === this.identity.publicKey) {
+				return;
+			}
+
 			const peerName = peer.appData || `Peer ${peer.hash.substring(0, 8)}`;
 			const existing = this.peers.has(peer.hash);
+
+			// Limit to 500 peers, remove oldest if exceeded
+			if (!existing && this.peers.size >= 500) {
+				let oldestHash: string | null = null;
+				let oldestTime = Infinity;
+
+				for (const [hash, p] of this.peers.entries()) {
+					if (p.lastSeen.getTime() < oldestTime) {
+						oldestTime = p.lastSeen.getTime();
+						oldestHash = hash;
+					}
+				}
+
+				if (oldestHash) {
+					this.peers.delete(oldestHash);
+				}
+			}
 
 			this.peers.set(peer.hash, {
 				hash: peer.hash,
@@ -151,6 +182,11 @@ class ReticulumService {
 
 			const history = this.messages.get(peerHash) || [];
 			this.messages.set(peerHash, [...history, message]);
+
+			if (peerHash !== this.selectedPeerHash) {
+				const currentCount = this.unreadCounts.get(peerHash) || 0;
+				this.unreadCounts.set(peerHash, currentCount + 1);
+			}
 
 			this.log(`New message from ${peerName}`, 'info');
 		};
@@ -225,6 +261,16 @@ class ReticulumService {
 		this.identity = newIdentity;
 		this.initialized = true;
 
+		// Load auto-announce setting
+		try {
+			const autoEnabled = await loadAutoAnnounce();
+			if (autoEnabled) {
+				this.toggleAutoAnnounce(true, userName);
+			}
+		} catch (e) {
+			console.error('Failed to load auto-announce setting:', e);
+		}
+
 		this.log('Reticulum initialized', 'success');
 		return result;
 	}
@@ -247,6 +293,9 @@ class ReticulumService {
 		if (!window.reticulum) return;
 		window.reticulum.disconnect();
 		this.connected = false;
+		if (this.autoAnnounce) {
+			this.toggleAutoAnnounce(false, '');
+		}
 		this.log('Disconnected', 'info');
 	}
 
@@ -257,6 +306,33 @@ class ReticulumService {
 			this.log(`Announce failed: ${result.error}`, 'error');
 		} else {
 			this.log('Announce sent', 'success');
+		}
+	}
+
+	toggleAutoAnnounce(enabled: boolean, name: string) {
+		this.autoAnnounce = enabled;
+		saveAutoAnnounce(enabled).catch(console.error);
+
+		if (this.announceInterval) {
+			clearInterval(this.announceInterval);
+			this.announceInterval = null;
+		}
+
+		if (enabled) {
+			this.log('Auto-announce enabled (every 15 minutes)', 'info');
+			// Initial announce
+			this.announce(name);
+			// 15 minutes interval
+			this.announceInterval = setInterval(
+				() => {
+					if (this.connected) {
+						this.announce(name);
+					}
+				},
+				15 * 60 * 1000
+			) as unknown as number;
+		} else {
+			this.log('Auto-announce disabled', 'info');
 		}
 	}
 

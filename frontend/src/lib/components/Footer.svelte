@@ -125,7 +125,7 @@
 						<span>WASM Example</span>
 						<span
 							class="px-1.5 py-0.5 text-[10px] font-semibold rounded bg-orange-500 text-white uppercase"
-							>WIP</span
+							>Beta</span
 						>
 					</a>
 				</li>

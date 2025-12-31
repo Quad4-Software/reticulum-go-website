@@ -46,12 +46,20 @@
 	});
 </script>
 
-<div
-	class="min-h-screen flex flex-col bg-white text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100 transition-colors duration-200 font-sans selection:bg-zinc-200 dark:selection:bg-zinc-800"
->
-	<Navbar />
-	<main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
-		{@render children()}
-	</main>
-	<Footer />
-</div>
+{#if i18nReady}
+	<div
+		class="min-h-screen flex flex-col bg-white text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100 transition-colors duration-200 font-sans selection:bg-zinc-200 dark:selection:bg-zinc-800"
+	>
+		<Navbar />
+		<main class="flex-1 max-w-[2000px] mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
+			{@render children()}
+		</main>
+		<Footer />
+	</div>
+{:else}
+	<div class="min-h-screen bg-white dark:bg-zinc-950 flex items-center justify-center">
+		<div
+			class="w-8 h-8 border-4 border-[#00ADD8] border-t-transparent rounded-full animate-spin"
+		></div>
+	</div>
+{/if}

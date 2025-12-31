@@ -29,19 +29,19 @@
 			{$t('home.title')}
 		</h1>
 		<p
-			class="text-xl md:text-2xl text-zinc-600 dark:text-zinc-400 max-w-3xl mx-auto leading-relaxed"
+			class="text-xl md:text-2xl text-zinc-600 dark:text-zinc-400 max-w-4xl mx-auto leading-relaxed"
 		>
 			{$t('home.subtitle')}
 		</p>
 		<div class="flex flex-wrap justify-center gap-4">
 			<a
 				href="/wasm-example"
-				class="relative px-8 py-4 bg-[#00ADD8] text-white font-bold rounded-xl shadow-lg hover:shadow-[#00ADD8]/20 transition-all active:scale-95"
+				class="relative px-8 py-4 bg-[#00ADD8] text-white font-bold rounded-xl shadow-md hover:shadow-[#00ADD8]/10 transition-all active:scale-95"
 			>
 				{$t('home.try_wasm')}
 				<span
 					class="absolute -top-2 -right-2 px-1.5 py-0.5 text-[10px] font-semibold rounded bg-orange-500 text-white uppercase"
-					>WIP</span
+					>Beta</span
 				>
 			</a>
 			<div class="relative group">
@@ -148,8 +148,8 @@
 				class="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent"
 			></div>
 		</div>
-		<h2 class="text-3xl md:text-4xl font-bold">{$t('home.wasm_promo.title')}</h2>
-		<p class="text-zinc-400 max-w-2xl mx-auto">
+		<h2 class="text-3xl md:text-5xl font-bold">{$t('home.wasm_promo.title')}</h2>
+		<p class="text-zinc-400 max-w-4xl mx-auto text-lg">
 			{$t('home.wasm_promo.description')}
 		</p>
 		<div class="pt-4">
@@ -171,7 +171,7 @@
 				>
 				<span
 					class="absolute -top-2 -right-2 px-1.5 py-0.5 text-[10px] font-semibold rounded bg-orange-500 text-white uppercase"
-					>WIP</span
+					>Beta</span
 				>
 			</a>
 		</div>
