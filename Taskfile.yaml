@@ -13,22 +13,6 @@ tasks:
     generates:
       - build/**/*
 
-  server:prepare:
-    deps: [frontend:build]
-    cmds:
-      - rm -rf cmd/server/dist
-      - mkdir -p cmd/server/dist
-      - cp -r frontend/build/* cmd/server/dist/
-
-  server:build:
-    deps: [server:prepare]
-    cmds:
-      - CGO_ENABLED=0 go build -ldflags="-s -w" -o reticulum-go-web ./cmd/server
-    sources:
-      - cmd/server/*.go
-    generates:
-      - reticulum-go-web
-
   dev:
     dir: frontend
     cmds:
@@ -37,19 +21,11 @@ tasks:
   clean:
     cmds:
       - rm -rf frontend/build
-      - rm -rf cmd/server/dist
-      - rm -f reticulum-go-web
 
   format:
-    desc: Format code (frontend and go)
+    desc: Format code
     cmds:
       - cd frontend && pnpm exec prettier --write .
-      - go fmt ./...
-
-  test:
-    desc: Run tests
-    cmds:
-      - go test -v ./...
 
   lint:
     dir: frontend
@@ -91,32 +67,15 @@ tasks:
     cmds:
       - pnpm install
 
-  scan:
-    desc: Run gosec security scanner
-    cmds:
-      - mkdir -p cmd/server/dist
-      - touch cmd/server/dist/placeholder
-      - gosec ./...
-
   docker-build:
     desc: Build Docker image
     cmds:
-      - docker build -f Dockerfile -t reticulum-go-web .
+      - docker build -f Dockerfile -t reticulum-web .
 
   docker-run:
     desc: Run Docker container
     cmds:
-      - docker run -p 8080:8080 reticulum-go-web
-
-  docker-build-ssr:
-    desc: Build SSR Docker image
-    cmds:
-      - docker build -f docker/Dockerfile.Node -t reticulum-go-ssr .
-
-  docker-run-ssr:
-    desc: Run SSR Docker container
-    cmds:
-      - docker run -p 3000:3000 reticulum-go-ssr
+      - docker run -p 3000:3000 reticulum-web
 
   docs:zip:
     desc: Package documentation into ZIP files
@@ -128,12 +87,10 @@ tasks:
       - zip -j releases/docs-it.zip frontend/src/lib/docs/introduction.it.md frontend/src/lib/docs/usage.it.md
 
   validate:
-    desc: Run all quality checks (format, test, lint, check, scan, audit)
+    desc: Run all quality checks (format, lint, check, audit)
     cmds:
       - task: format
-      - task: test
       - task: lint
       - task: check
-      - task: scan
       - task: audit
 
