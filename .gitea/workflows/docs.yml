@@ -1,12 +1,9 @@
-name: Publish Docs
+name: Release Docs
 
 on:
   push:
-    paths:
-      - 'frontend/src/lib/docs/**'
-    branches:
-      - master
-  workflow_dispatch:
+    tags:
+      - 'v*'
 
 jobs:
   release-docs:
@@ -14,6 +11,8 @@ jobs:
     steps:
       - name: Checkout
         uses: https://git.quad4.io/actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: https://git.quad4.io/actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
@@ -28,15 +27,9 @@ jobs:
       - name: Get Metadata and Package Docs
         id: prepare
         run: |
-          # Get Date for Release Name
-          RELEASE_DATE=$(date +'%Y-%m-%d')
-          RELEASE_TAG="docs-${RELEASE_DATE}-$(date +'%H%M%S')"
-          echo "date=${RELEASE_DATE}" >> $GITHUB_OUTPUT
-          echo "tag=${RELEASE_TAG}" >> $GITHUB_OUTPUT
-
           # Get commit details from git
           FULL_HASH="${{ github.sha }}"
-          COMMIT_MSG=$(git log -1 --format=%B "${{ github.sha }}" || echo "Documentation update")
+          COMMIT_MSG=$(git log -1 --format=%B "${{ github.sha }}" || echo "Release ${{ github.ref_name }}")
           
           echo "full_hash=${FULL_HASH}" >> $GITHUB_OUTPUT
           echo "commit_msg<<EOF" >> $GITHUB_OUTPUT
@@ -48,21 +41,15 @@ jobs:
         env:
           GITEA_TOKEN: ${{ secrets.GITEA_TOKEN }}
 
-      - name: Create Gitea Release
-        uses: https://git.quad4.io/actions/gitea-release-action@fe8e0322804b48e34e3bddbbf6335bd2b1046eb7 # v1
+      - name: Update Release with Docs
+        uses: https://git.quad4.io/actions/gitea-release-action@fe8e0322804b48e34e3bddbbf6335bd2b1046eb7 # v1.3.5
         with:
-          server_url: https://git.quad4.io
-          token: ${{ secrets.GITEA_TOKEN }}
+          tag_name: ${{ github.ref_name }}
           files: |
             releases/docs-en.zip
             releases/docs-ru.zip
             releases/docs-de.zip
             releases/docs-it.zip
-          name: ${{ steps.prepare.outputs.date }}
-          tag_name: ${{ steps.prepare.outputs.tag }}
-          body: |
-            Commit: ${{ steps.prepare.outputs.full_hash }}
-            
-            ${{ steps.prepare.outputs.commit_msg }}
+          sha256sum: true
         env:
           GITEA_TOKEN: ${{ secrets.GITEA_TOKEN }}

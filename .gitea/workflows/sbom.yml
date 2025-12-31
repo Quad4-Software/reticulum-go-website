@@ -42,6 +42,7 @@ jobs:
       - name: Create Release
         uses: https://git.quad4.io/actions/gitea-release-action@fe8e0322804b48e34e3bddbbf6335bd2b1046eb7 # v1.3.5
         with:
+          tag_name: ${{ github.ref_name }}
           files: |
             sbom/sbom.cyclonedx.json
           sha256sum: true
