@@ -1,5 +1,6 @@
 <script lang="ts">
 	import '../app.css';
+	import { isLoading } from 'svelte-i18n';
 	import '../lib/i18n';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import Footer from '$lib/components/Footer.svelte';
@@ -9,6 +10,7 @@
 
 	let isDark = $state(false);
 	let themeInitialized = $state(false);
+	let i18nReady = $derived(!$isLoading);
 
 	setContext('theme', {
 		get isDark() {
