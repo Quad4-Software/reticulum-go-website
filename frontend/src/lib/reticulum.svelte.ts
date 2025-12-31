@@ -74,8 +74,10 @@ class ReticulumService {
 		bytesReceived: 0
 	});
 	logs = $state<{ msg: string; type: string; time: string }[]>([]);
+	autoAnnounce = $state(false);
 
 	private wasmLoadingPromise: Promise<void> | null = null;
+	private announceInterval: number | null = null;
 
 	constructor() {
 		if (browser) {
@@ -122,7 +124,22 @@ class ReticulumService {
 
 		window.onChatMessage = (msg) => {
 			console.log('Received message:', msg);
-			const peerHash = msg.from || this.selectedPeerHash || 'unknown';
+			const peerHash = msg.from || 'unknown';
+
+			// Ensure peer exists even if not announced
+			if (!this.peers.has(peerHash)) {
+				this.peers.set(peerHash, {
+					hash: peerHash,
+					name: peerHash === 'unknown' ? 'Unknown Sender' : `Peer ${peerHash.substring(0, 8)}`,
+					hops: 0,
+					lastSeen: new Date()
+				});
+				this.log(
+					`Received message from ${peerHash === 'unknown' ? 'unknown sender' : 'new peer: ' + peerHash.substring(0, 8)}`,
+					'info'
+				);
+			}
+
 			const peer = this.peers.get(peerHash);
 			const peerName = peer ? peer.name : 'Unknown';
 
@@ -137,11 +154,7 @@ class ReticulumService {
 			const history = this.messages.get(peerHash) || [];
 			this.messages.set(peerHash, [...history, message]);
 
-			if (peerName === 'Unknown') {
-				this.log(`Received packet from ${peerHash.substring(0, 8)}...`, 'info');
-			} else {
-				this.log(`New message from ${peerName}`, 'info');
-			}
+			this.log(`New message from ${peerName}`, 'info');
 		};
 
 		window.log = (msg: string, type: string = 'info') => {
@@ -236,6 +249,9 @@ class ReticulumService {
 		if (!window.reticulum) return;
 		window.reticulum.disconnect();
 		this.connected = false;
+		if (this.autoAnnounce) {
+			this.toggleAutoAnnounce(false, '');
+		}
 		this.log('Disconnected', 'info');
 	}
 
@@ -246,6 +262,31 @@ class ReticulumService {
 			this.log(`Announce failed: ${result.error}`, 'error');
 		} else {
 			this.log('Announce sent', 'success');
+		}
+	}
+
+	toggleAutoAnnounce(enabled: boolean, name: string) {
+		this.autoAnnounce = enabled;
+		if (this.announceInterval) {
+			clearInterval(this.announceInterval);
+			this.announceInterval = null;
+		}
+
+		if (enabled) {
+			this.log('Auto-announce enabled (every 15 minutes)', 'info');
+			// Initial announce
+			this.announce(name);
+			// 15 minutes interval
+			this.announceInterval = setInterval(
+				() => {
+					if (this.connected) {
+						this.announce(name);
+					}
+				},
+				15 * 60 * 1000
+			) as unknown as number;
+		} else {
+			this.log('Auto-announce disabled', 'info');
 		}
 	}
 

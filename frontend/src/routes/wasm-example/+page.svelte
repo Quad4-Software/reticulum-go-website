@@ -126,12 +126,35 @@
 			<section class="border-t border-zinc-200 dark:border-zinc-800 pt-8">
 				<div class="flex items-center justify-between mb-6">
 					<h2 class="text-2xl font-bold">Network Peers</h2>
-					<button
-						onclick={handleAnnounce}
-						class="text-xs font-medium px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors"
-					>
-						Announce Myself
-					</button>
+					<div class="flex items-center gap-4">
+						<label class="flex items-center gap-2 cursor-pointer group">
+							<div class="relative">
+								<input
+									type="checkbox"
+									class="sr-only peer"
+									bind:checked={reticulum.autoAnnounce}
+									onchange={(e) =>
+										reticulum.toggleAutoAnnounce(
+											e.currentTarget.checked,
+											localStorage.getItem('reticulum_username') || ''
+										)}
+								/>
+								<div
+									class="w-10 h-5 bg-zinc-200 dark:bg-zinc-800 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#00ADD8]"
+								></div>
+							</div>
+							<span
+								class="text-xs font-medium text-zinc-500 group-hover:text-zinc-700 dark:group-hover:text-zinc-300 transition-colors"
+								>Auto-Announce</span
+							>
+						</label>
+						<button
+							onclick={handleAnnounce}
+							class="text-xs font-medium px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors"
+						>
+							Announce Myself
+						</button>
+					</div>
 				</div>
 
 				<div class="grid md:grid-cols-2 gap-8">
@@ -215,12 +238,15 @@
 								<input
 									type="text"
 									bind:value={messageInput}
-									placeholder="Enter message..."
-									class="flex-1 bg-zinc-50 dark:bg-zinc-900 border-none rounded-lg px-3 py-2 text-sm outline-none focus:ring-1 ring-[#00ADD8]"
+									placeholder={reticulum.selectedPeerHash === 'unknown'
+										? 'Cannot reply to unknown sender'
+										: 'Enter message...'}
+									disabled={reticulum.selectedPeerHash === 'unknown'}
+									class="flex-1 bg-zinc-50 dark:bg-zinc-900 border-none rounded-lg px-3 py-2 text-sm outline-none focus:ring-1 ring-[#00ADD8] disabled:opacity-50"
 								/>
 								<button
 									type="submit"
-									disabled={!messageInput.trim()}
+									disabled={!messageInput.trim() || reticulum.selectedPeerHash === 'unknown'}
 									class="px-4 py-2 bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 text-white rounded-lg text-sm font-bold disabled:opacity-50 transition-all active:scale-95"
 								>
 									Send
