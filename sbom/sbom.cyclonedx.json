@@ -2,10 +2,10 @@
   "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
   "bomFormat": "CycloneDX",
   "specVersion": "1.6",
-  "serialNumber": "urn:uuid:40c6e235-6aa6-4b28-87ac-89d3f4312e45",
+  "serialNumber": "urn:uuid:7643bbc8-2cad-488b-8b70-76b0edec376e",
   "version": 1,
   "metadata": {
-    "timestamp": "2025-12-30T23:15:15+00:00",
+    "timestamp": "2025-12-31T04:58:17+00:00",
     "tools": {
       "components": [
         {
@@ -20,7 +20,7 @@
       ]
     },
     "component": {
-      "bom-ref": "3daf6888-2d20-4499-b6d5-6ce4bd514174",
+      "bom-ref": "73d42773-9f37-4622-81eb-0eb784942c41",
       "type": "application",
       "name": ".",
       "properties": [
@@ -33,22 +33,7 @@
   },
   "components": [
     {
-      "bom-ref": "137ee63f-7e3b-4629-9017-11fcc5c0e342",
-      "type": "application",
-      "name": "go.mod",
-      "properties": [
-        {
-          "name": "aquasecurity:trivy:Class",
-          "value": "lang-pkgs"
-        },
-        {
-          "name": "aquasecurity:trivy:Type",
-          "value": "gomod"
-        }
-      ]
-    },
-    {
-      "bom-ref": "66d825d3-6efc-4509-8ce9-9712fcd9561a",
+      "bom-ref": "3dad3c3b-2021-4f1d-abf5-bf861dd17c69",
       "type": "application",
       "name": "frontend/pnpm-lock.yaml",
       "properties": [
@@ -59,22 +44,6 @@
         {
           "name": "aquasecurity:trivy:Type",
           "value": "pnpm"
-        }
-      ]
-    },
-    {
-      "bom-ref": "pkg:golang/git.quad4.io/websites/reticulum-go",
-      "type": "library",
-      "name": "git.quad4.io/websites/reticulum-go",
-      "purl": "pkg:golang/git.quad4.io/websites/reticulum-go",
-      "properties": [
-        {
-          "name": "aquasecurity:trivy:PkgID",
-          "value": "git.quad4.io/websites/reticulum-go"
-        },
-        {
-          "name": "aquasecurity:trivy:PkgType",
-          "value": "gomod"
         }
       ]
     },
@@ -15387,20 +15356,7 @@
   ],
   "dependencies": [
     {
-      "ref": "137ee63f-7e3b-4629-9017-11fcc5c0e342",
-      "dependsOn": [
-        "pkg:golang/git.quad4.io/websites/reticulum-go"
-      ]
-    },
-    {
-      "ref": "3daf6888-2d20-4499-b6d5-6ce4bd514174",
-      "dependsOn": [
-        "137ee63f-7e3b-4629-9017-11fcc5c0e342",
-        "66d825d3-6efc-4509-8ce9-9712fcd9561a"
-      ]
-    },
-    {
-      "ref": "66d825d3-6efc-4509-8ce9-9712fcd9561a",
+      "ref": "3dad3c3b-2021-4f1d-abf5-bf861dd17c69",
       "dependsOn": [
         "pkg:npm/%40sveltejs/adapter-static@3.0.10",
         "pkg:npm/%40sveltejs/kit@2.49.2",
@@ -15436,8 +15392,10 @@
       ]
     },
     {
-      "ref": "pkg:golang/git.quad4.io/websites/reticulum-go",
-      "dependsOn": []
+      "ref": "73d42773-9f37-4622-81eb-0eb784942c41",
+      "dependsOn": [
+        "3dad3c3b-2021-4f1d-abf5-bf861dd17c69"
+      ]
     },
     {
       "ref": "pkg:npm/%40apideck/better-ajv-errors@0.3.6",
