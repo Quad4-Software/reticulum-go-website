@@ -35,7 +35,7 @@
 				href="https://unsigned.io/donate.html"
 				target="_blank"
 				rel="noopener noreferrer"
-				class="inline-flex items-center gap-3 px-8 py-4 bg-[#00ADD8] text-white font-bold rounded-xl shadow-lg hover:shadow-[#00ADD8]/20 transition-all active:scale-95"
+				class="inline-flex items-center gap-3 px-8 py-4 bg-[#00ADD8] text-white font-bold rounded-xl shadow-md hover:shadow-[#00ADD8]/10 transition-all active:scale-95"
 			>
 				{$t('donate.cta')}
 				<svg

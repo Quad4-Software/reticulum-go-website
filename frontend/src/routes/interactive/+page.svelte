@@ -52,7 +52,7 @@
 		</p>
 	</div>
 
-	<div class="max-w-2xl mx-auto">
+	<div class="max-w-4xl mx-auto">
 		<div class="relative">
 			<SearchIcon
 				class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400 pointer-events-none"
@@ -61,7 +61,7 @@
 				type="text"
 				bind:value={searchQuery}
 				placeholder={$t('interactive.search_placeholder')}
-				class="w-full pl-12 pr-4 py-3 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl focus:ring-2 ring-[#00ADD8] outline-none transition-all"
+				class="w-full pl-12 pr-4 py-4 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl focus:ring-2 ring-[#00ADD8] outline-none transition-all"
 			/>
 		</div>
 	</div>
@@ -71,7 +71,7 @@
 			<p class="text-zinc-500 dark:text-zinc-400">{$t('common.no_examples_found')}</p>
 		</div>
 	{:else}
-		<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+		<div class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
 			{#each filteredItems as item (item.href)}
 				<a
 					href={item.href}
@@ -87,7 +87,7 @@
 							<span
 								class="px-2 py-1 text-[10px] font-semibold rounded bg-orange-500 text-white uppercase"
 							>
-								WIP
+								Beta
 							</span>
 						{/if}
 					</div>
