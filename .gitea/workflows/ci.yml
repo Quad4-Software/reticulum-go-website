@@ -28,6 +28,8 @@ jobs:
         run: task lint
       - name: Frontend checks
         run: task check
+      - name: Audit dependencies
+        run: task audit
 
   build:
     runs-on: ubuntu-latest
