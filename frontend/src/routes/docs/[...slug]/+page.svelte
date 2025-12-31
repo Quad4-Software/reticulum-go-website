@@ -7,7 +7,40 @@
 	let { data } = $props();
 
 	const slug = $derived(page.params.slug ?? '');
+
+	const docTitle = $derived(
+		(data.metadata?.title as string) ||
+			slug
+				.split('/')
+				.pop()
+				?.split('-')
+				.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+				.join(' ') ||
+			'Documentation'
+	);
+
+	const docDescription = $derived(
+		(data.metadata?.description as string) ||
+			`${docTitle} - Reticulum-Go Documentation`
+	);
+
+	const pageUrl = $derived(`https://reticulum-go.quad4.io${page.url.pathname}`);
 </script>
+
+<svelte:head>
+	<title>{docTitle} | Reticulum-Go Documentation</title>
+	<meta name="description" content={docDescription} />
+	<meta property="og:type" content="article" />
+	<meta property="og:url" content={pageUrl} />
+	<meta property="og:title" content={`${docTitle} | Reticulum-Go Documentation`} />
+	<meta property="og:description" content={docDescription} />
+	<meta property="og:image" content="https://reticulum-go.quad4.io/logo.svg" />
+	<meta property="twitter:card" content="summary_large_image" />
+	<meta property="twitter:url" content={pageUrl} />
+	<meta property="twitter:title" content={`${docTitle} | Reticulum-Go Documentation`} />
+	<meta property="twitter:description" content={docDescription} />
+	<meta property="twitter:image" content="https://reticulum-go.quad4.io/logo.svg" />
+</svelte:head>
 
 <div class="flex flex-col gap-8">
 	<div class="flex justify-end">
