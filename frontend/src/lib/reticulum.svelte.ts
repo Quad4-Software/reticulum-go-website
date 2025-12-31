@@ -107,8 +107,30 @@ class ReticulumService {
 
 	private setupCallbacks() {
 		window.onPeerDiscovered = (peer) => {
+			// Skip our own announcements
+			if (this.identity && peer.hash === this.identity.publicKey) {
+				return;
+			}
+
 			const peerName = peer.appData || `Peer ${peer.hash.substring(0, 8)}`;
 			const existing = this.peers.has(peer.hash);
+
+			// Limit to 500 peers, remove oldest if exceeded
+			if (!existing && this.peers.size >= 500) {
+				let oldestHash: string | null = null;
+				let oldestTime = Infinity;
+
+				for (const [hash, p] of this.peers.entries()) {
+					if (p.lastSeen.getTime() < oldestTime) {
+						oldestTime = p.lastSeen.getTime();
+						oldestHash = hash;
+					}
+				}
+
+				if (oldestHash) {
+					this.peers.delete(oldestHash);
+				}
+			}
 
 			this.peers.set(peer.hash, {
 				hash: peer.hash,
