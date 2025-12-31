@@ -84,6 +84,18 @@
 
 	{#if reticulum.identity}
 		<div class="space-y-4">
+			{#if userName}
+				<div>
+					<span class="text-xs font-medium text-zinc-500 uppercase tracking-wider block mb-1"
+						>Display Name</span
+					>
+					<div
+						class="text-sm font-semibold p-2 bg-zinc-50 dark:bg-zinc-950 rounded border border-zinc-200 dark:border-zinc-800"
+					>
+						{userName}
+					</div>
+				</div>
+			{/if}
 			<div>
 				<span class="text-xs font-medium text-zinc-500 uppercase tracking-wider block mb-1"
 					>Identity</span
