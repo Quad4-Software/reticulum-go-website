@@ -1,6 +1,12 @@
 import { browser } from '$app/environment';
 import { SvelteMap } from 'svelte/reactivity';
-import { loadIdentity, saveIdentity, type Identity } from './identity';
+import {
+	loadIdentity,
+	saveIdentity,
+	type Identity,
+	saveAutoAnnounce,
+	loadAutoAnnounce
+} from './identity';
 
 export interface Peer {
 	hash: string;
@@ -66,6 +72,7 @@ class ReticulumService {
 	identity = $state<Identity | null>(null);
 	peers = new SvelteMap<string, Peer>();
 	messages = new SvelteMap<string, ChatMessage[]>();
+	unreadCounts = new SvelteMap<string, number>();
 	selectedPeerHash = $state('');
 	stats = $state<ReticulumStats>({
 		packetsSent: 0,
@@ -176,6 +183,11 @@ class ReticulumService {
 			const history = this.messages.get(peerHash) || [];
 			this.messages.set(peerHash, [...history, message]);
 
+			if (peerHash !== this.selectedPeerHash) {
+				const currentCount = this.unreadCounts.get(peerHash) || 0;
+				this.unreadCounts.set(peerHash, currentCount + 1);
+			}
+
 			this.log(`New message from ${peerName}`, 'info');
 		};
 
@@ -249,6 +261,16 @@ class ReticulumService {
 		this.identity = newIdentity;
 		this.initialized = true;
 
+		// Load auto-announce setting
+		try {
+			const autoEnabled = await loadAutoAnnounce();
+			if (autoEnabled) {
+				this.toggleAutoAnnounce(true, userName);
+			}
+		} catch (e) {
+			console.error('Failed to load auto-announce setting:', e);
+		}
+
 		this.log('Reticulum initialized', 'success');
 		return result;
 	}
@@ -289,6 +311,8 @@ class ReticulumService {
 
 	toggleAutoAnnounce(enabled: boolean, name: string) {
 		this.autoAnnounce = enabled;
+		saveAutoAnnounce(enabled).catch(console.error);
+
 		if (this.announceInterval) {
 			clearInterval(this.announceInterval);
 			this.announceInterval = null;

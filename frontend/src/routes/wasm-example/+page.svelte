@@ -265,20 +265,32 @@
 							{:else}
 								{#each peers as peer (peer.hash)}
 									<button
-										onclick={() => (reticulum.selectedPeerHash = peer.hash)}
+										onclick={() => {
+											reticulum.selectedPeerHash = peer.hash;
+											reticulum.unreadCounts.delete(peer.hash);
+										}}
 										class="w-full text-left p-3.5 rounded-2xl border transition-all {reticulum.selectedPeerHash ===
 										peer.hash
 											? 'border-[#00ADD8] bg-[#00ADD8]/5 dark:bg-[#00ADD8]/10 ring-1 ring-[#00ADD8] shadow-md shadow-[#00ADD8]/5'
 											: 'border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 bg-white dark:bg-zinc-950'}"
 									>
 										<div class="flex justify-between items-start mb-1">
-											<div
-												class="font-bold text-sm truncate pr-2 {reticulum.selectedPeerHash ===
-												peer.hash
-													? 'text-[#00ADD8]'
-													: 'text-zinc-900 dark:text-zinc-100'}"
-											>
-												{peer.name}
+											<div class="flex items-center gap-2 min-w-0">
+												<div
+													class="font-bold text-sm truncate {reticulum.selectedPeerHash ===
+													peer.hash
+														? 'text-[#00ADD8]'
+														: 'text-zinc-900 dark:text-zinc-100'}"
+												>
+													{peer.name}
+												</div>
+												{#if reticulum.unreadCounts.has(peer.hash)}
+													<span
+														class="flex-shrink-0 px-1.5 py-0.5 text-[9px] font-black bg-[#00ADD8] text-white rounded-full leading-none min-w-[1.2rem] h-[1.2rem] flex items-center justify-center shadow-sm shadow-[#00ADD8]/20 animate-in zoom-in duration-200"
+													>
+														{reticulum.unreadCounts.get(peer.hash)}
+													</span>
+												{/if}
 											</div>
 											<div class="text-[10px] font-bold text-zinc-400 whitespace-nowrap">
 												{formatTime(peer.lastSeen)}
