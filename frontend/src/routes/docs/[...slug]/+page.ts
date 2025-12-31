@@ -4,6 +4,14 @@ import { get } from 'svelte/store';
 import { locale } from 'svelte-i18n';
 import { syncDoc } from '$lib/docs-service';
 
+function extractTitleFromSlug(slug: string): string {
+	const cleanSlug = slug.split('/').pop() || slug;
+	return cleanSlug
+		.split('-')
+		.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+		.join(' ');
+}
+
 export const load = async ({ params, depends }) => {
 	const { slug } = params;
 	depends('app:locale');
@@ -45,9 +53,19 @@ export const load = async ({ params, depends }) => {
 			default: import('svelte').Component;
 			metadata: Record<string, unknown>;
 		};
+
+		const metadata = {
+			title: (doc.metadata?.title as string) || extractTitleFromSlug(cleanSlug),
+			description:
+				(doc.metadata?.description as string) ||
+				(doc.metadata?.excerpt as string) ||
+				`${extractTitleFromSlug(cleanSlug)} - Reticulum-Go Documentation`,
+			...doc.metadata
+		};
+
 		return {
 			content: doc.default,
-			metadata: doc.metadata
+			metadata
 		};
 	} catch (e) {
 		console.error('Error loading doc:', e);
