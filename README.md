@@ -4,38 +4,11 @@ The official website for the Reticulum-Go project, with documentation and a WebA
 
 ## Self-host the website
 
-1. Build the binary:    
-
-```sh
-task server:build
-```
-
-2. Run the server:
-
-```sh
-./reticulum-go-web
-```
-
-3. Open your browser at `http://localhost:8080`
-
 ### Using Docker
-
-Yes we support both SPA and SSR builds!
-
-**Standard build (SPA with Go server):**
 
 ```sh
 task docker-build
 task docker-run
-```
-
-Then open your browser at `http://localhost:8080`
-
-**SSR build (Node.js server with server-side rendering):**
-
-```sh
-task docker-build-ssr
-task docker-run-ssr
 ```
 
 Then open your browser at `http://localhost:3000`
@@ -44,7 +17,6 @@ Then open your browser at `http://localhost:3000`
 
 ### Prerequisites
 
-- Go `1.25.5`
 - Node.js
 - pnpm
 
@@ -75,19 +47,14 @@ The project uses [Task](https://taskfile.dev/) for all development tasks.
 | dev             | Run Vite development server              |
 | validate        | Run all quality checks                   |
 | frontend:build  | Build frontend only                      |
-| server:build    | Build server binary                      |
 | docker-build    | Build Docker image                       |
-| docker-run      | Run Docker container                     |
-| docker-build-ssr| Build SSR Docker image                   |
-| docker-run-ssr  | Run SSR Docker container                 |
+| docker-run      | Run Docker container                      |
 | docs:zip        | Package documentation into ZIP files     |
 | clean           | Clean build artifacts                    |
 | format          | Format code                              |
-| test            | Run tests                                |
 | lint            | Run linter                               |
 | check           | Run type checking                        |
 | audit           | Run pnpm audit                           |
-| scan            | Run gosec security scanner               |
 | install         | Install pnpm dependencies                |
 | update          | Update pnpm dependencies                 |
 | update:latest   | Update pnpm dependencies to latest       |
