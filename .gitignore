@@ -19,7 +19,6 @@ go.work
 frontend/build/
 frontend/.svelte-kit/
 cmd/server/dist/
-*.wasm
 
 # Dependencies
 frontend/node_modules/
