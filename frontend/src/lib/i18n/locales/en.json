@@ -47,8 +47,8 @@
 	"donate": {
 		"title": "Donate",
 		"subtitle": "Support the development and maintenance of Reticulum.",
-		"supported_by": "Reticulum-Go, the Golang implementation of the Python reference is supported by other {quad4} ventures for long-term sustainable development of the implementation.",
-		"no_direct_donations": "We do not accept donations ourselves. Instead, please consider donating to the original author of the Reticulum Network Stack:",
+		"supported_by": "Reticulum-Go, the Golang implementation of the Python reference is supported by {quad4} ventures for long-term sustainable development of the implementation.",
+		"no_direct_donations": "Please also consider donating to the original author of the Reticulum Network Stack:",
 		"cta": "Markqvist"
 	},
 	"home": {
