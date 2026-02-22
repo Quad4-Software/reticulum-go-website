@@ -20,8 +20,7 @@
 	);
 
 	const docDescription = $derived(
-		(data.metadata?.description as string) ||
-			`${docTitle} - Reticulum-Go Documentation`
+		(data.metadata?.description as string) || `${docTitle} - Reticulum-Go Documentation`
 	);
 
 	const pageUrl = $derived(`https://reticulum-go.quad4.io${page.url.pathname}`);

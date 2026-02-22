@@ -7,6 +7,7 @@ import {
 	saveAutoAnnounce,
 	loadAutoAnnounce
 } from './identity';
+import { db } from './db';
 
 export interface Peer {
 	hash: string;
@@ -28,6 +29,8 @@ export interface ReticulumStats {
 	packetsReceived: number;
 	bytesSent: number;
 	bytesReceived: number;
+	announcesSent: number;
+	announcesReceived: number;
 }
 
 interface ReticulumWasm {
@@ -44,7 +47,7 @@ interface ReticulumWasm {
 	connect: () => { error?: string };
 	disconnect: () => { error?: string };
 	announce: (name: string) => { error?: string };
-	sendMessage: (peerHash: string, text: string) => { error?: string };
+	sendMessage: (peerHash: string, data: string | Uint8Array) => { error?: string };
 	requestPath: (peerHash: string) => { error?: string };
 	getStats: () => ReticulumStats;
 	isConnected: () => boolean;
@@ -82,17 +85,64 @@ class ReticulumService {
 		packetsSent: 0,
 		packetsReceived: 0,
 		bytesSent: 0,
-		bytesReceived: 0
+		bytesReceived: 0,
+		announcesSent: 0,
+		announcesReceived: 0
 	});
 	logs = $state<{ msg: string; type: string; time: string }[]>([]);
 	autoAnnounce = $state(false);
+	notificationsEnabled = $state(false);
 
 	private wasmLoadingPromise: Promise<void> | null = null;
 	private announceInterval: number | null = null;
+	private statsInterval: number | null = null;
 
 	constructor() {
 		if (browser) {
 			this.setupCallbacks();
+			this.setupVisibilityHandler();
+			this.checkNotificationPermission();
+		}
+	}
+
+	private checkNotificationPermission() {
+		if (typeof Notification !== 'undefined') {
+			this.notificationsEnabled = Notification.permission === 'granted';
+		}
+	}
+
+	async requestNotificationPermission() {
+		if (typeof Notification === 'undefined') return;
+
+		const permission = await Notification.requestPermission();
+		this.notificationsEnabled = permission === 'granted';
+		if (this.notificationsEnabled) {
+			this.log('Browser notifications enabled', 'success');
+		}
+		return permission;
+	}
+
+	private setupVisibilityHandler() {
+		document.addEventListener('visibilitychange', () => {
+			if (document.visibilityState === 'visible' && this.initialized) {
+				// Refresh status immediately when coming back
+				this.refreshStatus();
+			}
+		});
+	}
+
+	private refreshStatus() {
+		if (window.reticulum && this.initialized) {
+			this.connected = window.reticulum.isConnected();
+			const s = window.reticulum.getStats();
+			this.stats = {
+				packetsSent: s.packetsSent,
+				packetsReceived: s.packetsReceived,
+				bytesSent: s.bytesSent,
+				bytesReceived: s.bytesReceived,
+				announcesSent: s.announcesSent,
+				announcesReceived: s.announcesReceived
+			};
 		}
 	}
 
@@ -117,14 +167,14 @@ class ReticulumService {
 	}
 
 	private setupCallbacks() {
-		window.onPeerDiscovered = (peer) => {
+		window.onPeerDiscovered = (peerData) => {
 			// Skip our own announcements
-			if (this.identity && peer.hash === this.identity.publicKey) {
+			if (this.identity && peerData.hash === this.identity.publicKey) {
 				return;
 			}
 
-			const peerName = peer.appData || `Peer ${peer.hash.substring(0, 8)}`;
-			const existing = this.peers.has(peer.hash);
+			const peerName = peerData.appData || `Peer ${peerData.hash.substring(0, 8)}`;
+			const existing = this.peers.has(peerData.hash);
 
 			// Limit to 500 peers, remove oldest if exceeded
 			if (!existing && this.peers.size >= 500) {
@@ -143,17 +193,20 @@ class ReticulumService {
 				}
 			}
 
-			this.peers.set(peer.hash, {
-				hash: peer.hash,
+			const peer: Peer = {
+				hash: peerData.hash,
 				name: peerName,
-				hops: peer.hops,
+				hops: peerData.hops,
 				lastSeen: new Date()
-			});
+			};
+
+			this.peers.set(peerData.hash, peer);
+			db.savePeer(peer).catch(console.error);
 
 			if (!existing) {
 				this.log(`Discovered peer: ${peerName}`, 'success');
 			}
-			this.peerKeyStatus.set(peer.hash, 'known');
+			this.peerKeyStatus.set(peerData.hash, 'known');
 		};
 
 		window.onChatMessage = (msg) => {
@@ -162,12 +215,14 @@ class ReticulumService {
 
 			// Ensure peer exists even if not announced
 			if (!this.peers.has(peerHash)) {
-				this.peers.set(peerHash, {
+				const newPeer: Peer = {
 					hash: peerHash,
 					name: peerHash === 'unknown' ? 'Unknown Sender' : `Peer ${peerHash.substring(0, 8)}`,
 					hops: 0,
 					lastSeen: new Date()
-				});
+				};
+				this.peers.set(peerHash, newPeer);
+				db.savePeer(newPeer).catch(console.error);
 				this.log(
 					`Received message from ${peerHash === 'unknown' ? 'unknown sender' : 'new peer: ' + peerHash.substring(0, 8)}`,
 					'info'
@@ -187,6 +242,7 @@ class ReticulumService {
 
 			const history = this.messages.get(peerHash) || [];
 			this.messages.set(peerHash, [...history, message]);
+			db.saveMessage(peerHash, message).catch(console.error);
 
 			if (peerHash !== this.selectedPeerHash) {
 				const currentCount = this.unreadCounts.get(peerHash) || 0;
@@ -195,6 +251,17 @@ class ReticulumService {
 
 			this.peerKeyStatus.set(peerHash, 'known');
 			this.log(`New message from ${peerName}`, 'info');
+
+			// Browser Notification
+			if (
+				this.notificationsEnabled &&
+				(document.visibilityState === 'hidden' || peerHash !== this.selectedPeerHash)
+			) {
+				new Notification(`New message from ${peerName}`, {
+					body: msg.text.length > 100 ? msg.text.substring(0, 97) + '...' : msg.text,
+					icon: '/logo.svg'
+				});
+			}
 		};
 
 		window.log = (msg: string, type: string = 'info') => {
@@ -208,23 +275,25 @@ class ReticulumService {
 	}
 
 	private async loadWasm() {
-		if (typeof window.Go === 'undefined') {
+		if (!browser || typeof window.Go === 'undefined') {
 			this.error = 'Go WASM runtime (wasm_exec.js) not found';
 			return;
 		}
 
 		const go = new window.Go();
 		try {
-			// Try to get SRI hash from manifest
+			// Try to get SRI hash from manifest (only in browser)
 			let integrity: string | undefined;
-			try {
-				const manifestRes = await fetch('/sri-manifest.json');
-				if (manifestRes.ok) {
-					const manifest = await manifestRes.json();
-					integrity = manifest['/reticulum-go.wasm'];
+			if (browser && typeof fetch !== 'undefined') {
+				try {
+					const manifestRes = await fetch('/sri-manifest.json');
+					if (manifestRes.ok) {
+						const manifest = await manifestRes.json();
+						integrity = manifest['/reticulum-go.wasm'];
+					}
+				} catch (e) {
+					// Silently fail in dev mode when manifest doesn't exist
 				}
-			} catch (e) {
-				console.warn('Failed to load SRI manifest, proceeding without SRI:', e);
 			}
 
 			// integrity is part of RequestInit, but crossorigin is crossOrigin
@@ -266,6 +335,22 @@ class ReticulumService {
 		await saveIdentity(newIdentity);
 		this.identity = newIdentity;
 		this.initialized = true;
+
+		// Load data from DB
+		try {
+			const savedPeers = await db.getAllPeers();
+			for (const peer of savedPeers) {
+				this.peers.set(peer.hash, peer);
+				// Load messages for each peer
+				const peerMessages = await db.getMessages(peer.hash);
+				if (peerMessages.length > 0) {
+					this.messages.set(peer.hash, peerMessages);
+				}
+			}
+			this.log(`Loaded ${savedPeers.length} peers from storage`, 'info');
+		} catch (e) {
+			console.error('Failed to load data from DB:', e);
+		}
 
 		// Register callbacks with WASM
 		if (window.reticulum) {
@@ -374,7 +459,22 @@ class ReticulumService {
 	async sendMessage(peerHash: string, text: string) {
 		if (!window.reticulum) return;
 
-		const result = window.reticulum.sendMessage(peerHash, text);
+		// We need to prepend our own hash so the receiver knows who we are
+		// In Reticulum, the destination hash is 16 bytes.
+		// Since we don't have a full identity exchange protocol here,
+		// we use this simple [16 bytes sender hash][text] format.
+		const senderHashHex = this.identity?.address;
+		if (!senderHashHex) throw new Error('Identity not loaded');
+
+		const senderBytes = new Uint8Array(
+			senderHashHex.match(/.{1,2}/g)!.map((byte) => parseInt(byte, 16))
+		);
+		const textBytes = new TextEncoder().encode(text);
+		const combined = new Uint8Array(senderBytes.length + textBytes.length);
+		combined.set(senderBytes);
+		combined.set(textBytes, senderBytes.length);
+
+		const result = window.reticulum.sendMessage(peerHash, combined);
 		if (result.error) {
 			const errorMsg = result.error.toLowerCase();
 			if (
@@ -399,6 +499,7 @@ class ReticulumService {
 
 		const history = this.messages.get(peerHash) || [];
 		this.messages.set(peerHash, [...history, message]);
+		db.saveMessage(peerHash, message).catch(console.error);
 	}
 
 	async fetchKeys(peerHash: string) {
@@ -419,18 +520,26 @@ class ReticulumService {
 	}
 
 	private startStatsLoop() {
-		setInterval(() => {
-			if (window.reticulum && this.initialized) {
-				const s = window.reticulum.getStats();
-				this.stats = {
-					packetsSent: s.packetsSent,
-					packetsReceived: s.packetsReceived,
-					bytesSent: s.bytesSent,
-					bytesReceived: s.bytesReceived
-				};
-				this.connected = window.reticulum.isConnected();
-			}
-		}, 1000);
+		if (this.statsInterval) return;
+		this.statsInterval = setInterval(() => {
+			this.refreshStatus();
+		}, 1000) as unknown as number;
+	}
+
+	async resetAppData() {
+		if (!browser) return;
+
+		// Clear IndexedDB
+		const dbs = await window.indexedDB.databases();
+		dbs.forEach((db) => {
+			if (db.name) window.indexedDB.deleteDatabase(db.name);
+		});
+
+		// Clear LocalStorage
+		localStorage.clear();
+
+		// Reload page
+		window.location.reload();
 	}
 }
 

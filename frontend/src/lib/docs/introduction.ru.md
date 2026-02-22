@@ -1,6 +1,6 @@
 # Введение
 
-Reticulum-Go — это высокопроизводительная реализация [Reticulum Network Stack](https://github.com/markqvist/Reticulum) на языке Go. Этот проект предоставляет полную реализацию на Go с бесшовной поддержкой WebAssembly для браузеров.
+Reticulum-Go - это высокопроизводительная реализация [Reticulum Network Stack](https://github.com/markqvist/Reticulum) на языке Go. Этот проект предоставляет полную реализацию на Go с бесшовной поддержкой WebAssembly для браузеров.
 
 ## Цели проекта
 

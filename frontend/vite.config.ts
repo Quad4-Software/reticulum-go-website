@@ -9,10 +9,13 @@ export default defineConfig({
 		sveltekit(),
 		VitePWA({
 			registerType: 'autoUpdate',
-			injectRegister: 'auto',
+			injectRegister: null,
+			devOptions: {
+				enabled: false
+			},
 			workbox: {
 				globPatterns: ['**/*.{js,css,html,ico,png,svg,wasm}'],
-				maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
+				maximumFileSizeToCacheInBytes: 15 * 1024 * 1024,
 				runtimeCaching: [
 					{
 						urlPattern: /^https:\/\/.*\/docs.*/,
@@ -28,20 +31,55 @@ export default defineConfig({
 				]
 			},
 			manifest: {
-				name: 'Reticulum-Go Docs',
-				short_name: 'RetDocs',
-				description: 'Documentation for Reticulum-Go',
-				theme_color: '#ffffff',
+				name: 'Quad4 Reticulum',
+				short_name: 'Reticulum',
+				description: 'Resilient, encrypted, and decentralized communication network',
+				theme_color: '#00ADD8',
+				background_color: '#ffffff',
+				display: 'standalone',
+				orientation: 'portrait',
+				scope: '/',
+				start_url: '/',
+				shortcuts: [
+					{
+						name: 'WASM Chat',
+						short_name: 'Chat',
+						description: 'Reticulum WASM Chat Example',
+						url: '/wasm-example',
+						icons: [{ src: 'logo.svg', sizes: '192x192' }]
+					},
+					{
+						name: 'Documentation',
+						short_name: 'Docs',
+						description: 'Reticulum-Go Documentation',
+						url: '/docs',
+						icons: [{ src: 'logo.svg', sizes: '192x192' }]
+					}
+				],
 				icons: [
 					{
 						src: 'logo.svg',
 						sizes: '192x192',
-						type: 'image/svg+xml'
+						type: 'image/svg+xml',
+						purpose: 'any'
 					},
 					{
 						src: 'logo.svg',
 						sizes: '512x512',
-						type: 'image/svg+xml'
+						type: 'image/svg+xml',
+						purpose: 'any'
+					},
+					{
+						src: 'logo.svg',
+						sizes: '192x192',
+						type: 'image/svg+xml',
+						purpose: 'maskable'
+					},
+					{
+						src: 'logo.svg',
+						sizes: '512x512',
+						type: 'image/svg+xml',
+						purpose: 'maskable'
 					}
 				]
 			}

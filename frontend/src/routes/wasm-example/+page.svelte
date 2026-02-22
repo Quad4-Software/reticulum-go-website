@@ -5,11 +5,24 @@
 
 	let messageInput = $state('');
 	let searchQuery = $state('');
+	let manualHash = $state('');
 	let showToast = $state(false);
 	let toastMessage = $state('');
+	let scrollContainer = $state<HTMLDivElement | null>(null);
+	let showManualEntry = $state(false);
 
 	onMount(async () => {
 		await reticulum.ensureWasmLoaded();
+	});
+
+	$effect(() => {
+		// Auto-scroll when new messages arrive
+		if (currentMessages && scrollContainer) {
+			scrollContainer.scrollTo({
+				top: scrollContainer.scrollHeight,
+				behavior: 'smooth'
+			});
+		}
 	});
 
 	const peers = $derived(
@@ -50,6 +63,33 @@
 		} catch (e) {
 			console.error(e);
 		}
+	}
+
+	function handleManualPeer() {
+		const hash = manualHash.trim().toLowerCase();
+		if (hash.length !== 32) {
+			triggerToast('Hash must be exactly 32 hex characters');
+			return;
+		}
+		if (!/^[0-9a-f]+$/.test(hash)) {
+			triggerToast('Invalid hex characters');
+			return;
+		}
+
+		if (!reticulum.peers.has(hash)) {
+			reticulum.peers.set(hash, {
+				hash: hash,
+				name: `Manual: ${hash.substring(0, 8)}`,
+				hops: 0,
+				lastSeen: new Date()
+			});
+			reticulum.peerKeyStatus.set(hash, 'unknown');
+		}
+
+		reticulum.selectedPeerHash = hash;
+		manualHash = '';
+		showManualEntry = false;
+		triggerToast('Peer added manually');
 	}
 
 	function formatBytes(bytes: number) {
@@ -189,6 +229,41 @@
 						<span>{formatBytes(reticulum.stats.bytesSent)} ↑</span>
 					</div>
 				</div>
+				<div
+					class="px-3 py-1.5 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl"
+				>
+					<span class="text-[9px] font-bold text-zinc-400 uppercase tracking-wider block"
+						>Announces</span
+					>
+					<div class="flex items-center gap-2">
+						<span class="text-[11px] font-bold text-green-500 flex items-center gap-1">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								class="w-2.5 h-2.5"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="3"
+								stroke-linecap="round"
+								stroke-linejoin="round"><path d="m19 12-7 7-7-7" /><path d="M12 19V5" /></svg
+							>
+							{reticulum.stats.announcesReceived}
+						</span>
+						<span class="text-[11px] font-bold text-[#00ADD8] flex items-center gap-1">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								class="w-2.5 h-2.5"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="3"
+								stroke-linecap="round"
+								stroke-linejoin="round"><path d="m5 12 7-7 7 7" /><path d="M12 19V5" /></svg
+							>
+							{reticulum.stats.announcesSent}
+						</span>
+					</div>
+				</div>
 			</div>
 		</section>
 
@@ -201,6 +276,73 @@
 					<div
 						class="flex items-center gap-3 bg-zinc-50 dark:bg-zinc-900 p-1.5 rounded-2xl border border-zinc-200 dark:border-zinc-800"
 					>
+						{#if typeof Notification !== 'undefined'}
+							<button
+								onclick={() => reticulum.requestNotificationPermission()}
+								class="flex items-center gap-2 px-2 hover:opacity-80 transition-opacity"
+								title={reticulum.notificationsEnabled
+									? 'Notifications Enabled'
+									: 'Request Notification Permission'}
+							>
+								<div class="relative flex items-center">
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										class="w-4 h-4 {reticulum.notificationsEnabled
+											? 'text-[#00ADD8]'
+											: 'text-zinc-400'}"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+									>
+										<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+										<path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+									</svg>
+									{#if !reticulum.notificationsEnabled}
+										<div
+											class="absolute -top-1 -right-1 w-2 h-2 bg-amber-500 rounded-full border border-zinc-50 dark:border-zinc-900"
+										></div>
+									{/if}
+								</div>
+								<span
+									class="text-[11px] font-bold {reticulum.notificationsEnabled
+										? 'text-zinc-700 dark:text-zinc-300'
+										: 'text-zinc-500'}"
+								>
+									{reticulum.notificationsEnabled ? 'Alerts On' : 'Enable Alerts'}
+								</span>
+							</button>
+							<div class="w-px h-5 bg-zinc-200 dark:border-zinc-800"></div>
+						{/if}
+
+						<button
+							onclick={() => {
+								if (confirm('Are you sure you want to reset all local data? This will clear your identity, messages, and contacts.')) {
+									reticulum.resetAppData();
+								}
+							}}
+							class="p-2 hover:bg-red-50 dark:hover:bg-red-950/30 text-zinc-400 hover:text-red-500 transition-colors rounded-xl"
+							title="Reset Application Data"
+						>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								class="w-4 h-4"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							>
+								<path d="M3 6h18" />
+								<path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+								<path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+							</svg>
+						</button>
+						<div class="w-px h-5 bg-zinc-200 dark:border-zinc-800"></div>
+
 						<label class="flex items-center gap-2 cursor-pointer group px-2">
 							<div class="relative">
 								<input
@@ -235,25 +377,77 @@
 				<div class="grid lg:grid-cols-3 gap-6">
 					<!-- Peer List -->
 					<div class="flex flex-col gap-4 lg:h-[500px] xl:h-[550px] 2xl:h-[600px]">
-						<div class="relative">
-							<input
-								type="text"
-								bind:value={searchQuery}
-								placeholder="search peers ({reticulum.peers.size})"
-								class="w-full pl-10 pr-4 py-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl text-sm focus:ring-1 ring-[#00ADD8] outline-none"
-							/>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg
+						<div class="flex gap-2">
+							<div class="relative flex-1">
+								<input
+									type="text"
+									bind:value={searchQuery}
+									placeholder="search peers ({reticulum.peers.size})"
+									class="w-full pl-10 pr-4 py-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl text-sm focus:ring-1 ring-[#00ADD8] outline-none"
+								/>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg
+								>
+							</div>
+							<button
+								onclick={() => (showManualEntry = !showManualEntry)}
+								class="p-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl hover:border-[#00ADD8] transition-colors group"
+								title="Add peer manually"
 							>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									class="w-5 h-5 text-zinc-400 group-hover:text-[#00ADD8]"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle
+										cx="9"
+										cy="7"
+										r="4"
+									/><line x1="19" y1="8" x2="19" y2="14" /><line
+										x1="22"
+										y1="11"
+										x2="16"
+										y2="11"
+									/></svg
+								>
+							</button>
 						</div>
+
+						{#if showManualEntry}
+							<div
+								class="p-4 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl space-y-3 animate-in fade-in slide-in-from-top-2 duration-200"
+							>
+								<div class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
+									Manual Peer Hash
+								</div>
+								<div class="flex gap-2">
+									<input
+										type="text"
+										bind:value={manualHash}
+										placeholder="fcff5e64a3ea4edad1d03093fc8fe07f"
+										class="flex-1 px-3 py-1.5 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg text-xs font-mono outline-none focus:ring-1 ring-[#00ADD8]"
+									/>
+									<button
+										onclick={handleManualPeer}
+										class="px-3 py-1.5 bg-[#00ADD8] text-white text-[10px] font-bold rounded-lg shadow-sm shadow-[#00ADD8]/20"
+									>
+										Add
+									</button>
+								</div>
+							</div>
+						{/if}
 
 						<div class="space-y-2 flex-1 overflow-y-auto pr-2 custom-scrollbar">
 							{#if peers.length === 0}
@@ -301,7 +495,9 @@
 										>
 											<span class="font-mono opacity-60">{peer.hash.substring(0, 10)}...</span>
 											<span class="bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded-md"
-												>{peer.hops} {peer.hops === 1 ? 'hop' : 'hops'}</span
+												>{peer.hops === 0
+													? 'unknown'
+													: `${peer.hops} ${peer.hops === 1 ? 'hop' : 'hops'}`}</span
 											>
 										</div>
 									</button>
@@ -342,6 +538,7 @@
 							</div>
 
 							<div
+								bind:this={scrollContainer}
 								class="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar bg-zinc-50/50 dark:bg-zinc-900/20"
 							>
 								{#each currentMessages as msg, i (i)}

@@ -3,14 +3,45 @@
 	import Logo from './Logo.svelte';
 	import { page } from '$app/state';
 	import { t, locale, locales } from 'svelte-i18n';
-	import { Languages, Menu, X } from 'lucide-svelte';
+	import { Languages, Menu, X, ChevronDown, Check } from 'lucide-svelte';
 	import { slide } from 'svelte/transition';
 
+	const localeNames: Record<string, string> = {
+		en: 'English',
+		de: 'Deutsch',
+		ru: 'Русский',
+		it: 'Italiano'
+	};
+
 	let isMobileMenuOpen = $state(false);
+	let langDropdownOpen = $state(false);
+	let langDropdownEl: HTMLElement;
 
 	function toggleMobileMenu() {
 		isMobileMenuOpen = !isMobileMenuOpen;
 	}
+
+	function toggleLangDropdown() {
+		langDropdownOpen = !langDropdownOpen;
+	}
+
+	function selectLocale(l: string) {
+		$locale = l;
+		langDropdownOpen = false;
+	}
+
+	function handleClickOutside(e: MouseEvent) {
+		if (langDropdownEl && !langDropdownEl.contains(e.target as Node)) {
+			langDropdownOpen = false;
+		}
+	}
+
+	$effect(() => {
+		if (!langDropdownOpen) return;
+		const handler = (e: MouseEvent) => handleClickOutside(e);
+		document.addEventListener('click', handler, true);
+		return () => document.removeEventListener('click', handler, true);
+	});
 </script>
 
 <nav
@@ -67,21 +98,51 @@
 			</div>
 
 			<div class="flex items-center gap-4">
-				<div class="relative group flex items-center">
-					<Languages
-						class="w-5 h-5 text-zinc-600 dark:text-zinc-400 group-hover:text-zinc-900 dark:group-hover:text-white transition-colors cursor-pointer pointer-events-none"
-					/>
-					<select
-						bind:value={$locale}
-						class="absolute inset-0 w-full h-full opacity-0 cursor-pointer appearance-none"
-						aria-label="Select Language"
+				<div
+					bind:this={langDropdownEl}
+					class="relative"
+				>
+					<button
+						type="button"
+						onclick={toggleLangDropdown}
+						aria-expanded={langDropdownOpen}
+						aria-haspopup="listbox"
+						aria-label="Select language"
+						class="flex items-center gap-2 px-3 py-2 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900/80 text-zinc-700 dark:text-zinc-300 text-sm font-medium shadow-sm hover:border-zinc-300 dark:hover:border-zinc-600 hover:bg-zinc-50 dark:hover:bg-zinc-800/80 focus:outline-none focus:ring-2 focus:ring-zinc-400 dark:focus:ring-zinc-500 focus:ring-offset-2 dark:focus:ring-offset-zinc-950 transition-all"
 					>
-						{#each $locales as l (l)}
-							<option value={l} class="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">
-								{l.toUpperCase()}
-							</option>
-						{/each}
-					</select>
+						<Languages class="w-4 h-4 shrink-0 text-zinc-500 dark:text-zinc-400" />
+						<span class="min-w-[4.5rem] text-left">{localeNames[$locale ?? 'en'] ?? ($locale ?? 'en')}</span>
+						<ChevronDown
+							class="w-4 h-4 shrink-0 text-zinc-400 dark:text-zinc-500 transition-transform duration-200 {langDropdownOpen
+								? 'rotate-180'
+								: ''}"
+						/>
+					</button>
+					{#if langDropdownOpen}
+						<div
+							transition:slide={{ duration: 150 }}
+							class="absolute right-0 mt-2 min-w-[11rem] rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 shadow-xl shadow-zinc-900/10 dark:shadow-black/40 py-1.5 z-50"
+							role="listbox"
+							aria-label="Language options"
+						>
+							{#each $locales as l (l)}
+								<button
+									type="button"
+									role="option"
+									aria-selected={$locale === l}
+									onclick={() => selectLocale(l)}
+									class="w-full flex items-center justify-between gap-3 px-4 py-2.5 text-left text-sm transition-colors {$locale === l
+										? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white font-medium'
+										: 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800/60 hover:text-zinc-900 dark:hover:text-zinc-200'}"
+								>
+									<span>{localeNames[l] ?? l}</span>
+									{#if $locale === l}
+										<Check class="w-4 h-4 shrink-0 text-zinc-600 dark:text-zinc-300" />
+									{/if}
+								</button>
+							{/each}
+						</div>
+					{/if}
 				</div>
 				<a
 					href="https://git.quad4.io/Networks/Reticulum-Go"

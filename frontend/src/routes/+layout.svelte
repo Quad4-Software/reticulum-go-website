@@ -4,6 +4,7 @@
 	import '../lib/i18n';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import Footer from '$lib/components/Footer.svelte';
+	import PwaReloadPrompt from '$lib/components/PwaReloadPrompt.svelte';
 	import { onMount, setContext } from 'svelte';
 
 	let { children } = $props();
@@ -57,6 +58,7 @@
 			{@render children()}
 		</main>
 		<Footer />
+		<PwaReloadPrompt />
 	</div>
 {:else}
 	<div class="min-h-screen bg-white dark:bg-zinc-950 flex items-center justify-center">
