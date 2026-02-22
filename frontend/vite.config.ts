@@ -1,9 +1,33 @@
 import { sveltekit } from '@sveltejs/kit/vite';
 import tailwindcss from '@tailwindcss/vite';
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vitest/config';
 import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
+	test: {
+		environment: 'jsdom',
+		fileParallelism: false,
+		include: ['src/**/*.{test,spec}.{js,ts,svelte}'],
+		coverage: {
+			provider: 'v8',
+			reporter: ['text', 'json', 'html'],
+			include: [
+				'src/lib/db.ts',
+				'src/lib/identity.ts',
+				'src/lib/version.ts',
+				'src/lib/docs-service.ts',
+				'src/routes/api/repo-info/+server.ts'
+			],
+			exclude: ['src/**/*.d.ts', 'src/**/*.test.{ts,svelte}', 'src/**/*.spec.{ts,svelte}'],
+			thresholds: {
+				statements: 75,
+				branches: 50,
+				functions: 75,
+				lines: 75
+			}
+		},
+		setupFiles: ['./src/test/setup.ts']
+	},
 	plugins: [
 		tailwindcss(),
 		sveltekit(),

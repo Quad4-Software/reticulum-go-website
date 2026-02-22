@@ -129,7 +129,14 @@
 						>
 					</a>
 				</li>
-				<li><a href="/donate" class="hover:text-zinc-900 dark:hover:text-zinc-100">Donate</a></li>
+				<li>
+					<a
+						href="https://unsigned.io/donate.html"
+						target="_blank"
+						rel="noopener noreferrer"
+						class="hover:text-zinc-900 dark:hover:text-zinc-100">Donate</a
+					>
+				</li>
 				<li><a href="/contact" class="hover:text-zinc-900 dark:hover:text-zinc-100">Contact</a></li>
 				<li>
 					<a

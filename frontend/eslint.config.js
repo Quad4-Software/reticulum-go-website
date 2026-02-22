@@ -33,6 +33,6 @@ export default ts.config(
 		}
 	},
 	{
-		ignores: ['build/', '.svelte-kit/', 'dist/', 'cmd/', 'static/wasm_exec.js']
+		ignores: ['build/', '.svelte-kit/', 'dist/', 'cmd/', 'static/wasm_exec.js', 'coverage/']
 	}
 );

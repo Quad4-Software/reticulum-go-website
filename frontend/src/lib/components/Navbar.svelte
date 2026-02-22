@@ -98,10 +98,7 @@
 			</div>
 
 			<div class="flex items-center gap-4">
-				<div
-					bind:this={langDropdownEl}
-					class="relative"
-				>
+				<div bind:this={langDropdownEl} class="relative">
 					<button
 						type="button"
 						onclick={toggleLangDropdown}
@@ -111,7 +108,9 @@
 						class="flex items-center gap-2 px-3 py-2 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900/80 text-zinc-700 dark:text-zinc-300 text-sm font-medium shadow-sm hover:border-zinc-300 dark:hover:border-zinc-600 hover:bg-zinc-50 dark:hover:bg-zinc-800/80 focus:outline-none focus:ring-2 focus:ring-zinc-400 dark:focus:ring-zinc-500 focus:ring-offset-2 dark:focus:ring-offset-zinc-950 transition-all"
 					>
 						<Languages class="w-4 h-4 shrink-0 text-zinc-500 dark:text-zinc-400" />
-						<span class="min-w-[4.5rem] text-left">{localeNames[$locale ?? 'en'] ?? ($locale ?? 'en')}</span>
+						<span class="min-w-[4.5rem] text-left"
+							>{localeNames[$locale ?? 'en'] ?? $locale ?? 'en'}</span
+						>
 						<ChevronDown
 							class="w-4 h-4 shrink-0 text-zinc-400 dark:text-zinc-500 transition-transform duration-200 {langDropdownOpen
 								? 'rotate-180'
@@ -131,7 +130,8 @@
 									role="option"
 									aria-selected={$locale === l}
 									onclick={() => selectLocale(l)}
-									class="w-full flex items-center justify-between gap-3 px-4 py-2.5 text-left text-sm transition-colors {$locale === l
+									class="w-full flex items-center justify-between gap-3 px-4 py-2.5 text-left text-sm transition-colors {$locale ===
+									l
 										? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white font-medium'
 										: 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800/60 hover:text-zinc-900 dark:hover:text-zinc-200'}"
 								>
@@ -217,15 +217,6 @@
 						: 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900'}"
 				>
 					{$t('common.apps')}
-				</a>
-				<a
-					href="/donate"
-					onclick={() => (isMobileMenuOpen = false)}
-					class="block px-3 py-2 rounded-lg text-base font-medium {page.url.pathname === '/donate'
-						? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white'
-						: 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900'}"
-				>
-					{$t('common.donate')}
 				</a>
 				<a
 					href="/contact"

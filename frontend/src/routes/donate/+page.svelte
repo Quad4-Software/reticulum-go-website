@@ -1,25 +1,5 @@
 <script lang="ts">
 	import { t } from 'svelte-i18n';
-	import { Copy } from 'lucide-svelte';
-	import Toast from '$lib/components/Toast.svelte';
-
-	const moneroAddress = '88XnEvNTWQj1VqLhMbDXyJf69o8AZ5DTcG1xPURgPXyZipPdSftVqMnJHKjRX6njpj8rK81NcquBs6eMLkAhU3aUJQ9KQM5';
-	const bitcoinAddress = 'bc1q3zu8z6n0gujvm9pfwlqqnfwrw785juk9hpd4x7';
-
-	let showToast = $state(false);
-	let toastKey = $state(0);
-	let toastMessage = $state('');
-
-	async function copyToClipboard(text: string, type: string) {
-		try {
-			await navigator.clipboard.writeText(text);
-			toastMessage = `${type} address copied to clipboard!`;
-			showToast = true;
-			toastKey++;
-		} catch (err) {
-			console.error('Failed to copy:', err);
-		}
-	}
 </script>
 
 <svelte:head>
@@ -74,44 +54,4 @@
 			</a>
 		</div>
 	</div>
-
-	<details
-		class="p-8 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50"
-	>
-		<summary class="cursor-pointer text-lg font-semibold text-zinc-900 dark:text-zinc-100 hover:text-[#00ADD8] transition-colors">
-			If you really want to donate to me
-		</summary>
-		<div class="mt-6 space-y-4">
-			<div>
-				<label class="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
-					Monero:
-				</label>
-				<button
-					onclick={() => copyToClipboard(moneroAddress, 'Monero')}
-					class="w-full flex items-center justify-between gap-3 p-3 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 font-mono text-sm text-zinc-600 dark:text-zinc-400 hover:border-[#00ADD8] hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-all cursor-pointer group"
-				>
-					<span class="flex-1 text-left break-all">{moneroAddress}</span>
-					<Copy class="w-4 h-4 text-zinc-400 group-hover:text-[#00ADD8] flex-shrink-0" />
-				</button>
-			</div>
-			<div>
-				<label class="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
-					Bitcoin:
-				</label>
-				<button
-					onclick={() => copyToClipboard(bitcoinAddress, 'Bitcoin')}
-					class="w-full flex items-center justify-between gap-3 p-3 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 font-mono text-sm text-zinc-600 dark:text-zinc-400 hover:border-[#00ADD8] hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-all cursor-pointer group"
-				>
-					<span class="flex-1 text-left break-all">{bitcoinAddress}</span>
-					<Copy class="w-4 h-4 text-zinc-400 group-hover:text-[#00ADD8] flex-shrink-0" />
-				</button>
-			</div>
-		</div>
-	</details>
-
-	{#if showToast}
-		{#key toastKey}
-			<Toast message={toastMessage} />
-		{/key}
-	{/if}
 </div>

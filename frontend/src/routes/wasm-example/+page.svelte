@@ -319,7 +319,11 @@
 
 						<button
 							onclick={() => {
-								if (confirm('Are you sure you want to reset all local data? This will clear your identity, messages, and contacts.')) {
+								if (
+									confirm(
+										'Are you sure you want to reset all local data? This will clear your identity, messages, and contacts.'
+									)
+								) {
 									reticulum.resetAppData();
 								}
 							}}

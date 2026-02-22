@@ -291,7 +291,7 @@ class ReticulumService {
 						const manifest = await manifestRes.json();
 						integrity = manifest['/reticulum-go.wasm'];
 					}
-				} catch (e) {
+				} catch {
 					// Silently fail in dev mode when manifest doesn't exist
 				}
 			}

@@ -22,4 +22,3 @@
 		<span>{message}</span>
 	</div>
 {/if}
-
