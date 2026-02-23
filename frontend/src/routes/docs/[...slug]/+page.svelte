@@ -3,10 +3,14 @@
 	import { FileCode, FileType } from 'lucide-svelte';
 	import { exportDoc } from '$lib/docs-service';
 	import { page } from '$app/state';
+	import Breadcrumbs from '$lib/components/Breadcrumbs.svelte';
+	import { getCanonicalUrl } from '$lib/seo';
+	import { SITE_URL } from '$lib/site-config';
 
 	let { data } = $props();
 
 	const slug = $derived(page.params.slug ?? '');
+	const pathname = $derived(page.url.pathname);
 
 	const docTitle = $derived(
 		(data.metadata?.title as string) ||
@@ -23,7 +27,13 @@
 		(data.metadata?.description as string) || `${docTitle} - Reticulum-Go Documentation`
 	);
 
-	const pageUrl = $derived(`https://reticulum-go.quad4.io${page.url.pathname}`);
+	const pageUrl = $derived(getCanonicalUrl(pathname));
+
+	const breadcrumbItems = $derived([
+		{ label: 'Home', href: '/' },
+		{ label: 'Docs', href: '/docs' },
+		{ label: docTitle }
+	]);
 </script>
 
 <svelte:head>
@@ -33,16 +43,17 @@
 	<meta property="og:url" content={pageUrl} />
 	<meta property="og:title" content={`${docTitle} | Reticulum-Go Documentation`} />
 	<meta property="og:description" content={docDescription} />
-	<meta property="og:image" content="https://reticulum-go.quad4.io/logo.svg" />
+	<meta property="og:image" content={`${SITE_URL}/logo.svg`} />
 	<meta property="twitter:card" content="summary_large_image" />
 	<meta property="twitter:url" content={pageUrl} />
 	<meta property="twitter:title" content={`${docTitle} | Reticulum-Go Documentation`} />
 	<meta property="twitter:description" content={docDescription} />
-	<meta property="twitter:image" content="https://reticulum-go.quad4.io/logo.svg" />
+	<meta property="twitter:image" content={`${SITE_URL}/logo.svg`} />
 </svelte:head>
 
 <div class="flex flex-col gap-8">
-	<div class="flex justify-end">
+	<Breadcrumbs items={breadcrumbItems} class="no-print" />
+	<div class="flex justify-end no-print">
 		<div
 			class="flex items-center gap-1 p-1 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg shadow-sm"
 		>

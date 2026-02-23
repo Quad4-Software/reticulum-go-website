@@ -2,12 +2,23 @@
 	import '../app.css';
 	import { isLoading } from 'svelte-i18n';
 	import '../lib/i18n';
+	import { page } from '$app/state';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import Footer from '$lib/components/Footer.svelte';
 	import PwaReloadPrompt from '$lib/components/PwaReloadPrompt.svelte';
+	import {
+		getOrganizationJsonLd,
+		getSoftwareApplicationJsonLd,
+		getWebSiteJsonLd,
+		getCanonicalUrl,
+		getHreflangLinks
+	} from '$lib/seo';
 	import { onMount, setContext } from 'svelte';
 
 	let { children } = $props();
+
+	const canonicalUrl = $derived(getCanonicalUrl(page.url.pathname));
+	const hreflangLinks = $derived(getHreflangLinks(page.url.pathname));
 
 	let isDark = $state(false);
 	let themeInitialized = $state(false);
@@ -48,6 +59,16 @@
 		}
 	});
 </script>
+
+<svelte:head>
+	<link rel="canonical" href={canonicalUrl} />
+	{#each hreflangLinks as link}
+		<link rel="alternate" hreflang={link.lang} href={link.href} />
+	{/each}
+	{@html `<script type="application/ld+json">${getOrganizationJsonLd()}</script>`}
+	{@html `<script type="application/ld+json">${getSoftwareApplicationJsonLd()}</script>`}
+	{@html `<script type="application/ld+json">${getWebSiteJsonLd()}</script>`}
+</svelte:head>
 
 {#if i18nReady}
 	<div

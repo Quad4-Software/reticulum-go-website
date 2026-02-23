@@ -25,11 +25,13 @@ const config = {
 		}),
 		prerender: {
 			entries: ['*', '/docs/introduction', '/docs/usage'],
-			handleUnseenRoutes: ({ path }) => {
-				if (path.startsWith('/docs/')) {
-					return 'ignore';
-				}
-				return 'fail';
+			handleUnseenRoutes: ({ routes }) => {
+				const ignorable = (r) =>
+					r === '/docs' ||
+					r.startsWith('/docs/') ||
+					r === '/sitemap.xml';
+				if (routes.every(ignorable)) return;
+				throw new Error(`Unseen prerenderable routes: ${routes.join(', ')}`);
 			}
 		}
 	}

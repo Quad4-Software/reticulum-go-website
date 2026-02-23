@@ -67,3 +67,39 @@
 		@apply opacity-50;
 	}
 }
+
+@layer utilities {
+	@media print {
+		.prose,
+		.prose-zinc,
+		.dark .prose-invert {
+			max-width: none;
+			font-size: 12pt;
+			line-height: 1.5;
+		}
+		.prose a[href]::after {
+			content: ' (' attr(href) ')';
+			font-size: 0.85em;
+			opacity: 0.7;
+		}
+		.prose pre,
+		.prose code {
+			white-space: pre-wrap;
+			word-break: break-word;
+		}
+		nav,
+		aside,
+		button,
+		[data-sveltekit-preload-data],
+		.no-print {
+			display: none !important;
+		}
+		main {
+			display: block !important;
+		}
+		body {
+			background: white;
+			color: black;
+		}
+	}
+}
