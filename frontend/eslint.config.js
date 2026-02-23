@@ -12,6 +12,11 @@ export default ts.config(
 		},
 		rules: {
 			'svelte/no-navigation-without-resolve': 'off',
+			'svelte/no-at-html-tags': 'off',
+			'@typescript-eslint/no-unused-vars': [
+				'error',
+				{ argsIgnorePattern: '^_', varsIgnorePattern: '^_' }
+			],
 			...securityPlugin.configs.recommended.rules,
 			'security/detect-object-injection': 'off'
 		}

@@ -144,14 +144,19 @@
 
 			{#if reticulum.isLoading}
 				<div
-					class="mt-8 flex items-center gap-4 p-4 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 animate-pulse"
+					class="mt-8 p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 space-y-4"
 				>
-					<div
-						class="w-5 h-5 border-2 border-[#00ADD8] border-t-transparent rounded-full animate-spin"
-					></div>
-					<span class="text-sm font-medium text-zinc-600 dark:text-zinc-400"
-						>Loading Reticulum WASM...</span
-					>
+					<div class="flex items-center gap-4">
+						<div class="w-10 h-10 rounded-lg bg-zinc-200 dark:bg-zinc-700 animate-pulse"></div>
+						<div class="flex-1 space-y-2">
+							<div class="h-4 w-48 rounded bg-zinc-200 dark:bg-zinc-700 animate-pulse"></div>
+							<div class="h-3 w-32 rounded bg-zinc-200 dark:bg-zinc-700 animate-pulse"></div>
+						</div>
+					</div>
+					<div class="space-y-2">
+						<div class="h-3 w-full rounded bg-zinc-200 dark:bg-zinc-700 animate-pulse"></div>
+						<div class="h-3 w-4/5 rounded bg-zinc-200 dark:bg-zinc-700 animate-pulse"></div>
+					</div>
 				</div>
 			{:else if reticulum.error}
 				<div
@@ -689,17 +694,17 @@
 				</button>
 			</div>
 			<div
-				class="bg-zinc-950 rounded-2xl p-3 font-mono text-[10px] text-zinc-400 h-32 overflow-y-auto space-y-1 border border-zinc-800 shadow-inner custom-scrollbar"
+				class="bg-zinc-100 dark:bg-zinc-950 rounded-2xl p-3 font-mono text-[10px] text-zinc-700 dark:text-zinc-400 h-32 overflow-y-auto space-y-1 border border-zinc-200 dark:border-zinc-800 shadow-inner custom-scrollbar"
 			>
 				{#each reticulum.logs as log, i (i)}
 					<div class="flex gap-2">
-						<span class="text-zinc-600">[{log.time}]</span>
+						<span class="text-zinc-500 dark:text-zinc-600">[{log.time}]</span>
 						<span
 							class={log.type === 'error'
 								? 'text-red-500'
 								: log.type === 'success'
 									? 'text-green-500'
-									: 'text-zinc-300'}
+									: 'text-zinc-700 dark:text-zinc-300'}
 						>
 							{log.msg}
 						</span>

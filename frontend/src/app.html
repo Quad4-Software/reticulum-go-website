@@ -44,26 +44,39 @@
 		<meta name="twitter:image" content="https://reticulum-go.quad4.io/logo.svg" />
 		<meta name="twitter:image:alt" content="Reticulum-Go Logo" />
 
+		<link rel="dns-prefetch" href="https://git.quad4.io" />
+		<link rel="dns-prefetch" href="https://unsigned.io" />
+		<link rel="preconnect" href="https://git.quad4.io" crossorigin />
+		<link rel="preconnect" href="https://unsigned.io" crossorigin />
+
 		<script>
-			// On page load or when changing themes, best to add inline in `head` to avoid FOUC
-			if (typeof window !== 'undefined') {
-				if (
-					localStorage.getItem('theme') === 'dark' ||
-					(!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
-				) {
-					document.documentElement.classList.add('dark');
-				} else {
-					document.documentElement.classList.remove('dark');
-				}
+			(function () {
+				var t = localStorage.getItem('theme');
+				var dark = t === 'dark' || (t !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+				document.documentElement.classList.toggle('dark', dark);
 				window.reticulumReady = function () {
 					console.log('Reticulum WASM initialized');
 				};
-			}
+			})();
 		</script>
 		<script src="/wasm_exec.js" defer></script>
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">
+		<noscript>
+			<div
+				style="position:fixed;inset:0;z-index:9999;background:#0f172a;color:#e2e8f0;display:flex;align-items:center;justify-content:center;padding:2rem;text-align:center;font-family:system-ui,sans-serif"
+			>
+				<div>
+					<p style="font-size:1.25rem;font-weight:600;margin-bottom:0.5rem">
+						JavaScript is required
+					</p>
+					<p style="opacity:0.8;max-width:24rem">
+						This site needs JavaScript to run. Please enable it in your browser settings.
+					</p>
+				</div>
+			</div>
+		</noscript>
 		<div style="display: contents">%sveltekit.body%</div>
 	</body>
 </html>

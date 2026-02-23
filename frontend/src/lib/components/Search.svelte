@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Search as SearchIcon, Loader2, FileText } from 'lucide-svelte';
+	import { Search as SearchIcon, FileText } from 'lucide-svelte';
 	import Fuse, { type FuseResultMatch } from 'fuse.js';
 	import { locale } from 'svelte-i18n';
 	import { marked } from 'marked';
@@ -150,7 +150,19 @@
 	}
 
 	function onWindowKeydown(e: KeyboardEvent) {
-		if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+		if (e.key === 'Escape') {
+			if (isOpen) {
+				e.preventDefault();
+				isOpen = false;
+			}
+			return;
+		}
+		const target = e.target as HTMLElement;
+		const isInput = target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable);
+		if (e.key === '/' && !isInput) {
+			e.preventDefault();
+			isOpen = true;
+		} else if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
 			e.preventDefault();
 			isOpen = true;
 		}
@@ -165,11 +177,17 @@
 >
 	<SearchIcon class="w-4 h-4" />
 	<span class="flex-1">Search docs...</span>
-	<kbd
-		class="hidden md:inline-flex items-center gap-1 px-1.5 py-0.5 text-xs font-medium text-zinc-500 bg-zinc-100 dark:bg-zinc-800 rounded border border-zinc-200 dark:border-zinc-700"
-	>
-		<span class="text-xs">⌘</span>K
-	</kbd>
+	<div class="hidden md:flex items-center gap-1">
+		<kbd
+			class="inline-flex items-center gap-1 px-1.5 py-0.5 text-xs font-medium text-zinc-500 bg-zinc-100 dark:bg-zinc-800 rounded border border-zinc-200 dark:border-zinc-700"
+		>/</kbd
+		>
+		<kbd
+			class="inline-flex items-center gap-1 px-1.5 py-0.5 text-xs font-medium text-zinc-500 bg-zinc-100 dark:bg-zinc-800 rounded border border-zinc-200 dark:border-zinc-700"
+		>
+			<span class="text-xs">⌘</span>K
+		</kbd>
+	</div>
 </button>
 
 {#if isOpen}
@@ -195,7 +213,7 @@
 					class="flex-1 bg-transparent border-none outline-none text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 h-6"
 				/>
 				{#if isLoading}
-					<Loader2 class="w-5 h-5 text-zinc-400 animate-spin ml-2" />
+					<div class="ml-2 w-5 h-5 rounded bg-zinc-200 dark:bg-zinc-700 animate-pulse"></div>
 				{:else}
 					<button
 						onclick={close}
@@ -251,18 +269,30 @@
 			>
 				<div class="flex items-center justify-between text-xs text-zinc-500">
 					<span>Search by Fuse.js</span>
-					<div class="flex gap-2">
+					<div class="flex flex-wrap gap-2">
+						<span class="flex items-center gap-1"
+							><kbd
+								class="px-1 bg-white dark:bg-zinc-800 rounded border border-zinc-200 dark:border-zinc-700"
+								>/</kbd
+							> search</span
+						>
 						<span class="flex items-center gap-1"
 							><kbd
 								class="px-1 bg-white dark:bg-zinc-800 rounded border border-zinc-200 dark:border-zinc-700"
 								>↑↓</kbd
-							> to navigate</span
+							> navigate</span
 						>
 						<span class="flex items-center gap-1"
 							><kbd
 								class="px-1 bg-white dark:bg-zinc-800 rounded border border-zinc-200 dark:border-zinc-700"
 								>↵</kbd
-							> to select</span
+							> select</span
+						>
+						<span class="flex items-center gap-1"
+							><kbd
+								class="px-1 bg-white dark:bg-zinc-800 rounded border border-zinc-200 dark:border-zinc-700"
+								>Esc</kbd
+							> close</span
 						>
 					</div>
 				</div>

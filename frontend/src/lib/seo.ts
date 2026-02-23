@@ -1,5 +1,11 @@
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, LOCALES } from './site-config';
 
+const JSON_LD_TYPE = 'application/ld+json';
+
+export function jsonLdScript(json: string): string {
+	return `<script type="${JSON_LD_TYPE}">${json}</script>`;
+}
+
 export function buildJsonLd(
 	type: 'Organization' | 'SoftwareApplication' | 'WebSite' | 'BreadcrumbList',
 	data: Record<string, unknown>

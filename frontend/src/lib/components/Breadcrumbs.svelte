@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { ChevronRight } from 'lucide-svelte';
 	import { SITE_URL } from '$lib/site-config';
+	import { jsonLdScript } from '$lib/seo';
 
 	interface BreadcrumbItem {
 		label: string;
@@ -21,12 +22,13 @@
 			}))
 		})
 	);
+	const scriptTag = $derived(jsonLdScript(breadcrumbJsonLd));
 </script>
 
-{@html `<script type="application/ld+json">${breadcrumbJsonLd}</script>`}
+{@html scriptTag}
 
 <nav aria-label="Breadcrumb" class="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400 mb-6 {className}">
-	{#each items as item, i}
+	{#each items as item, i (item.label + (item.href ?? ''))}
 		{#if i > 0}
 			<ChevronRight class="w-4 h-4 shrink-0 text-zinc-400" />
 		{/if}

@@ -1,9 +1,16 @@
+/// <reference types="node" />
 import { sveltekit } from '@sveltejs/kit/vite';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'vitest/config';
 import { VitePWA } from 'vite-plugin-pwa';
 
-export default defineConfig({
+export default defineConfig(({ command }) => {
+	const isProd = command === 'build';
+	const isTest = process.env.VITEST === 'true';
+	return {
+	resolve: {
+		conditions: isTest ? ['browser'] : []
+	},
 	test: {
 		environment: 'jsdom',
 		fileParallelism: false,
@@ -40,7 +47,22 @@ export default defineConfig({
 			workbox: {
 				globPatterns: ['**/*.{js,css,html,ico,png,svg,wasm}'],
 				maximumFileSizeToCacheInBytes: 15 * 1024 * 1024,
+				navigateFallback: '/',
 				runtimeCaching: [
+					{
+						urlPattern:
+							// eslint-disable-next-line security/detect-unsafe-regex -- bounded pattern for PWA cache
+							/^https?:\/\/[^/]+\/(docs|wasm-example|interactive|apps|contact|donate)?(\/.*)?$/,
+						handler: 'NetworkFirst',
+						options: {
+							cacheName: 'pages-cache',
+							networkTimeoutSeconds: 3,
+							expiration: {
+								maxEntries: 100,
+								maxAgeSeconds: 60 * 60 * 24 * 7
+							}
+						}
+					},
 					{
 						urlPattern: /^https:\/\/.*\/docs.*/,
 						handler: 'StaleWhileRevalidate',
@@ -108,5 +130,10 @@ export default defineConfig({
 				]
 			}
 		}) as import('vite').PluginOption
-	]
+	],
+		build: {
+			sourcemap: !isProd,
+			minify: isProd ? 'esbuild' : false
+		}
+	};
 });

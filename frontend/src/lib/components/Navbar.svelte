@@ -1,6 +1,6 @@
 <script lang="ts">
-	// import ThemeToggle from './ThemeToggle.svelte';
 	import Logo from './Logo.svelte';
+	import ThemeToggle from './ThemeToggle.svelte';
 	import { page } from '$app/state';
 	import { t, locale, locales } from 'svelte-i18n';
 	import { Languages, Menu, X, ChevronDown, Check } from 'lucide-svelte';
@@ -42,7 +42,13 @@
 		document.addEventListener('click', handler, true);
 		return () => document.removeEventListener('click', handler, true);
 	});
+
+	function onKeydown(e: KeyboardEvent) {
+		if (e.key === 'Escape') langDropdownOpen = false;
+	}
 </script>
+
+<svelte:window onkeydown={onKeydown} />
 
 <nav
 	class="sticky top-0 z-50 w-full border-b border-zinc-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md"
@@ -144,6 +150,9 @@
 						</div>
 					{/if}
 				</div>
+				<div class="hidden md:block">
+					<ThemeToggle />
+				</div>
 				<a
 					href="https://git.quad4.io/Networks/Reticulum-Go"
 					target="_blank"
@@ -153,7 +162,6 @@
 				>
 					<img src="/gitea.svg" alt="Gitea" class="w-5 h-5" />
 				</a>
-				<!-- <ThemeToggle /> -->
 				<button
 					onclick={toggleMobileMenu}
 					class="md:hidden p-2 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
@@ -227,6 +235,9 @@
 				>
 					{$t('common.contact')}
 				</a>
+				<div class="flex items-center gap-2 px-3 py-2 md:hidden">
+					<ThemeToggle />
+				</div>
 			</div>
 		</div>
 	{/if}
