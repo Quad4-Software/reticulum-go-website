@@ -21,13 +21,7 @@ const config = {
 			precompress: false
 		}),
 		prerender: {
-			entries: ['*', '/docs/introduction', '/docs/usage'],
-			handleUnseenRoutes: ({ path }) => {
-				if (path.startsWith('/docs/')) {
-					return 'ignore';
-				}
-				return 'fail';
-			}
+			entries: []
 		}
 	}
 };
