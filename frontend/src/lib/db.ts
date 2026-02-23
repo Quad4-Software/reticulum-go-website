@@ -1,7 +1,8 @@
 import { browser } from '$app/environment';
 import type { Peer, ChatMessage } from './reticulum.svelte';
 
-const DB_NAME = 'reticulum_wasm_db';
+// Keep app-side IndexedDB separate from any WASM-internal DB usage.
+const DB_NAME = 'reticulum_web_db';
 const DB_VERSION = 4;
 
 export interface DBPeer {

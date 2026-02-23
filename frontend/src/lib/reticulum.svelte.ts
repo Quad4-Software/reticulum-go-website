@@ -96,6 +96,7 @@ class ReticulumService {
 	private wasmLoadingPromise: Promise<void> | null = null;
 	private announceInterval: number | null = null;
 	private statsInterval: number | null = null;
+	private legacyDbChecked = false;
 
 	constructor() {
 		if (browser) {
@@ -157,6 +158,18 @@ class ReticulumService {
 		}
 
 		if (this.wasmLoadingPromise) return this.wasmLoadingPromise;
+
+		if (!this.legacyDbChecked) {
+			this.legacyDbChecked = true;
+			try {
+				// Remove legacy DB name that can conflict with older WASM schema versions.
+				if (typeof indexedDB !== 'undefined') {
+					indexedDB.deleteDatabase('reticulum_wasm_db');
+				}
+			} catch {
+				// Ignore cleanup errors; WASM load will continue.
+			}
+		}
 
 		this.isLoading = true;
 		this.error = null;
@@ -282,23 +295,7 @@ class ReticulumService {
 
 		const go = new window.Go();
 		try {
-			// Try to get SRI hash from manifest (only in browser)
-			let integrity: string | undefined;
-			if (browser && typeof fetch !== 'undefined') {
-				try {
-					const manifestRes = await fetch('/sri-manifest.json');
-					if (manifestRes.ok) {
-						const manifest = await manifestRes.json();
-						integrity = manifest['/reticulum-go.wasm'];
-					}
-				} catch {
-					// Silently fail in dev mode when manifest doesn't exist
-				}
-			}
-
-			// integrity is part of RequestInit, but crossorigin is crossOrigin
-			const fetchOptions: RequestInit = integrity ? { integrity, mode: 'cors' } : {};
-			const response = await fetch('/reticulum-go.wasm', fetchOptions);
+			const response = await fetch('/reticulum-go.wasm');
 			if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
 			const result = await WebAssembly.instantiateStreaming(response, go.importObject);
