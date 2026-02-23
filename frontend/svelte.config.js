@@ -26,12 +26,14 @@ const config = {
 		prerender: {
 			entries: ['*', '/docs/introduction', '/docs/usage'],
 			handleUnseenRoutes: ({ routes }) => {
+				const safeRoutes = routes.filter((r) => typeof r === 'string');
 				const ignorable = (r) =>
 					r === '/docs' ||
 					r.startsWith('/docs/') ||
 					r === '/sitemap.xml';
-				if (routes.every(ignorable)) return;
-				throw new Error(`Unseen prerenderable routes: ${routes.join(', ')}`);
+				const unseen = safeRoutes.filter((r) => !ignorable(r));
+				if (unseen.length === 0) return;
+				throw new Error(`Unseen prerenderable routes: ${unseen.join(', ')}`);
 			}
 		}
 	}
