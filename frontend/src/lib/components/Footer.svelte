@@ -3,9 +3,9 @@
 	import { getLatestTag, getRepoUpdatedAt, calculateTimeAgo } from '$lib/version';
 	import { t } from 'svelte-i18n';
 	import { Rss } from 'lucide-svelte';
-	import * as env from '$env/static/public';
+	import { env } from '$env/dynamic/public';
 
-	const showCoolify = 'PUBLIC_SHOW_COOLIFY' in env && env.PUBLIC_SHOW_COOLIFY === 'true';
+	const showCoolify = env.PUBLIC_SHOW_COOLIFY === 'true';
 	const currentYear = new Date().getFullYear();
 	let latestTag = $state<string | null>(null);
 	let repoUpdatedAt = $state<string | null>(null);
