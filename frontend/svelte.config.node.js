@@ -21,7 +21,15 @@ const config = {
 			precompress: false
 		}),
 		prerender: {
-			entries: []
+			entries: [],
+			handleUnseenRoutes: ({ routes, path }) => {
+				const values = [
+					...(Array.isArray(routes) ? routes : []),
+					...(typeof path === 'string' ? [path] : [])
+				].filter((r) => typeof r === 'string');
+				if (values.every((r) => r === '/sitemap.xml')) return 'ignore';
+				return 'fail';
+			}
 		}
 	}
 };
