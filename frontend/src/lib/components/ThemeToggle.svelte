@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Monitor, Sun, Moon } from 'lucide-svelte';
 	import { slide } from 'svelte/transition';
-	import { theme, isDark, setTheme } from '$lib/theme';
+	import { theme, setTheme } from '$lib/theme';
 
 	const options: { value: import('$lib/theme').Theme; label: string; icon: typeof Sun }[] = [
 		{ value: 'light', label: 'Light', icon: Sun },
