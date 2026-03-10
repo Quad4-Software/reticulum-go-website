@@ -6,7 +6,6 @@
 	import Navbar from '$lib/components/Navbar.svelte';
 	import Footer from '$lib/components/Footer.svelte';
 	import PwaReloadPrompt from '$lib/components/PwaReloadPrompt.svelte';
-	import ThemeProvider from '$lib/components/ThemeProvider.svelte';
 	import {
 		getOrganizationJsonLd,
 		getSoftwareApplicationJsonLd,
@@ -16,7 +15,7 @@
 		jsonLdScript
 	} from '$lib/seo';
 
-	let { children } = $props();
+	let { children, data } = $props();
 
 	const canonicalUrl = $derived(getCanonicalUrl(page.url.pathname));
 	const hreflangLinks = $derived(getHreflangLinks(page.url.pathname));
@@ -34,20 +33,19 @@
 </svelte:head>
 
 {#if i18nReady}
-	<ThemeProvider>
-		<div
-			class="min-h-screen flex flex-col bg-white text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100 font-sans selection:bg-zinc-200 dark:selection:bg-zinc-800"
-		>
-			<Navbar />
-			<main class="flex-1 max-w-[2000px] mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
-				{@render children()}
-			</main>
-			<Footer />
-			<PwaReloadPrompt />
-		</div>
-	</ThemeProvider>
+	<div
+		class:dark={data.isDark}
+		class="min-h-screen flex flex-col bg-white text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100 font-sans selection:bg-zinc-200 dark:selection:bg-zinc-800"
+	>
+		<Navbar currentPath={data.currentPath} currentTheme={data.currentTheme} />
+		<main class="flex-1 max-w-[2000px] mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
+			{@render children()}
+		</main>
+		<Footer />
+		<PwaReloadPrompt />
+	</div>
 {:else}
-	<div class="min-h-screen bg-white dark:bg-zinc-950 flex flex-col">
+	<div class:dark={data.isDark} class="min-h-screen bg-white dark:bg-zinc-950 flex flex-col">
 		<div class="h-16 border-b border-zinc-200 dark:border-zinc-800 px-4 flex items-center gap-4">
 			<div class="w-8 h-8 rounded bg-zinc-200 dark:bg-zinc-800 animate-pulse"></div>
 			<div class="h-6 w-32 rounded bg-zinc-200 dark:bg-zinc-800 animate-pulse"></div>

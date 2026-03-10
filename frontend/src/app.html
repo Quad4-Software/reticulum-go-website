@@ -64,17 +64,60 @@
 	</head>
 	<body data-sveltekit-preload-data="hover">
 		<noscript>
-			<div
-				style="position:fixed;inset:0;z-index:9999;background:#0f172a;color:#e2e8f0;display:flex;align-items:center;justify-content:center;padding:2rem;text-align:center;font-family:system-ui,sans-serif"
-			>
-				<div>
-					<p style="font-size:1.25rem;font-weight:600;margin-bottom:0.5rem">
-						JavaScript is required
-					</p>
-					<p style="opacity:0.8;max-width:24rem">
-						This site needs JavaScript to run. Please enable it in your browser settings.
-					</p>
-				</div>
+			<style>
+				#js-disabled-banner {
+					position: fixed;
+					left: 1rem;
+					right: 1rem;
+					bottom: 1rem;
+					z-index: 9999;
+					background: #0f172a;
+					color: #e2e8f0;
+					padding: 0.75rem 1rem;
+					border-radius: 0.75rem;
+					font-family: system-ui, sans-serif;
+					display: flex;
+					align-items: center;
+					gap: 0.75rem;
+					animation: hide-js-banner 8s ease 6s forwards;
+				}
+				#js-disabled-banner-text {
+					flex: 1;
+					text-align: center;
+					padding-left: 1.5rem;
+				}
+				#js-disabled-banner-close {
+					color: #e2e8f0;
+					text-decoration: none;
+					font-weight: 700;
+					line-height: 1;
+					font-size: 0.9rem;
+					margin-left: auto;
+					width: 1.5rem;
+					height: 1.5rem;
+					border-radius: 9999px;
+					display: inline-flex;
+					align-items: center;
+					justify-content: center;
+					border: 1px solid rgba(226, 232, 240, 0.35);
+				}
+				#js-disabled-banner-dismissed:target + #js-disabled-banner {
+					display: none;
+				}
+				@keyframes hide-js-banner {
+					to {
+						opacity: 0;
+						visibility: hidden;
+						pointer-events: none;
+					}
+				}
+			</style>
+			<div id="js-disabled-banner-dismissed"></div>
+			<div id="js-disabled-banner">
+				<span id="js-disabled-banner-text"
+					>JavaScript is disabled. Main pages work without it. Interactive WASM pages require JavaScript.</span
+				>
+				<a id="js-disabled-banner-close" href="#js-disabled-banner-dismissed" aria-label="Close">X</a>
 			</div>
 		</noscript>
 		<div style="display: contents">%sveltekit.body%</div>
