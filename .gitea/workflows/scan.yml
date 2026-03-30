@@ -2,7 +2,7 @@ name: Security Scans
 
 on:
   schedule:
-    - cron: "30 12 * * 1"
+    - cron: "30 12 * * *"
   push:
     branches: [master]
   workflow_dispatch:
@@ -16,6 +16,20 @@ jobs:
     steps:
       - name: Checkout
         uses: https://git.quad4.io/actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+
+      - name: Setup Node.js
+        uses: https://git.quad4.io/actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "23"
+
+      - name: Enable pnpm
+        run: corepack enable && corepack prepare pnpm@10.32.1 --activate
+
+      - name: Install dependencies
+        run: make install
+
+      - name: pnpm audit
+        run: make audit
 
       - name: Download Trivy
         run: |
