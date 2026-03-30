@@ -20,7 +20,7 @@ Then open your browser at `http://localhost:3000`
 ### Prerequisites
 
 - Node.js v23
-- [pnpm](https://pnpm.io/) v10
+- [pnpm](https://pnpm.io/) 10.32.1
 
 ### Setup
 
