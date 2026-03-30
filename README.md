@@ -67,6 +67,15 @@ The project uses a root `Makefile` for common tasks. Run `make help` to list tar
 | `docker-run`     | Run container on port 3000           |
 | `docs-zip`       | Zip per-locale docs into `releases/` |
 | `locale-template`| New UI locale file (see below)       |
+| `check-links`    | Probe external URLs (see Testing)    |
+
+### Testing
+
+Unit and route tests use Vitest with jsdom (`make test` or `cd frontend && pnpm test`). Coverage: `cd frontend && pnpm test:coverage` (output under `frontend/coverage/`, gitignored).
+
+The `/api/repo-info` handler is covered for Gitea `fetch` outcomes (network failure, non-OK responses, empty tags, JSON errors, cache TTL, and `Cache-Control` headers). Upstream calls use a 15s `AbortSignal` timeout.
+
+**Link rot:** `make check-links` runs `scripts/check-links.mjs`, which scans `README.md`, `LICENSE`, and `frontend/src/**` for `http(s)` URLs and requests them (HEAD, with GET fallback). Add substring patterns to `scripts/link-check-ignore.txt` to skip URLs that are not meant to be probed. URLs containing `{` or `}` are skipped (Svelte interpolations).
 
 ### Translations (i18n)
 
