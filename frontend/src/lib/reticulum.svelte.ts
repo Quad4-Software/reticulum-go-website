@@ -1,5 +1,6 @@
 import { browser } from '$app/environment';
 import { SvelteMap } from 'svelte/reactivity';
+import { loadWasmExec } from './wasm-exec-loader';
 import {
 	loadIdentity,
 	saveIdentity,
@@ -288,7 +289,18 @@ class ReticulumService {
 	}
 
 	private async loadWasm() {
-		if (!browser || typeof window.Go === 'undefined') {
+		if (!browser) return;
+
+		try {
+			await loadWasmExec();
+		} catch (e: unknown) {
+			const message = e instanceof Error ? e.message : String(e);
+			this.error = message;
+			this.log(message, 'error');
+			return;
+		}
+
+		if (typeof window.Go === 'undefined') {
 			this.error = 'Go WASM runtime (wasm_exec.js) not found';
 			return;
 		}
