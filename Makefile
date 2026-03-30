@@ -6,7 +6,7 @@ SHELL := /bin/sh
 
 FRONTEND := frontend
 
-.PHONY: help install dev build frontend-build clean format lint check test bench bundle-budget audit update update-latest outdated docker-build docker-run docs-zip validate locale-template check-links
+.PHONY: help install dev build frontend-build clean format lint check test bench bundle-budget lighthouse audit update update-latest outdated docker-build docker-run docs-zip validate locale-template check-links
 
 help: ## Show available targets
 	@echo 'Targets (run from repository root):'
@@ -44,6 +44,9 @@ bench: ## Run Vitest micro-benchmarks (hot-path.bench.ts)
 
 bundle-budget: ## Enforce frontend/build size limits (run frontend-build first)
 	node scripts/bundle-budget.mjs
+
+lighthouse: ## Lighthouse CI against production preview (run frontend-build first)
+	cd $(FRONTEND) && pnpm lhci
 
 check-links: ## HTTP-check external URLs in README and frontend/src (requires network)
 	node scripts/check-links.mjs
