@@ -6,7 +6,7 @@ SHELL := /bin/sh
 
 FRONTEND := frontend
 
-.PHONY: help install dev build frontend-build clean format lint check test bench bundle-budget lighthouse audit update update-latest outdated docker-build docker-run docs-zip validate locale-template check-links
+.PHONY: help install dev build frontend-build clean format lint check test bench bundle-budget lighthouse audit update update-latest outdated docker-build docker-run docs-zip docs-release validate locale-template check-links
 
 help: ## Show available targets
 	@echo 'Targets (run from repository root):'
@@ -75,6 +75,9 @@ docs-zip: ## Package per-locale docs into releases/*.zip
 	zip -j releases/docs-ru.zip $(FRONTEND)/src/lib/docs/introduction.ru.md $(FRONTEND)/src/lib/docs/usage.ru.md
 	zip -j releases/docs-de.zip $(FRONTEND)/src/lib/docs/introduction.de.md $(FRONTEND)/src/lib/docs/usage.de.md
 	zip -j releases/docs-it.zip $(FRONTEND)/src/lib/docs/introduction.it.md $(FRONTEND)/src/lib/docs/usage.it.md
+
+docs-release: ## Metadata + docs zips (same as CI docs workflow; needs git SHA when GITHUB_OUTPUT is set)
+	sh scripts/docs/prepare-release-docs.sh
 
 validate: ## Run format, lint, check, test, and audit
 	$(MAKE) format

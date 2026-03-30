@@ -13,17 +13,45 @@ permissions:
 jobs:
   scan:
     runs-on: ubuntu-latest
+    env:
+      GITEA_SERVER_URL: ${{ github.server_url }}
+      GITEA_REPOSITORY: ${{ github.repository }}
+      GITEA_SHA: ${{ github.sha }}
+      GITEA_REF: ${{ github.ref }}
+      GITEA_REF_NAME: ${{ github.ref_name }}
+      GITEA_REF_TYPE: ${{ github.ref_type }}
+      GITEA_WORKSPACE: ${{ github.workspace }}
+      GITHUB_SERVER_URL: ${{ github.server_url }}
+      GITHUB_REPOSITORY: ${{ github.repository }}
+      GITHUB_SHA: ${{ github.sha }}
+      GITHUB_REF: ${{ github.ref }}
+      GITHUB_REF_NAME: ${{ github.ref_name }}
+      GITHUB_REF_TYPE: ${{ github.ref_type }}
+      GITHUB_WORKSPACE: ${{ github.workspace }}
+      GITHUB_TOKEN: ${{ github.token }}
+      GITEA_TOKEN: ${{ secrets.GITEA_TOKEN }}
     steps:
       - name: Checkout
-        uses: https://git.quad4.io/actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        run: |
+          set -eu
+          SERVER="${GITEA_SERVER_URL:-${GITHUB_SERVER_URL:-}}"
+          REPO="${GITEA_REPOSITORY:-${GITHUB_REPOSITORY:-}}"
+          if [ -z "$SERVER" ] || [ -z "$REPO" ]; then
+            echo "Checkout: set GITEA_SERVER_URL/GITEA_REPOSITORY or GITHUB_SERVER_URL/GITHUB_REPOSITORY" >&2
+            exit 1
+          fi
+          if [ -n "${GITEA_TOKEN:-}" ] || [ -n "${GITHUB_TOKEN:-}" ]; then
+            TOKEN="${GITEA_TOKEN:-$GITHUB_TOKEN}"
+            git config --global credential.helper "!f() { echo username=x-access-token; echo password=${TOKEN}; }; f"
+          fi
+          git clone "${SERVER}/${REPO}.git" .
+          git checkout "${GITHUB_SHA}"
 
       - name: Setup Node.js
-        uses: https://git.quad4.io/actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
-        with:
-          node-version: "23"
+        run: sh scripts/ci/setup-node.sh 23
 
       - name: Enable pnpm
-        run: corepack enable && corepack prepare pnpm@10.32.1 --activate
+        run: sh scripts/ci/setup-pnpm.sh
 
       - name: Install dependencies
         run: make install
@@ -31,10 +59,11 @@ jobs:
       - name: pnpm audit
         run: make audit
 
-      - name: Download Trivy
-        run: |
-          curl -L -o /tmp/trivy.deb https://git.quad4.io/Quad4-Software/Trivy-Assets/raw/commit/917e0e52b2f663cbbe13e63b7176262e248265ae/trivy_0.68.2_Linux-64bit.deb
-          sudo dpkg -i /tmp/trivy.deb || sudo apt-get install -f -y
+      - name: Install Trivy
+        env:
+          TRIVY_DEB_URL: https://git.quad4.io/Quad4-Software/Trivy-Assets/raw/commit/917e0e52b2f663cbbe13e63b7176262e248265ae/trivy_0.68.2_Linux-64bit.deb
+          TRIVY_DEB_SHA256: 68b3c0350490456f56fbf8ea604663c79af73f628f4c3bb0fd76bfcc26fafea6
+        run: sh scripts/ci/setup-trivy.sh
 
       - name: Trivy FS scan
         run: trivy fs --exit-code 1 .

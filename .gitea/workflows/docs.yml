@@ -11,26 +11,43 @@ permissions:
 jobs:
   release-docs:
     runs-on: ubuntu-latest
+    env:
+      GITEA_SERVER_URL: ${{ github.server_url }}
+      GITEA_REPOSITORY: ${{ github.repository }}
+      GITEA_SHA: ${{ github.sha }}
+      GITEA_REF: ${{ github.ref }}
+      GITEA_REF_NAME: ${{ github.ref_name }}
+      GITEA_REF_TYPE: ${{ github.ref_type }}
+      GITEA_WORKSPACE: ${{ github.workspace }}
+      GITHUB_SERVER_URL: ${{ github.server_url }}
+      GITHUB_REPOSITORY: ${{ github.repository }}
+      GITHUB_SHA: ${{ github.sha }}
+      GITHUB_REF: ${{ github.ref }}
+      GITHUB_REF_NAME: ${{ github.ref_name }}
+      GITHUB_REF_TYPE: ${{ github.ref_type }}
+      GITHUB_WORKSPACE: ${{ github.workspace }}
+      GITHUB_TOKEN: ${{ github.token }}
+      GITEA_TOKEN: ${{ secrets.GITEA_TOKEN }}
     steps:
       - name: Checkout
-        uses: https://git.quad4.io/actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
-        with:
-          fetch-depth: 0
+        run: |
+          set -eu
+          SERVER="${GITEA_SERVER_URL:-${GITHUB_SERVER_URL:-}}"
+          REPO="${GITEA_REPOSITORY:-${GITHUB_REPOSITORY:-}}"
+          if [ -z "$SERVER" ] || [ -z "$REPO" ]; then
+            echo "Checkout: set GITEA_SERVER_URL/GITEA_REPOSITORY or GITHUB_SERVER_URL/GITHUB_REPOSITORY" >&2
+            exit 1
+          fi
+          if [ -n "${GITEA_TOKEN:-}" ] || [ -n "${GITHUB_TOKEN:-}" ]; then
+            TOKEN="${GITEA_TOKEN:-$GITHUB_TOKEN}"
+            git config --global credential.helper "!f() { echo username=x-access-token; echo password=${TOKEN}; }; f"
+          fi
+          git clone "${SERVER}/${REPO}.git" .
+          git checkout "${GITHUB_SHA}"
 
       - name: Get Metadata and Package Docs
         id: prepare
-        run: |
-          FULL_HASH="${{ github.sha }}"
-          COMMIT_MSG=$(git log -1 --format=%B "${{ github.sha }}" || echo "Release ${{ github.ref_name }}")
-
-          echo "full_hash=${FULL_HASH}" >> $GITHUB_OUTPUT
-          echo "commit_msg<<EOF" >> $GITHUB_OUTPUT
-          echo "${COMMIT_MSG}" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-
-          make docs-zip
-        env:
-          GITEA_TOKEN: ${{ secrets.GITEA_TOKEN }}
+        run: sh scripts/docs/prepare-release-docs.sh
 
       - name: Update Release with Docs
         uses: https://git.quad4.io/actions/gitea-release-action@fe8e0322804b48e34e3bddbbf6335bd2b1046eb7 # v1.3.5

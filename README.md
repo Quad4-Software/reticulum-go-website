@@ -66,10 +66,26 @@ The project uses a root `Makefile` for common tasks. Run `make help` to list tar
 | `docker-build`   | Build container image                |
 | `docker-run`     | Run container on port 3000           |
 | `docs-zip`       | Zip per-locale docs into `releases/` |
+| `docs-release`   | Same as docs workflow prep (see below) |
 | `locale-template`| New UI locale file (see below)       |
 | `check-links`    | Probe external URLs (see Testing)    |
 | `bench`          | Vitest micro-benchmarks (see below)   |
 | `bundle-budget`  | Size limits on `frontend/build`       |
+
+### CI and release automation
+
+Workflows live under `.gitea/workflows/`. **Checkout** is an inline step: clone `${SERVER}/${REPO}.git` into the workspace, then `git checkout` the commit SHA, using `GITEA_*` / `GITHUB_*` env from the runner (`github.server_url`, `github.repository`, `github.sha`, `github.token`, optional `secrets.GITEA_TOKEN`). **Attaching assets to a Gitea release** still uses the pinned `gitea-release-action` (docs zip and SBOM jobs).
+
+Toolchain setup is implemented as POSIX shell under `scripts/ci/` so downloads are pinned and verified where noted:
+
+- `setup-node.sh` installs Node from nodejs.org `latest-v{N}.x` with SHA256 verification (default major **23**; pass a different major as the first argument).
+- `setup-pnpm.sh` enables corepack and activates pnpm (version defaults to match `frontend/package.json` `packageManager`).
+- `setup-trivy.sh` installs a `.deb` from `TRIVY_DEB_URL` with optional `TRIVY_DEB_SHA256`.
+- `ci-node-path.sh` exports `/usr/local/bin` on `PATH`.
+
+**Docs release:** On version tags, the Release Docs workflow runs `scripts/docs/prepare-release-docs.sh`, which writes optional commit metadata to `GITHUB_OUTPUT` when the runner provides it, then runs `make docs-zip`. Locally you can run `make docs-zip` or `make docs-release` (metadata step is skipped without `GITHUB_OUTPUT`).
+
+`frontend/.npmrc` sets `engine-strict=false` so pnpm accepts Node 23 even when a dependency declares a narrower `engines` range.
 
 ### Testing
 
