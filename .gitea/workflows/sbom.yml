@@ -5,6 +5,9 @@ on:
     tags:
       - 'v*'
 
+permissions:
+  contents: write
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -17,17 +20,13 @@ jobs:
       - name: Setup Node.js
         uses: https://git.quad4.io/actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
         with:
-          node-version: 22
-          cache: pnpm
-          cache-dependency-path: frontend/pnpm-lock.yaml
+          node-version: '23'
 
-      - name: Setup Task
-        uses: https://git.quad4.io/actions/setup-task@0ab1b2a65bc55236a3bc64cde78f80e20e8885c2 # v1
-        with:
-          version: '3.46.3'
+      - name: Enable pnpm
+        run: corepack enable && corepack prepare pnpm@10.32.1 --activate
 
       - name: Install dependencies
-        run: task install
+        run: make install
 
       - name: Download Trivy
         run: |
@@ -48,4 +47,3 @@ jobs:
           sha256sum: true
         env:
           GITEA_TOKEN: ${{ secrets.GITEA_TOKEN }}
-
