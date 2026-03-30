@@ -29,6 +29,8 @@ jobs:
         run: make check
       - name: Unit tests
         run: make test
+      - name: Link check (external URLs)
+        run: make check-links
       - name: Audit dependencies
         run: make audit
 

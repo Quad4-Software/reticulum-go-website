@@ -1,0 +1,11 @@
+# One substring per line; URLs containing any line are skipped (after trimming # comments).
+# API base string in repo-info (not a public page)
+git.quad4.io/api/v1
+schema.org
+localhost
+127.0.0.1
+example.com
+placehold
+mailto:
+data:
+javascript:
