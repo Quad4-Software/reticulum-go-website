@@ -23,7 +23,12 @@ export default defineConfig(({ command }) => {
 				'src/lib/identity.ts',
 				'src/lib/version.ts',
 				'src/lib/docs-service.ts',
-				'src/routes/api/repo-info/+server.ts'
+				'src/lib/site-config.ts',
+				'src/lib/seo.ts',
+				'src/routes/api/repo-info/+server.ts',
+				'src/routes/set-locale/+server.ts',
+				'src/routes/set-theme/+server.ts',
+				'src/routes/sitemap.xml/+server.ts'
 			],
 			exclude: ['src/**/*.d.ts', 'src/**/*.test.{ts,svelte}', 'src/**/*.spec.{ts,svelte}'],
 			thresholds: {

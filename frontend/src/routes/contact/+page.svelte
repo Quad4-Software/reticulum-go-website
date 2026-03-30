@@ -59,7 +59,7 @@
 				For general inquiries about Quad4 Software or business partnerships.
 			</p>
 			<a
-				href="https://quad4.io/contact"
+				href="https://quad4.io"
 				target="_blank"
 				rel="noopener noreferrer"
 				class="inline-flex items-center gap-2 text-[#00ADD8] font-bold hover:underline"

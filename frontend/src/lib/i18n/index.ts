@@ -1,47 +1,51 @@
 import { init, register, getLocaleFromNavigator, locale } from 'svelte-i18n';
 import { browser } from '$app/environment';
 import { invalidate } from '$app/navigation';
+import { LOCALES, DEFAULT_LOCALE, isLocaleSupported } from '../site-config';
 
-const defaultLocale = 'en';
+const localeLoaders = import.meta.glob<{ default: Record<string, unknown> }>('./locales/*.json');
 
-register('en', () => import('./locales/en.json'));
-register('de', () => import('./locales/de.json'));
-register('ru', () => import('./locales/ru.json'));
-register('it', () => import('./locales/it.json'));
+for (const code of LOCALES) {
+	const path = `./locales/${code}.json`;
+	const loader = localeLoaders[path];
+	if (!loader) {
+		throw new Error(`Missing locale module: ${path}`);
+	}
+	register(code, async () => {
+		const mod = await loader();
+		return mod.default;
+	});
+}
 
 const getInitialLocale = () => {
-	if (!browser) return defaultLocale;
+	if (!browser) return DEFAULT_LOCALE;
 
-	// 1. Check URL parameter ?lang=
 	try {
 		const urlParams = new URLSearchParams(window.location.search);
 		const langParam = urlParams.get('lang');
-		if (langParam && ['en', 'de', 'ru', 'it'].includes(langParam)) {
+		if (langParam && isLocaleSupported(langParam)) {
 			return langParam;
 		}
 	} catch (e) {
 		console.error('Error parsing URL params:', e);
 	}
 
-	// 2. Check localStorage
 	const stored = localStorage.getItem('locale');
-	if (stored) return stored;
+	if (stored && isLocaleSupported(stored)) return stored;
 
-	// 3. Check navigator
 	const nav = getLocaleFromNavigator();
 	if (nav) {
 		const base = nav.split('-')[0];
-		// Add more supported locales here as they are added
-		if (['en', 'de', 'ru', 'it'].includes(base)) return base;
+		if (base && isLocaleSupported(base)) return base;
 	}
 
-	return defaultLocale;
+	return DEFAULT_LOCALE;
 };
 
 const initialLocale = getInitialLocale();
 
 init({
-	fallbackLocale: defaultLocale,
+	fallbackLocale: DEFAULT_LOCALE,
 	initialLocale: initialLocale
 });
 

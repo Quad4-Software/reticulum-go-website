@@ -1,12 +1,8 @@
 import type { LayoutServerLoad } from './$types';
 import { locale, waitLocale } from 'svelte-i18n';
+import { DEFAULT_LOCALE, isLocaleSupported } from '$lib/site-config';
 
-const SUPPORTED_LOCALES = new Set(['en', 'de', 'ru', 'it']);
 const SUPPORTED_THEMES = new Set(['light', 'dark', 'system']);
-
-function isSupportedLocale(value: string | null): value is 'en' | 'de' | 'ru' | 'it' {
-	return value !== null && SUPPORTED_LOCALES.has(value);
-}
 
 function isSupportedTheme(value: string | null): value is 'light' | 'dark' | 'system' {
 	return value !== null && SUPPORTED_THEMES.has(value);
@@ -20,11 +16,12 @@ function safeRedirectTarget(value: string | null): string {
 export const load: LayoutServerLoad = async ({ url, cookies }) => {
 	const queryLocale = url.searchParams.get('lang');
 	const cookieLocale = cookies.get('locale') ?? null;
-	const currentLocale = isSupportedLocale(queryLocale)
-		? queryLocale
-		: isSupportedLocale(cookieLocale)
-			? cookieLocale
-			: 'en';
+	const currentLocale =
+		queryLocale != null && isLocaleSupported(queryLocale)
+			? queryLocale
+			: cookieLocale != null && isLocaleSupported(cookieLocale)
+				? cookieLocale
+				: DEFAULT_LOCALE;
 
 	if (cookieLocale !== currentLocale) {
 		cookies.set('locale', currentLocale, {

@@ -2,7 +2,7 @@ import { SITE_URL } from '$lib/site-config';
 
 export const prerender = true;
 
-const ROUTES = [
+export const SITEMAP_PATHS = [
 	'/',
 	'/docs',
 	'/docs/introduction',
@@ -16,10 +16,10 @@ const ROUTES = [
 	'/settings',
 	'/wasm-example/identity',
 	'/wasm-example/settings'
-];
+] as const;
 
 export function GET() {
-	const urls = ROUTES.map(
+	const urls = SITEMAP_PATHS.map(
 		(path) =>
 			`  <url>
     <loc>${SITE_URL}${path}</loc>

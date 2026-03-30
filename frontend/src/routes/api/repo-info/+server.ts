@@ -14,7 +14,8 @@ async function fetchLatestTag(): Promise<string | null> {
 		const response = await fetch(url, {
 			headers: {
 				Accept: 'application/json'
-			}
+			},
+			signal: AbortSignal.timeout(15_000)
 		});
 
 		if (!response.ok) {
@@ -37,7 +38,8 @@ async function fetchRepoInfo(): Promise<string | null> {
 		const response = await fetch(url, {
 			headers: {
 				Accept: 'application/json'
-			}
+			},
+			signal: AbortSignal.timeout(15_000)
 		});
 
 		if (!response.ok) {
