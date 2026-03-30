@@ -4,7 +4,7 @@ FROM cgr.dev/chainguard/node:latest-dev AS node-builder
 WORKDIR /app
 
 USER root
-RUN corepack enable && corepack prepare pnpm@10.25.0 --activate
+RUN corepack enable && corepack prepare pnpm@10.32.1 --activate
 
 USER node
 
