@@ -56,6 +56,12 @@ jobs:
       - name: Install dependencies
         run: make install
 
+      - name: Lint
+        run: make lint
+
+      - name: Svelte check
+        run: make check
+
       - name: pnpm audit
         run: make audit
 
@@ -66,4 +72,4 @@ jobs:
         run: sh scripts/ci/setup-trivy.sh
 
       - name: Trivy FS scan
-        run: trivy fs --exit-code 1 .
+        run: trivy fs --exit-code 1 --skip-dirs .pnpm-store .

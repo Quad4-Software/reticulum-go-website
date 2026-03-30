@@ -19,7 +19,7 @@
 	}
 
 	$effect(() => {
-		page.url.pathname;
+		void page.url.pathname;
 		menuOpen = false;
 	});
 </script>
