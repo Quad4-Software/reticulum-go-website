@@ -16,56 +16,85 @@ cd Reticulum-Go
 ### Предварительные условия
 
 - Go 1.24 или новее
-- [Task](https://taskfile.dev/) для автоматизации сборки
-
-### Среда разработки
-
-Если у вас установлен Nix, вы можете использовать оболочку разработки:
-
-```bash
-nix develop
-```
+- GNU Make (по желанию, но удобно; в репозитории есть `Makefile` для типовых задач)
 
 ## Сборка и запуск
 
-### Сборка исполняемого файла
+Из корня репозитория можно вызывать Make или выполнять те же действия напрямую через `go`.
+
+### Релизный бинарник
 
 ```bash
-task build
+make build
 ```
 
-Скомпилированный файл будет находиться в `bin/reticulum-go`.
-
-### Запуск приложения
+Эквивалент:
 
 ```bash
-task run
+mkdir -p bin
+CGO_ENABLED=0 go build -ldflags="-s -w" -o bin/reticulum-go ./cmd/reticulum-go
 ```
 
-### Запуск тестов
+Готовый файл: `bin/reticulum-go`.
+
+### Запуск из исходников
 
 ```bash
-task test
+make run
+```
+
+Эквивалент:
+
+```bash
+go run ./cmd/reticulum-go
+```
+
+### Тесты
+
+```bash
+make test
+```
+
+Эквивалент:
+
+```bash
+go test -v ./...
 ```
 
 ## Кроссплатформенная сборка
 
-Сборка для всех архитектур Linux (amd64, arm64, arm, riscv64):
+### Linux (amd64, arm64, arm, riscv64)
 
 ```bash
-task build-all
+make build-linux
 ```
 
-Сборка для конкретных архитектур:
+Пример для одной архитектуры (для остальных замените `GOARCH` на `arm64`, `arm` или `riscv64`):
 
 ```bash
-task build-linux
+mkdir -p bin
+CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/reticulum-go-linux-amd64 ./cmd/reticulum-go
 ```
 
-## Экспериментальные функции
-
-Сборка с экспериментальным сборщиком мусора Green Tea (требуется Go 1.25+):
+### Linux, Windows и macOS
 
 ```bash
-task build-experimental
+make build-all
+```
+
+Цель вызывает `build-linux`, `build-windows` и `build-darwin`. Остальные цели и переменные см. в `Makefile` репозитория.
+
+## Экспериментальные возможности
+
+Сборка с экспериментальным сборщиком мусора Green Tea (нужен Go с поддержкой `GOEXPERIMENT=greenteagc`, обычно Go 1.25+):
+
+```bash
+mkdir -p bin
+GOEXPERIMENT=greenteagc go build -o bin/reticulum-go-experimental ./cmd/reticulum-go
+```
+
+Запуск без отдельного бинарника:
+
+```bash
+GOEXPERIMENT=greenteagc go run ./cmd/reticulum-go
 ```

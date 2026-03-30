@@ -16,56 +16,85 @@ cd Reticulum-Go
 ### Voraussetzungen
 
 - Go 1.24 oder neuer
-- [Task](https://taskfile.dev/) für die Automatisierung des Builds
-
-### Entwicklungsumgebung
-
-Wenn Sie Nix installiert haben, können Sie die Development-Shell verwenden:
-
-```bash
-nix develop
-```
+- GNU Make (optional, empfohlen; im Repository liegt ein `Makefile` für gängige Schritte)
 
 ## Bauen und Ausführen
 
-### Bauen der Binärdatei
+Vom Repository-Stamm aus können Sie Make nutzen oder die gleichen Schritte direkt mit `go` ausführen.
+
+### Release-Binärdatei
 
 ```bash
-task build
+make build
 ```
 
-Die kompilierte Binärdatei befindet sich unter `bin/reticulum-go`.
-
-### Ausführen der Anwendung
+Äquivalent:
 
 ```bash
-task run
+mkdir -p bin
+CGO_ENABLED=0 go build -ldflags="-s -w" -o bin/reticulum-go ./cmd/reticulum-go
 ```
 
-### Ausführen von Tests
+Die Binärdatei liegt unter `bin/reticulum-go`.
+
+### Aus Quelltext starten
 
 ```bash
-task test
+make run
+```
+
+Äquivalent:
+
+```bash
+go run ./cmd/reticulum-go
+```
+
+### Tests
+
+```bash
+make test
+```
+
+Äquivalent:
+
+```bash
+go test -v ./...
 ```
 
 ## Plattformübergreifende Builds
 
-Build für alle Linux-Architekturen (amd64, arm64, arm, riscv64):
+### Linux (amd64, arm64, arm, riscv64)
 
 ```bash
-task build-all
+make build-linux
 ```
 
-Build für spezifische Architekturen:
+Beispiel für eine Architektur (für andere `GOARCH` auf `arm64`, `arm` oder `riscv64` setzen):
 
 ```bash
-task build-linux
+mkdir -p bin
+CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/reticulum-go-linux-amd64 ./cmd/reticulum-go
 ```
+
+### Linux, Windows und macOS
+
+```bash
+make build-all
+```
+
+Dieses Target führt `build-linux`, `build-windows` und `build-darwin` aus. Weitere Targets und Variablen stehen im `Makefile` des Repositories.
 
 ## Experimentelle Funktionen
 
-Build mit experimentellem Green Tea GC (erfordert Go 1.25+):
+Build mit dem experimentellen Green Tea Garbage Collector (Go-Toolchain mit `GOEXPERIMENT=greenteagc`, typischerweise Go 1.25+):
 
 ```bash
-task build-experimental
+mkdir -p bin
+GOEXPERIMENT=greenteagc go build -o bin/reticulum-go-experimental ./cmd/reticulum-go
+```
+
+Direkt ausführen ohne separates Binary:
+
+```bash
+GOEXPERIMENT=greenteagc go run ./cmd/reticulum-go
 ```
