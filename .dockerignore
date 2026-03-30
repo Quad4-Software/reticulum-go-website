@@ -3,6 +3,9 @@
 .gitignore
 .gitattributes
 
+# CI (not needed in image)
+.gitea/
+
 # Documentation
 README.md
 LICENSE
@@ -26,7 +29,13 @@ frontend/node_modules/
 vendor/
 .pnpm-store/
 
-# Test files
+# Tests and coverage (not needed at runtime)
+frontend/coverage/
+frontend/test-results/
+frontend/**/*.test.ts
+frontend/**/*.spec.ts
+
+# Go tests
 *_test.go
 *.test
 
@@ -64,6 +73,10 @@ flake.lock
 result
 result-*
 
-# Build orchestration (not needed in image)
+# Repo root helpers (image only uses frontend/)
 Makefile
+scripts/
 
+# Packaged docs / SBOM artifacts
+releases/
+sbom/

@@ -14,6 +14,15 @@ frontend/node_modules/
 vendor/
 .pnpm-store/
 
+frontend/coverage/
+frontend/test-results/
+
+# Packaged docs (make docs-zip)
+releases/
+
+# Local SBOM output (CI uploads from workspace)
+sbom/
+
 # Environment files
 .env
 .env.*
@@ -43,6 +52,15 @@ Thumbs.db
 *.tmp
 *.temp
 
-# Task
+# Caches
+.eslintcache
+*.tsbuildinfo
 
-.task/*
+# Task (go-task) local state
+.task/
+
+# Nix
+flake.nix
+flake.lock
+result
+result-*
