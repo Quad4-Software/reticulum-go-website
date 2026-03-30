@@ -12,6 +12,7 @@ frontend/.svelte-kit/
 # Dependencies
 frontend/node_modules/
 vendor/
+.pnpm-store/
 
 # Environment files
 .env

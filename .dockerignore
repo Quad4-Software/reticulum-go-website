@@ -24,6 +24,7 @@ reticulum-go-web
 # Dependencies (installed in Docker)
 frontend/node_modules/
 vendor/
+.pnpm-store/
 
 # Test files
 *_test.go
@@ -63,6 +64,6 @@ flake.lock
 result
 result-*
 
-# Task runner
-Taskfile.yaml
+# Build orchestration (not needed in image)
+Makefile
 
