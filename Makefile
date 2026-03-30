@@ -6,7 +6,7 @@ SHELL := /bin/sh
 
 FRONTEND := frontend
 
-.PHONY: help install dev build frontend-build clean format lint check test audit update update-latest outdated docker-build docker-run docs-zip validate locale-template
+.PHONY: help install dev build frontend-build clean format lint check test audit update update-latest outdated docker-build docker-run docs-zip validate locale-template check-links
 
 help: ## Show available targets
 	@echo 'Targets (run from repository root):'
@@ -38,6 +38,9 @@ check: ## Typecheck and Svelte check
 
 test: ## Run Vitest unit tests
 	cd $(FRONTEND) && pnpm test
+
+check-links: ## HTTP-check external URLs in README and frontend/src (requires network)
+	node scripts/check-links.mjs
 
 audit: ## Run pnpm audit in frontend/
 	cd $(FRONTEND) && pnpm audit
