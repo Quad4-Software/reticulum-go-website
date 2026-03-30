@@ -16,6 +16,7 @@ vendor/
 
 frontend/coverage/
 frontend/test-results/
+frontend/.lighthouseci/
 
 # Packaged docs (make docs-zip)
 releases/

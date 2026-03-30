@@ -32,6 +32,7 @@ vendor/
 # Tests and coverage (not needed at runtime)
 frontend/coverage/
 frontend/test-results/
+frontend/.lighthouseci/
 frontend/**/*.test.ts
 frontend/**/*.spec.ts
 
