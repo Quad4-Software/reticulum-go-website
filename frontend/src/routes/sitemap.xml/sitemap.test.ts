@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { SITE_URL } from '$lib/site-config';
-import { GET, SITEMAP_PATHS } from './+server';
+import { SITEMAP_PATHS } from '$lib/sitemap-paths';
+import { GET } from './+server';
 
 describe('GET /sitemap.xml', () => {
 	it('returns XML with one entry per sitemap path', async () => {

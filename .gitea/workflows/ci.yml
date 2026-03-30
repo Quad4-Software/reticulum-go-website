@@ -29,6 +29,8 @@ jobs:
         run: make check
       - name: Unit tests
         run: make test
+      - name: Micro-benchmarks
+        run: make bench
       - name: Link check (external URLs)
         run: make check-links
       - name: Audit dependencies
@@ -48,3 +50,5 @@ jobs:
         run: corepack enable && corepack prepare pnpm@10.32.1 --activate
       - name: Build
         run: make frontend-build
+      - name: Bundle size budget
+        run: make bundle-budget

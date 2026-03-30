@@ -1,22 +1,7 @@
 import { SITE_URL } from '$lib/site-config';
+import { SITEMAP_PATHS } from '$lib/sitemap-paths';
 
 export const prerender = true;
-
-export const SITEMAP_PATHS = [
-	'/',
-	'/docs',
-	'/docs/introduction',
-	'/docs/usage',
-	'/interactive',
-	'/apps',
-	'/contact',
-	'/donate',
-	'/wasm-example',
-	'/identity',
-	'/settings',
-	'/wasm-example/identity',
-	'/wasm-example/settings'
-] as const;
 
 export function GET() {
 	const urls = SITEMAP_PATHS.map(

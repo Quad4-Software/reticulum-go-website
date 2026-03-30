@@ -15,6 +15,10 @@ export default defineConfig(({ command }) => {
 		environment: 'jsdom',
 		fileParallelism: false,
 		include: ['src/**/*.{test,spec}.{js,ts,svelte}'],
+		benchmark: {
+			include: ['src/**/*.bench.ts'],
+			environment: 'node'
+		},
 		coverage: {
 			provider: 'v8',
 			reporter: ['text', 'json', 'html'],
@@ -30,7 +34,12 @@ export default defineConfig(({ command }) => {
 				'src/routes/set-theme/+server.ts',
 				'src/routes/sitemap.xml/+server.ts'
 			],
-			exclude: ['src/**/*.d.ts', 'src/**/*.test.{ts,svelte}', 'src/**/*.spec.{ts,svelte}'],
+			exclude: [
+				'src/**/*.d.ts',
+				'src/**/*.test.{ts,svelte}',
+				'src/**/*.spec.{ts,svelte}',
+				'src/**/*.bench.ts'
+			],
 			thresholds: {
 				statements: 75,
 				branches: 50,
