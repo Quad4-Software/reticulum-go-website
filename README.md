@@ -68,6 +68,8 @@ The project uses a root `Makefile` for common tasks. Run `make help` to list tar
 | `docs-zip`       | Zip per-locale docs into `releases/` |
 | `locale-template`| New UI locale file (see below)       |
 | `check-links`    | Probe external URLs (see Testing)    |
+| `bench`          | Vitest micro-benchmarks (see below)   |
+| `bundle-budget`  | Size limits on `frontend/build`       |
 
 ### Testing
 
@@ -76,6 +78,12 @@ Unit and route tests use Vitest with jsdom (`make test` or `cd frontend && pnpm 
 The `/api/repo-info` handler is covered for Gitea `fetch` outcomes (network failure, non-OK responses, empty tags, JSON errors, cache TTL, and `Cache-Control` headers). Upstream calls use a 15s `AbortSignal` timeout.
 
 **Link rot:** `make check-links` runs `scripts/check-links.mjs`, which scans `README.md`, `LICENSE`, and `frontend/src/**` for `http(s)` URLs and requests them (HEAD, with GET fallback). Add substring patterns to `scripts/link-check-ignore.txt` to skip URLs that are not meant to be probed. URLs containing `{` or `}` are skipped (Svelte interpolations).
+
+### Performance and bundle size
+
+**Micro-benchmarks:** `make bench` (or `cd frontend && pnpm bench`) runs Vitest’s benchmark mode on `src/lib/hot-path.bench.ts` (pure helpers in `version.ts`, `seo.ts`, `site-config.ts`). CI runs this after unit tests. Benchmarks are experimental in Vitest; pin the Vitest version if you rely on them.
+
+**Bundle budget:** After a production build, `make bundle-budget` runs `scripts/bundle-budget.mjs` against `frontend/build/`. Defaults: total output under **28 MB** (`BUNDLE_BUDGET_TOTAL_MB`) and any single **.js** file under **12 MB** (`BUNDLE_BUDGET_MAX_JS_MB`), uncompressed. Raise these in CI only when intentional. The build job runs the budget check after `frontend-build`.
 
 ### Translations (i18n)
 
