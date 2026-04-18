@@ -91,6 +91,23 @@ class ReticulumService {
 	messages = new SvelteMap<string, ChatMessage[]>();
 	unreadCounts = new SvelteMap<string, number>();
 	peerKeyStatus = new SvelteMap<string, KeyStatus>();
+	/**
+	 * Monotonic counters bumped on every mutation of the SvelteMaps above.
+	 *
+	 * SvelteMap is reactive on its own when mutated from a Svelte-owned
+	 * context (event handlers, $effect bodies, lifecycle hooks). It is NOT
+	 * reliable when mutated from a callback that the Go WASM runtime
+	 * dispatches through `js.Value.Invoke` - those mutations land outside
+	 * any tracked effect and the page's `$derived(Array.from(peers.values()))`
+	 * never sees a dependency change. Bumping a plain `$state` number
+	 * alongside every map write gives the derived a real reactive handle to
+	 * latch onto, so the peer/message lists rerender when an announce or
+	 * incoming packet arrives.
+	 */
+	peersVersion = $state(0);
+	messagesVersion = $state(0);
+	unreadCountsVersion = $state(0);
+	peerKeyStatusVersion = $state(0);
 	selectedPeerHash = $state('');
 	stats = $state<ReticulumStats>({
 		packetsSent: 0,
@@ -225,6 +242,7 @@ class ReticulumService {
 
 				if (oldestHash) {
 					this.peers.delete(oldestHash);
+					this.peersVersion++;
 				}
 			}
 
@@ -236,12 +254,14 @@ class ReticulumService {
 			};
 
 			this.peers.set(peerData.hash, peer);
+			this.peersVersion++;
 			db.savePeer(peer).catch(console.error);
 
 			if (!existing) {
 				this.log(`Discovered peer: ${peerName}`, 'success');
 			}
 			this.peerKeyStatus.set(peerData.hash, 'known');
+			this.peerKeyStatusVersion++;
 		};
 
 		window.onChatMessage = (msg) => {
@@ -257,6 +277,7 @@ class ReticulumService {
 					lastSeen: new Date()
 				};
 				this.peers.set(peerHash, newPeer);
+				this.peersVersion++;
 				db.savePeer(newPeer).catch(console.error);
 				this.log(
 					`Received message from ${peerHash === 'unknown' ? 'unknown sender' : 'new peer: ' + peerHash.substring(0, 8)}`,
@@ -277,14 +298,17 @@ class ReticulumService {
 
 			const history = this.messages.get(peerHash) || [];
 			this.messages.set(peerHash, [...history, message]);
+			this.messagesVersion++;
 			db.saveMessage(peerHash, message).catch(console.error);
 
 			if (peerHash !== this.selectedPeerHash) {
 				const currentCount = this.unreadCounts.get(peerHash) || 0;
 				this.unreadCounts.set(peerHash, currentCount + 1);
+				this.unreadCountsVersion++;
 			}
 
 			this.peerKeyStatus.set(peerHash, 'known');
+			this.peerKeyStatusVersion++;
 			this.log(`New message from ${peerName}`, 'info');
 
 			// Browser Notification
@@ -386,6 +410,10 @@ class ReticulumService {
 				if (peerMessages.length > 0) {
 					this.messages.set(peer.hash, peerMessages);
 				}
+			}
+			if (savedPeers.length > 0) {
+				this.peersVersion++;
+				this.messagesVersion++;
 			}
 			this.log(`Loaded ${savedPeers.length} peers from storage`, 'info');
 		} catch (e) {
@@ -548,6 +576,7 @@ class ReticulumService {
 		};
 		const history = this.messages.get(peerHash) || [];
 		this.messages.set(peerHash, [...history, message]);
+		this.messagesVersion++;
 		db.saveMessage(peerHash, message).catch(console.error);
 		console.log('[reticulum] outgoing message buffered', {
 			peerHash,
@@ -571,6 +600,7 @@ class ReticulumService {
 				errorMsg.includes('key')
 			) {
 				this.peerKeyStatus.set(peerHash, 'unknown');
+				this.peerKeyStatusVersion++;
 			}
 			console.warn('[reticulum] sendMessage WASM rejected', result.error);
 			this.log(`Send failed: ${result.error}`, 'error');
@@ -579,17 +609,20 @@ class ReticulumService {
 
 		console.log('[reticulum] sendMessage WASM accepted', { peerHash });
 		this.peerKeyStatus.set(peerHash, 'known');
+		this.peerKeyStatusVersion++;
 	}
 
 	async fetchKeys(peerHash: string) {
 		if (!window.reticulum) return;
 
 		this.peerKeyStatus.set(peerHash, 'fetching');
+		this.peerKeyStatusVersion++;
 		this.log(`Requesting keys for ${peerHash.substring(0, 8)}...`, 'info');
 
 		const result = window.reticulum.requestPath(peerHash);
 		if (result.error) {
 			this.peerKeyStatus.set(peerHash, 'unknown');
+			this.peerKeyStatusVersion++;
 			this.log(`Key request failed: ${result.error}`, 'error');
 			throw new Error(result.error);
 		}

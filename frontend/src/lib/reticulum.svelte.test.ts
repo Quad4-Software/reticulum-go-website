@@ -111,6 +111,10 @@ describe('reticulum service – peer discovery wiring', () => {
 		r.messages.clear();
 		r.unreadCounts.clear();
 		r.peerKeyStatus.clear();
+		r.peersVersion = 0;
+		r.messagesVersion = 0;
+		r.unreadCountsVersion = 0;
+		r.peerKeyStatusVersion = 0;
 		r.connected = false;
 		r.initialized = false;
 		r.identity = null;
@@ -270,6 +274,84 @@ describe('reticulum service – peer discovery wiring', () => {
 		expect(history?.[0].text).toBe('hello world');
 		expect(history?.[0].type).toBe('sent');
 		expect(api.sendMessage).toHaveBeenCalledTimes(1);
+	});
+
+	it('bumps peersVersion + peerKeyStatusVersion on every announce so $derived UI re-renders', async () => {
+		const { reticulum } = reticulumModule;
+
+		await reticulum.init('wss://example/ws', 'tester');
+
+		const before = {
+			peers: reticulum.peersVersion,
+			peerKeyStatus: reticulum.peerKeyStatusVersion
+		};
+
+		const wasmCallback = api.setAnnounceCallback.mock.calls[0]?.[0];
+		wasmCallback?.({
+			hash: '7777777777777777aaaaaaaaaaaaaaaa',
+			appData: 'BumpTest',
+			hops: 1
+		});
+
+		flushSync();
+
+		expect(reticulum.peersVersion).toBeGreaterThan(before.peers);
+		expect(reticulum.peerKeyStatusVersion).toBeGreaterThan(before.peerKeyStatus);
+	});
+
+	it('bumps messagesVersion when an outgoing message is buffered', async () => {
+		const { reticulum } = reticulumModule;
+
+		await reticulum.init('wss://example/ws', 'tester');
+
+		const peerHash = 'fcff5e64a3ea4edad1d03093fc8fe07f';
+		reticulum.peers.set(peerHash, {
+			hash: peerHash,
+			name: 'Buddy',
+			hops: 0,
+			lastSeen: new Date()
+		});
+
+		const before = reticulum.messagesVersion;
+		await reticulum.sendMessage(peerHash, 'ping');
+		flushSync();
+
+		expect(reticulum.messagesVersion).toBeGreaterThan(before);
+	});
+
+	it('bumps messagesVersion on incoming chat packets so the chat re-renders', async () => {
+		const { reticulum } = reticulumModule;
+
+		await reticulum.init('wss://example/ws', 'tester');
+
+		const wasmAnnounce = api.setAnnounceCallback.mock.calls[0]?.[0];
+		const wasmPacket = api.setPacketCallback.mock.calls[0]?.[0];
+		expect(typeof wasmPacket).toBe('function');
+
+		wasmAnnounce?.({
+			hash: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+			appData: 'Pen',
+			hops: 1
+		});
+
+		flushSync();
+		const beforeMessages = reticulum.messagesVersion;
+
+		const senderBytes = Uint8Array.from(
+			'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'.match(/.{2}/g)!.map((b) => parseInt(b, 16))
+		);
+		const textBytes = new TextEncoder().encode('hello back');
+		const combined = new Uint8Array(senderBytes.length + textBytes.length);
+		combined.set(senderBytes);
+		combined.set(textBytes, senderBytes.length);
+
+		wasmPacket?.(combined);
+		flushSync();
+
+		expect(reticulum.messagesVersion).toBeGreaterThan(beforeMessages);
+		const history = reticulum.messages.get('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+		expect(history?.length).toBe(1);
+		expect(history?.[0].text).toBe('hello back');
 	});
 
 	it('still shows the outgoing bubble when WASM rejects the send (e.g. unknown identity)', async () => {

@@ -96,6 +96,7 @@ describe('PeersListHarness – UI reactivity to onPeerDiscovered', () => {
 	it('shows the peers section once init() resolves (proves the {#if reticulum.initialized} gate)', async () => {
 		const { reticulum } = await import('$lib/reticulum.svelte');
 		reticulum.peers.clear();
+		reticulum.peersVersion = 0;
 		reticulum.initialized = false;
 		reticulum.identity = null;
 
@@ -114,6 +115,7 @@ describe('PeersListHarness – UI reactivity to onPeerDiscovered', () => {
 	it('re-renders the list when an announce arrives via window.onPeerDiscovered', async () => {
 		const { reticulum } = await import('$lib/reticulum.svelte');
 		reticulum.peers.clear();
+		reticulum.peersVersion = 0;
 		reticulum.initialized = false;
 		reticulum.identity = null;
 

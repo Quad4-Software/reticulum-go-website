@@ -25,18 +25,24 @@
 		}
 	});
 
-	const peers = $derived(
-		Array.from(reticulum.peers.values())
+	const peers = $derived.by(() => {
+		void reticulum.peersVersion;
+		void reticulum.unreadCountsVersion;
+		void reticulum.peerKeyStatusVersion;
+		return Array.from(reticulum.peers.values())
 			.filter(
 				(p) =>
 					p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
 					p.hash.toLowerCase().includes(searchQuery.toLowerCase())
 			)
-			.sort((a, b) => b.lastSeen.getTime() - a.lastSeen.getTime())
-	);
-	const currentMessages = $derived(
-		(reticulum.selectedPeerHash ? reticulum.messages.get(reticulum.selectedPeerHash) : null) || []
-	);
+			.sort((a, b) => b.lastSeen.getTime() - a.lastSeen.getTime());
+	});
+	const currentMessages = $derived.by(() => {
+		void reticulum.messagesVersion;
+		return (
+			(reticulum.selectedPeerHash ? reticulum.messages.get(reticulum.selectedPeerHash) : null) || []
+		);
+	});
 
 	async function handleAnnounce() {
 		try {
@@ -83,7 +89,9 @@
 				hops: 0,
 				lastSeen: new Date()
 			});
+			reticulum.peersVersion++;
 			reticulum.peerKeyStatus.set(hash, 'unknown');
+			reticulum.peerKeyStatusVersion++;
 		}
 
 		reticulum.selectedPeerHash = hash;
@@ -471,6 +479,7 @@
 										onclick={() => {
 											reticulum.selectedPeerHash = peer.hash;
 											reticulum.unreadCounts.delete(peer.hash);
+											reticulum.unreadCountsVersion++;
 										}}
 										class="w-full text-left p-3.5 rounded-2xl border transition-all {reticulum.selectedPeerHash ===
 										peer.hash
@@ -627,6 +636,7 @@
 														reticulum.peerKeyStatus.get(reticulum.selectedPeerHash) === 'fetching'
 													) {
 														reticulum.peerKeyStatus.set(reticulum.selectedPeerHash, 'unknown');
+														reticulum.peerKeyStatusVersion++;
 														triggerToast('Key fetch timed out. Waiting for peer announce.');
 													}
 												}, 30000);
