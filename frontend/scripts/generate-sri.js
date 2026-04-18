@@ -102,6 +102,15 @@ if (fs.existsSync(BUILD_DIR)) {
 
 	fs.writeFileSync(MANIFEST_FILE, JSON.stringify(manifest, null, 2));
 	console.log(`SRI manifest created: ${MANIFEST_FILE}`);
+
+	const wasmBuild = path.join(BUILD_DIR, 'reticulum-go.wasm');
+	if (fs.existsSync(wasmBuild)) {
+		const sha256 = crypto.createHash('sha256').update(fs.readFileSync(wasmBuild)).digest('hex');
+		const wasmVersionPath = path.join(BUILD_DIR, 'wasm-version.json');
+		fs.writeFileSync(wasmVersionPath, JSON.stringify({ sha256 }, null, 2));
+		console.log(`WASM version file created: ${wasmVersionPath}`);
+	}
+
 	console.log('SRI generation complete.');
 } else {
 	console.error(`Build directory "${BUILD_DIR}" not found.`);

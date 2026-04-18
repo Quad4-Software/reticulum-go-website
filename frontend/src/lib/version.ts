@@ -5,9 +5,7 @@ export async function getLatestTag() {
 			const data = await response.json();
 			return data.latest_tag || null;
 		}
-	} catch {
-		// Silent fail, don't show if fetch fails
-	}
+	} catch {}
 	return null;
 }
 
@@ -18,9 +16,7 @@ export async function getRepoUpdatedAt() {
 			const data = await response.json();
 			return data.updated_at || null;
 		}
-	} catch {
-		// Silent fail, don't show if fetch fails
-	}
+	} catch {}
 	return null;
 }
 

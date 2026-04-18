@@ -26,7 +26,6 @@
 	let fuse: Fuse<DocItem> | null = null;
 	let searchInput: HTMLInputElement | undefined = $state();
 
-	// Load all markdown files raw content
 	const modules = import.meta.glob('../../lib/docs/**/*.{md,mdx}', {
 		query: '?raw',
 		import: 'default',
@@ -37,7 +36,6 @@
 		isLoading = true;
 		const currentLocale = $locale || 'en';
 
-		// Group by slug
 		const slugMap: Record<string, { path: string; content: string; locale: string }> = {};
 
 		Object.entries(modules).forEach(([path, content]) => {
@@ -45,7 +43,6 @@
 			const parts = filename.split('.');
 			const slug = parts[0];
 
-			// Check locale
 			let docLocale = 'en';
 			if (parts.length >= 3) {
 				docLocale = parts[1];

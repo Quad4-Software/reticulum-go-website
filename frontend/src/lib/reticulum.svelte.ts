@@ -1,5 +1,6 @@
 import { browser } from '$app/environment';
 import { SvelteMap } from 'svelte/reactivity';
+import { ensureWasmMatchesDeployedBuild } from './wasm-version-guard';
 import { loadWasmExec } from './wasm-exec-loader';
 import {
 	loadIdentity,
@@ -9,6 +10,7 @@ import {
 	loadAutoAnnounce
 } from './identity';
 import { db } from './db';
+
 async function waitFor(predicate: () => boolean, timeoutMs: number) {
 	if (predicate()) return;
 	const start = Date.now();
@@ -92,17 +94,9 @@ class ReticulumService {
 	unreadCounts = new SvelteMap<string, number>();
 	peerKeyStatus = new SvelteMap<string, KeyStatus>();
 	/**
-	 * Monotonic counters bumped on every mutation of the SvelteMaps above.
-	 *
-	 * SvelteMap is reactive on its own when mutated from a Svelte-owned
-	 * context (event handlers, $effect bodies, lifecycle hooks). It is NOT
-	 * reliable when mutated from a callback that the Go WASM runtime
-	 * dispatches through `js.Value.Invoke` - those mutations land outside
-	 * any tracked effect and the page's `$derived(Array.from(peers.values()))`
-	 * never sees a dependency change. Bumping a plain `$state` number
-	 * alongside every map write gives the derived a real reactive handle to
-	 * latch onto, so the peer/message lists rerender when an announce or
-	 * incoming packet arrives.
+	 * Incremented on each SvelteMap mutation. Go WASM callbacks run outside
+	 * Svelte's tracked context, so `$derived` lists depend on these counters
+	 * as well as the maps.
 	 */
 	peersVersion = $state(0);
 	messagesVersion = $state(0);
@@ -154,17 +148,14 @@ class ReticulumService {
 	private setupVisibilityHandler() {
 		document.addEventListener('visibilitychange', () => {
 			if (document.visibilityState === 'visible' && this.initialized) {
-				// Refresh status immediately when coming back
 				this.refreshStatus();
 			}
 		});
 	}
 
 	/**
-	 * refreshStatus pulls the live connection state and traffic counters
-	 * from the WASM transport. Exposed (not private) so the UI can poke
-	 * it from a visibilitychange handler and tests can drive it without
-	 * waiting for the stats loop interval.
+	 * Updates connection state and traffic counters from the WASM layer.
+	 * Public for visibility handlers and tests; the stats loop also calls this.
 	 */
 	refreshStatus() {
 		if (window.reticulum && this.initialized) {
@@ -184,7 +175,6 @@ class ReticulumService {
 	async ensureWasmLoaded() {
 		if (!browser || this.initialized || window.reticulum) return;
 
-		// Check for WebAssembly support
 		if (typeof WebAssembly === 'undefined') {
 			this.error = 'WebAssembly is not supported in this browser';
 			this.log(this.error, 'error');
@@ -196,13 +186,10 @@ class ReticulumService {
 		if (!this.legacyDbChecked) {
 			this.legacyDbChecked = true;
 			try {
-				// Remove legacy DB name that can conflict with older WASM schema versions.
 				if (typeof indexedDB !== 'undefined') {
 					indexedDB.deleteDatabase('reticulum_wasm_db');
 				}
-			} catch {
-				// Ignore cleanup errors; WASM load will continue.
-			}
+			} catch {}
 		}
 
 		this.isLoading = true;
@@ -268,7 +255,6 @@ class ReticulumService {
 			console.log('[reticulum] onChatMessage', msg);
 			const peerHash = msg.from || 'unknown';
 
-			// Ensure peer exists even if not announced
 			if (!this.peers.has(peerHash)) {
 				const newPeer: Peer = {
 					hash: peerHash,
@@ -311,7 +297,6 @@ class ReticulumService {
 			this.peerKeyStatusVersion++;
 			this.log(`New message from ${peerName}`, 'info');
 
-			// Browser Notification
 			if (
 				this.notificationsEnabled &&
 				(document.visibilityState === 'hidden' || peerHash !== this.selectedPeerHash)
@@ -347,6 +332,10 @@ class ReticulumService {
 
 		if (typeof window.Go === 'undefined') {
 			this.error = 'Go WASM runtime (wasm_exec.js) not found';
+			return;
+		}
+
+		if (!(await ensureWasmMatchesDeployedBuild())) {
 			return;
 		}
 
@@ -521,9 +510,7 @@ class ReticulumService {
 
 		if (enabled) {
 			this.log('Auto-announce enabled (every 15 minutes)', 'info');
-			// Initial announce
 			this.announce(name);
-			// 15 minutes interval
 			this.announceInterval = setInterval(
 				() => {
 					if (this.connected) {
@@ -592,6 +579,10 @@ class ReticulumService {
 		this.peerKeyStatusVersion++;
 	}
 
+	/**
+	 * After a successful request, `known` is set when an announce arrives
+	 * (`onPeerDiscovered`).
+	 */
 	async fetchKeys(peerHash: string) {
 		if (!window.reticulum) return;
 
@@ -606,9 +597,6 @@ class ReticulumService {
 			this.log(`Key request failed: ${result.error}`, 'error');
 			throw new Error(result.error);
 		}
-
-		// The peer status will be updated to 'known' automatically
-		// when an announce is received via onPeerDiscovered
 	}
 
 	private startStatsLoop() {
@@ -621,16 +609,12 @@ class ReticulumService {
 	async resetAppData() {
 		if (!browser) return;
 
-		// Clear IndexedDB
 		const dbs = await window.indexedDB.databases();
 		dbs.forEach((db) => {
 			if (db.name) window.indexedDB.deleteDatabase(db.name);
 		});
 
-		// Clear LocalStorage
 		localStorage.clear();
-
-		// Reload page
 		window.location.reload();
 	}
 }

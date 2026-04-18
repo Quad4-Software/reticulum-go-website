@@ -21,14 +21,12 @@ export const load = async ({ params, depends }) => {
 
 	const currentLocale = (browser ? localStorage.getItem('locale') : null) || get(locale) || 'en';
 
-	// Sync in background if online and browser
 	if (browser && navigator.onLine) {
 		syncDoc(cleanSlug, currentLocale).catch(console.error);
 	}
 
 	let match: (() => Promise<unknown>) | undefined;
 
-	// Try locale-specific then generic
 	const paths = [
 		`../../../lib/docs/${cleanSlug}.${currentLocale}.md`,
 		`../../../lib/docs/${cleanSlug}.${currentLocale}.mdx`,

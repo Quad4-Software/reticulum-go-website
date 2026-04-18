@@ -3,6 +3,7 @@
 	<head>
 		<meta charset="utf-8" />
 		<link rel="icon" href="/logo.svg" type="image/svg+xml" />
+		<link rel="manifest" href="/manifest.webmanifest" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="theme-color" content="#00ADD8" />
 
@@ -58,18 +59,6 @@
 					console.log('Reticulum WASM initialized');
 				};
 			})();
-
-			// PWA / service-worker kill-switch.
-			if ('serviceWorker' in navigator) {
-				navigator.serviceWorker.getRegistrations().then(function (regs) {
-					regs.forEach(function (r) { r.unregister(); });
-				}).catch(function () {});
-			}
-			if (typeof caches !== 'undefined' && caches.keys) {
-				caches.keys().then(function (names) {
-					names.forEach(function (n) { caches.delete(n); });
-				}).catch(function () {});
-			}
 		</script>
 		%sveltekit.head%
 	</head>

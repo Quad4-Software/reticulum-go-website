@@ -1,7 +1,7 @@
 import { browser } from '$app/environment';
 import type { Peer, ChatMessage } from './reticulum.svelte';
 
-// Keep app-side IndexedDB separate from any WASM-internal DB usage.
+/** Application store; name is distinct from WASM-internal IndexedDB usage. */
 const DB_NAME = 'reticulum_web_db';
 const DB_VERSION = 4;
 
@@ -9,7 +9,8 @@ export interface DBPeer {
 	hash: string;
 	name: string;
 	hops: number;
-	lastSeen: number; // Store as timestamp for indexedDB
+	/** Unix timestamp (ms). */
+	lastSeen: number;
 }
 
 export interface DBDoc {
@@ -24,7 +25,8 @@ export interface DBMessage {
 	peerHash: string;
 	text: string;
 	from: string;
-	time: number; // Store as timestamp
+	/** Unix timestamp (ms). */
+	time: number;
 	type: 'sent' | 'received';
 }
 
@@ -46,12 +48,10 @@ class ReticulumDB {
 			request.onupgradeneeded = (event) => {
 				const db = (event.target as IDBOpenDBRequest).result;
 
-				// Peers store
 				if (!db.objectStoreNames.contains('peers')) {
 					db.createObjectStore('peers', { keyPath: 'hash' });
 				}
 
-				// Messages store
 				if (!db.objectStoreNames.contains('messages')) {
 					const messageStore = db.createObjectStore('messages', {
 						keyPath: 'id',
@@ -60,7 +60,6 @@ class ReticulumDB {
 					messageStore.createIndex('peerHash', 'peerHash', { unique: false });
 				}
 
-				// Docs store
 				if (!db.objectStoreNames.contains('docs')) {
 					const docStore = db.createObjectStore('docs', {
 						keyPath: ['slug', 'lang']
@@ -208,7 +207,6 @@ class ReticulumDB {
 
 export const db = new ReticulumDB();
 
-// Export doc-related functions for docs-service.ts
 export const saveDoc = (doc: DBDoc) => db.saveDoc(doc);
 export const getDoc = (slug: string, lang: string) => db.getDoc(slug, lang);
 export const getAllDocsForLang = (lang: string) => db.getAllDocsForLang(lang);

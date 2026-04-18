@@ -16,7 +16,6 @@
 	});
 
 	$effect(() => {
-		// Auto-scroll when new messages arrive
 		if (currentMessages && scrollContainer) {
 			scrollContainer.scrollTo({
 				top: scrollContainer.scrollHeight,
@@ -630,7 +629,6 @@
 												await reticulum.fetchKeys(reticulum.selectedPeerHash);
 												triggerToast('Path request sent to network...');
 
-												// Auto-reset fetching state after 30s if no announce received
 												setTimeout(() => {
 													if (
 														reticulum.peerKeyStatus.get(reticulum.selectedPeerHash) === 'fetching'

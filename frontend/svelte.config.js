@@ -16,6 +16,9 @@ const config = {
 	],
 
 	kit: {
+		serviceWorker: {
+			register: false
+		},
 		adapter: adapter({
 			fallback: 'index.html', // SPA mode
 			pages: 'build',

@@ -1,10 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { flushSync } from 'svelte';
 
-// In-memory shim for the IndexedDB-backed peer/message store. The real
-// db.ts caches its IDBDatabase connection in a singleton, which leaks
-// state between tests; mocking lets us drop everything between cases
-// without fighting that cache.
+/** In-memory DB: the real module keeps a singleton IDB connection across tests. */
 const fakeDbState = {
 	peers: new Map<string, { hash: string; name: string; hops: number; lastSeen: Date }>(),
 	messages: new Map<
@@ -28,8 +25,7 @@ vi.mock('./db', () => ({
 	}
 }));
 
-// Identity persistence is also IDB-backed; bypass it with an in-memory
-// stub so init() doesn't pull stale identities from prior tests.
+/** In-memory identity so `init()` does not reuse state from earlier tests. */
 let fakeStoredIdentity: import('./identity').Identity | null = null;
 let fakeAutoAnnounce = false;
 
@@ -90,10 +86,7 @@ function buildMockApi(): MockReticulumApi {
 describe('reticulum service – peer discovery wiring', () => {
 	let api: MockReticulumApi;
 
-	// Single singleton shared across all tests; we reset its state instead
-	// of re-importing because the module-level `export const reticulum`
-	// persists across vi.resetModules dynamic imports inside the same test
-	// run.
+	/** `reticulum` is a module singleton; tests reset its fields instead of re-importing. */
 	let reticulumModule: typeof import('./reticulum.svelte');
 
 	beforeEach(async () => {
@@ -210,11 +203,6 @@ describe('reticulum service – peer discovery wiring', () => {
 
 		await reticulum.init('wss://example/ws', 'tester');
 
-		// init() should prime refreshStatus(), which polls the WASM
-		// transport's IsConnected() and lifts `connected`. This is the
-		// regression that left the peers section hidden behind
-		// {#if reticulum.connected} in production for users who never
-		// clicked the explicit connect button.
 		expect(api.isConnected).toHaveBeenCalled();
 		expect(reticulum.connected).toBe(true);
 	});
@@ -373,10 +361,6 @@ describe('reticulum service – peer discovery wiring', () => {
 		const [destArg, payload] = api.sendMessage.mock.calls[0] as [string, Uint8Array];
 		expect(destArg).toBe(peerHash);
 
-		// First 16 bytes of the payload MUST be our destination hash so the
-		// receiver can identity.Recall(senderHash) and reply. If we ever
-		// regress to embedding the identity hash here the receiver's
-		// sendMessage will throw "Identity not found".
 		const senderHex = Array.from(payload.slice(0, 16))
 			.map((b) => b.toString(16).padStart(2, '0'))
 			.join('');

@@ -5,6 +5,7 @@
 	import { page } from '$app/state';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import Footer from '$lib/components/Footer.svelte';
+	import PwaClient from '$lib/components/PwaClient.svelte';
 	import {
 		getOrganizationJsonLd,
 		getSoftwareApplicationJsonLd,
@@ -41,6 +42,7 @@
 			{@render children()}
 		</main>
 		<Footer />
+		<PwaClient />
 	</div>
 {:else}
 	<div class:dark={data.isDark} class="min-h-screen bg-white dark:bg-zinc-950 flex flex-col">
@@ -57,5 +59,6 @@
 				<div class="h-4 w-3/4 rounded bg-zinc-200 dark:bg-zinc-800 animate-pulse"></div>
 			</div>
 		</main>
+		<PwaClient />
 	</div>
 {/if}
