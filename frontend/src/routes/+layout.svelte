@@ -5,7 +5,6 @@
 	import { page } from '$app/state';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import Footer from '$lib/components/Footer.svelte';
-	import PwaReloadPrompt from '$lib/components/PwaReloadPrompt.svelte';
 	import {
 		getOrganizationJsonLd,
 		getSoftwareApplicationJsonLd,
@@ -42,7 +41,6 @@
 			{@render children()}
 		</main>
 		<Footer />
-		<PwaReloadPrompt />
 	</div>
 {:else}
 	<div class:dark={data.isDark} class="min-h-screen bg-white dark:bg-zinc-950 flex flex-col">

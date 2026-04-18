@@ -14,11 +14,6 @@
 			"minimatch": ">=10.2.1",
 			"serialize-javascript": ">=7.0.3",
 			"tmp": ">=0.2.4"
-		},
-		"peerDependencyRules": {
-			"allowedVersions": {
-				"vite-plugin-pwa>vite": "8"
-			}
 		}
 	},
 	"scripts": {
@@ -67,9 +62,7 @@
 		"typescript": "^6.0.3",
 		"typescript-eslint": "^8.58.2",
 		"vite": "^8.0.8",
-		"vite-plugin-pwa": "^1.2.0",
-		"vitest": "^4.1.4",
-		"workbox-window": "^7.4.0"
+		"vitest": "^4.1.4"
 	},
 	"dependencies": {
 		"fuse.js": "^7.3.0",

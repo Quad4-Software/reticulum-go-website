@@ -2,7 +2,6 @@
 import { sveltekit } from '@sveltejs/kit/vite';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'vitest/config';
-import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig(({ command }) => {
 	const isProd = command === 'build';
@@ -49,105 +48,7 @@ export default defineConfig(({ command }) => {
 		},
 		setupFiles: ['./src/test/setup.ts']
 	},
-	plugins: [
-		tailwindcss(),
-		sveltekit(),
-		VitePWA({
-			registerType: 'autoUpdate',
-			injectRegister: null,
-			devOptions: {
-				enabled: false
-			},
-			workbox: {
-				globPatterns: ['**/*.{js,css,html,ico,png,svg,wasm}'],
-				maximumFileSizeToCacheInBytes: 15 * 1024 * 1024,
-				navigateFallback: '/',
-				cleanupOutdatedCaches: true,
-				skipWaiting: true,
-				clientsClaim: true,
-				runtimeCaching: [
-					{
-						urlPattern:
-							// eslint-disable-next-line security/detect-unsafe-regex -- bounded pattern for PWA cache
-							/^https?:\/\/[^/]+\/(docs|wasm-example|interactive|apps|contact|donate)?(\/.*)?$/,
-						handler: 'NetworkFirst',
-						options: {
-							cacheName: 'pages-cache',
-							networkTimeoutSeconds: 3,
-							expiration: {
-								maxEntries: 100,
-								maxAgeSeconds: 60 * 60 * 24 * 7
-							}
-						}
-					},
-					{
-						urlPattern: /^https:\/\/.*\/docs.*/,
-						handler: 'StaleWhileRevalidate',
-						options: {
-							cacheName: 'docs-cache',
-							expiration: {
-								maxEntries: 50,
-								maxAgeSeconds: 60 * 60 * 24 * 30
-							}
-						}
-					}
-				]
-			},
-			manifest: {
-				name: 'Quad4 Reticulum',
-				short_name: 'Reticulum',
-				description: 'Resilient, encrypted, and decentralized communication network',
-				theme_color: '#00ADD8',
-				background_color: '#ffffff',
-				display: 'standalone',
-				orientation: 'portrait',
-				scope: '/',
-				start_url: '/',
-				shortcuts: [
-					{
-						name: 'WASM Chat',
-						short_name: 'Chat',
-						description: 'Reticulum WASM Chat Example',
-						url: '/wasm-example',
-						icons: [{ src: 'logo.svg', sizes: '192x192' }]
-					},
-					{
-						name: 'Documentation',
-						short_name: 'Docs',
-						description: 'Reticulum-Go Documentation',
-						url: '/docs',
-						icons: [{ src: 'logo.svg', sizes: '192x192' }]
-					}
-				],
-				icons: [
-					{
-						src: 'logo.svg',
-						sizes: '192x192',
-						type: 'image/svg+xml',
-						purpose: 'any'
-					},
-					{
-						src: 'logo.svg',
-						sizes: '512x512',
-						type: 'image/svg+xml',
-						purpose: 'any'
-					},
-					{
-						src: 'logo.svg',
-						sizes: '192x192',
-						type: 'image/svg+xml',
-						purpose: 'maskable'
-					},
-					{
-						src: 'logo.svg',
-						sizes: '512x512',
-						type: 'image/svg+xml',
-						purpose: 'maskable'
-					}
-				]
-			}
-		}) as import('vite').PluginOption
-	],
+	plugins: [tailwindcss(), sveltekit()],
 		build: {
 			sourcemap: !isProd,
 			minify: isProd ? 'esbuild' : false

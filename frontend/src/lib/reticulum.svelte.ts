@@ -9,8 +9,6 @@ import {
 	loadAutoAnnounce
 } from './identity';
 import { db } from './db';
-import { WASM_CACHE_KEY } from './wasm-version';
-
 async function waitFor(predicate: () => boolean, timeoutMs: number) {
 	if (predicate()) return;
 	const start = Date.now();
@@ -330,10 +328,7 @@ class ReticulumService {
 
 		const go = new window.Go();
 		try {
-			// Cache-bust the wasm binary so the SW (or HTTP cache) cannot
-			// pin an old build alongside a new app shell.
-			const wasmUrl = `/reticulum-go.wasm?v=${WASM_CACHE_KEY}`;
-			const response = await fetch(wasmUrl, { cache: 'no-cache' });
+			const response = await fetch('/reticulum-go.wasm', { cache: 'no-cache' });
 			if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
 			const result = await WebAssembly.instantiateStreaming(response, go.importObject);
