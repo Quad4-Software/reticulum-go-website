@@ -48,7 +48,7 @@ jobs:
           git checkout "${GITHUB_SHA}"
 
       - name: Setup Node.js
-        run: sh scripts/ci/setup-node.sh 23
+        run: sh scripts/ci/setup-node.sh 24
 
       - name: Enable pnpm
         run: sh scripts/ci/setup-pnpm.sh

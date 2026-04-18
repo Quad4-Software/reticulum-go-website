@@ -3,7 +3,7 @@
 # Usage: setup-node.sh [major_version]
 set -eu
 
-NODE_MAJOR="${1:-23}"
+NODE_MAJOR="${1:-24}"
 
 ARCH="$(uname -m)"
 case "$ARCH" in

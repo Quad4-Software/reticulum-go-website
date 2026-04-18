@@ -19,7 +19,7 @@ Then open your browser at `http://localhost:3000`
 
 ### Prerequisites
 
-- Node.js v23
+- Node.js v24
 - [pnpm](https://pnpm.io/) 10.32.1
 
 ### Setup
@@ -78,14 +78,16 @@ Workflows live under `.gitea/workflows/`. **Checkout** is an inline step: clone 
 
 Toolchain setup is implemented as POSIX shell under `scripts/ci/` so downloads are pinned and verified where noted:
 
-- `setup-node.sh` installs Node from nodejs.org `latest-v{N}.x` with SHA256 verification (default major **23**; pass a different major as the first argument).
+- `setup-node.sh` installs Node from nodejs.org `latest-v{N}.x` with SHA256 verification (default major **24**; pass a different major as the first argument).
 - `setup-pnpm.sh` enables corepack and activates pnpm (version defaults to match `frontend/package.json` `packageManager`).
 - `setup-trivy.sh` installs a `.deb` from `TRIVY_DEB_URL` with optional `TRIVY_DEB_SHA256`.
 - `ci-node-path.sh` exports `/usr/local/bin` on `PATH`.
 
 **Docs release:** On version tags, the Release Docs workflow runs `scripts/docs/prepare-release-docs.sh`, which writes optional commit metadata to `GITHUB_OUTPUT` when the runner provides it, then runs `make docs-zip`. Locally you can run `make docs-zip` or `make docs-release` (metadata step is skipped without `GITHUB_OUTPUT`).
 
-`frontend/.npmrc` sets `engine-strict=false` so pnpm accepts Node 23 even when a dependency declares a narrower `engines` range.
+`frontend/.npmrc` sets `engine-strict=false` so pnpm accepts Node 24 even when a dependency declares a narrower `engines` range.
+
+If pnpm reports `ERR_PNPM_UNEXPECTED_STORE`, your `frontend/node_modules` was linked from another machine or store path. Remove it and reinstall: `rm -rf frontend/node_modules` then `cd frontend && pnpm install`.
 
 ### Testing
 
