@@ -115,11 +115,14 @@
 	}
 </script>
 
-<div class="grid lg:grid-cols-12 xl:grid-cols-10 2xl:grid-cols-12 gap-8 relative">
-	<div class="lg:col-span-8 xl:col-span-7 2xl:col-span-9 space-y-4">
+<div
+	class="grid grid-cols-1 lg:grid-cols-12 xl:grid-cols-10 2xl:grid-cols-12 gap-6 sm:gap-8 relative w-full min-w-0"
+>
+	<div class="order-2 min-w-0 lg:order-1 lg:col-span-8 xl:col-span-7 2xl:col-span-9 space-y-4">
 		<section class="pb-2">
-			<div class="flex items-center gap-4 mb-2">
-				<div class="p-2.5 bg-[#00ADD8] rounded-2xl shadow-md shadow-[#00ADD8]/10 text-white">
+			<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4 mb-2">
+				<div class="flex items-center gap-3 sm:gap-4">
+				<div class="shrink-0 p-2.5 bg-[#00ADD8] rounded-2xl shadow-md shadow-[#00ADD8]/10 text-white">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						class="w-6 h-6"
@@ -132,9 +135,9 @@
 						><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg
 					>
 				</div>
-				<div>
-					<div class="flex items-center gap-3">
-						<h1 class="text-3xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">
+				<div class="min-w-0">
+					<div class="flex flex-wrap items-center gap-2 sm:gap-3">
+						<h1 class="text-2xl sm:text-3xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">
 							WASM Chat
 						</h1>
 						<span
@@ -146,6 +149,7 @@
 					<p class="text-xs text-zinc-500 dark:text-zinc-400 font-medium">
 						Secure P2P messaging via Reticulum-Go
 					</p>
+				</div>
 				</div>
 			</div>
 
@@ -281,12 +285,16 @@
 
 		{#if reticulum.initialized}
 			<section class="border-t border-zinc-200 dark:border-zinc-800 pt-6">
-				<div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-					<div>
-						<h2 class="text-2xl font-black text-zinc-900 dark:text-zinc-50">Network Peers</h2>
+				<div
+					class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between mb-6 min-w-0"
+				>
+					<div class="min-w-0">
+						<h2 class="text-xl sm:text-2xl font-black text-zinc-900 dark:text-zinc-50">
+							Network Peers
+						</h2>
 					</div>
 					<div
-						class="flex items-center gap-3 bg-zinc-50 dark:bg-zinc-900 p-1.5 rounded-2xl border border-zinc-200 dark:border-zinc-800"
+						class="flex flex-wrap items-center gap-x-2 gap-y-2 sm:gap-3 bg-zinc-50 dark:bg-zinc-900 p-1.5 rounded-2xl border border-zinc-200 dark:border-zinc-800 max-w-full min-w-0"
 					>
 						{#if typeof Notification !== 'undefined'}
 							<button
@@ -390,9 +398,11 @@
 					</div>
 				</div>
 
-				<div class="grid lg:grid-cols-3 gap-6">
+				<div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 min-h-0">
 					<!-- Peer List -->
-					<div class="flex flex-col gap-4 lg:h-[500px] xl:h-[550px] 2xl:h-[600px]">
+					<div
+						class="flex min-h-0 flex-col gap-4 max-h-[min(42vh,20rem)] sm:max-h-[min(45vh,24rem)] lg:max-h-none lg:h-[500px] xl:h-[550px] 2xl:h-[600px]"
+					>
 						<div class="flex gap-2">
 							<div class="relative flex-1">
 								<input
@@ -525,7 +535,7 @@
 
 					<!-- Chat Area -->
 					<div
-						class="lg:col-span-2 flex flex-col h-[450px] lg:h-[500px] xl:h-[550px] 2xl:h-[600px] border border-zinc-200 dark:border-zinc-800 rounded-2xl bg-white dark:bg-zinc-950 overflow-hidden shadow-sm"
+						class="flex min-h-[280px] flex-col h-[min(72dvh,32rem)] sm:h-[min(75dvh,36rem)] lg:col-span-2 lg:h-[500px] xl:h-[550px] 2xl:h-[600px] border border-zinc-200 dark:border-zinc-800 rounded-2xl bg-white dark:bg-zinc-950 overflow-hidden shadow-sm"
 					>
 						{#if !reticulum.selectedPeerHash}
 							<div
@@ -535,19 +545,23 @@
 							</div>
 						{:else}
 							<div
-								class="px-6 py-4 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 flex justify-between items-center shadow-sm z-10"
+								class="px-3 py-3 sm:px-6 sm:py-4 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 flex min-w-0 items-center justify-between gap-2 shadow-sm z-10"
 							>
-								<div class="flex items-center gap-3">
+								<div class="flex min-w-0 items-center gap-2 sm:gap-3">
 									<div
-										class="w-10 h-10 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center font-bold text-[#00ADD8]"
+										class="h-9 w-9 shrink-0 rounded-full bg-zinc-100 dark:bg-zinc-800 sm:h-10 sm:w-10 flex items-center justify-center font-bold text-[#00ADD8]"
 									>
 										{reticulum.peers.get(reticulum.selectedPeerHash)?.name[0].toUpperCase()}
 									</div>
-									<div>
-										<div class="font-bold text-sm text-zinc-900 dark:text-zinc-50">
+									<div class="min-w-0">
+										<div
+											class="truncate font-bold text-sm text-zinc-900 dark:text-zinc-50"
+										>
 											{reticulum.peers.get(reticulum.selectedPeerHash)?.name}
 										</div>
-										<div class="text-[10px] font-mono text-zinc-400">
+										<div
+											class="break-all text-[10px] font-mono text-zinc-400 sm:break-normal sm:truncate"
+										>
 											{reticulum.selectedPeerHash}
 										</div>
 									</div>
@@ -556,12 +570,12 @@
 
 							<div
 								bind:this={scrollContainer}
-								class="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar bg-zinc-50/50 dark:bg-zinc-900/20"
+								class="min-h-0 flex-1 overflow-y-auto p-3 sm:p-6 space-y-4 sm:space-y-6 custom-scrollbar bg-zinc-50/50 dark:bg-zinc-900/20"
 							>
 								{#each currentMessages as msg, i (i)}
 									<div class="flex flex-col {msg.type === 'sent' ? 'items-end' : 'items-start'}">
 										<div
-											class="max-w-[80%] p-4 rounded-2xl text-sm leading-relaxed shadow-sm {msg.type ===
+											class="max-w-[min(92%,20rem)] sm:max-w-[80%] p-3 sm:p-4 rounded-2xl text-sm leading-relaxed shadow-sm {msg.type ===
 											'sent'
 												? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 rounded-tr-none'
 												: 'bg-white dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700 rounded-tl-none'}"
@@ -603,9 +617,9 @@
 
 							{#if reticulum.selectedPeerHash && reticulum.peerKeyStatus.get(reticulum.selectedPeerHash) === 'unknown'}
 								<div
-									class="px-6 py-3 bg-amber-50 dark:bg-amber-900/20 border-t border-amber-200 dark:border-amber-900/50 flex items-center justify-between gap-4"
+									class="flex flex-col gap-3 px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-6 bg-amber-50 dark:bg-amber-900/20 border-t border-amber-200 dark:border-amber-900/50"
 								>
-									<div class="flex items-center gap-3 text-amber-700 dark:text-amber-400">
+									<div class="flex min-w-0 items-start gap-3 text-amber-700 dark:text-amber-400 sm:items-center">
 										<svg
 											xmlns="http://www.w3.org/2000/svg"
 											class="w-5 h-5"
@@ -619,7 +633,7 @@
 												d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"
 											/></svg
 										>
-										<div class="text-xs font-bold">
+										<div class="min-w-0 text-xs font-bold leading-snug">
 											Keys unknown for this peer. Please wait for an announce or try to fetch them.
 										</div>
 									</div>
@@ -643,7 +657,7 @@
 												console.error(e);
 											}
 										}}
-										class="px-3 py-1 bg-amber-100 dark:bg-amber-900/40 hover:bg-amber-200 dark:hover:bg-amber-900/60 text-amber-800 dark:text-amber-300 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all"
+										class="w-full shrink-0 px-3 py-2 sm:w-auto sm:py-1 bg-amber-100 dark:bg-amber-900/40 hover:bg-amber-200 dark:hover:bg-amber-900/60 text-amber-800 dark:text-amber-300 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all"
 									>
 										Fetch Keys
 									</button>
@@ -664,7 +678,7 @@
 									e.preventDefault();
 									sendMessage();
 								}}
-								class="p-4 bg-white dark:bg-zinc-950 border-t border-zinc-200 dark:border-zinc-800 flex gap-3"
+								class="flex gap-2 border-t border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-950 sm:gap-3 sm:p-4"
 							>
 								<input
 									type="text"
@@ -673,12 +687,12 @@
 										? 'Cannot reply to unknown sender'
 										: 'Type a message...'}
 									disabled={reticulum.selectedPeerHash === 'unknown'}
-									class="flex-1 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 ring-[#00ADD8]/20 focus:border-[#00ADD8] transition-all disabled:opacity-50"
+									class="min-w-0 flex-1 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3 py-2.5 text-sm outline-none focus:ring-2 ring-[#00ADD8]/20 focus:border-[#00ADD8] transition-all disabled:opacity-50 sm:px-4 sm:py-3"
 								/>
 								<button
 									type="submit"
 									disabled={!messageInput.trim() || reticulum.selectedPeerHash === 'unknown'}
-									class="px-6 py-3 bg-[#00ADD8] hover:bg-[#009dc4] text-white rounded-xl text-sm font-bold disabled:opacity-50 transition-all active:scale-95 shadow-md shadow-[#00ADD8]/10"
+									class="shrink-0 px-4 py-2.5 sm:px-6 sm:py-3 bg-[#00ADD8] hover:bg-[#009dc4] text-white rounded-xl text-sm font-bold disabled:opacity-50 transition-all active:scale-95 shadow-md shadow-[#00ADD8]/10"
 								>
 									Send
 								</button>
@@ -689,10 +703,10 @@
 			</section>
 		{/if}
 
-		<section class="border-t border-zinc-200 dark:border-zinc-800 pt-8 pb-12">
-			<div class="flex items-center justify-between mb-4">
+		<section class="border-t border-zinc-200 dark:border-zinc-800 pt-6 sm:pt-8 pb-8 sm:pb-12">
+			<div class="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
 				<div>
-					<h2 class="text-xl font-black text-zinc-900 dark:text-zinc-50">System Logs</h2>
+					<h2 class="text-lg sm:text-xl font-black text-zinc-900 dark:text-zinc-50">System Logs</h2>
 				</div>
 				<button
 					onclick={() => (reticulum.logs = [])}
@@ -702,20 +716,31 @@
 				</button>
 			</div>
 			<div
-				class="bg-zinc-100 dark:bg-zinc-950 rounded-2xl p-3 font-mono text-[10px] text-zinc-700 dark:text-zinc-400 h-32 overflow-y-auto space-y-1 border border-zinc-200 dark:border-zinc-800 shadow-inner custom-scrollbar"
+				class="bg-zinc-100 dark:bg-zinc-950 rounded-2xl p-3 font-mono text-xs leading-relaxed text-zinc-700 dark:text-zinc-300 min-h-[14rem] max-h-[min(70vh,36rem)] overflow-y-auto space-y-3 border border-zinc-200 dark:border-zinc-800 shadow-inner custom-scrollbar"
 			>
 				{#each reticulum.logs as log, i (i)}
-					<div class="flex gap-2">
-						<span class="text-zinc-500 dark:text-zinc-600">[{log.time}]</span>
-						<span
-							class={log.type === 'error'
-								? 'text-red-500'
+					<div class="min-w-0 break-words border-b border-zinc-200/80 pb-3 last:border-0 last:pb-0 dark:border-zinc-700/50">
+						<div class="flex flex-wrap gap-x-2 gap-y-0.5">
+							<span class="shrink-0 text-[10px] text-zinc-500 dark:text-zinc-500">[{log.time}]</span>
+							<span
+								class="font-semibold uppercase tracking-wide text-[10px] text-zinc-400 dark:text-zinc-500"
+								>{log.type}</span
+							>
+						</div>
+						<div
+							class="mt-1 whitespace-pre-wrap break-words {log.type === 'error'
+								? 'text-red-600 dark:text-red-400'
 								: log.type === 'success'
-									? 'text-green-500'
-									: 'text-zinc-700 dark:text-zinc-300'}
+									? 'text-emerald-700 dark:text-emerald-400'
+									: 'text-zinc-800 dark:text-zinc-200'}"
 						>
 							{log.msg}
-						</span>
+						</div>
+						{#if log.detail}
+							<pre
+								class="mt-2 max-h-48 overflow-auto rounded-lg border border-zinc-200/90 bg-white/60 p-2 text-[10px] leading-normal text-zinc-600 dark:border-zinc-700 dark:bg-zinc-900/60 dark:text-zinc-300"
+							>{log.detail}</pre>
+						{/if}
 					</div>
 				{/each}
 				{#if reticulum.logs.length === 0}
@@ -723,22 +748,27 @@
 				{/if}
 			</div>
 			<div class="mt-2 text-[10px] text-zinc-500 dark:text-zinc-600">
-				Check F12 Console for detailed logs.
+				Same entries are written to the browser console (prefixed with <code class="font-mono text-zinc-600 dark:text-zinc-400">[reticulum]</code>); objects stay expandable in DevTools.
 			</div>
 		</section>
 	</div>
 
-	<div class="lg:col-span-4 xl:col-span-3 2xl:col-span-3">
-		<div class="sticky top-24">
+	<div class="order-1 min-w-0 lg:order-2 lg:col-span-4 xl:col-span-3 2xl:col-span-3">
+		<div class="lg:sticky lg:top-24">
 			<IdentityCard />
 		</div>
 	</div>
 
 	{#if showToast}
 		<div
-			class="fixed bottom-8 left-1/2 -translate-x-1/2 z-[100] px-6 py-3 bg-[#00ADD8]/90 backdrop-blur-sm text-white font-bold rounded-full shadow-lg"
+			class="toast-pop fixed bottom-5 right-4 z-[100] flex max-w-[min(22rem,calc(100vw-2rem))] items-start gap-3 rounded-2xl border border-white/50 bg-white/75 px-4 py-3.5 text-sm font-semibold leading-snug text-zinc-800 shadow-2xl shadow-black/10 ring-1 ring-black/[0.06] backdrop-blur-xl dark:border-zinc-500/35 dark:bg-zinc-950/78 dark:text-zinc-100 dark:shadow-black/40 dark:ring-white/[0.08] sm:bottom-6 sm:right-6"
+			role="status"
 		>
-			{toastMessage}
+			<span
+				class="mt-0.5 h-2 w-2 shrink-0 rounded-full bg-[#00ADD8] shadow-[0_0_12px_rgba(0,173,216,0.55)]"
+				aria-hidden="true"
+			></span>
+			<span class="min-w-0 flex-1">{toastMessage}</span>
 		</div>
 	{/if}
 </div>

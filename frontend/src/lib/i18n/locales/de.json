@@ -46,10 +46,14 @@
 	},
 	"donate": {
 		"title": "Spenden",
-		"subtitle": "Unterstützen Sie die Entwicklung und Wartung von Reticulum.",
-		"supported_by": "Reticulum-Go, die Golang-Implementierung der Python-Referenz, wird von {quad4}-Unternehmen für eine langfristig nachhaltige Entwicklung der Implementierung unterstützt.",
-		"no_direct_donations": "Bitte erwägen Sie auch eine Spende an den ursprünglichen Autor des Reticulum Network Stack:",
-		"cta": "Markqvist"
+		"subtitle": "Unterstützen Sie die Entwicklung und Wartung von Reticulum-Go.",
+		"intro": "Wählen Sie unten eine Plattform oder senden Sie Monero direkt.",
+		"buymeacoffee": "Buy Me a Coffee",
+		"liberapay": "Liberapay",
+		"kofi": "Ko-fi",
+		"monero": "Monero",
+		"copy_address": "Adresse kopieren",
+		"copied": "Kopiert!"
 	},
 	"home": {
 		"title": "Reticulum-Go",

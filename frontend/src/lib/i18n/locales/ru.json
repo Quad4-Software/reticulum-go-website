@@ -46,10 +46,14 @@
 	},
 	"donate": {
 		"title": "Пожертвовать",
-		"subtitle": "Поддержите разработку и обслуживание Reticulum.",
-		"supported_by": "Reticulum-Go, реализация на Golang эталонной версии на Python, поддерживается предприятиями {quad4} для долгосрочного устойчивого развития реализации.",
-		"no_direct_donations": "Пожалуйста, также рассмотрите возможность пожертвования оригинальному автору Reticulum Network Stack:",
-		"cta": "Markqvist"
+		"subtitle": "Поддержите разработку и сопровождение Reticulum-Go.",
+		"intro": "Выберите платформу ниже или отправьте Monero напрямую.",
+		"buymeacoffee": "Buy Me a Coffee",
+		"liberapay": "Liberapay",
+		"kofi": "Ko-fi",
+		"monero": "Monero",
+		"copy_address": "Копировать адрес",
+		"copied": "Скопировано!"
 	},
 	"home": {
 		"title": "Reticulum-Go",

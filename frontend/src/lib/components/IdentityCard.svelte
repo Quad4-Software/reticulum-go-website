@@ -6,14 +6,26 @@
 	let wsUrl = $state('wss://socket.quad4.io/ws');
 	let userName = $state('');
 	let loading = $state(false);
+	let expanded = $state(true);
 
 	onMount(async () => {
+		if (typeof sessionStorage !== 'undefined') {
+			const s = sessionStorage.getItem('reticulum_identity_expanded');
+			if (s === '0') expanded = false;
+		}
 		await reticulum.ensureWasmLoaded();
 		const identity = await loadIdentity();
 		if (identity) {
 			userName = localStorage.getItem('reticulum_username') || '';
 		}
 	});
+
+	function toggleExpanded() {
+		expanded = !expanded;
+		if (typeof sessionStorage !== 'undefined') {
+			sessionStorage.setItem('reticulum_identity_expanded', expanded ? '1' : '0');
+		}
+	}
 
 	async function handleInit() {
 		if (reticulum.initialized) return;
@@ -41,37 +53,62 @@
 </script>
 
 <div
-	class="p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-sm"
+	class="w-full min-w-0 max-w-full p-4 sm:p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-sm"
 >
-	<div class="flex items-center justify-between mb-6">
-		<h2 class="text-lg font-semibold">Network Identity</h2>
-		{#if reticulum.isLoading}
-			<div class="flex items-center gap-2">
-				<div
-					class="w-3 h-3 border-2 border-[#00ADD8] border-t-transparent rounded-full animate-spin"
-				></div>
-				<span class="text-xs text-zinc-500">Loading WASM...</span>
-			</div>
-		{:else if reticulum.connected}
-			<span
-				class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
+	<button
+		type="button"
+		class="mb-4 flex w-full items-center justify-between gap-2 rounded-xl px-1 py-1.5 text-left transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800/60 -mx-1"
+		onclick={toggleExpanded}
+		aria-expanded={expanded}
+		aria-controls="identity-card-body"
+		id="identity-card-heading"
+	>
+		<span class="flex min-w-0 items-center gap-2">
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				class="h-5 w-5 shrink-0 text-zinc-500 transition-transform duration-200 {expanded
+					? 'rotate-180'
+					: ''}"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+				aria-hidden="true"
+				><path d="m6 9 6 6 6-6" /></svg
 			>
-				Connected
-			</span>
-		{:else if reticulum.initialized}
-			<span
-				class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400"
-			>
-				Initialized
-			</span>
-		{:else}
-			<span
-				class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-zinc-100 text-zinc-800 dark:bg-zinc-900/30 dark:text-zinc-400"
-			>
-				Offline
-			</span>
-		{/if}
-	</div>
+			<span class="text-lg font-semibold truncate">Network Identity</span>
+		</span>
+		<span class="flex shrink-0 items-center gap-2">
+			{#if reticulum.isLoading}
+				<span class="flex items-center gap-2">
+					<span
+						class="w-3 h-3 border-2 border-[#00ADD8] border-t-transparent rounded-full animate-spin"
+					></span>
+					<span class="text-xs text-zinc-500">Loading WASM...</span>
+				</span>
+			{:else if reticulum.connected}
+				<span
+					class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
+				>
+					Connected
+				</span>
+			{:else if reticulum.initialized}
+				<span
+					class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400"
+				>
+					Initialized
+				</span>
+			{:else}
+				<span
+					class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-zinc-100 text-zinc-800 dark:bg-zinc-900/30 dark:text-zinc-400"
+				>
+					Offline
+				</span>
+			{/if}
+		</span>
+	</button>
 
 	{#if reticulum.error}
 		<div
@@ -82,6 +119,8 @@
 		</div>
 	{/if}
 
+	{#if expanded}
+		<div id="identity-card-body" role="region" aria-labelledby="identity-card-heading">
 	{#if reticulum.identity}
 		<div class="space-y-4">
 			{#if userName}
@@ -111,7 +150,7 @@
 					>Destination Hash</span
 				>
 				<div
-					class="font-mono text-xs break-all p-2 bg-zinc-50 dark:bg-zinc-950 rounded border border-zinc-200 dark:border-zinc-800 line-clamp-2"
+					class="font-mono text-xs break-all p-2 bg-zinc-50 dark:bg-zinc-950 rounded border border-zinc-200 dark:border-zinc-800"
 				>
 					{reticulum.identity.publicKey}
 				</div>
@@ -169,6 +208,8 @@
 			>
 				{loading ? 'Initializing...' : 'Join Network'}
 			</button>
+		</div>
+	{/if}
 		</div>
 	{/if}
 </div>

@@ -111,7 +111,7 @@ class ReticulumService {
 		announcesSent: 0,
 		announcesReceived: 0
 	});
-	logs = $state<{ msg: string; type: string; time: string }[]>([]);
+	logs = $state<{ msg: string; type: string; time: string; detail?: string }[]>([]);
 	autoAnnounce = $state(false);
 	notificationsEnabled = $state(false);
 
@@ -202,10 +202,8 @@ class ReticulumService {
 
 	private setupCallbacks() {
 		window.onPeerDiscovered = (peerData) => {
-			console.log('[reticulum] onPeerDiscovered', peerData);
-
 			if (!peerData || typeof peerData.hash !== 'string') {
-				console.warn('[reticulum] dropping malformed peer payload', peerData);
+				this.log('Dropping malformed peer payload', 'error', peerData);
 				return;
 			}
 
@@ -245,15 +243,19 @@ class ReticulumService {
 			db.savePeer(peer).catch(console.error);
 
 			if (!existing) {
-				this.log(`Discovered peer: ${peerName}`, 'success');
+				this.log(`Discovered peer: ${peerName}`, 'success', {
+					hash: peerData.hash,
+					hops: peerData.hops,
+					appData: peerData.appData
+				});
 			}
 			this.peerKeyStatus.set(peerData.hash, 'known');
 			this.peerKeyStatusVersion++;
 		};
 
 		window.onChatMessage = (msg) => {
-			console.log('[reticulum] onChatMessage', msg);
 			const peerHash = msg.from || 'unknown';
+			const wasNewPeer = !this.peers.has(peerHash);
 
 			if (!this.peers.has(peerHash)) {
 				const newPeer: Peer = {
@@ -265,10 +267,6 @@ class ReticulumService {
 				this.peers.set(peerHash, newPeer);
 				this.peersVersion++;
 				db.savePeer(newPeer).catch(console.error);
-				this.log(
-					`Received message from ${peerHash === 'unknown' ? 'unknown sender' : 'new peer: ' + peerHash.substring(0, 8)}`,
-					'info'
-				);
 			}
 
 			const peer = this.peers.get(peerHash);
@@ -295,7 +293,13 @@ class ReticulumService {
 
 			this.peerKeyStatus.set(peerHash, 'known');
 			this.peerKeyStatusVersion++;
-			this.log(`New message from ${peerName}`, 'info');
+
+			this.log('Chat message', 'info', {
+				from: peerHash,
+				displayName: peerName,
+				text: msg.text,
+				newPeer: wasNewPeer
+			});
 
 			if (
 				this.notificationsEnabled &&
@@ -313,9 +317,38 @@ class ReticulumService {
 		};
 	}
 
-	private log(msg: string, type: string) {
+	private serializeLogDetail(detail: unknown): string {
+		if (detail === undefined) return '';
+		if (typeof detail === 'string') return detail;
+		if (detail instanceof Uint8Array) {
+			const n = detail.length;
+			const preview = Array.from(detail.slice(0, 48))
+				.map((b) => b.toString(16).padStart(2, '0'))
+				.join(' ');
+			return `Uint8Array(${n})${n > 48 ? ' …' : ''}\n${preview}${n > 48 ? ' …' : ''}`;
+		}
+		try {
+			return JSON.stringify(detail, (_k, v) => (typeof v === 'bigint' ? v.toString() : v), 2);
+		} catch {
+			return String(detail);
+		}
+	}
+
+	/**
+	 * Appends to System Logs and mirrors the same line to the browser console so DevTools and the UI stay aligned.
+	 */
+	private log(msg: string, type: string, detail?: unknown) {
 		const time = new Date().toLocaleTimeString();
-		this.logs = [...this.logs.slice(-99), { msg, type, time }];
+		const detailStr = detail !== undefined ? this.serializeLogDetail(detail) : undefined;
+		this.logs = [...this.logs.slice(-499), { msg, type, time, detail: detailStr }];
+		const prefix = `[reticulum] [${time}] [${type}]`;
+		if (type === 'error') {
+			console.error(prefix, msg, detail !== undefined ? detail : '');
+		} else if (type === 'success') {
+			console.info(prefix, msg, detail !== undefined ? detail : '');
+		} else {
+			console.log(prefix, msg, detail !== undefined ? detail : '');
+		}
 	}
 
 	private async loadWasm() {
@@ -429,23 +462,27 @@ class ReticulumService {
 		if (!api) return;
 
 		if (typeof api.setAnnounceCallback === 'function') {
-			console.log('[reticulum] registering WASM announce callback');
+			this.log('Registering WASM announce callback', 'info');
 			api.setAnnounceCallback((peerData) => {
-				console.log('[reticulum] WASM->JS announce bridge fired', peerData);
+				this.log('WASM announce bridge', 'info', peerData);
 				try {
 					window.onPeerDiscovered(peerData);
 				} catch (e) {
 					console.error('[reticulum] onPeerDiscovered threw:', e, peerData);
+					this.log(`onPeerDiscovered threw: ${e instanceof Error ? e.message : String(e)}`, 'error', {
+						peerData,
+						error: String(e)
+					});
 				}
 			});
 		} else {
-			console.warn('[reticulum] setAnnounceCallback is missing; rebuild the WASM');
+			this.log('setAnnounceCallback is missing; rebuild the WASM', 'error');
 		}
 
 		if (typeof api.setPacketCallback === 'function') {
-			console.log('[reticulum] registering WASM packet callback');
+			this.log('Registering WASM packet callback', 'info');
 			api.setPacketCallback((data: Uint8Array) => {
-				console.log('[reticulum] WASM->JS packet bridge fired', { bytes: data.length });
+				this.log('WASM packet bridge', 'info', { bytes: data.length });
 				try {
 					if (data.length >= 16) {
 						const senderHash = Array.from(data.slice(0, 16))
@@ -454,14 +491,17 @@ class ReticulumService {
 						const text = new TextDecoder().decode(data.slice(16));
 						window.onChatMessage({ from: senderHash, text });
 					} else {
-						console.warn('[reticulum] dropping short packet', { bytes: data.length });
+						this.log('Dropping short packet', 'error', { bytes: data.length });
 					}
 				} catch (e) {
 					console.error('[reticulum] failed to parse incoming packet:', e);
+					this.log(`Packet parse error: ${e instanceof Error ? e.message : String(e)}`, 'error', {
+						bytes: data.length
+					});
 				}
 			});
 		} else {
-			console.warn('[reticulum] setPacketCallback is missing; rebuild the WASM');
+			this.log('setPacketCallback is missing; rebuild the WASM', 'error');
 		}
 	}
 
@@ -525,9 +565,9 @@ class ReticulumService {
 	}
 
 	async sendMessage(peerHash: string, text: string) {
-		console.log('[reticulum] sendMessage called', { peerHash, text });
+		this.log('sendMessage called', 'info', { peerHash, text });
 		if (!window.reticulum) {
-			console.warn('[reticulum] sendMessage aborted: WASM not loaded');
+			this.log('sendMessage aborted: WASM not loaded', 'error');
 			return;
 		}
 
@@ -545,7 +585,7 @@ class ReticulumService {
 		this.messages.set(peerHash, [...history, message]);
 		this.messagesVersion++;
 		db.saveMessage(peerHash, message).catch(console.error);
-		console.log('[reticulum] outgoing message buffered', {
+		this.log('Outgoing message buffered', 'info', {
 			peerHash,
 			historyLen: history.length + 1
 		});
@@ -569,12 +609,11 @@ class ReticulumService {
 				this.peerKeyStatus.set(peerHash, 'unknown');
 				this.peerKeyStatusVersion++;
 			}
-			console.warn('[reticulum] sendMessage WASM rejected', result.error);
-			this.log(`Send failed: ${result.error}`, 'error');
+			this.log(`Send failed: ${result.error}`, 'error', { peerHash });
 			throw new Error(result.error);
 		}
 
-		console.log('[reticulum] sendMessage WASM accepted', { peerHash });
+		this.log('sendMessage accepted by WASM', 'success', { peerHash });
 		this.peerKeyStatus.set(peerHash, 'known');
 		this.peerKeyStatusVersion++;
 	}

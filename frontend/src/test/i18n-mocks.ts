@@ -12,6 +12,7 @@ export function createTestFormatter() {
 			'common.docs': 'Docs',
 			'common.interactive': 'Interactive',
 			'common.apps': 'Apps',
+			'common.donate': 'Donate',
 			'common.contact': 'Contact',
 			'common.rss_development': 'RSS: Development',
 			'common.rss_releases': 'RSS: Releases',
