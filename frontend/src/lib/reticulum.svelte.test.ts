@@ -247,4 +247,49 @@ describe('reticulum service – peer discovery wiring', () => {
 
 		expect(reticulum.peers.get('abcd1234abcd1234abcd1234abcd1234')?.name).toBe('RemotePeer');
 	});
+
+	it('optimistically appends outgoing messages so the user sees what they sent', async () => {
+		const { reticulum } = reticulumModule;
+
+		await reticulum.init('wss://example/ws', 'tester');
+
+		const peerHash = 'fcff5e64a3ea4edad1d03093fc8fe07f';
+		reticulum.peers.set(peerHash, {
+			hash: peerHash,
+			name: 'Buddy',
+			hops: 0,
+			lastSeen: new Date()
+		});
+
+		await reticulum.sendMessage(peerHash, 'hello world');
+
+		flushSync();
+
+		const history = reticulum.messages.get(peerHash);
+		expect(history?.length).toBe(1);
+		expect(history?.[0].text).toBe('hello world');
+		expect(history?.[0].type).toBe('sent');
+		expect(api.sendMessage).toHaveBeenCalledTimes(1);
+	});
+
+	it('still shows the outgoing bubble when WASM rejects the send (e.g. unknown identity)', async () => {
+		const { reticulum } = reticulumModule;
+
+		await reticulum.init('wss://example/ws', 'tester');
+
+		const peerHash = '1111111111111111aaaaaaaaaaaaaaaa';
+		api.sendMessage.mockReturnValueOnce({ error: 'Identity not found.' });
+
+		await expect(reticulum.sendMessage(peerHash, 'queued')).rejects.toThrow(
+			/Identity not found/
+		);
+
+		flushSync();
+
+		const history = reticulum.messages.get(peerHash);
+		expect(history?.length).toBe(1);
+		expect(history?.[0].text).toBe('queued');
+		expect(history?.[0].type).toBe('sent');
+		expect(reticulum.peerKeyStatus.get(peerHash)).toBe('unknown');
+	});
 });

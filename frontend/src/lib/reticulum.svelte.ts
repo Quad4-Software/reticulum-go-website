@@ -198,7 +198,7 @@ class ReticulumService {
 
 	private setupCallbacks() {
 		window.onPeerDiscovered = (peerData) => {
-			console.debug('[reticulum] onPeerDiscovered', peerData);
+			console.log('[reticulum] onPeerDiscovered', peerData);
 
 			if (!peerData || typeof peerData.hash !== 'string') {
 				console.warn('[reticulum] dropping malformed peer payload', peerData);
@@ -245,7 +245,7 @@ class ReticulumService {
 		};
 
 		window.onChatMessage = (msg) => {
-			console.log('Received message:', msg);
+			console.log('[reticulum] onChatMessage', msg);
 			const peerHash = msg.from || 'unknown';
 
 			// Ensure peer exists even if not announced
@@ -426,19 +426,23 @@ class ReticulumService {
 		if (!api) return;
 
 		if (typeof api.setAnnounceCallback === 'function') {
+			console.log('[reticulum] registering WASM announce callback');
 			api.setAnnounceCallback((peerData) => {
+				console.log('[reticulum] WASM->JS announce bridge fired', peerData);
 				try {
 					window.onPeerDiscovered(peerData);
 				} catch (e) {
-					console.error('onPeerDiscovered threw:', e, peerData);
+					console.error('[reticulum] onPeerDiscovered threw:', e, peerData);
 				}
 			});
 		} else {
-			console.warn('reticulum.setAnnounceCallback is missing; rebuild the WASM');
+			console.warn('[reticulum] setAnnounceCallback is missing; rebuild the WASM');
 		}
 
 		if (typeof api.setPacketCallback === 'function') {
+			console.log('[reticulum] registering WASM packet callback');
 			api.setPacketCallback((data: Uint8Array) => {
+				console.log('[reticulum] WASM->JS packet bridge fired', { bytes: data.length });
 				try {
 					if (data.length >= 16) {
 						const senderHash = Array.from(data.slice(0, 16))
@@ -446,13 +450,15 @@ class ReticulumService {
 							.join('');
 						const text = new TextDecoder().decode(data.slice(16));
 						window.onChatMessage({ from: senderHash, text });
+					} else {
+						console.warn('[reticulum] dropping short packet', { bytes: data.length });
 					}
 				} catch (e) {
-					console.error('Failed to parse incoming packet:', e);
+					console.error('[reticulum] failed to parse incoming packet:', e);
 				}
 			});
 		} else {
-			console.warn('reticulum.setPacketCallback is missing; rebuild the WASM');
+			console.warn('[reticulum] setPacketCallback is missing; rebuild the WASM');
 		}
 	}
 
@@ -518,14 +524,35 @@ class ReticulumService {
 	}
 
 	async sendMessage(peerHash: string, text: string) {
-		if (!window.reticulum) return;
+		console.log('[reticulum] sendMessage called', { peerHash, text });
+		if (!window.reticulum) {
+			console.warn('[reticulum] sendMessage aborted: WASM not loaded');
+			return;
+		}
 
-		// We need to prepend our own hash so the receiver knows who we are
-		// In Reticulum, the destination hash is 16 bytes.
-		// Since we don't have a full identity exchange protocol here,
-		// we use this simple [16 bytes sender hash][text] format.
 		const senderHashHex = this.identity?.address;
 		if (!senderHashHex) throw new Error('Identity not loaded');
+
+		// Optimistically render the outgoing message before we know whether
+		// the WASM transport accepts it. If we wait for success the user
+		// stares at an empty chat window when the peer hasn't been recalled
+		// yet (which is the common case for manually added peers). The
+		// status of the send is reflected through the inline log/peerKey
+		// status, not by hiding the bubble.
+		const message: ChatMessage = {
+			text,
+			from: 'Me',
+			hash: peerHash,
+			time: new Date(),
+			type: 'sent'
+		};
+		const history = this.messages.get(peerHash) || [];
+		this.messages.set(peerHash, [...history, message]);
+		db.saveMessage(peerHash, message).catch(console.error);
+		console.log('[reticulum] outgoing message buffered', {
+			peerHash,
+			historyLen: history.length + 1
+		});
 
 		const senderBytes = new Uint8Array(
 			senderHashHex.match(/.{1,2}/g)!.map((byte) => parseInt(byte, 16))
@@ -545,22 +572,13 @@ class ReticulumService {
 			) {
 				this.peerKeyStatus.set(peerHash, 'unknown');
 			}
+			console.warn('[reticulum] sendMessage WASM rejected', result.error);
 			this.log(`Send failed: ${result.error}`, 'error');
 			throw new Error(result.error);
 		}
 
+		console.log('[reticulum] sendMessage WASM accepted', { peerHash });
 		this.peerKeyStatus.set(peerHash, 'known');
-		const message: ChatMessage = {
-			text,
-			from: 'Me',
-			hash: peerHash,
-			time: new Date(),
-			type: 'sent'
-		};
-
-		const history = this.messages.get(peerHash) || [];
-		this.messages.set(peerHash, [...history, message]);
-		db.saveMessage(peerHash, message).catch(console.error);
 	}
 
 	async fetchKeys(peerHash: string) {
