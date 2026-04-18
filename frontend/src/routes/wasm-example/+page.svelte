@@ -272,7 +272,7 @@
 			</div>
 		</section>
 
-		{#if reticulum.connected}
+		{#if reticulum.initialized}
 			<section class="border-t border-zinc-200 dark:border-zinc-800 pt-6">
 				<div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
 					<div>

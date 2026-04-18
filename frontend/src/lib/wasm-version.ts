@@ -7,4 +7,4 @@
  * fetch URL; Workbox treats different URLs as different cache entries
  * and cleans up the stale precache on the next SW activation.
  */
-export const WASM_CACHE_KEY = '20260418-1';
+export const WASM_CACHE_KEY = '20260418-2';

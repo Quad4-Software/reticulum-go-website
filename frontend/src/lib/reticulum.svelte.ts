@@ -145,7 +145,13 @@ class ReticulumService {
 		});
 	}
 
-	private refreshStatus() {
+	/**
+	 * refreshStatus pulls the live connection state and traffic counters
+	 * from the WASM transport. Exposed (not private) so the UI can poke
+	 * it from a visibilitychange handler and tests can drive it without
+	 * waiting for the stats loop interval.
+	 */
+	refreshStatus() {
 		if (window.reticulum && this.initialized) {
 			this.connected = window.reticulum.isConnected();
 			const s = window.reticulum.getStats();
@@ -399,6 +405,15 @@ class ReticulumService {
 		} catch (e) {
 			console.error('Failed to load auto-announce setting:', e);
 		}
+
+		// The Go side's t.Start() inside init brings the WebSocket up,
+		// so as soon as init returns the transport is reachable. Kick off
+		// the stats loop here (it's idempotent) and prime `connected`
+		// immediately so the peers section in the UI doesn't stay hidden
+		// behind {#if reticulum.connected} when the user skips the
+		// explicit connect() click.
+		this.refreshStatus();
+		this.startStatsLoop();
 
 		this.log('Reticulum initialized', 'success');
 		return result;
