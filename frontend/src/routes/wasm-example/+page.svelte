@@ -141,14 +141,6 @@
 					</p>
 				</div>
 			</div>
-			<div
-				class="mt-4 rounded-xl border border-amber-300/80 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-900 dark:border-amber-700/60 dark:bg-amber-900/20 dark:text-amber-200"
-				role="status"
-				aria-live="polite"
-			>
-				Currently not working while I rework reticulum-go to finish compatibility with Python
-				Reticulum.
-			</div>
 
 			{#if reticulum.isLoading}
 				<div

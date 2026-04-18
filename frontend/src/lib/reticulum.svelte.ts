@@ -9,6 +9,18 @@ import {
 	loadAutoAnnounce
 } from './identity';
 import { db } from './db';
+import { WASM_CACHE_KEY } from './wasm-version';
+
+async function waitFor(predicate: () => boolean, timeoutMs: number) {
+	if (predicate()) return;
+	const start = Date.now();
+	while (!predicate()) {
+		if (Date.now() - start > timeoutMs) {
+			throw new Error('timed out waiting for WASM to initialise');
+		}
+		await new Promise((r) => setTimeout(r, 16));
+	}
+}
 
 export interface Peer {
 	hash: string;
@@ -182,7 +194,13 @@ class ReticulumService {
 
 	private setupCallbacks() {
 		window.onPeerDiscovered = (peerData) => {
-			// Skip our own announcements
+			console.debug('[reticulum] onPeerDiscovered', peerData);
+
+			if (!peerData || typeof peerData.hash !== 'string') {
+				console.warn('[reticulum] dropping malformed peer payload', peerData);
+				return;
+			}
+
 			if (this.identity && peerData.hash === this.identity.publicKey) {
 				return;
 			}
@@ -190,7 +208,6 @@ class ReticulumService {
 			const peerName = peerData.appData || `Peer ${peerData.hash.substring(0, 8)}`;
 			const existing = this.peers.has(peerData.hash);
 
-			// Limit to 500 peers, remove oldest if exceeded
 			if (!existing && this.peers.size >= 500) {
 				let oldestHash: string | null = null;
 				let oldestTime = Infinity;
@@ -307,11 +324,20 @@ class ReticulumService {
 
 		const go = new window.Go();
 		try {
-			const response = await fetch('/reticulum-go.wasm');
+			// Cache-bust the wasm binary so the SW (or HTTP cache) cannot
+			// pin an old build alongside a new app shell.
+			const wasmUrl = `/reticulum-go.wasm?v=${WASM_CACHE_KEY}`;
+			const response = await fetch(wasmUrl, { cache: 'no-cache' });
 			if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
 			const result = await WebAssembly.instantiateStreaming(response, go.importObject);
 			go.run(result.instance);
+
+			// go.run starts the Go program asynchronously; window.reticulum
+			// is only installed once main() reaches RegisterJSFunctions.
+			// Wait for that, otherwise the very next call into the API
+			// will explode with "Reticulum WASM not loaded".
+			await waitFor(() => Boolean(window.reticulum), 5000);
 			this.log('Reticulum-Go loaded', 'success');
 		} catch (err: unknown) {
 			const message = err instanceof Error ? err.message : String(err);
@@ -326,6 +352,12 @@ class ReticulumService {
 		if (!window.reticulum) {
 			throw new Error('Reticulum WASM not loaded');
 		}
+
+		// Register callbacks BEFORE handing control to WASM init() so the
+		// transport cannot fire an announce or packet between init() and
+		// the callback registration (which happened in the old code path
+		// and silently dropped the very first batch of announces).
+		this.registerWasmCallbacks();
 
 		const saved = await loadIdentity();
 		const result = window.reticulum.init(wsUrl, userName, saved?.privateKey || '');
@@ -345,12 +377,10 @@ class ReticulumService {
 		this.identity = newIdentity;
 		this.initialized = true;
 
-		// Load data from DB
 		try {
 			const savedPeers = await db.getAllPeers();
 			for (const peer of savedPeers) {
 				this.peers.set(peer.hash, peer);
-				// Load messages for each peer
 				const peerMessages = await db.getMessages(peer.hash);
 				if (peerMessages.length > 0) {
 					this.messages.set(peer.hash, peerMessages);
@@ -361,36 +391,6 @@ class ReticulumService {
 			console.error('Failed to load data from DB:', e);
 		}
 
-		// Register callbacks with WASM
-		if (window.reticulum) {
-			// @ts-expect-error - WASM API methods may not be in type definitions
-			if (window.reticulum.setAnnounceCallback) {
-				// @ts-expect-error - WASM API methods may not be in type definitions
-				window.reticulum.setAnnounceCallback(window.onPeerDiscovered);
-			}
-			// @ts-expect-error - WASM API methods may not be in type definitions
-			if (window.reticulum.setPacketCallback) {
-				// @ts-expect-error - WASM API methods may not be in type definitions
-				window.reticulum.setPacketCallback((data: Uint8Array) => {
-					// The data is a Uint8Array. For chat, it should be a packed MF message.
-					// We'll try to unpack it and call onChatMessage.
-					try {
-						// Simple unpacking for now: [16 bytes sender][text]
-						if (data.length >= 16) {
-							const senderHash = Array.from(data.slice(0, 16))
-								.map((b) => b.toString(16).padStart(2, '0'))
-								.join('');
-							const text = new TextDecoder().decode(data.slice(16));
-							window.onChatMessage({ from: senderHash, text });
-						}
-					} catch (e) {
-						console.error('Failed to parse incoming packet:', e);
-					}
-				});
-			}
-		}
-
-		// Load auto-announce setting
 		try {
 			const autoEnabled = await loadAutoAnnounce();
 			if (autoEnabled) {
@@ -402,6 +402,48 @@ class ReticulumService {
 
 		this.log('Reticulum initialized', 'success');
 		return result;
+	}
+
+	private registerWasmCallbacks() {
+		const api = window.reticulum as
+			| (ReticulumWasm & {
+					setAnnounceCallback?: (
+						cb: (data: { hash: string; appData: string; hops: number }) => void
+					) => void;
+					setPacketCallback?: (cb: (data: Uint8Array) => void) => void;
+			  })
+			| undefined;
+		if (!api) return;
+
+		if (typeof api.setAnnounceCallback === 'function') {
+			api.setAnnounceCallback((peerData) => {
+				try {
+					window.onPeerDiscovered(peerData);
+				} catch (e) {
+					console.error('onPeerDiscovered threw:', e, peerData);
+				}
+			});
+		} else {
+			console.warn('reticulum.setAnnounceCallback is missing; rebuild the WASM');
+		}
+
+		if (typeof api.setPacketCallback === 'function') {
+			api.setPacketCallback((data: Uint8Array) => {
+				try {
+					if (data.length >= 16) {
+						const senderHash = Array.from(data.slice(0, 16))
+							.map((b) => b.toString(16).padStart(2, '0'))
+							.join('');
+						const text = new TextDecoder().decode(data.slice(16));
+						window.onChatMessage({ from: senderHash, text });
+					}
+				} catch (e) {
+					console.error('Failed to parse incoming packet:', e);
+				}
+			});
+		} else {
+			console.warn('reticulum.setPacketCallback is missing; rebuild the WASM');
+		}
 	}
 
 	async connect() {

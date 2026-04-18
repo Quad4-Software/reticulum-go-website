@@ -62,6 +62,9 @@ export default defineConfig(({ command }) => {
 				globPatterns: ['**/*.{js,css,html,ico,png,svg,wasm}'],
 				maximumFileSizeToCacheInBytes: 15 * 1024 * 1024,
 				navigateFallback: '/',
+				cleanupOutdatedCaches: true,
+				skipWaiting: true,
+				clientsClaim: true,
 				runtimeCaching: [
 					{
 						urlPattern:
