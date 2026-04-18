@@ -358,10 +358,6 @@ class ReticulumService {
 			const result = await WebAssembly.instantiateStreaming(response, go.importObject);
 			go.run(result.instance);
 
-			// go.run starts the Go program asynchronously; window.reticulum
-			// is only installed once main() reaches RegisterJSFunctions.
-			// Wait for that, otherwise the very next call into the API
-			// will explode with "Reticulum WASM not loaded".
 			await waitFor(() => Boolean(window.reticulum), 5000);
 			this.log('Reticulum-Go loaded', 'success');
 		} catch (err: unknown) {
@@ -378,10 +374,6 @@ class ReticulumService {
 			throw new Error('Reticulum WASM not loaded');
 		}
 
-		// Register callbacks BEFORE handing control to WASM init() so the
-		// transport cannot fire an announce or packet between init() and
-		// the callback registration (which happened in the old code path
-		// and silently dropped the very first batch of announces).
 		this.registerWasmCallbacks();
 
 		const saved = await loadIdentity();
@@ -429,12 +421,6 @@ class ReticulumService {
 			console.error('Failed to load auto-announce setting:', e);
 		}
 
-		// The Go side's t.Start() inside init brings the WebSocket up,
-		// so as soon as init returns the transport is reachable. Kick off
-		// the stats loop here (it's idempotent) and prime `connected`
-		// immediately so the peers section in the UI doesn't stay hidden
-		// behind {#if reticulum.connected} when the user skips the
-		// explicit connect() click.
 		this.refreshStatus();
 		this.startStatsLoop();
 
@@ -558,15 +544,9 @@ class ReticulumService {
 			return;
 		}
 
-		const senderHashHex = this.identity?.address;
+		const senderHashHex = this.identity?.publicKey;
 		if (!senderHashHex) throw new Error('Identity not loaded');
 
-		// Optimistically render the outgoing message before we know whether
-		// the WASM transport accepts it. If we wait for success the user
-		// stares at an empty chat window when the peer hasn't been recalled
-		// yet (which is the common case for manually added peers). The
-		// status of the send is reflected through the inline log/peerKey
-		// status, not by hiding the bubble.
 		const message: ChatMessage = {
 			text,
 			from: 'Me',

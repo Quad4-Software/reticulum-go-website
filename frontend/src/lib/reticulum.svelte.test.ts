@@ -354,6 +354,38 @@ describe('reticulum service – peer discovery wiring', () => {
 		expect(history?.[0].text).toBe('hello back');
 	});
 
+	it('embeds our destination hash (not identity hash) as the sender token in outgoing packets', async () => {
+		const { reticulum } = reticulumModule;
+
+		await reticulum.init('wss://example/ws', 'tester');
+
+		const peerHash = 'fcff5e64a3ea4edad1d03093fc8fe07f';
+		reticulum.peers.set(peerHash, {
+			hash: peerHash,
+			name: 'Buddy',
+			hops: 0,
+			lastSeen: new Date()
+		});
+
+		await reticulum.sendMessage(peerHash, 'reachable');
+
+		expect(api.sendMessage).toHaveBeenCalledTimes(1);
+		const [destArg, payload] = api.sendMessage.mock.calls[0] as [string, Uint8Array];
+		expect(destArg).toBe(peerHash);
+
+		// First 16 bytes of the payload MUST be our destination hash so the
+		// receiver can identity.Recall(senderHash) and reply. If we ever
+		// regress to embedding the identity hash here the receiver's
+		// sendMessage will throw "Identity not found".
+		const senderHex = Array.from(payload.slice(0, 16))
+			.map((b) => b.toString(16).padStart(2, '0'))
+			.join('');
+		expect(senderHex).toBe(reticulum.identity?.publicKey);
+		expect(senderHex).not.toBe(reticulum.identity?.address);
+
+		expect(new TextDecoder().decode(payload.slice(16))).toBe('reachable');
+	});
+
 	it('still shows the outgoing bubble when WASM rejects the send (e.g. unknown identity)', async () => {
 		const { reticulum } = reticulumModule;
 
