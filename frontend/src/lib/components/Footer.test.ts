@@ -22,7 +22,7 @@ describe('Footer', () => {
 	it('renders static columns and license', () => {
 		render(Footer);
 		expect(screen.getByText('Reticulum-Go')).toBeTruthy();
-		expect(screen.getByText(/License: 0BSD/)).toBeTruthy();
+		expect(screen.getByText(/Implementation: Apache-2\.0/)).toBeTruthy();
 		expect(screen.getByRole('heading', { name: 'Links' })).toBeTruthy();
 		expect(screen.getByRole('link', { name: 'Home' }).getAttribute('href')).toBe('/');
 	});

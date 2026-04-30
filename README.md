@@ -139,3 +139,5 @@ Edit the corresponding `frontend/src/lib/i18n/locales/<code>.json`. When English
 ## License
 
 This website is licensed under the [0BSD License](LICENSE).
+
+The [Reticulum-Go](https://git.quad4.io/Networks/Reticulum-Go) implementation is licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
