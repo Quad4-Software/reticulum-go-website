@@ -66,12 +66,25 @@ The project uses a root `Makefile` for common tasks. Run `make help` to list tar
 | `docker-build`   | Build container image                |
 | `docker-run`     | Run container on port 3000           |
 | `docs-sync`      | Sync English docs from Reticulum-Go (`scripts/sync-docs.sh`) |
+| `check-docs`     | Validate docs nav, files, and internal links |
 | `docs-zip`       | Zip English docs into `releases/docs-en.zip` |
 | `docs-release`   | Same as docs workflow prep (see below) |
 | `locale-template`| New UI locale file (see below)       |
 | `check-links`    | Probe external URLs (see Testing)    |
 | `bench`          | Vitest micro-benchmarks (see below)   |
 | `bundle-budget`  | Size limits on `frontend/build`       |
+
+### Task (optional)
+
+[Task](https://taskfile.dev/) v3 wraps documentation workflows:
+
+| Task | Description |
+|------|-------------|
+| `task docs:check` | Validate docs nav, files, and internal `/docs/` links |
+| `task docs:sync` | Sync English docs from a Reticulum-Go checkout |
+| `task docs` | Sync then validate |
+| `task docs:zip` | Package `releases/docs-en.zip` |
+| `task docs:release` | Release metadata + docs zip (CI) |
 
 ### CI and release automation
 
@@ -103,6 +116,8 @@ If pnpm reports `ERR_PNPM_UNEXPECTED_STORE`, your `frontend/node_modules` was li
 Unit and route tests use Vitest with jsdom (`make test` or `cd frontend && pnpm test`). Coverage: `cd frontend && pnpm test:coverage` (output under `frontend/coverage/`, gitignored).
 
 The `/api/repo-info` handler is covered for Gitea `fetch` outcomes (network failure, non-OK responses, empty tags, JSON errors, cache TTL, and `Cache-Control` headers). Upstream calls use a 15s `AbortSignal` timeout.
+
+**Documentation:** `make check-docs` (or `task docs:check`) validates that `docs-config.ts` nav slugs match `frontend/src/lib/docs/*.md`, flags orphan pages, and checks internal `/docs/` links.
 
 **Link rot:** `make check-links` runs `scripts/check-links.mjs`, which scans `README.md`, `LICENSE`, and `frontend/src/**` for `http(s)` URLs and requests them (HEAD, with GET fallback). Add substring patterns to `scripts/link-check-ignore.txt` to skip URLs that are not meant to be probed. URLs containing `{` or `}` are skipped (Svelte interpolations).
 

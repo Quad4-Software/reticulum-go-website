@@ -6,7 +6,7 @@ SHELL := /bin/sh
 
 FRONTEND := frontend
 
-.PHONY: help install dev build frontend-build clean format lint check test bench bundle-budget lighthouse audit update update-latest outdated docker-build docker-run docs-zip docs-release docs-sync validate locale-template check-links
+.PHONY: help install dev build frontend-build clean format lint check test bench bundle-budget lighthouse audit update update-latest outdated docker-build docker-run docs-zip docs-release docs-sync check-docs validate locale-template check-links
 
 help: ## Show available targets
 	@echo 'Targets (run from repository root):'
@@ -50,6 +50,9 @@ lighthouse: ## Lighthouse CI against production preview (run frontend-build firs
 
 check-links: ## HTTP-check external URLs in README and frontend/src (requires network)
 	node scripts/check-links.mjs
+
+check-docs: ## Validate docs nav, files, and internal /docs/ links
+	node scripts/check-docs.mjs
 
 audit: ## Run pnpm audit in frontend/
 	cd $(FRONTEND) && pnpm audit

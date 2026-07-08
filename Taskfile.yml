@@ -1,0 +1,41 @@
+version: '3'
+
+vars:
+  FRONTEND: frontend
+
+tasks:
+  default:
+    desc: List available tasks
+    cmds:
+      - task --list
+
+  docs:check:
+    desc: Validate docs nav, files, and internal /docs/ links
+    cmds:
+      - node scripts/check-docs.mjs
+
+  docs:sync:
+    desc: Sync English docs from a Reticulum-Go checkout
+    cmds:
+      - sh scripts/sync-docs.sh
+
+  docs:zip:
+    desc: Package English docs into releases/docs-en.zip
+    cmds:
+      - make docs-zip
+
+  docs:release:
+    desc: Prepare docs release metadata and zip archives
+    cmds:
+      - sh scripts/docs/prepare-release-docs.sh
+
+  docs:
+    desc: Sync docs from upstream then validate
+    deps: [docs:sync]
+    cmds:
+      - task: docs:check
+
+  check:
+    desc: Run website documentation checks
+    cmds:
+      - task: docs:check
