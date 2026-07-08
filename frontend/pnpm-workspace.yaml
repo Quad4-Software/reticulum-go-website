@@ -4,3 +4,7 @@ overrides:
   minimatch: '>=10.2.1'
   serialize-javascript: '>=7.0.3'
   tmp: '>=0.2.4'
+
+allowBuilds:
+  esbuild: true
+  es5-ext: true
