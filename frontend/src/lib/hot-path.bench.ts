@@ -11,7 +11,7 @@ describe('hot paths (micro-benchmarks)', () => {
 	});
 
 	bench('getCanonicalUrl', () => {
-		getCanonicalUrl('/docs/introduction');
+		getCanonicalUrl('/docs/overview');
 	});
 
 	bench('getHreflangLinks', () => {

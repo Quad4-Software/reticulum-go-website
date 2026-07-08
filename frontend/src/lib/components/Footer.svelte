@@ -53,7 +53,7 @@
 					{#if latestTag}
 						<span class="text-zinc-300 dark:text-zinc-700">•</span>
 						<a
-							href="https://git.quad4.io/Networks/Reticulum-Go/releases/tag/{latestTag}"
+							href="https://github.com/Quad4-Software/Reticulum-Go/releases/tag/{latestTag}"
 							target="_blank"
 							rel="noopener noreferrer"
 							class="text-xs text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
@@ -135,7 +135,7 @@
 				<li><a href="/contact" class="hover:text-zinc-900 dark:hover:text-zinc-100">Contact</a></li>
 				<li>
 					<a
-						href="https://git.quad4.io/Networks/Reticulum-Go"
+						href="https://github.com/Quad4-Software/Reticulum-Go"
 						target="_blank"
 						rel="noopener noreferrer"
 						class="hover:text-zinc-900 dark:hover:text-zinc-100">Source Code</a

@@ -2,11 +2,11 @@
 	import {
 		Search as SearchIcon,
 		Terminal,
-		Smartphone,
-		Laptop,
 		Globe,
 		Bot,
-		ExternalLink
+		ExternalLink,
+		FileCode,
+		Server
 	} from 'lucide-svelte';
 	import { t } from 'svelte-i18n';
 
@@ -16,11 +16,33 @@
 		icon: typeof Terminal;
 		tags: string[];
 		platforms: string[];
-		status: 'coming-soon';
+		status: 'available' | 'coming-soon';
 		link?: string;
+		demoLink?: string;
 	}
 
 	const apps: AppItem[] = [
+		{
+			name: 'Ren Browser',
+			description:
+				'Modern NomadNet-compatible browser for the Reticulum network. Renders Micron pages, manages identities and interfaces, includes a Micron editor, extensions, and desktop, mobile, and headless server builds.',
+			icon: Globe,
+			tags: ['browser', 'nomadnet', 'micron', 'desktop', 'mobile', 'reticulum-go'],
+			platforms: ['Linux', 'Windows', 'macOS', 'Android', 'Docker'],
+			status: 'available',
+			link: 'https://github.com/Quad4-Software/Ren-Browser'
+		},
+		{
+			name: 'Micron Parser Go',
+			description:
+				'High-performance Micron parser and HTML renderer for Go and WebAssembly. Powers NomadNet page rendering in Ren Browser and ships a browser playground.',
+			icon: FileCode,
+			tags: ['micron', 'parser', 'wasm', 'library', 'nomadnet'],
+			platforms: ['Go', 'WebAssembly', 'Browser'],
+			status: 'available',
+			link: 'https://github.com/Quad4-Software/Micron-Parser-Go',
+			demoLink: 'https://micron-parser-go.quad4.io/'
+		},
 		{
 			name: 'TUI',
 			description:
@@ -28,23 +50,6 @@
 			icon: Terminal,
 			tags: ['tui', 'terminal', 'mesh', 'network'],
 			platforms: ['Linux', 'macOS', 'Windows', 'BSD'],
-			status: 'coming-soon'
-		},
-		{
-			name: 'Mobile & Desktop App',
-			description:
-				'Cross-platform desktop and mobile application built with Svelte, Wails, and Capacitor using Reticulum-Go.',
-			icon: Smartphone,
-			tags: ['desktop', 'mobile', 'cross-platform', 'svelte', 'wails', 'capacitor'],
-			platforms: ['Linux', 'macOS', 'Windows', 'iOS', 'Android'],
-			status: 'coming-soon'
-		},
-		{
-			name: 'Web App',
-			description: 'Full-featured web application powered by Reticulum-Go WebAssembly.',
-			icon: Globe,
-			tags: ['web', 'wasm', 'browser', 'pwa'],
-			platforms: ['Web'],
 			status: 'coming-soon'
 		},
 		{
@@ -75,7 +80,7 @@
 	<title>Applications | Reticulum-Go</title>
 	<meta
 		name="description"
-		content="Applications and tools built with Reticulum-Go for desktop, mobile, web, and terminal."
+		content="Applications and tools built with Reticulum-Go, including Ren Browser and Micron Parser Go."
 	/>
 </svelte:head>
 
@@ -113,22 +118,17 @@
 				>
 					<div class="flex items-start justify-between mb-4">
 						<div
-							class="w-12 h-12 rounded-xl bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center {app.name ===
-							'Mobile & Desktop App'
-								? 'gap-1'
-								: ''}"
+							class="w-12 h-12 rounded-xl bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center"
 						>
-							{#if app.name === 'Mobile & Desktop App'}
-								<Smartphone class="w-5 h-5 text-[#00ADD8]" />
-								<Laptop class="w-5 h-5 text-[#00ADD8]" />
-							{:else}
-								<app.icon class="w-6 h-6 text-[#00ADD8]" />
-							{/if}
+							<app.icon class="w-6 h-6 text-[#00ADD8]" />
 						</div>
 						<span
-							class="px-2 py-1 text-[10px] font-semibold rounded bg-zinc-500 text-white uppercase"
+							class="px-2 py-1 text-[10px] font-semibold rounded uppercase {app.status ===
+							'available'
+								? 'bg-[#00ADD8] text-white'
+								: 'bg-zinc-500 text-white'}"
 						>
-							{$t('common.coming_soon')}
+							{app.status === 'available' ? $t('common.available') : $t('common.coming_soon')}
 						</span>
 					</div>
 					<h3 class="text-xl font-bold mb-2">{app.name}</h3>
@@ -143,17 +143,30 @@
 								</span>
 							{/each}
 						</div>
-						{#if app.link}
-							<a
-								href={app.link}
-								target="_blank"
-								rel="noopener noreferrer"
-								class="inline-flex items-center gap-2 text-sm font-medium text-[#00ADD8] hover:underline"
-							>
-								<span>{$t('common.learn_more')}</span>
-								<ExternalLink class="w-4 h-4" />
-							</a>
-						{/if}
+						<div class="flex flex-wrap gap-4">
+							{#if app.link}
+								<a
+									href={app.link}
+									target="_blank"
+									rel="noopener noreferrer"
+									class="inline-flex items-center gap-2 text-sm font-medium text-[#00ADD8] hover:underline"
+								>
+									<span>{$t('common.learn_more')}</span>
+									<ExternalLink class="w-4 h-4" />
+								</a>
+							{/if}
+							{#if app.demoLink}
+								<a
+									href={app.demoLink}
+									target="_blank"
+									rel="noopener noreferrer"
+									class="inline-flex items-center gap-2 text-sm font-medium text-[#00ADD8] hover:underline"
+								>
+									<span>{$t('common.try_demo')}</span>
+									<Server class="w-4 h-4" />
+								</a>
+							{/if}
+						</div>
 					</div>
 				</div>
 			{/each}

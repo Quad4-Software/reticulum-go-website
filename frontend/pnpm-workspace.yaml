@@ -1,0 +1,6 @@
+overrides:
+  cookie: 1.1.1
+  esbuild: '>=0.25.0'
+  minimatch: '>=10.2.1'
+  serialize-javascript: '>=7.0.3'
+  tmp: '>=0.2.4'

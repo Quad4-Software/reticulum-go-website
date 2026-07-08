@@ -21,6 +21,8 @@
 		"export_md": "MD",
 		"export_txt": "TXT",
 		"coming_soon": "Скоро",
+		"available": "Доступно",
+		"try_demo": "Попробовать демо",
 		"explore": "Исследовать",
 		"learn_more": "Узнать больше",
 		"no_examples_found": "Примеры, соответствующие вашему запросу, не найдены.",
@@ -33,7 +35,7 @@
 	},
 	"apps": {
 		"title": "Приложения",
-		"description": "Откройте для себя приложения и инструменты, созданные с помощью Reticulum-Go для различных платформ и случаев использования.",
+		"description": "Приложения и инструменты на базе Reticulum-Go, включая Ren Browser и Micron Parser Go.",
 		"search_placeholder": "Поиск приложений..."
 	},
 	"time": {

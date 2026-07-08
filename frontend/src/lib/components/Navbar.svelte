@@ -123,7 +123,7 @@
 				</details>
 				<ThemeToggle {currentPath} {currentTheme} />
 				<a
-					href="https://git.quad4.io/Networks/Reticulum-Go"
+					href="https://github.com/Quad4-Software/Reticulum-Go"
 					target="_blank"
 					rel="noopener noreferrer"
 					class="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors hidden sm:flex"
@@ -212,7 +212,7 @@
 					>{$t('common.contact')}</a
 				>
 				<a
-					href="https://git.quad4.io/Networks/Reticulum-Go"
+					href="https://github.com/Quad4-Software/Reticulum-Go"
 					target="_blank"
 					rel="noopener noreferrer"
 					onclick={closeMenu}

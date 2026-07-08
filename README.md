@@ -7,8 +7,8 @@ The official website for the Reticulum-Go project, with documentation and a WebA
 ### Using Docker
 
 ```sh
-git clone https://git.quad4.io/websites/reticulum-go
-cd reticulum-go
+git clone https://github.com/Quad4-Software/reticulum-go-website.git
+cd reticulum-go-website
 docker build -f Dockerfile -t reticulum-web .
 docker run -p 3000:3000 reticulum-web
 ```
@@ -20,15 +20,15 @@ Then open your browser at `http://localhost:3000`
 ### Prerequisites
 
 - Node.js v24
-- [pnpm](https://pnpm.io/) 10.32.1
+- [pnpm](https://pnpm.io/) 11.10.0
 
 ### Setup
 
 From the repository root:
 
 ```sh
-git clone https://git.quad4.io/websites/reticulum-go
-cd reticulum-go
+git clone https://github.com/Quad4-Software/reticulum-go-website.git
+cd reticulum-go-website
 make install
 make dev
 ```
@@ -65,7 +65,8 @@ The project uses a root `Makefile` for common tasks. Run `make help` to list tar
 | `clean`          | Remove `frontend/build`              |
 | `docker-build`   | Build container image                |
 | `docker-run`     | Run container on port 3000           |
-| `docs-zip`       | Zip per-locale docs into `releases/` |
+| `docs-sync`      | Sync English docs from Reticulum-Go (`scripts/sync-docs.sh`) |
+| `docs-zip`       | Zip English docs into `releases/docs-en.zip` |
 | `docs-release`   | Same as docs workflow prep (see below) |
 | `locale-template`| New UI locale file (see below)       |
 | `check-links`    | Probe external URLs (see Testing)    |
@@ -74,16 +75,16 @@ The project uses a root `Makefile` for common tasks. Run `make help` to list tar
 
 ### CI and release automation
 
-Workflows live under `.gitea/workflows/`. **Checkout** is an inline step: clone `${SERVER}/${REPO}.git` into the workspace, then `git checkout` the commit SHA, using `GITEA_*` / `GITHUB_*` env from the runner (`github.server_url`, `github.repository`, `github.sha`, `github.token`, optional `secrets.GITEA_TOKEN`). **Attaching assets to a Gitea release** still uses the pinned `gitea-release-action` (docs zip and SBOM jobs).
-
-Toolchain setup is implemented as POSIX shell under `scripts/ci/` so downloads are pinned and verified where noted:
+Workflows live under `.github/workflows/`. Actions are pinned to full commit SHAs (see the header comment in each workflow). Toolchain setup uses POSIX shell under `scripts/ci/`:
 
 - `setup-node.sh` installs Node from nodejs.org `latest-v{N}.x` with SHA256 verification (default major **24**; pass a different major as the first argument).
 - `setup-pnpm.sh` enables corepack and activates pnpm (version defaults to match `frontend/package.json` `packageManager`).
-- `setup-trivy.sh` installs a `.deb` from `TRIVY_DEB_URL` with optional `TRIVY_DEB_SHA256`.
+- `setup-trivy.sh` installs a pinned `.deb` when a workflow needs a standalone Trivy binary (local or custom runners).
 - `ci-node-path.sh` exports `/usr/local/bin` on `PATH`.
 
-**Docs release:** On version tags, the Release Docs workflow runs `scripts/docs/prepare-release-docs.sh`, which writes optional commit metadata to `GITHUB_OUTPUT` when the runner provides it, then runs `make docs-zip`. Locally you can run `make docs-zip` or `make docs-release` (metadata step is skipped without `GITHUB_OUTPUT`).
+**Docs release:** On version tags, the Release Docs workflow runs `scripts/docs/prepare-release-docs.sh`, then uploads `releases/docs-en.zip` with `softprops/action-gh-release`. Locally you can run `make docs-zip` or `make docs-release` (metadata step is skipped without `GITHUB_OUTPUT`).
+
+**SBOM release:** On version tags, the Release with SBOM workflow generates CycloneDX output with `aquasecurity/trivy-action` and attaches it to the GitHub release.
 
 `frontend/.npmrc` sets `engine-strict=false` so pnpm accepts Node 24 even when a dependency declares a narrower `engines` range.
 
@@ -140,4 +141,4 @@ Edit the corresponding `frontend/src/lib/i18n/locales/<code>.json`. When English
 
 This website is licensed under the [0BSD License](LICENSE).
 
-The [Reticulum-Go](https://git.quad4.io/Networks/Reticulum-Go) implementation is licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
+The [Reticulum-Go](https://github.com/Quad4-Software/Reticulum-Go) implementation is licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).

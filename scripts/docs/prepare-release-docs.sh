@@ -1,17 +1,17 @@
 #!/bin/sh
 # Build per-locale docs zips under releases/ and, in CI, write commit metadata to GITHUB_OUTPUT.
 #
-# When GITHUB_OUTPUT is set (GitHub Actions / Gitea Actions), requires GITHUB_SHA or GITEA_SHA.
+# When GITHUB_OUTPUT is set (GitHub Actions), requires GITHUB_SHA.
 # Local runs: omit GITHUB_OUTPUT; only make docs-zip runs.
 set -eu
 
-SHA="${GITHUB_SHA:-${GITEA_SHA:-}}"
+SHA="${GITHUB_SHA:-}"
 OUT="${GITHUB_OUTPUT:-}"
-REF_NAME="${GITHUB_REF_NAME:-${GITEA_REF_NAME:-}}"
+REF_NAME="${GITHUB_REF_NAME:-}"
 
 if [ -n "$OUT" ]; then
 	if [ -z "$SHA" ]; then
-		echo "prepare-release-docs.sh: GITHUB_OUTPUT set but GITHUB_SHA and GITEA_SHA are empty" >&2
+		echo "prepare-release-docs.sh: GITHUB_OUTPUT set but GITHUB_SHA is empty" >&2
 		exit 1
 	fi
 	FULL_HASH="$SHA"

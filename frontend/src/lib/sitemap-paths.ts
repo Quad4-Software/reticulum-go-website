@@ -1,12 +1,13 @@
+import { DOC_SLUGS } from '$lib/docs-config';
+
 export const SITEMAP_PATHS = [
 	'/',
-	'/docs',
-	'/docs/introduction',
-	'/docs/usage',
-	'/interactive',
+	'/docs/overview',
+	...DOC_SLUGS.filter((slug) => slug !== 'overview').map((slug) => `/docs/${slug}`),
 	'/apps',
 	'/contact',
 	'/donate',
+	'/interactive',
 	'/wasm-example',
 	'/identity',
 	'/settings',

@@ -3,6 +3,7 @@ import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 import { mdsvex } from 'mdsvex';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
+import { DOC_SLUGS } from './src/lib/docs-config.ts';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -27,7 +28,7 @@ const config = {
 			strict: true
 		}),
 		prerender: {
-			entries: ['*', '/docs/introduction', '/docs/usage'],
+			entries: ['*', ...DOC_SLUGS.map((slug) => `/docs/${slug}`)],
 			handleUnseenRoutes: ({ routes }) => {
 				const safeRoutes = routes.filter((r) => typeof r === 'string');
 				const ignorable = (r) =>

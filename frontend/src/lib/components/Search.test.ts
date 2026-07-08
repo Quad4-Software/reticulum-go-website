@@ -36,11 +36,11 @@ describe('Search', () => {
 		expect(screen.getByText('Type to search documentation')).toBeTruthy();
 
 		const input = screen.getByPlaceholderText('Search documentation...');
-		await fireEvent.input(input, { target: { value: 'introduction' } });
+		await fireEvent.input(input, { target: { value: 'overview' } });
 
 		await waitFor(
 			() => {
-				expect(screen.getByText('Introduction')).toBeTruthy();
+				expect(screen.getByText('Overview')).toBeTruthy();
 			},
 			{ timeout: 8000 }
 		);

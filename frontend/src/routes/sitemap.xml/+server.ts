@@ -9,7 +9,7 @@ export function GET() {
 			`  <url>
     <loc>${SITE_URL}${path}</loc>
     <changefreq>weekly</changefreq>
-    <priority>${path === '/' ? '1.0' : path === '/docs' ? '0.9' : '0.8'}</priority>
+    <priority>${path === '/' ? '1.0' : path === '/docs/overview' ? '0.9' : '0.8'}</priority>
   </url>`
 	).join('\n');
 

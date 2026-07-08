@@ -1,7 +1,7 @@
 import { json, type RequestHandler } from '@sveltejs/kit';
 
-const API_BASE = 'https://git.quad4.io/api/v1';
-const REPO_OWNER = 'Networks';
+const API_BASE = 'https://api.github.com';
+const REPO_OWNER = 'Quad4-Software';
 const REPO_NAME = 'Reticulum-Go';
 const CACHE_TTL = 5 * 60 * 1000;
 
@@ -10,10 +10,10 @@ let lastFetched = 0;
 
 async function fetchLatestTag(): Promise<string | null> {
 	try {
-		const url = `${API_BASE}/repos/${REPO_OWNER}/${REPO_NAME}/tags`;
+		const url = `${API_BASE}/repos/${REPO_OWNER}/${REPO_NAME}/tags?per_page=1`;
 		const response = await fetch(url, {
 			headers: {
-				Accept: 'application/json'
+				Accept: 'application/vnd.github+json'
 			},
 			signal: AbortSignal.timeout(15_000)
 		});
@@ -37,7 +37,7 @@ async function fetchRepoInfo(): Promise<string | null> {
 		const url = `${API_BASE}/repos/${REPO_OWNER}/${REPO_NAME}`;
 		const response = await fetch(url, {
 			headers: {
-				Accept: 'application/json'
+				Accept: 'application/vnd.github+json'
 			},
 			signal: AbortSignal.timeout(15_000)
 		});
@@ -47,7 +47,7 @@ async function fetchRepoInfo(): Promise<string | null> {
 		}
 
 		const repo = await response.json();
-		return repo.updated_at || null;
+		return repo.pushed_at || repo.updated_at || null;
 	} catch {
 		return null;
 	}

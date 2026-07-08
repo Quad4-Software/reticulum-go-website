@@ -22,10 +22,10 @@ describe('GET /sitemap.xml', () => {
 		}
 	});
 
-	it('uses higher priority for home and docs index', async () => {
+	it('uses higher priority for home and docs overview', async () => {
 		const body = await GET().text();
 		expect(body).toContain('<priority>1.0</priority>');
 		expect(body).toContain('<priority>0.9</priority>');
-		expect(body).toContain(`<loc>${SITE_URL}/docs</loc>`);
+		expect(body).toContain(`<loc>${SITE_URL}/docs/overview</loc>`);
 	});
 });

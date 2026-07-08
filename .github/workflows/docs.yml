@@ -1,0 +1,35 @@
+# Pinned actions (bump tag and SHA together when upgrading):
+#   actions/checkout@v7.0.0              9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+#   softprops/action-gh-release@v2.4.2     5be0e66d93ac7ed76da52eca8bb058f665c3a5fe
+#
+name: Release Docs
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+concurrency:
+  group: release-docs-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  release-docs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Package docs
+        run: sh scripts/docs/prepare-release-docs.sh
+
+      - name: Upload docs to release
+        uses: softprops/action-gh-release@5be0e66d93ac7ed76da52eca8bb058f665c3a5fe # v2.4.2
+        with:
+          tag_name: ${{ github.ref_name }}
+          files: releases/docs-en.zip
+          generate_release_notes: false

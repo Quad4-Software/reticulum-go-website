@@ -21,6 +21,8 @@
 		"export_md": "MD",
 		"export_txt": "TXT",
 		"coming_soon": "Prossimamente",
+		"available": "Disponibile",
+		"try_demo": "Prova la demo",
 		"explore": "Esplora",
 		"learn_more": "Scopri di più",
 		"no_examples_found": "Nessun esempio trovato corrispondente alla tua ricerca.",
@@ -33,7 +35,7 @@
 	},
 	"apps": {
 		"title": "Applicazioni",
-		"description": "Scopri applicazioni e strumenti costruiti con Reticulum-Go per varie piattaforme e casi d'uso.",
+		"description": "Scopri applicazioni e strumenti costruiti con Reticulum-Go, inclusi Ren Browser e Micron Parser Go.",
 		"search_placeholder": "Cerca applicazioni..."
 	},
 	"time": {

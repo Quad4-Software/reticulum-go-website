@@ -1,4 +1,4 @@
-import { error } from '@sveltejs/kit';
+import { error, redirect } from '@sveltejs/kit';
 import { browser } from '$app/environment';
 import { get } from 'svelte/store';
 import { locale } from 'svelte-i18n';
@@ -17,6 +17,15 @@ export const load = async ({ params, depends }) => {
 	depends('app:locale');
 
 	const cleanSlug = slug.endsWith('/') ? slug.slice(0, -1) : slug;
+
+	const legacyRedirects: Record<string, string> = {
+		introduction: 'overview',
+		usage: 'getting-started'
+	};
+	if (legacyRedirects[cleanSlug]) {
+		throw redirect(301, `/docs/${legacyRedirects[cleanSlug]}`);
+	}
+
 	const modules = import.meta.glob('../../../lib/docs/**/*.{mdx,md}');
 
 	const currentLocale = (browser ? localStorage.getItem('locale') : null) || get(locale) || 'en';

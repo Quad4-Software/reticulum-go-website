@@ -97,7 +97,7 @@ describe('GET /api/repo-info', () => {
 		expect(response.status).toBe(503);
 	});
 
-	it('returns 200 with data when both Gitea calls succeed', async () => {
+	it('returns 200 with data when both GitHub calls succeed', async () => {
 		(globalThis.fetch as ReturnType<typeof vi.fn>)
 			.mockResolvedValueOnce({
 				ok: true,

@@ -1,10 +1,45 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { BookOpen, FileText, ChevronRight, Download } from 'lucide-svelte';
+	import {
+		BookOpen,
+		FileText,
+		Shield,
+		Settings,
+		Network,
+		Link,
+		Lock,
+		GitCompare,
+		Terminal,
+		Code,
+		Boxes,
+		FlaskConical,
+		ChevronRight,
+		Download
+	} from 'lucide-svelte';
 	import { t, locale } from 'svelte-i18n';
 	import Search from '$lib/components/Search.svelte';
+	import { DOC_NAV } from '$lib/docs-config';
 	import { downloadAllDocs, syncAllDocs, syncEverything } from '$lib/docs-service';
 	import { onMount } from 'svelte';
+
+	const DOC_ICONS: Record<string, typeof BookOpen> = {
+		overview: BookOpen,
+		'getting-started': FileText,
+		examples: FlaskConical,
+		architecture: Boxes,
+		'package-map': Code,
+		configuration: Settings,
+		interfaces: Network,
+		transport: Network,
+		'identity-and-destinations': Lock,
+		'links-channels-and-resources': Link,
+		cryptography: Lock,
+		'embedding-and-wasm': Code,
+		'control-api': Terminal,
+		compatibility: GitCompare,
+		security: Shield,
+		'development-and-testing': FlaskConical
+	};
 
 	let { children } = $props();
 
@@ -15,46 +50,50 @@
 		}
 	});
 
-	const docs = [
-		{
-			title: 'Introduction',
-			slug: 'introduction',
-			icon: BookOpen
-		},
-		{
-			title: 'Usage',
-			slug: 'usage',
-			icon: FileText
-		}
-	];
+	function isActive(slug: string): boolean {
+		return page.url.pathname === `/docs/${slug}`;
+	}
 </script>
 
 <div class="flex flex-col md:flex-row gap-8">
-	<!-- Sidebar -->
 	<aside class="w-full md:w-64 shrink-0">
-		<nav class="sticky top-24 space-y-1">
+		<nav class="sticky top-24 space-y-1 max-h-[calc(100vh-7rem)] overflow-y-auto">
 			<div class="mb-6">
 				<Search />
 			</div>
 			<p class="px-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-4">
 				{$t('common.docs')}
 			</p>
-			{#each docs as doc (doc.slug)}
-				<a
-					href="/docs/{doc.slug}"
-					class="group flex items-center justify-between px-3 py-2 rounded-lg transition-colors {page
-						.url.pathname === `/docs/${doc.slug}`
-						? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100'
-						: 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900 hover:text-zinc-900 dark:hover:text-zinc-100'}"
-				>
-					<div class="flex items-center gap-3">
-						<doc.icon class="w-4 h-4" />
-						<span class="text-sm font-medium">{doc.title}</span>
-					</div>
-					{#if page.url.pathname === `/docs/${doc.slug}`}
-						<ChevronRight class="w-3 h-3" />
-					{/if}
-				</a>
+			{#each DOC_NAV as section, sectionIndex (sectionIndex)}
+				{#if section.title}
+					<p
+						class="px-3 pt-4 pb-2 text-[10px] font-semibold text-zinc-400 uppercase tracking-wider {sectionIndex ===
+						0
+							? 'pt-0'
+							: ''}"
+					>
+						{section.title}
+					</p>
+				{/if}
+				{#each section.items as doc (doc.slug)}
+					{@const Icon = DOC_ICONS[doc.slug] ?? FileText}
+					<a
+						href="/docs/{doc.slug}"
+						class="group flex items-center justify-between px-3 py-2 rounded-lg transition-colors {isActive(
+							doc.slug
+						)
+							? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100'
+							: 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900 hover:text-zinc-900 dark:hover:text-zinc-100'}"
+					>
+						<div class="flex items-center gap-3 min-w-0">
+							<Icon class="w-4 h-4 shrink-0" />
+							<span class="text-sm font-medium truncate">{doc.title}</span>
+						</div>
+						{#if isActive(doc.slug)}
+							<ChevronRight class="w-3 h-3 shrink-0" />
+						{/if}
+					</a>
+				{/each}
 			{/each}
 
 			<div class="pt-4 mt-4 border-t border-zinc-200 dark:border-zinc-800">
@@ -69,7 +108,6 @@
 		</nav>
 	</aside>
 
-	<!-- Content -->
 	<main class="flex-1 min-w-0">
 		{@render children()}
 	</main>
