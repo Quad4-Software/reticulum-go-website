@@ -75,7 +75,7 @@ export default defineConfig(({ command }) => {
 			tailwindcss(),
 			sveltekit(),
 			...SvelteKitPWA({
-				registerType: 'prompt',
+				registerType: 'autoUpdate',
 				manifest: {
 					name: 'Reticulum-Go',
 					short_name: 'Reticulum-Go',
@@ -103,7 +103,21 @@ export default defineConfig(({ command }) => {
 					],
 					cleanupOutdatedCaches: true,
 					clientsClaim: true,
-					skipWaiting: false
+					skipWaiting: true,
+					runtimeCaching: [
+						{
+							urlPattern: ({ request }) => request.mode === 'navigate',
+							handler: 'NetworkFirst',
+							options: {
+								cacheName: 'pages',
+								networkTimeoutSeconds: 5,
+								expiration: {
+									maxEntries: 32,
+									maxAgeSeconds: 24 * 60 * 60
+								}
+							}
+						}
+					]
 				},
 				devOptions: {
 					enabled: false,

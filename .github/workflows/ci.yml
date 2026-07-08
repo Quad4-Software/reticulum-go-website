@@ -83,6 +83,9 @@ jobs:
       - name: Bundle size budget
         run: make bundle-budget
 
+      - name: Lighthouse CI
+        run: make lighthouse
+
   docker:
     name: Docker image
     runs-on: ubuntu-latest

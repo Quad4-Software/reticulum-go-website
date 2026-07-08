@@ -44,28 +44,32 @@ describe('ReloadPrompt', () => {
 		expect(getByText(/cached and can be used offline/i)).toBeTruthy();
 	});
 
-	it('shows update copy and Reload when needRefresh is true', async () => {
+	it('auto-reloads when needRefresh is true', async () => {
 		pwaMocks.needRefresh.set(true);
-		pwaMocks.offlineReady.set(false);
-		const { getByRole, getByText } = render(ReloadPrompt);
-		expect(getByText(/new version is available/i)).toBeTruthy();
-		await fireEvent.click(getByRole('button', { name: 'Reload' }));
-		expect(pwaMocks.updateServiceWorker).toHaveBeenCalledWith(true);
+		render(ReloadPrompt);
+		await vi.waitFor(() => {
+			expect(pwaMocks.updateServiceWorker).toHaveBeenCalledWith(true);
+		});
 	});
 
-	it('dismiss clears both flags', async () => {
+	it('does not show an update banner when only needRefresh is true', () => {
 		pwaMocks.needRefresh.set(true);
+		pwaMocks.offlineReady.set(false);
+		const { container } = render(ReloadPrompt);
+		expect(container.querySelector('[role="status"]')).toBeNull();
+	});
+
+	it('dismiss clears offline flag', async () => {
+		pwaMocks.offlineReady.set(true);
 		const { getByRole } = render(ReloadPrompt);
 		await fireEvent.click(getByRole('button', { name: 'Dismiss' }));
-		expect(get(pwaMocks.needRefresh)).toBe(false);
 		expect(get(pwaMocks.offlineReady)).toBe(false);
 	});
 
-	it('prefers offline banner when both flags are set', () => {
-		pwaMocks.offlineReady.set(true);
+	it('does not show offline banner when only needRefresh is set', () => {
 		pwaMocks.needRefresh.set(true);
-		const { getByText, queryByText } = render(ReloadPrompt);
-		expect(getByText(/cached and can be used offline/i)).toBeTruthy();
-		expect(queryByText(/new version is available/i)).toBeNull();
+		pwaMocks.offlineReady.set(false);
+		const { container } = render(ReloadPrompt);
+		expect(container.querySelector('[role="status"]')).toBeNull();
 	});
 });
