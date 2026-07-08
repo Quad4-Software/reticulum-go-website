@@ -26,7 +26,7 @@
 						<span class="bg-zinc-200 dark:bg-zinc-800 px-1.5 py-0.5 rounded text-[10px]">01</span>
 						LXMF (Reticulum)
 					</div>
-					<p class="font-mono text-lg break-all">7cc8d66b4f6a0e0e49d34af7f6077b5a</p>
+					<p class="font-mono text-lg break-all">f489752fbef161c64d65e385a4e9fc74</p>
 				</div>
 
 				<div class="space-y-1">
@@ -34,16 +34,6 @@
 						class="flex items-center gap-2 text-zinc-500 dark:text-zinc-400 text-sm font-bold uppercase tracking-wider"
 					>
 						<span class="bg-zinc-200 dark:bg-zinc-800 px-1.5 py-0.5 rounded text-[10px]">02</span>
-						XMPP (OMEMO)
-					</div>
-					<p class="text-lg">ivan@chat.quad4.io</p>
-				</div>
-
-				<div class="space-y-1">
-					<div
-						class="flex items-center gap-2 text-zinc-500 dark:text-zinc-400 text-sm font-bold uppercase tracking-wider"
-					>
-						<span class="bg-zinc-200 dark:bg-zinc-800 px-1.5 py-0.5 rounded text-[10px]">03</span>
 						Email
 					</div>
 					<p class="text-lg">team@quad4.io</p>
