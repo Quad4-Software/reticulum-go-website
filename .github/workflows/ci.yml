@@ -1,5 +1,6 @@
 # Pinned actions (bump tag and SHA together when upgrading):
 #   actions/checkout@v7.0.0            9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+#   aquasecurity/trivy-action@v0.36.0    ed142fd0673e97e23eac54620cfb913e5ce36c25
 #
 name: CI
 
@@ -8,6 +9,8 @@ on:
     branches:
       - '*'
   pull_request:
+  schedule:
+    - cron: '30 12 * * 1'
   workflow_dispatch:
 
 concurrency:
@@ -21,29 +24,10 @@ env:
   CI_NODE_MAJOR: '24'
 
 jobs:
-  validate:
-    name: ${{ matrix.name }}
+  frontend:
+    name: Frontend quality
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - id: lint
-            name: Lint
-            command: make lint
-          - id: check
-            name: Svelte check
-            command: make check
-          - id: test
-            name: Unit tests
-            command: make test
-          - id: bench
-            name: Micro-benchmarks
-            command: make bench
-          - id: audit
-            name: pnpm audit
-            command: make audit
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -57,24 +41,28 @@ jobs:
       - name: Install dependencies
         run: make install
 
-      - name: Run ${{ matrix.name }}
-        run: ${{ matrix.command }}
+      - name: Lint
+        run: make lint
 
-  links:
-    name: Link check
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - name: Svelte check
+        run: make check
 
-      - name: Check external URLs
+      - name: Unit tests
+        run: make test
+
+      - name: Micro-benchmarks
+        run: make bench
+
+      - name: Audit dependencies
+        run: make audit
+
+      - name: Link check
         run: make check-links
 
   build:
     name: Production build
     runs-on: ubuntu-latest
-    needs: [validate, links]
+    needs: [frontend]
     timeout-minutes: 30
     steps:
       - name: Checkout
@@ -91,3 +79,41 @@ jobs:
 
       - name: Bundle size budget
         run: make bundle-budget
+
+  docker:
+    name: Docker image
+    runs-on: ubuntu-latest
+    needs: [build]
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Build container image
+        run: make docker-build
+
+  trivy:
+    name: Trivy (${{ matrix.target }})
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' || (github.event_name == 'push' && github.ref == 'refs/heads/master')
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: repository
+            scan-ref: .
+          - target: frontend
+            scan-ref: frontend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Filesystem scan
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          scan-type: fs
+          scan-ref: ${{ matrix.scan-ref }}
+          exit-code: '1'
+          skip-dirs: .pnpm-store
+          severity: CRITICAL,HIGH

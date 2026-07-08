@@ -75,7 +75,15 @@ The project uses a root `Makefile` for common tasks. Run `make help` to list tar
 
 ### CI and release automation
 
-Workflows live under `.github/workflows/`. Actions are pinned to full commit SHAs (see the header comment in each workflow). Toolchain setup uses POSIX shell under `scripts/ci/`:
+Workflows live under `.github/workflows/`:
+
+| Workflow | Triggers | Jobs |
+|----------|----------|------|
+| **CI** | push, PR, weekly schedule, manual | Frontend quality (lint, check, test, bench, audit, links), production build + bundle budget, Docker image build, Trivy on `master`/schedule |
+| **Release Docs** | version tags | Docs zip attached to GitHub release |
+| **Release with SBOM** | version tags | CycloneDX SBOM attached to GitHub release |
+
+Actions are pinned to full commit SHAs (see the header comment in each workflow). Toolchain setup uses POSIX shell under `scripts/ci/`:
 
 - `setup-node.sh` installs Node from nodejs.org `latest-v{N}.x` with SHA256 verification (default major **24**; pass a different major as the first argument).
 - `setup-pnpm.sh` enables corepack and activates pnpm (version defaults to match `frontend/package.json` `packageManager`).

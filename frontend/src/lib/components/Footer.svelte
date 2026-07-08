@@ -79,7 +79,10 @@
 						<button
 							type="button"
 							onclick={() =>
-								copyRssLink('https://git.quad4.io/Networks/Reticulum-Go.rss', 'development')}
+								copyRssLink(
+									'https://github.com/Quad4-Software/Reticulum-Go/commits/master.atom',
+									'development'
+								)}
 							class="flex items-center gap-2 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors group"
 						>
 							<Rss class="w-4 h-4" />
@@ -93,7 +96,10 @@
 						<button
 							type="button"
 							onclick={() =>
-								copyRssLink('https://git.quad4.io/Networks/Reticulum-Go/releases.rss', 'releases')}
+								copyRssLink(
+									'https://github.com/Quad4-Software/Reticulum-Go/releases.atom',
+									'releases'
+								)}
 							class="flex items-center gap-2 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors group"
 						>
 							<Rss class="w-4 h-4" />
