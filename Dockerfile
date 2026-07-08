@@ -4,12 +4,13 @@ FROM cgr.dev/chainguard/node:latest-dev AS node-builder
 WORKDIR /app
 
 USER root
-RUN corepack enable && corepack prepare pnpm@10.32.1 --activate
+RUN corepack enable && corepack prepare pnpm@11.10.0 --activate
 
 USER node
 
-COPY --chown=node:node frontend/package.json frontend/pnpm-lock.yaml ./frontend/
 WORKDIR /app/frontend
+
+COPY --chown=node:node frontend/package.json frontend/pnpm-lock.yaml frontend/pnpm-workspace.yaml ./
 
 ENV PUBLIC_SHOW_COOLIFY=true
 
