@@ -10,7 +10,7 @@
 
 Public API lives under `pkg/`. The daemon and tests import these packages. `internal/` holds daemon-specific wiring that is not a stable import path for external modules.
 
-This page maps each package to its responsibility and primary entry points.
+This page maps each package to its responsibility and primary entry points. For recipes, Python migration, and concurrency rules, see [API reference](/docs/api-reference).
 
 ## Core protocol stack
 
@@ -133,6 +133,7 @@ All interface implementations and factory.
 | Factory | `NewFromConfigWithContext` in `fromconfig.go` |
 | Reconnect | `reconnect.go` |
 | Lifecycle | `lifecycle.go` (Enable, Disable, Detach) |
+| Go-only QUIC | `quic.go`, `quic_tls.go` (`QUICClientInterface` / `QUICServerInterface`) |
 
 See [Interfaces](/docs/interfaces).
 
@@ -184,7 +185,38 @@ Python `share_instance` equivalent.
 |------|--------|
 | Key types | `Instance`, `Hooks` |
 | Entry | `Attach(cfg, tr, hooks)` |
+| Framing | `SendFramed` / `RecvFramed` |
 | Main files | `instance.go`, `rpc.go`, `mpconn.go` |
+
+### `pkg/cli`
+
+Subcommand dispatch for the unified `reticulum-go` binary (`Main`, `RunStatus`, `RunID`, `RunProbe`, `RunPath`, `RunCP`, `RunPageserver`).
+
+| Item | Detail |
+|------|--------|
+| Entry | `Main(opts)` from `cmd/reticulum-go` |
+| Docs | [CLI utilities](/docs/utilities) |
+
+### `pkg/pageserver`
+
+NomadNet-style page and file server used by `reticulum-go pageserver`.
+
+| Item | Detail |
+|------|--------|
+| Entry | `pageserver.Run` via `cli.RunPageserver` |
+| Dynamic pages | `pkg/pageserver/dynamicpage` |
+| Sample tree | `examples/pageserver/` |
+
+### `pkg/rnsutil`
+
+Helpers and RPC client for CLI utilities (`reticulum-go status`, `id`, `probe`, …).
+
+| Item | Detail |
+|------|--------|
+| RPC | `DialRPC`, `GetInterfaceStats`, path and link helpers |
+| Identity | `.rsg` / `.rsm` / `.rfe` create and verify |
+| Probe | `WaitPath`, `SendProbe` |
+| Docs | [CLI utilities](/docs/utilities) |
 
 ### `pkg/wasm`
 
@@ -205,6 +237,19 @@ Localhost JSON and WebSocket control plane.
 | Main files | `server.go`, `session.go`, `protocol.go`, `ws.go` |
 
 See [Control API](/docs/control-api).
+
+### `pkg/librns`
+
+C ABI facade for in-process embed. Pure Go core. CGO shims in `pkg/librns/capi`.
+
+| Item | Detail |
+|------|--------|
+| Header | `include/rns.h` |
+| Shared lib | `task build-librns` produces `bin/librns.so` |
+| Smoke | `examples/librns-smoke` |
+| Main files | `node.go`, `identity.go`, `destination.go`, `link.go`, `queue.go` |
+
+See [librns](/docs/librns).
 
 ## Discovery and policy
 
@@ -309,16 +354,29 @@ Filesystem persistence under `~/.reticulum-go/storage/`.
 
 | Path | Binary | Role |
 |------|--------|------|
-| `cmd/reticulum-go` | `reticulum-go` | Daemon |
+| `cmd/reticulum-go` | `reticulum-go` | Daemon and tools (status, id, probe, path, cp, pageserver). Legacy `rgo*` names are thin wrappers / install symlinks. |
+| `cmd/rgostatus` … `cmd/rgocp` | (wrappers) | Call into `pkg/cli` for compatibility with old build scripts |
 | `cmd/reticulum-wasm` | WASM module | Browser entry |
+
+CLI dispatch lives in `pkg/cli`. Pageserver logic lives in `pkg/pageserver`.
 
 ## Suggested import paths for applications
 
 | Task | Packages |
 |------|----------|
 | Embed full node | `pkg/node`, `pkg/reticulumconfig`, `pkg/destination`, `pkg/identity` |
+| Embed from C / FFI | `pkg/librns` (or link `librns.so` + `include/rns.h`) |
 | Low-level transport only | `pkg/transport`, `pkg/interfaces`, `pkg/packet` |
 | Crypto only | `pkg/cryptography`, `pkg/identity` |
 | Browser | `pkg/wasm` (compiled), WebSocket interface |
+| Out-of-process non-Go client | Control API (`pkg/controlapi` on the daemon) |
 
 Do not import `internal/` from outside this module.
+
+## Related documents
+
+- [API reference](/docs/api-reference)
+- [Examples](/docs/examples)
+- [Embedding and WebAssembly](/docs/embedding-and-wasm)
+- [Control API](/docs/control-api)
+- [librns](/docs/librns)

@@ -10,7 +10,7 @@
 
 Reticulum-Go is a Go implementation of the [Reticulum Network Stack](https://reticulum.network/). Reticulum is a cryptographic mesh networking protocol designed for resilient communication over heterogeneous links. It can run over UDP, TCP, radio hardware, I2P, and other transports without assuming a single global internet path.
 
-Reticulum-Go targets full wire compatibility with the official Python reference implementation (RNS 1.3.5) while using Go concurrency and static compilation for deployment on servers, desktops, embedded targets, and WebAssembly runtimes.
+Reticulum-Go targets full wire compatibility with the official Python reference implementation (RNS 1.3.7) while using Go concurrency and static compilation for deployment on servers, desktops, embedded targets, and WebAssembly runtimes.
 
 The primary deliverables are:
 
@@ -56,14 +56,16 @@ The table below summarizes major areas. For line-by-line parity with Python, see
 | IFAC | Complete | `pkg/ifac` |
 | UDP, TCP, Auto, I2P, Backbone interfaces | Complete | `pkg/interfaces` |
 | WebSocket interface | Go-only | `pkg/interfaces/websocket_*.go` |
+| QUIC interface | Go-only | `pkg/interfaces/quic.go`, `quic_tls.go` |
 | Daemon and config | Complete | `cmd/reticulum-go`, `pkg/reticulumconfig` |
 | Discovery (rnstransport) | Partial | Listening works. Announcer and autoconnect loops are not auto-started |
 | Blackhole | Partial | Table and announce drop work. Link teardown at identify is not implemented |
 | RNode, KISS, Serial, Weave | Not implemented | No driver in this tree |
 | PipeInterface, LocalInterface | Implemented | `pipe.go`, `local.go`, `sharedinstance` |
-| Python CLI utilities (rnid, rnpath, etc.) | Not ported | Primitives exist in `pkg/` |
+| Python CLI utilities | Yes (core) | `reticulum-go status|id|probe|path|cp` via `pkg/cli` / `pkg/rnsutil` |
 | Interface hot reload | Go-only | `pkg/node/reload.go`, SIGHUP on Unix |
 | Control API | Go-only | `pkg/controlapi` |
+| librns C ABI | Go-only | `pkg/librns`, `include/rns.h`, `task build-librns` |
 | Runtime sandbox | Go-only | `pkg/sandbox` |
 
 ## Repository layout
@@ -71,11 +73,17 @@ The table below summarizes major areas. For line-by-line parity with Python, see
 ```
 Reticulum-Go/
   cmd/
-    reticulum-go/       Daemon
+    reticulum-go/       Daemon + tools (status, id, probe, path, cp, pageserver)
     reticulum-wasm/     WebAssembly entry
-  pkg/                  Public library packages
+    librns/             C shared library entry (`-buildmode=c-shared`)
+    rgo*/               Thin wrappers for legacy binary names
+  include/
+    rns.h               Public librns C header
+  pkg/                  Public library packages (cli, pageserver, rnsutil, …)
+  man/                  Man pages (sections 1 and 8)
+  packaging/            nfpm deb/rpm config
   internal/             Daemon-only helpers (config re-export, storage)
-  examples/             Sample applications
+  examples/             Sample applications (includes librns-smoke)
   tests/
     crossref/           Byte-level parity with Python vectors
     interop/            Live Go/Python tests
@@ -93,15 +101,16 @@ Python Reticulum (`RNS`) is the reference implementation and defines the on-wire
 
 Configuration uses the same INI-style shape as Python (`[reticulum]`, `[logging]`, `[[Interface Name]]`). The default config directory is `~/.reticulum-go` instead of `~/.reticulum` so both stacks can coexist on one machine.
 
-Reticulum-Go adds features that Python does not ship today (control API, sandbox, interface hot reload, NIC watching). Those extensions do not change the wire format unless explicitly documented as Go-only.
+Reticulum-Go adds features that Python does not ship today (control API, librns, sandbox, interface hot reload, NIC watching). Those extensions do not change the wire format unless explicitly documented as Go-only.
 
 ## Who should read which document
 
 | Role | Start here |
 |------|------------|
 | Architect evaluating adoption | This page, then [Architecture](/docs/architecture) and [Compatibility](/docs/compatibility) |
-| Network operator | [Getting started](/docs/getting-started), [Configuration](/docs/configuration), [Interfaces](/docs/interfaces) |
-| Go application author | [Package map](/docs/package-map), [Embedding and WebAssembly](/docs/embedding-and-wasm) |
+| Network operator | [Getting started](/docs/getting-started), [Configuration](/docs/configuration), [Interfaces](/docs/interfaces), [CLI utilities](/docs/utilities) |
+| Go application author | [API reference](/docs/api-reference), [Package map](/docs/package-map), [Examples](/docs/examples), [Embedding and WebAssembly](/docs/embedding-and-wasm) |
+| Native / FFI embedder | [librns](/docs/librns), [Compatibility](/docs/compatibility) |
 | Security reviewer | [Cryptography](/docs/cryptography), [Security](/docs/security) |
 | Developer | [Development and testing](/docs/development-and-testing) |
 

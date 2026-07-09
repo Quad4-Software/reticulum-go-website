@@ -20,7 +20,8 @@ export const DOC_NAV: DocNavSection[] = [
 		title: 'Architecture',
 		items: [
 			{ title: 'Architecture', slug: 'architecture' },
-			{ title: 'Package map', slug: 'package-map' }
+			{ title: 'Package map', slug: 'package-map' },
+			{ title: 'API reference', slug: 'api-reference' }
 		]
 	},
 	{
@@ -28,7 +29,8 @@ export const DOC_NAV: DocNavSection[] = [
 		items: [
 			{ title: 'Configuration', slug: 'configuration' },
 			{ title: 'Interfaces', slug: 'interfaces' },
-			{ title: 'Transport', slug: 'transport' }
+			{ title: 'Transport', slug: 'transport' },
+			{ title: 'CLI utilities', slug: 'utilities' }
 		]
 	},
 	{
@@ -43,7 +45,8 @@ export const DOC_NAV: DocNavSection[] = [
 		title: 'Integration',
 		items: [
 			{ title: 'Embedding and WebAssembly', slug: 'embedding-and-wasm' },
-			{ title: 'Control API', slug: 'control-api' }
+			{ title: 'Control API', slug: 'control-api' },
+			{ title: 'librns', slug: 'librns' }
 		]
 	},
 	{

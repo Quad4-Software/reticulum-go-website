@@ -2,23 +2,22 @@
 
 | Field | Value |
 |-------|-------|
-| Document version | 1.0 |
-| Last updated | 2026-07-07 |
+| Document version | 1.1 |
+| Last updated | 2026-07-09 |
 | Author | Ivan |
 
-## Two integration paths
-
-Reticulum-Go supports embedding in Go applications and running in WebAssembly for browser clients.
+## Integration paths
 
 | Path | Use when |
 |------|----------|
-| `pkg/node` | You write Go and want full transport plus interfaces in-process |
-| `pkg/wasm` | You need a browser client over WebSocket |
-| Control API | You write in another language and can talk to a local daemon |
+| `pkg/node` | Go app, full transport and interfaces in-process |
+| `pkg/librns` / [librns](/docs/librns) | Native host (C, C++, FFI) wants the same stack in-process |
+| Control API | Separate language talking to a local `reticulum-go` daemon |
+| `pkg/wasm` | Browser client over WebSocket |
 
 ## Embedding with pkg/node
 
-`Node` orchestrates transport, interfaces, shared instance, discovery, and lifecycle hooks.
+`Node` orchestrates transport, interfaces, shared instance, discovery, and lifecycle hooks. Full recipes and type tables are in [API reference](/docs/api-reference).
 
 ### Minimal sequence
 
@@ -129,9 +128,13 @@ Listen for `online` and `offline` events and call `reticulum.onNetworkAvailable(
 
 The README references a `tinygo` branch for very constrained devices. That branch targets TinyGo 0.41.0 or newer and is separate from the main module build.
 
-## Control API alternative
+## Control API
 
-If you do not embed Go, run `reticulum-go` with `enable_control_api = yes` and use HTTP/WebSocket from any language. See [Control API](/docs/control-api).
+Run `reticulum-go` with `enable_control_api = yes` and talk HTTP/WebSocket from any language. The daemon owns transport. See [Control API](/docs/control-api).
+
+## librns
+
+For in-process C / FFI embed, see [librns](/docs/librns). Build with `task build-librns`. Smoke: `examples/librns-smoke`.
 
 ## Sandbox note
 
@@ -139,7 +142,10 @@ OS sandbox (`pkg/sandbox`) applies to the native daemon, not the WASM module. Br
 
 ## Related documents
 
+- [API reference](/docs/api-reference)
 - [Architecture](/docs/architecture)
 - [Package map](/docs/package-map)
-- [Examples](/docs/examples) for wasm and pageserver
+- [Examples](/docs/examples)
 - [Getting started](/docs/getting-started)
+- [Control API](/docs/control-api)
+- [librns](/docs/librns)

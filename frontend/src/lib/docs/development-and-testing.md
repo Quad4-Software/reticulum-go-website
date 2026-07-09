@@ -96,7 +96,7 @@ Files named `*_pbt_test.go` use `quad4/pbt` for generative testing (cryptography
 
 ### Fuzz tests
 
-Files named `*_fuzz_test.go` cover packet, link, ifac, blackhole, discovery, and pipe HDLC framing (`pkg/interfaces/pipe_fuzz_test.go`).
+Files named `*_fuzz_test.go` cover packet, link, ifac, blackhole, discovery, pipe HDLC framing (`pkg/interfaces/pipe_fuzz_test.go`), and librns (`pkg/librns`).
 
 ### Crossref tests
 
@@ -136,6 +136,7 @@ RUN_LIVE_INTEROP=1 go test -v ./tests/interop/...
 | `transport_path_live_test.go` | Path requests |
 | `transport_relay_live_test.go` | Transport relay |
 | `backbone_live_test.go` | Backbone |
+| `quic_live_test.go` | QUIC Go-Go echo (no Python peer) |
 | `pipe_live_test.go` | PipeInterface with Python echo |
 | `shared_rpc_live_test.go` | Shared-instance RPC |
 | `pageserver_live_test.go` | Pageserver example |
@@ -175,7 +176,7 @@ GitHub Actions workflows in `.github/workflows/`:
 | security.yml | Gosec, govulncheck, Trivy, SBOM dispatch |
 | publish.yml | Tagged releases, cosign attestations |
 
-CI uses Go 1.26.4 via `actions/setup-go` in `.github/actions/setup-ci` with `GOTOOLCHAIN=local` and vendored modules.
+CI uses Go 1.26.5 via `actions/setup-go` in `.github/actions/setup-ci` with `GOTOOLCHAIN=local` and vendored modules.
 
 ## Cross-compilation
 
@@ -196,6 +197,16 @@ task test-wasm
 ```
 
 Requires Task. See [Embedding and WebAssembly](/docs/embedding-and-wasm).
+
+## librns shared library
+
+```bash
+task build-librns
+make -C examples/librns-smoke
+./examples/librns-smoke/librns-smoke
+```
+
+Needs a C toolchain and CGO. Daemon builds stay `CGO_ENABLED=0`. See [librns](/docs/librns).
 
 ## Adding a change safely
 

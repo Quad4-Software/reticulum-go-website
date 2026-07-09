@@ -2,13 +2,13 @@
 
 | Field | Value |
 |-------|-------|
-| Document version | 1.0 |
-| Last updated | 2026-07-07 |
+| Document version | 1.1 |
+| Last updated | 2026-07-09 |
 | Author | Ivan |
 
 ## Reference target
 
-Reticulum-Go is tested against **Python RNS 1.3.5** and the [official network API reference](https://reticulum.network/manual/reference.html).
+Reticulum-Go is tested against **Python RNS 1.3.7** and the [official network API reference](https://reticulum.network/manual/reference.html).
 
 Crossref vectors clone the reference from `rns://7649a50d84610232d1416b41d2896aff/reticulum/reticulum` via [rngit](https://reticulum.network/manual/git.html) (`tests/crossref/run_crossref.sh`). The GitHub mirror is not used for vectors.
 
@@ -32,6 +32,7 @@ The detailed matrix with config key tables lives in [COMPATIBILITY.md](https://g
 | Discovery | Partial | rnstransport listening works. Announcer and autoconnect not auto-started |
 | Blackhole | Partial | Table and announce drop. Link teardown at LINKIDENTIFY not implemented |
 | Node lifecycle | Go-only | `pkg/node` embedder API, no Python equivalent |
+| librns C ABI | Go-only | `pkg/librns`, `include/rns.h`. See [librns](/docs/librns) |
 
 ## Interfaces
 
@@ -46,12 +47,13 @@ The detailed matrix with config key tables lives in [COMPATIBILITY.md](https://g
 | PipeInterface | Yes |
 | LocalInterface | Yes via `share_instance` and config `LocalInterface` / `LocalServerInterface` |
 | WebSocket | Go-only |
+| QUIC | Go-only (`QUICClientInterface` / `QUICServerInterface`) |
 
 UDP requires explicit `target_host` or `target_address` (Python `forward_ip` policy).
 
 Opt-in UDP reconnect when `max_reconnect_tries > 0` is a Go extension.
 
-## Python 1.2.x to 1.3.5 changes
+## Python 1.2.x to 1.3.7 changes
 
 Wire format is stable across 1.2.x to 1.3.x. Notable behavior differences:
 
@@ -65,6 +67,9 @@ Wire format is stable across 1.2.x to 1.3.x. Notable behavior differences:
 | AutoInterface roam listener replacement | 1.3.5 | Covered |
 | Channel ghost envelopes | 1.3.0 | Simpler Go model |
 | Shared-instance RPC msgpack | 1.3.4 | Covered |
+| `MODE_INTERNAL` / `recursive_prs` / announce mode rules | 1.3.6 | Covered |
+| Ephemeral transport identity / `static_transport_identity` | 1.3.6 | Covered |
+| `local_hops_delta` hop mangling | 1.3.6 / 1.3.7 | **Gap** (config only) |
 
 ## Known gaps
 
@@ -72,9 +77,10 @@ Wire format is stable across 1.2.x to 1.3.x. Notable behavior differences:
 |-----|--------|
 | Blackhole at LINKIDENTIFY | Blackholed peers may still complete link setup. Announces are still dropped |
 | Transport probes | `respond_to_probes` / `allow_probes` ignored |
+| `local_hops_delta` | Config accepted. Outbound hop mangling not implemented |
 | `publish_blackhole` and related keys | Not auto-published |
 | RNode and radio serial drivers | Cannot speak to RNode hardware from this tree |
-| Python CLI utilities | Not ported (`rnid`, `rnpath`, `rnsh`, etc.) |
+| Python CLI utilities | Yes (core) | `rgostatus`, `rgoid`, `rgoprobe` with Python format/RPC interop |
 
 ## Go-only extensions
 
@@ -88,7 +94,9 @@ These do not change the wire format:
 | UDP reconnect (opt-in) | `pkg/interfaces/reconnect.go` |
 | Backbone I/O multiplexing | `pkg/backbone` |
 | WebSocket interface | `pkg/interfaces/websocket_*.go` |
+| QUIC interface | `pkg/interfaces/quic.go`, `quic_tls.go` |
 | Control API | `pkg/controlapi` |
+| librns C ABI | `pkg/librns`, `include/rns.h` ([librns](/docs/librns)) |
 | Runtime sandbox | `pkg/sandbox` |
 | RAM-only path tables | `in_memory_path_table`, `in_memory_known_destinations` |
 
@@ -108,8 +116,16 @@ These do not change the wire format:
 | Python | Reticulum-Go |
 |--------|--------------|
 | rnsd | `reticulum-go` daemon |
-| rncp, rnid, rnir, rnpath, rnprobe, rnstatus, rnx, rnodeconf, rnpkg, rngit, rnsh | Not ported. Primitives in `pkg/` |
+| rnstatus | `rgostatus` (shared-instance RPC, announce/PR rates, JSON) |
+| rnid | `rgoid` (`.rid`/`.rsg`/`.rsm`/`.rfe` compatible) |
+| rnprobe | `rgoprobe` |
+| rnpath | `rgopath` (path table, drop, blackhole; remote rnstransport not ported) |
+| rncp | `rgocp` (send/listen/fetch on `rncp.receive`) |
+| rnir, rnx, rnodeconf, rnpkg, rngit, rnsh | Not ported. Primitives in `pkg/` |
 | WASM | `reticulum-wasm` (Go-only) |
+| librns | `librns.so` + `rns.h` (Go-only, Linux first) |
+
+Setup for Go tools against Python `rnsd` (TCP shared-instance RPC, `rpc_key`, `-config`) is documented in [CLI utilities](/docs/utilities).
 
 ## Verification workflow
 
@@ -128,9 +144,12 @@ RUN_LIVE_INTEROP=1 go test -v ./tests/interop/...
 
 Use separate config directories (`~/.reticulum-go` vs `~/.reticulum`). Point interfaces at the same peers with matching IFAC and ports. Shared instance ports must not conflict if both try to own the same interface.
 
+To let `rgostatus` query Python `rnsd`, set `shared_instance_type = tcp` and matching `instance_control_port` / `rpc_key` in the Python config, then restart `rnsd`. See [CLI utilities](/docs/utilities).
+
 ## Related documents
 
 - [COMPATIBILITY.md](https://github.com/Quad4-Software/Reticulum-Go/blob/master/COMPATIBILITY.md) full tables
+- [CLI utilities](/docs/utilities) for Go CLI tools and RPC setup
 - [Interfaces](/docs/interfaces)
 - [Cryptography](/docs/cryptography)
 - [Development and testing](/docs/development-and-testing)
