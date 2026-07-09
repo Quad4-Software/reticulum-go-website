@@ -14,8 +14,7 @@ COPY --chown=node:node frontend/package.json frontend/pnpm-lock.yaml frontend/pn
 
 ENV PUBLIC_SHOW_COOLIFY=true
 
-RUN pnpm install --frozen-lockfile && \
-    pnpm add -D @sveltejs/adapter-node
+RUN pnpm install --frozen-lockfile
 
 COPY --chown=node:node frontend/ .
 COPY --chown=node:node docker/scripts/configure-ssr.sh docker/scripts/verify-build.sh ./
