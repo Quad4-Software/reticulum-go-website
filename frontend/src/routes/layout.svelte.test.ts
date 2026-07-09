@@ -3,13 +3,18 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const layoutPath = path.join(path.dirname(fileURLToPath(import.meta.url)), '+layout.svelte');
+const layoutDir = path.dirname(fileURLToPath(import.meta.url));
 
 describe('root layout', () => {
 	it('does not gate the shell on client i18n loading', () => {
-		const source = readFileSync(layoutPath, 'utf8');
-		expect(source).not.toContain('isLoading');
-		expect(source).not.toContain('animate-pulse');
-		expect(source).toContain('data.currentLocale');
+		const layoutSource = readFileSync(path.join(layoutDir, '+layout.svelte'), 'utf8');
+		expect(layoutSource).not.toContain('isLoading');
+		expect(layoutSource).not.toContain('animate-pulse');
+	});
+
+	it('waits for locale in universal load before hydration', () => {
+		const loadSource = readFileSync(path.join(layoutDir, '+layout.ts'), 'utf8');
+		expect(loadSource).toContain('waitLocale');
+		expect(loadSource).toContain('data.currentLocale');
 	});
 });

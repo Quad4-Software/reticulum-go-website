@@ -1,8 +1,6 @@
 <script lang="ts">
 	import '../app.css';
-	import { locale } from 'svelte-i18n';
 	import '../lib/i18n';
-	import { browser } from '$app/environment';
 	import { page } from '$app/state';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import Footer from '$lib/components/Footer.svelte';
@@ -20,12 +18,6 @@
 
 	const canonicalUrl = $derived(getCanonicalUrl(page.url.pathname));
 	const hreflangLinks = $derived(getHreflangLinks(page.url.pathname));
-
-	$effect(() => {
-		if (browser && data.currentLocale) {
-			locale.set(data.currentLocale);
-		}
-	});
 </script>
 
 <svelte:head>

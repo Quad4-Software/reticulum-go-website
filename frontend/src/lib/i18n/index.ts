@@ -49,9 +49,7 @@ init({
 	initialLocale: initialLocale
 });
 
-if (!browser) {
-	locale.set(initialLocale);
-}
+locale.set(initialLocale);
 
 if (browser) {
 	locale.subscribe((value) => {
