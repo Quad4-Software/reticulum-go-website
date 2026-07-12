@@ -3,7 +3,7 @@
 	import ThemeToggle from './ThemeToggle.svelte';
 	import { page } from '$app/state';
 	import { t, locale, locales } from 'svelte-i18n';
-	import { Languages, ChevronDown, Check, Menu, X } from 'lucide-svelte';
+	import { Languages, ChevronDown, Check, Menu, X, GitBranch } from 'lucide-svelte';
 	import { LOCALE_LABELS } from '$lib/site-config';
 
 	let { currentPath = '/', currentTheme = 'system' } = $props();
@@ -129,7 +129,7 @@
 					class="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors hidden sm:flex"
 					aria-label="Source Code"
 				>
-					<img src="/gitea.svg" alt="Gitea" class="w-5 h-5" />
+					<GitBranch class="w-5 h-5" />
 				</a>
 				<button
 					type="button"
@@ -218,7 +218,7 @@
 					onclick={closeMenu}
 					class="sm:hidden flex items-center gap-2 py-2.5 px-3 rounded-lg text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900"
 				>
-					<img src="/gitea.svg" alt="" class="w-5 h-5" />
+					<GitBranch class="w-5 h-5" />
 					<span>Source</span>
 				</a>
 			</div>

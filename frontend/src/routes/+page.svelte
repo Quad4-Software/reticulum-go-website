@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { t } from 'svelte-i18n';
+	import { GitBranch } from 'lucide-svelte';
 	import { getRepoUpdatedAt, calculateTimeAgo } from '$lib/version';
 
 	let repoUpdatedAt = $state<string | null>(null);
@@ -53,7 +54,7 @@
 					onmouseenter={() => (showActivity = true)}
 					onmouseleave={() => (showActivity = false)}
 				>
-					<img src="/gitea.svg" alt="" class="w-5 h-5" />
+					<GitBranch class="w-5 h-5" />
 					{$t('home.view_source')}
 				</a>
 				{#if showActivity && timeAgo}

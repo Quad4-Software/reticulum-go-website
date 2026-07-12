@@ -89,6 +89,8 @@ class ReticulumService {
 	isLoading = $state(false);
 	error = $state<string | null>(null);
 	identity = $state<Identity | null>(null);
+	wasmSizeBytes = $state(0);
+	connectedAt = $state<number | null>(null);
 	peers = new SvelteMap<string, Peer>();
 	messages = new SvelteMap<string, ChatMessage[]>();
 	unreadCounts = new SvelteMap<string, number>();
@@ -114,10 +116,13 @@ class ReticulumService {
 	logs = $state<{ msg: string; type: string; time: string; detail?: string }[]>([]);
 	autoAnnounce = $state(false);
 	notificationsEnabled = $state(false);
+	toastMessage = $state('');
+	toastVisible = $state(false);
 
 	private wasmLoadingPromise: Promise<void> | null = null;
 	private announceInterval: number | null = null;
 	private statsInterval: number | null = null;
+	private toastTimer: ReturnType<typeof setTimeout> | null = null;
 	private legacyDbChecked = false;
 
 	constructor() {
@@ -141,8 +146,57 @@ class ReticulumService {
 		this.notificationsEnabled = permission === 'granted';
 		if (this.notificationsEnabled) {
 			this.log('Browser notifications enabled', 'success');
+			this.showToast('Browser notifications enabled');
 		}
 		return permission;
+	}
+
+	showToast(message: string, durationMs = 3000) {
+		this.toastMessage = message;
+		this.toastVisible = true;
+		if (this.toastTimer) clearTimeout(this.toastTimer);
+		this.toastTimer = setTimeout(() => {
+			this.toastVisible = false;
+			this.toastTimer = null;
+		}, durationMs);
+	}
+
+	dismissToast() {
+		this.toastVisible = false;
+		if (this.toastTimer) {
+			clearTimeout(this.toastTimer);
+			this.toastTimer = null;
+		}
+	}
+
+	/**
+	 * In-app toast always. Web Notification when permission is granted and the
+	 * tab is hidden (or forceWeb is true).
+	 */
+	notify(title: string, body: string, opts?: { forceWeb?: boolean; tag?: string; toast?: boolean }) {
+		if (opts?.toast !== false) {
+			this.showToast(body ? `${title}: ${body}` : title);
+		}
+		const shouldWeb =
+			this.notificationsEnabled &&
+			(opts?.forceWeb || document.visibilityState === 'hidden');
+		if (shouldWeb) {
+			this.showWebNotification(title, body, opts?.tag);
+		}
+	}
+
+	private showWebNotification(title: string, body: string, tag?: string) {
+		if (typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
+		try {
+			new Notification(title, {
+				body,
+				icon: '/logo.svg',
+				tag,
+				renotify: Boolean(tag)
+			});
+		} catch (e) {
+			console.error('[reticulum] Notification failed:', e);
+		}
 	}
 
 	private setupVisibilityHandler() {
@@ -160,6 +214,12 @@ class ReticulumService {
 	refreshStatus() {
 		if (window.reticulum && this.initialized) {
 			this.connected = window.reticulum.isConnected();
+			if (this.connected && !this.connectedAt) {
+				this.connectedAt = Date.now();
+			}
+			if (!this.connected) {
+				this.connectedAt = null;
+			}
 			const s = window.reticulum.getStats();
 			this.stats = {
 				packetsSent: s.packetsSent,
@@ -248,6 +308,10 @@ class ReticulumService {
 					hops: peerData.hops,
 					appData: peerData.appData
 				});
+				this.notify('New peer', peerName, {
+					tag: `peer-${peerData.hash}`,
+					toast: false
+				});
 			}
 			this.peerKeyStatus.set(peerData.hash, 'known');
 			this.peerKeyStatusVersion++;
@@ -301,13 +365,13 @@ class ReticulumService {
 				newPeer: wasNewPeer
 			});
 
-			if (
-				this.notificationsEnabled &&
-				(document.visibilityState === 'hidden' || peerHash !== this.selectedPeerHash)
-			) {
-				new Notification(`New message from ${peerName}`, {
-					body: msg.text.length > 100 ? msg.text.substring(0, 97) + '...' : msg.text,
-					icon: '/logo.svg'
+			const preview = msg.text.length > 100 ? msg.text.substring(0, 97) + '...' : msg.text;
+			const awayFromChat =
+				document.visibilityState === 'hidden' || peerHash !== this.selectedPeerHash;
+			if (awayFromChat) {
+				this.notify(`New message from ${peerName}`, preview, {
+					tag: `chat-${peerHash}`,
+					toast: document.visibilityState === 'visible'
 				});
 			}
 		};
@@ -377,11 +441,16 @@ class ReticulumService {
 			const response = await fetch('/reticulum-go.wasm', { cache: 'no-cache' });
 			if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
-			const result = await WebAssembly.instantiateStreaming(response, go.importObject);
+			const buffer = await response.arrayBuffer();
+			this.wasmSizeBytes = buffer.byteLength;
+			const result = await WebAssembly.instantiate(buffer, go.importObject);
 			go.run(result.instance);
 
 			await waitFor(() => Boolean(window.reticulum), 5000);
-			this.log('Reticulum-Go loaded', 'success');
+			this.log(
+				`Reticulum-Go loaded (${(this.wasmSizeBytes / (1024 * 1024)).toFixed(2)} MB)`,
+				'success'
+			);
 		} catch (err: unknown) {
 			const message = err instanceof Error ? err.message : String(err);
 			this.error = `Failed to load WASM: ${message}`;
@@ -514,7 +583,9 @@ class ReticulumService {
 			return;
 		}
 		this.connected = true;
+		this.connectedAt = Date.now();
 		this.log('Connected to network', 'success');
+		this.notify('Connected', 'Joined the Reticulum network', { tag: 'connection' });
 
 		this.startStatsLoop();
 	}
@@ -523,10 +594,12 @@ class ReticulumService {
 		if (!window.reticulum) return;
 		window.reticulum.disconnect();
 		this.connected = false;
+		this.connectedAt = null;
 		if (this.autoAnnounce) {
 			this.toggleAutoAnnounce(false, '');
 		}
 		this.log('Disconnected', 'info');
+		this.notify('Disconnected', 'Left the Reticulum network', { tag: 'connection' });
 	}
 
 	async announce(name: string) {

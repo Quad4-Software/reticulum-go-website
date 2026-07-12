@@ -1,18 +1,22 @@
 <script lang="ts">
 	import IdentityCard from '$lib/components/IdentityCard.svelte';
+	import Toast from '$lib/components/Toast.svelte';
 	import { reticulum } from '$lib/reticulum.svelte';
 	import { onMount } from 'svelte';
 
 	let messageInput = $state('');
 	let searchQuery = $state('');
 	let manualHash = $state('');
-	let showToast = $state(false);
-	let toastMessage = $state('');
 	let scrollContainer = $state<HTMLDivElement | null>(null);
 	let showManualEntry = $state(false);
+	let nowMs = $state(Date.now());
 
 	onMount(async () => {
+		const clockId = setInterval(() => {
+			nowMs = Date.now();
+		}, 1000);
 		await reticulum.ensureWasmLoaded();
+		return () => clearInterval(clockId);
 	});
 
 	$effect(() => {
@@ -36,28 +40,32 @@
 			)
 			.sort((a, b) => b.lastSeen.getTime() - a.lastSeen.getTime());
 	});
+	const peerCount = $derived.by(() => {
+		void reticulum.peersVersion;
+		return reticulum.peers.size;
+	});
 	const currentMessages = $derived.by(() => {
 		void reticulum.messagesVersion;
 		return (
 			(reticulum.selectedPeerHash ? reticulum.messages.get(reticulum.selectedPeerHash) : null) || []
 		);
 	});
+	const uptimeLabel = $derived.by(() => {
+		if (!reticulum.connected || !reticulum.connectedAt) return '';
+		return formatUptime(nowMs - reticulum.connectedAt);
+	});
 
 	async function handleAnnounce() {
 		try {
 			await reticulum.announce(localStorage.getItem('reticulum_username') || '');
-			triggerToast('Announce sent successfully');
+			reticulum.showToast('Announce sent successfully');
 		} catch (e) {
 			console.error(e);
 		}
 	}
 
-	function triggerToast(msg: string) {
-		toastMessage = msg;
-		showToast = true;
-		setTimeout(() => {
-			showToast = false;
-		}, 3000);
+	async function handleEnableAlerts() {
+		await reticulum.requestNotificationPermission();
 	}
 
 	async function sendMessage() {
@@ -73,11 +81,11 @@
 	function handleManualPeer() {
 		const hash = manualHash.trim().toLowerCase();
 		if (hash.length !== 32) {
-			triggerToast('Hash must be exactly 32 hex characters');
+			reticulum.showToast('Hash must be exactly 32 hex characters');
 			return;
 		}
 		if (!/^[0-9a-f]+$/.test(hash)) {
-			triggerToast('Invalid hex characters');
+			reticulum.showToast('Invalid hex characters');
 			return;
 		}
 
@@ -96,17 +104,26 @@
 		reticulum.selectedPeerHash = hash;
 		manualHash = '';
 		showManualEntry = false;
-		triggerToast('Peer added manually');
+		reticulum.showToast('Peer added manually');
 	}
 
 	function formatBytes(bytes: number) {
 		if (bytes === 0) return '0 B';
 		const k = 1024;
-		const sizes = ['B', 'KB', 'MB'];
+		const sizes = ['B', 'KB', 'MB', 'GB'];
 		const i = Math.floor(Math.log(bytes) / Math.log(k));
 		const index = Math.max(0, Math.min(i, sizes.length - 1));
 		const sizeLabel = sizes[index] || 'B';
 		return parseFloat((bytes / Math.pow(k, index)).toFixed(1)) + ' ' + sizeLabel;
+	}
+
+	function formatUptime(ms: number) {
+		const totalSec = Math.max(0, Math.floor(ms / 1000));
+		const hours = Math.floor(totalSec / 3600);
+		const minutes = Math.floor((totalSec % 3600) / 60);
+		const seconds = totalSec % 60;
+		if (hours > 0) return `${hours}h ${minutes}m`;
+		return `${minutes}m ${seconds}s`;
 	}
 
 	function formatTime(date: Date) {
@@ -280,6 +297,50 @@
 						</span>
 					</div>
 				</div>
+				<div
+					class="px-3 py-1.5 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl"
+				>
+					<span class="text-[9px] font-bold text-zinc-400 uppercase tracking-wider block"
+						>Peers</span
+					>
+					<div class="text-[11px] font-bold text-zinc-700 dark:text-zinc-300">{peerCount}</div>
+				</div>
+				{#if reticulum.wasmSizeBytes > 0}
+					<div
+						class="px-3 py-1.5 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl"
+					>
+						<span class="text-[9px] font-bold text-zinc-400 uppercase tracking-wider block"
+							>WASM</span
+						>
+						<div class="text-[11px] font-bold text-zinc-700 dark:text-zinc-300">
+							{formatBytes(reticulum.wasmSizeBytes)}
+						</div>
+					</div>
+				{/if}
+				<div
+					class="px-3 py-1.5 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl"
+				>
+					<span class="text-[9px] font-bold text-zinc-400 uppercase tracking-wider block"
+						>Status</span
+					>
+					<div
+						class="text-[11px] font-bold {reticulum.connected
+							? 'text-green-500'
+							: 'text-zinc-500'}"
+					>
+						{reticulum.connected ? 'Connected' : 'Offline'}
+					</div>
+				</div>
+				{#if reticulum.connected && uptimeLabel}
+					<div
+						class="px-3 py-1.5 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl"
+					>
+						<span class="text-[9px] font-bold text-zinc-400 uppercase tracking-wider block"
+							>Uptime</span
+						>
+						<div class="text-[11px] font-bold text-zinc-700 dark:text-zinc-300">{uptimeLabel}</div>
+					</div>
+				{/if}
 			</div>
 		</section>
 
@@ -298,7 +359,7 @@
 					>
 						{#if typeof Notification !== 'undefined'}
 							<button
-								onclick={() => reticulum.requestNotificationPermission()}
+								onclick={handleEnableAlerts}
 								class="flex items-center gap-2 px-2 hover:opacity-80 transition-opacity"
 								title={reticulum.notificationsEnabled
 									? 'Notifications Enabled'
@@ -592,7 +653,7 @@
 											{#if msg.type === 'sent'}
 												<button
 													onclick={() =>
-														triggerToast(
+														reticulum.showToast(
 															`Stats: ${reticulum.stats.packetsSent} sent, ${reticulum.stats.packetsReceived} received`
 														)}
 													class="hover:scale-110 transition-transform"
@@ -641,7 +702,7 @@
 										onclick={async () => {
 											try {
 												await reticulum.fetchKeys(reticulum.selectedPeerHash);
-												triggerToast('Path request sent to network...');
+												reticulum.showToast('Path request sent to network...');
 
 												setTimeout(() => {
 													if (
@@ -649,11 +710,11 @@
 													) {
 														reticulum.peerKeyStatus.set(reticulum.selectedPeerHash, 'unknown');
 														reticulum.peerKeyStatusVersion++;
-														triggerToast('Key fetch timed out. Waiting for peer announce.');
+														reticulum.showToast('Key fetch timed out. Waiting for peer announce.');
 													}
 												}, 30000);
 											} catch (e) {
-												triggerToast('Failed to request keys');
+												reticulum.showToast('Failed to request keys');
 												console.error(e);
 											}
 										}}
@@ -759,18 +820,11 @@
 		</div>
 	</div>
 
-	{#if showToast}
-		<div
-			class="toast-pop fixed bottom-5 right-4 z-[100] flex max-w-[min(22rem,calc(100vw-2rem))] items-start gap-3 rounded-2xl border border-white/50 bg-white/75 px-4 py-3.5 text-sm font-semibold leading-snug text-zinc-800 shadow-2xl shadow-black/10 ring-1 ring-black/[0.06] backdrop-blur-xl dark:border-zinc-500/35 dark:bg-zinc-950/78 dark:text-zinc-100 dark:shadow-black/40 dark:ring-white/[0.08] sm:bottom-6 sm:right-6"
-			role="status"
-		>
-			<span
-				class="mt-0.5 h-2 w-2 shrink-0 rounded-full bg-[#00ADD8] shadow-[0_0_12px_rgba(0,173,216,0.55)]"
-				aria-hidden="true"
-			></span>
-			<span class="min-w-0 flex-1">{toastMessage}</span>
-		</div>
-	{/if}
+	<Toast
+		message={reticulum.toastMessage}
+		visible={reticulum.toastVisible}
+		ondismiss={() => reticulum.dismissToast()}
+	/>
 </div>
 
 <style>
