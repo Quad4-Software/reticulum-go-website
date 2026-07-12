@@ -4,6 +4,7 @@
 		"docs": "Dokumentation",
 		"interactive": "Interaktiv",
 		"apps": "Apps",
+		"ren_browser": "Ren Browser",
 		"wasm_example": "WASM Beispiel",
 		"contact": "Kontakt",
 		"search": "Suche...",
@@ -60,6 +61,7 @@
 	"home": {
 		"title": "Reticulum-Go",
 		"subtitle": "Der belastbare, souveräne Netzwerk-Stack für alle. Jetzt in Go implementiert für hohe Performance und Portabilität.",
+		"try_ren_browser": "Ren Browser ausprobieren!",
 		"try_wasm": "WASM Demo ausprobieren",
 		"view_source": "Quellcode ansehen",
 		"features": {
@@ -76,10 +78,73 @@
 				"description": "Gebaut mit Go für maximale Performance, Sicherheit und plattformübergreifende Kompatibilität. Läuft überall, von Embedded-Systemen bis hin zu Cloud-Servern."
 			}
 		},
-		"wasm_promo": {
-			"title": "Probieren Sie Reticulum-Go im Browser aus",
-			"description": "Erleben Sie die Leistung von Reticulum direkt in Ihrem Browser. Unser WASM-Build ermöglicht es Ihnen, mit dem Netzwerk zu interagieren, ohne etwas zu installieren.",
-			"cta": "Zum WASM Beispiel"
+		"ren_promo": {
+			"title": "Das Reticulum-Netzwerk browsen",
+			"description": "Ren Browser ist ein moderner NomadNet-kompatibler Client auf Basis von Reticulum-Go. Micron-Seiten rendern, Identitäten verwalten und das Mesh von Desktop oder Mobilgerät aus erkunden.",
+			"cta": "Ren Browser entdecken"
 		}
+	},
+	"ren_browser": {
+		"title": "Ren Browser",
+		"subtitle": "Ein moderner Browser für das Reticulum-Netzwerk, gebaut mit Reticulum-Go.",
+		"badge": "Neu",
+		"download": "Herunterladen",
+		"view_source": "Quellcode",
+		"hero_alt": "Ren Browser Desktop-Startseite",
+		"features_title": "Funktionen",
+		"features": {
+			"nomadnet": {
+				"title": "NomadNet / Micron",
+				"description": "NomadNet-Seiten mit vollständiger Micron-Markup-Unterstützung rendern."
+			},
+			"identities": {
+				"title": "Mehrere Identitäten",
+				"description": "Reticulum-Identitäten einfach erstellen, importieren, exportieren und wechseln."
+			},
+			"interfaces": {
+				"title": "Schnittstellenkontrolle",
+				"description": "Volle Kontrolle über Netzwerkschnittstellen mit Hot Reload für Live-Konfiguration."
+			},
+			"documents": {
+				"title": "Dokumentenleser",
+				"description": "EPUB- und PDF-Dokumente neben Mesh-Inhalten an einem Ort lesen."
+			},
+			"editor": {
+				"title": "Micron-Editor",
+				"description": "Micron-Seiten mit integriertem Editor schreiben und vorschauen."
+			},
+			"extensions": {
+				"title": "Erweiterungssystem",
+				"description": "JS- und WASM-Plugins mit Berechtigungsmodell zur Erweiterung des Browsers."
+			},
+			"platforms": {
+				"title": "Läuft überall",
+				"description": "Linux, Windows, macOS, Android sowie Docker- und Headless-Server-Builds."
+			},
+			"i18n": {
+				"title": "Lokalisierte Oberfläche",
+				"description": "Oberfläche auf Englisch, Deutsch, Spanisch und Russisch verfügbar."
+			}
+		},
+		"gallery_title": "Screenshots",
+		"gallery": {
+			"home": "Startseite",
+			"discovery": "Entdeckung",
+			"editor": "Micron-Editor",
+			"settings": "Einstellungen",
+			"about": "Über"
+		},
+		"mobile_title": "Mobil",
+		"mobile_description": "Ein natives Erlebnis auf Android mit denselben Identitäten, Entdeckungs- und Browser-Tools.",
+		"get_title": "Ren Browser holen",
+		"get_description": "Fertige Pakete für Linux, Windows, macOS und Android sowie ein Headless-Server und Docker-Image.",
+		"platforms_app_title": "Desktop- & Mobil-Apps",
+		"platforms_app_list": "Linux (AppImage, Flatpak, .deb, .rpm), Windows, macOS, Android, iOS",
+		"platforms_web_title": "Web & Server",
+		"platforms_web_list": "Linux (amd64, arm64, armv6), FreeBSD, OpenBSD, NetBSD, Windows",
+		"releases": "GitHub Releases",
+		"docker": "Docker-Image",
+		"docs": "Dokumentation",
+		"note": "Aktive Entwicklung. Bis v1.0 können noch Kanten rau sein."
 	}
 }

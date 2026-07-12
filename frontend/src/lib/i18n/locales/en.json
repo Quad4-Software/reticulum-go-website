@@ -4,6 +4,7 @@
 		"docs": "Docs",
 		"interactive": "Interactive",
 		"apps": "Apps",
+		"ren_browser": "Ren Browser",
 		"wasm_example": "WASM Example",
 		"contact": "Contact",
 		"search": "Search...",
@@ -60,6 +61,7 @@
 	"home": {
 		"title": "Reticulum-Go",
 		"subtitle": "The resilient, sovereign networking stack for everyone. Now implemented in Go for high performance and portability.",
+		"try_ren_browser": "Try Ren Browser!",
 		"try_wasm": "Try WASM Demo",
 		"view_source": "View Source Code",
 		"features": {
@@ -76,10 +78,73 @@
 				"description": "Built with Go for maximum performance, safety, and cross-platform compatibility. Run it anywhere from embedded to cloud servers."
 			}
 		},
-		"wasm_promo": {
-			"title": "Try Reticulum-Go in your Browser",
-			"description": "Experience the power of Reticulum directly in your browser. Our WASM build allows you to interact with the network without installing anything.",
-			"cta": "Go to WASM Example"
+		"ren_promo": {
+			"title": "Browse the Reticulum Network",
+			"description": "Ren Browser is a modern NomadNet-compatible client built with Reticulum-Go. Render Micron pages, manage identities, and explore the mesh from desktop or mobile.",
+			"cta": "Explore Ren Browser"
 		}
+	},
+	"ren_browser": {
+		"title": "Ren Browser",
+		"subtitle": "A modern browser for the Reticulum Network, built with Reticulum-Go.",
+		"badge": "New",
+		"download": "Download",
+		"view_source": "View Source",
+		"hero_alt": "Ren Browser desktop home screen",
+		"features_title": "Features",
+		"features": {
+			"nomadnet": {
+				"title": "NomadNet / Micron",
+				"description": "Render NomadNet pages with full Micron markup support for browsing the mesh."
+			},
+			"identities": {
+				"title": "Multiple Identities",
+				"description": "Create, import, export, and switch between Reticulum identities with ease."
+			},
+			"interfaces": {
+				"title": "Interface Control",
+				"description": "Full control over network interfaces with hot reload for live configuration changes."
+			},
+			"documents": {
+				"title": "Document Reader",
+				"description": "Read EPUB and PDF documents alongside mesh content in one place."
+			},
+			"editor": {
+				"title": "Micron Editor",
+				"description": "Write and preview Micron pages with a built-in editor."
+			},
+			"extensions": {
+				"title": "Extension System",
+				"description": "JS and WASM plugins with a permissions model to extend the browser."
+			},
+			"platforms": {
+				"title": "Runs Anywhere",
+				"description": "Linux, Windows, macOS, Android, plus Docker and headless server builds."
+			},
+			"i18n": {
+				"title": "Localized UI",
+				"description": "Interface available in English, German, Spanish, and Russian."
+			}
+		},
+		"gallery_title": "Screenshots",
+		"gallery": {
+			"home": "Home",
+			"discovery": "Discovery",
+			"editor": "Micron editor",
+			"settings": "Settings",
+			"about": "About"
+		},
+		"mobile_title": "Mobile",
+		"mobile_description": "A native-feeling experience on Android with the same identities, discovery, and browsing tools.",
+		"get_title": "Get Ren Browser",
+		"get_description": "Pre-built packages for Linux, Windows, macOS, and Android, plus a headless server and Docker image.",
+		"platforms_app_title": "Desktop & Mobile Apps",
+		"platforms_app_list": "Linux (AppImage, Flatpak, .deb, .rpm), Windows, macOS, Android, iOS",
+		"platforms_web_title": "Web & Server",
+		"platforms_web_list": "Linux (amd64, arm64, armv6), FreeBSD, OpenBSD, NetBSD, Windows",
+		"releases": "GitHub Releases",
+		"docker": "Docker image",
+		"docs": "Documentation",
+		"note": "Active development. Expect rough edges until v1.0."
 	}
 }

@@ -5,6 +5,7 @@ export const SITEMAP_PATHS = [
 	'/docs/overview',
 	...DOC_SLUGS.filter((slug) => slug !== 'overview').map((slug) => `/docs/${slug}`),
 	'/apps',
+	'/ren-browser',
 	'/contact',
 	'/donate',
 	'/interactive',

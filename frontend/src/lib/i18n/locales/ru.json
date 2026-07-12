@@ -4,6 +4,7 @@
 		"docs": "Документация",
 		"interactive": "Интерактивные",
 		"apps": "Приложения",
+		"ren_browser": "Ren Browser",
 		"wasm_example": "Пример WASM",
 		"contact": "Контакты",
 		"search": "Поиск...",
@@ -60,6 +61,7 @@
 	"home": {
 		"title": "Reticulum-Go",
 		"subtitle": "Устойчивый, суверенный сетевой стек для всех. Теперь реализован на Go для высокой производительности и переносимости.",
+		"try_ren_browser": "Попробуйте Ren Browser!",
 		"try_wasm": "Попробовать WASM демо",
 		"view_source": "Посмотреть исходный код",
 		"features": {
@@ -76,10 +78,73 @@
 				"description": "Создан на Go для максимальной производительности, безопасности и кроссплатформенной совместимости. Запускайте его где угодно - от встраиваемых систем до облачных серверов."
 			}
 		},
-		"wasm_promo": {
-			"title": "Попробуйте Reticulum-Go в вашем браузере",
-			"description": "Испытайте мощь Reticulum прямо в браузере. Наша сборка WASM позволяет вам взаимодействовать с сетью без установки чего-либо.",
-			"cta": "Перейти к WASM примеру"
+		"ren_promo": {
+			"title": "Браузер для сети Reticulum",
+			"description": "Ren Browser - современный NomadNet-совместимый клиент на Reticulum-Go. Рендеринг Micron-страниц, управление личностями и исследование mesh с рабочего стола или мобильного устройства.",
+			"cta": "Открыть Ren Browser"
 		}
+	},
+	"ren_browser": {
+		"title": "Ren Browser",
+		"subtitle": "Современный браузер для сети Reticulum на базе Reticulum-Go.",
+		"badge": "Новый",
+		"download": "Скачать",
+		"view_source": "Исходный код",
+		"hero_alt": "Главный экран Ren Browser на рабочем столе",
+		"features_title": "Возможности",
+		"features": {
+			"nomadnet": {
+				"title": "NomadNet / Micron",
+				"description": "Рендеринг страниц NomadNet с полной поддержкой разметки Micron."
+			},
+			"identities": {
+				"title": "Несколько личностей",
+				"description": "Создавайте, импортируйте, экспортируйте и переключайте личности Reticulum."
+			},
+			"interfaces": {
+				"title": "Управление интерфейсами",
+				"description": "Полный контроль сетевых интерфейсов с горячей перезагрузкой конфигурации."
+			},
+			"documents": {
+				"title": "Читалка документов",
+				"description": "Читайте EPUB и PDF вместе с контентом mesh в одном месте."
+			},
+			"editor": {
+				"title": "Редактор Micron",
+				"description": "Пишите и просматривайте страницы Micron во встроенном редакторе."
+			},
+			"extensions": {
+				"title": "Система расширений",
+				"description": "Плагины на JS и WASM с моделью разрешений для расширения браузера."
+			},
+			"platforms": {
+				"title": "Работает везде",
+				"description": "Linux, Windows, macOS, Android, а также Docker и headless-сервер."
+			},
+			"i18n": {
+				"title": "Локализованный интерфейс",
+				"description": "Интерфейс на английском, немецком, испанском и русском."
+			}
+		},
+		"gallery_title": "Скриншоты",
+		"gallery": {
+			"home": "Главная",
+			"discovery": "Обнаружение",
+			"editor": "Редактор Micron",
+			"settings": "Настройки",
+			"about": "О программе"
+		},
+		"mobile_title": "Мобильный",
+		"mobile_description": "Нативное ощущение на Android с теми же личностями, обнаружением и инструментами просмотра.",
+		"get_title": "Скачать Ren Browser",
+		"get_description": "Готовые пакеты для Linux, Windows, macOS и Android, а также headless-сервер и образ Docker.",
+		"platforms_app_title": "Приложения для ПК и мобильных",
+		"platforms_app_list": "Linux (AppImage, Flatpak, .deb, .rpm), Windows, macOS, Android, iOS",
+		"platforms_web_title": "Веб и сервер",
+		"platforms_web_list": "Linux (amd64, arm64, armv6), FreeBSD, OpenBSD, NetBSD, Windows",
+		"releases": "Релизы GitHub",
+		"docker": "Образ Docker",
+		"docs": "Документация",
+		"note": "Активная разработка. До v1.0 возможны шероховатости."
 	}
 }

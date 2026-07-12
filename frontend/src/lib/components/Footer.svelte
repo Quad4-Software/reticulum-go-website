@@ -125,6 +125,18 @@
 				<li><a href="/apps" class="hover:text-zinc-900 dark:hover:text-zinc-100">Apps</a></li>
 				<li>
 					<a
+						href="/ren-browser"
+						class="flex items-center gap-2 hover:text-zinc-900 dark:hover:text-zinc-100"
+					>
+						<span>{$t('common.ren_browser')}</span>
+						<span
+							class="px-1.5 py-0.5 text-[10px] font-semibold rounded bg-orange-500 text-white uppercase"
+							>{$t('ren_browser.badge')}</span
+						>
+					</a>
+				</li>
+				<li>
+					<a
 						href="/wasm-example"
 						class="flex items-center gap-2 hover:text-zinc-900 dark:hover:text-zinc-100"
 					>

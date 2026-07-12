@@ -22,7 +22,6 @@
 </svelte:head>
 
 <div class="space-y-24">
-	<!-- Hero Section -->
 	<section class="text-center space-y-8 py-12">
 		<h1
 			class="text-5xl md:text-7xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-zinc-900 via-zinc-700 to-zinc-500 dark:from-white dark:via-zinc-300 dark:to-zinc-500"
@@ -36,13 +35,13 @@
 		</p>
 		<div class="flex flex-wrap justify-center gap-4">
 			<a
-				href="/wasm-example"
+				href="/ren-browser"
 				class="relative px-8 py-4 bg-[#00ADD8] text-white font-bold rounded-xl shadow-md hover:shadow-[#00ADD8]/10 transition-all active:scale-95"
 			>
-				{$t('home.try_wasm')}
+				{$t('home.try_ren_browser')}
 				<span
 					class="absolute -top-2 -right-2 px-1.5 py-0.5 text-[10px] font-semibold rounded bg-orange-500 text-white uppercase"
-					>Beta</span
+					>{$t('ren_browser.badge')}</span
 				>
 			</a>
 			<div class="relative group">
@@ -70,7 +69,6 @@
 		</div>
 	</section>
 
-	<!-- Features Grid -->
 	<section class="grid md:grid-cols-3 gap-8">
 		<div class="p-8 rounded-2xl border border-zinc-200 dark:border-zinc-800 space-y-4">
 			<div
@@ -140,7 +138,6 @@
 		</div>
 	</section>
 
-	<!-- WASM Promotion -->
 	<section
 		class="relative overflow-hidden rounded-3xl bg-zinc-900 text-white p-12 md:p-20 text-center space-y-6"
 	>
@@ -149,16 +146,16 @@
 				class="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent"
 			></div>
 		</div>
-		<h2 class="text-3xl md:text-5xl font-bold">{$t('home.wasm_promo.title')}</h2>
+		<h2 class="text-3xl md:text-5xl font-bold">{$t('home.ren_promo.title')}</h2>
 		<p class="text-zinc-400 max-w-4xl mx-auto text-lg">
-			{$t('home.wasm_promo.description')}
+			{$t('home.ren_promo.description')}
 		</p>
 		<div class="pt-4">
 			<a
-				href="/wasm-example"
+				href="/ren-browser"
 				class="relative inline-flex items-center gap-2 px-8 py-3 bg-white text-zinc-900 font-bold rounded-xl hover:bg-zinc-100 transition-colors"
 			>
-				{$t('home.wasm_promo.cta')}
+				{$t('home.ren_promo.cta')}
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					class="w-4 h-4"
@@ -172,7 +169,7 @@
 				>
 				<span
 					class="absolute -top-2 -right-2 px-1.5 py-0.5 text-[10px] font-semibold rounded bg-orange-500 text-white uppercase"
-					>Beta</span
+					>{$t('ren_browser.badge')}</span
 				>
 			</a>
 		</div>

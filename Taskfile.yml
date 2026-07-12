@@ -39,3 +39,9 @@ tasks:
     desc: Run website documentation checks
     cmds:
       - task: docs:check
+
+  dev:
+    desc: Run frontend development server
+    dir: "{{.FRONTEND}}"
+    cmds:
+      - pnpm dev

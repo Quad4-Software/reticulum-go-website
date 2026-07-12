@@ -30,7 +30,7 @@
 			tags: ['browser', 'nomadnet', 'micron', 'desktop', 'mobile', 'reticulum-go'],
 			platforms: ['Linux', 'Windows', 'macOS', 'Android', 'Docker'],
 			status: 'available',
-			link: 'https://github.com/Quad4-Software/Ren-Browser'
+			link: '/ren-browser'
 		},
 		{
 			name: 'Micron Parser Go',
@@ -145,14 +145,17 @@
 						</div>
 						<div class="flex flex-wrap gap-4">
 							{#if app.link}
+								{@const external = app.link.startsWith('http')}
 								<a
 									href={app.link}
-									target="_blank"
-									rel="noopener noreferrer"
+									target={external ? '_blank' : undefined}
+									rel={external ? 'noopener noreferrer' : undefined}
 									class="inline-flex items-center gap-2 text-sm font-medium text-[#00ADD8] hover:underline"
 								>
 									<span>{$t('common.learn_more')}</span>
-									<ExternalLink class="w-4 h-4" />
+									{#if external}
+										<ExternalLink class="w-4 h-4" />
+									{/if}
 								</a>
 							{/if}
 							{#if app.demoLink}

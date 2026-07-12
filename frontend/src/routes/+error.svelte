@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { Home, BookOpen, Cpu, Mail } from 'lucide-svelte';
+	import { Home, BookOpen, Cpu, Mail, Globe } from 'lucide-svelte';
 
 	const navLinks = [
 		{ href: '/', label: 'Home', icon: Home },
 		{ href: '/docs', label: 'Documentation', icon: BookOpen },
+		{ href: '/ren-browser', label: 'Ren Browser', icon: Globe },
 		{ href: '/wasm-example', label: 'WASM Demo', icon: Cpu },
 		{ href: '/contact', label: 'Contact', icon: Mail }
 	];
@@ -35,7 +36,7 @@
 				href={item.href}
 				class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors"
 			>
-				<svelte:component this={item.icon} class="w-4 h-4" />
+				<item.icon class="w-4 h-4" />
 				{item.label}
 			</a>
 		{/each}
