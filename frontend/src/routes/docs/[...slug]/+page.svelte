@@ -1,9 +1,12 @@
 <script lang="ts">
 	import { locale, t } from 'svelte-i18n';
 	import { FileCode, FileType } from 'lucide-svelte';
+	import { mount, tick, unmount } from 'svelte';
 	import { exportDoc } from '$lib/docs-service';
 	import { page } from '$app/state';
 	import Breadcrumbs from '$lib/components/Breadcrumbs.svelte';
+	import DocMeta from '$lib/components/DocMeta.svelte';
+	import { findDocMetaTable, parseDocMetaTable } from '$lib/doc-meta';
 	import { getCanonicalUrl } from '$lib/seo';
 	import { SITE_URL } from '$lib/site-config';
 
@@ -34,6 +37,48 @@
 		{ label: 'Docs', href: '/docs' },
 		{ label: docTitle }
 	]);
+
+	let proseEl: HTMLElement | undefined = $state();
+
+	$effect(() => {
+		void data.content;
+		void $locale;
+
+		let alive = true;
+		let instance: ReturnType<typeof mount> | undefined;
+
+		tick().then(() => {
+			if (!alive || !proseEl || !data.content) return;
+
+			const table = findDocMetaTable(proseEl);
+			if (!table) return;
+
+			const fields = parseDocMetaTable(table);
+			if (fields.length === 0) return;
+
+			const placeholder = document.createElement('div');
+			placeholder.setAttribute('data-doc-meta-slot', '');
+			table.replaceWith(placeholder);
+
+			instance = mount(DocMeta, {
+				target: placeholder,
+				props: { fields }
+			});
+
+			if (!alive) {
+				unmount(instance);
+				instance = undefined;
+			}
+		});
+
+		return () => {
+			alive = false;
+			if (instance) {
+				unmount(instance);
+				instance = undefined;
+			}
+		};
+	});
 </script>
 
 <svelte:head>
@@ -79,7 +124,7 @@
 		</div>
 	</div>
 
-	<div class="prose prose-zinc dark:prose-invert max-w-none">
+	<div class="prose prose-zinc dark:prose-invert max-w-none" bind:this={proseEl}>
 		{#if data.content}
 			{#key `${$locale}-${data.content}`}
 				<data.content />
