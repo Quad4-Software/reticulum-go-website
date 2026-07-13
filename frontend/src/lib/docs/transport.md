@@ -1,17 +1,12 @@
 # Transport
 
-| Field | Value |
-|-------|-------|
-| Document version | 1.0 |
-| Last updated | 2026-07-07 |
-| Author | Ivan |
-
 ## Role
 
 `pkg/transport` is the routing engine. It learns paths from signed announces, forwards packets across interfaces, maintains link table state, and delivers data packets to registered destinations.
 
 Transport sits between interfaces and application destinations. Every enabled interface registers with `Transport.RegisterInterface`, which sets a callback from inbound frames to `HandlePacket`.
 
+Inbound packets are unpacked in `pkg/packet`. Hop counts `>= PATHFINDER_M` (128) are rejected at unpack time (RNS 1.3.8). Transport also drops announces and relayed packets that would exceed `MaxHops` after increment.
 ## Path table
 
 The path table maps a 16-byte destination hash to:
@@ -78,7 +73,7 @@ If a destination is already present in the path table, duplicate announces may b
 
 ## Links at the transport layer
 
-Transport maintains a link table for active sessions. Link packets are routed to the correct `pkg/link` instance. Incoming link requests are dispatched to `link.HandleIncomingLinkRequest` (there is no full Python `Transport.CreateIncomingLink` helper in Go).
+Transport maintains a link table for active sessions. Link packets are routed to the correct `pkg/link` instance. Incoming link requests are dispatched to `link.HandleIncomingLinkRequest` (incoming link requests use `link.HandleIncomingLinkRequest`).
 
 ## Blackhole interaction
 
@@ -117,7 +112,7 @@ Per-interface `ingress_control` and `announce_rate_*` settings map to token buck
 
 ## Probes
 
-Python supports transport probe responses via `respond_to_probes` and `allow_probes`. These keys are ignored in Reticulum-Go. Probe handling is not ported.
+Set `respond_to_probes = yes` (or `allow_probes`) to register `rnstransport.probe` with prove-all so `reticulum-go probe` can measure RTT against this node.
 
 ## Debugging
 

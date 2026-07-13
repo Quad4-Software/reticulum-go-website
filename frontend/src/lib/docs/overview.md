@@ -1,16 +1,10 @@
 # Overview
 
-| Field | Value |
-|-------|-------|
-| Document version | 1.0 |
-| Last updated | 2026-07-07 |
-| Author | Ivan |
-
 ## What is Reticulum-Go
 
 Reticulum-Go is a Go implementation of the [Reticulum Network Stack](https://reticulum.network/). Reticulum is a cryptographic mesh networking protocol designed for resilient communication over heterogeneous links. It can run over UDP, TCP, radio hardware, I2P, and other transports without assuming a single global internet path.
 
-Reticulum-Go targets full wire compatibility with the official Python reference implementation (RNS 1.3.7) while using Go concurrency and static compilation for deployment on servers, desktops, embedded targets, and WebAssembly runtimes.
+Reticulum-Go targets full wire compatibility with the official Python reference implementation (RNS 1.3.8) while using Go concurrency and static compilation for deployment on servers, desktops, embedded targets, and WebAssembly runtimes.
 
 The primary deliverables are:
 
@@ -45,7 +39,7 @@ See [Architecture](/docs/architecture) for a fuller picture.
 
 ## Feature status
 
-The table below summarizes major areas. For line-by-line parity with Python, see [Compatibility](/docs/compatibility) and [COMPATIBILITY.md](https://github.com/Quad4-Software/Reticulum-Go/blob/master/COMPATIBILITY.md).
+Below is a summary of major features. For line-by-line parity with Python, see [Compatibility](/docs/compatibility) and [COMPATIBILITY.md](https://github.com/Quad4-Software/Reticulum-Go/blob/master/COMPATIBILITY.md).
 
 | Area | Status | Location |
 |------|--------|----------|

@@ -1,11 +1,5 @@
 # Getting started
 
-| Field | Value |
-|-------|-------|
-| Document version | 1.0 |
-| Last updated | 2026-07-07 |
-| Author | Ivan |
-
 ## Requirements
 
 - Go 1.26.4 or later
@@ -64,11 +58,18 @@ Or:
 go run ./cmd/reticulum-go
 ```
 
-On first start the daemon creates `~/.reticulum-go/` with a default config if none exists. Logs go to stderr. Set verbosity with `[logging] loglevel` in the config file (0 through 7, same scale as Python).
+On first start the daemon creates `~/.reticulum-go/` with a default config if none exists. Logs go to stderr by default. Set verbosity with `[logging] loglevel` (1 through 7). Optional `[logging] destination = file|both` and `logfile` write to disk. Daemon text logs, pageserver banner, and CLI tools color on TTY. Respect `NO_COLOR` and `FORCE_COLOR` / `CLICOLOR_FORCE`.
+
+Daemon flags:
+
+```bash
+reticulum-go --config ~/.reticulum-go/config -debug 5
+reticulum-go --config /path/to/config-dir
+```
 
 ### Custom config path
 
-Pass `--config /path/to/config` to use a Python-style location such as `/etc/reticulum/config` or `~/.reticulum/config`.
+Pass `--config` / `-config` with a config file or directory (directory uses `config` inside it).
 
 ## Minimal configuration
 

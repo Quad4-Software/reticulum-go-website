@@ -1,18 +1,12 @@
 # Compatibility with Python Reticulum
 
-| Field | Value |
-|-------|-------|
-| Document version | 1.1 |
-| Last updated | 2026-07-09 |
-| Author | Ivan |
-
 ## Reference target
 
-Reticulum-Go is tested against **Python RNS 1.3.7** and the [official network API reference](https://reticulum.network/manual/reference.html).
+Reticulum-Go is tested against **Python RNS 1.3.8** and the [official network API reference](https://reticulum.network/manual/reference.html).
 
 Crossref vectors clone the reference from `rns://7649a50d84610232d1416b41d2896aff/reticulum/reticulum` via [rngit](https://reticulum.network/manual/git.html) (`tests/crossref/run_crossref.sh`). The GitHub mirror is not used for vectors.
 
-The detailed matrix with config key tables lives in [COMPATIBILITY.md](https://github.com/Quad4-Software/Reticulum-Go/blob/master/COMPATIBILITY.md). This page summarizes decisions architects need.
+The detailed matrix with config key tables lives in [COMPATIBILITY.md](https://github.com/Quad4-Software/Reticulum-Go/blob/master/COMPATIBILITY.md). This page summarizes the key differences and design choices.
 
 ## Component parity
 
@@ -53,7 +47,7 @@ UDP requires explicit `target_host` or `target_address` (Python `forward_ip` pol
 
 Opt-in UDP reconnect when `max_reconnect_tries > 0` is a Go extension.
 
-## Python 1.2.x to 1.3.7 changes
+## Python 1.2.x to 1.3.8 changes
 
 Wire format is stable across 1.2.x to 1.3.x. Notable behavior differences:
 
@@ -69,15 +63,17 @@ Wire format is stable across 1.2.x to 1.3.x. Notable behavior differences:
 | Shared-instance RPC msgpack | 1.3.4 | Covered |
 | `MODE_INTERNAL` / `recursive_prs` / announce mode rules | 1.3.6 | Covered |
 | Ephemeral transport identity / `static_transport_identity` | 1.3.6 | Covered |
-| `local_hops_delta` hop mangling | 1.3.6 / 1.3.7 | **Gap** (config only) |
+| `local_hops_delta` hop mangling | 1.3.6 / 1.3.7 | Covered |
+| Reject unpack when hops `>= PATHFINDER_M` | 1.3.8 | Covered |
+| Link `expected_hops` on both sides / LRPROOF hop gate | 1.3.8 | Covered |
 
 ## Known gaps
 
 | Gap | Impact |
 |-----|--------|
 | Blackhole at LINKIDENTIFY | Blackholed peers may still complete link setup. Announces are still dropped |
-| Transport probes | `respond_to_probes` / `allow_probes` ignored |
-| `local_hops_delta` | Config accepted. Outbound hop mangling not implemented |
+| Transport probes | `respond_to_probes` / `allow_probes` register probe destination |
+| `local_hops_delta` | Outbound hop mangling applied |
 | `publish_blackhole` and related keys | Not auto-published |
 | RNode and radio serial drivers | Cannot speak to RNode hardware from this tree |
 | Python CLI utilities | Yes (core) | `rgostatus`, `rgoid`, `rgoprobe` with Python format/RPC interop |
@@ -121,7 +117,7 @@ These do not change the wire format:
 | rnprobe | `rgoprobe` |
 | rnpath | `rgopath` (path table, drop, blackhole; remote rnstransport not ported) |
 | rncp | `rgocp` (send/listen/fetch on `rncp.receive`) |
-| rnir, rnx, rnodeconf, rnpkg, rngit, rnsh | Not ported. Primitives in `pkg/` |
+| rnir, rnodeconf, rnpkg, rngit, rnsh | Not ported (deferred post-1.0). `rnx` is `reticulum-go x`. |
 | WASM | `reticulum-wasm` (Go-only) |
 | librns | `librns.so` + `rns.h` (Go-only, Linux first) |
 

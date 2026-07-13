@@ -1,12 +1,6 @@
 # CLI utilities
 
-| Field | Value |
-|-------|-------|
-| Document version | 1.1 |
-| Last updated | 2026-07-09 |
-| Author | Ivan |
-
-Go-native tools that speak the same shared-instance msgpack RPC and identity file formats as Python `rnstatus`, `rnid`, `rnprobe`, `rnpath`, and `rncp`. They are not Python clones.
+Go-native tools that speak the same shared-instance msgpack RPC and identity file formats as Python `rnstatus`, `rnid`, `rnprobe`, `rnpath`, `rncp`, and `rnx`. They are not Python clones.
 
 They ship as **subcommands of the single `reticulum-go` binary**:
 
@@ -17,10 +11,11 @@ make build
 ./bin/reticulum-go probe ...
 ./bin/reticulum-go path -t
 ./bin/reticulum-go cp -l
+./bin/reticulum-go x -l
 ./bin/reticulum-go pageserver
 ```
 
-`make install` also creates legacy symlinks (`rgostatus`, `rgoid`, `rgoprobe`, `rgopath`, `rgocp`, `rgopageserver`) that invoke the same binary. Man pages: `man reticulum-go`, `man reticulum-go-status`, and so on.
+`make install` also creates legacy symlinks (`rgostatus`, `rgoid`, `rgoprobe`, `rgopath`, `rgocp`, `rgox`, `rnx`, `rgopageserver`) that invoke the same binary. Man pages: `man reticulum-go`, `man reticulum-go-status`, and so on.
 
 | Tool / subcommand | Python counterpart | Role |
 |-------------------|--------------------|------|
@@ -29,6 +24,7 @@ make build
 | `reticulum-go probe` (`rgoprobe`) | `rnprobe` | Path wait, encrypted probe, RTT |
 | `reticulum-go path` (`rgopath`) | `rnpath` | Path table, drop, blackhole, path request |
 | `reticulum-go cp` (`rgocp`) | `rncp` | File send / listen / fetch over links |
+| `reticulum-go x` (`rgox`, `rnx`) | `rnx` | Remote command execution over links (`rnx.execute`) |
 | `reticulum-go pageserver` | (example app) | NomadNet-style page and file server |
 
 Library code lives in `pkg/rnsutil` and `pkg/cli`. Pageserver logic lives in `pkg/pageserver`.
@@ -136,10 +132,14 @@ Examples:
 ./bin/reticulum-go id -i id.rid -s file.bin -f
 ./bin/reticulum-go id -i id.rid -V file.bin
 ./bin/reticulum-go id -i id.rid -S "hello" -w note -f
+./bin/reticulum-go id -i id.rid -S @inventory.txt -w reticulum-go.rsm -f
 ./bin/reticulum-go id -V note.rsm
+./bin/reticulum-go id -i e46112d44649266d71fe2193e00a4710 -V reticulum-go.rsm -extract
 ./bin/reticulum-go id -i id.rid -e secret.txt -f
 ./bin/reticulum-go id -i id.rid -d secret.txt.rfe -f
 ```
+
+`-S @path` reads the message body from a file (needed for large tree inventories). `-extract` prints only the embedded RSM message after a successful verify. `-i` may be a 32-character identity hash when verifying (no private key required).
 
 Go-signed `.rsg` / `.rsm` / `.rfe` validate with Python `rnid`, and the reverse also works.
 
@@ -216,6 +216,39 @@ Allow lists are loaded from `/etc/rncp/allowed_identities`, `~/.config/rncp/`, `
 
 Go extras: cleaner progress lines on stderr, `-json` is not used (transfer is binary), unique `.N` rename when not overwriting.
 
+## rgox / rnx
+
+Remote command execution over links. Destination name is `rnx.execute`, request path `command` (wire-compatible with Python `rnx`).
+
+```bash
+reticulum-go x -l [flags]                         # listen
+reticulum-go x [flags] <destination_hash> <cmd>   # execute
+reticulum-go x -x [flags] <destination_hash>      # interactive
+```
+
+| Flag | Meaning |
+|------|---------|
+| `-config dir` | Config directory |
+| `-i path` | Identity file (default `storage/identities/rnx`) |
+| `-l` | Listen for commands |
+| `-x` | Interactive REPL |
+| `-a hash` | Allowed identity (repeatable, listen) |
+| `-n` | Accept from anyone (listen) |
+| `-N` | Do not identify to listener |
+| `-b` | Skip announce on listen start |
+| `-m` | Mirror remote exit code |
+| `-d` | Detailed timing/size summary |
+| `-w sec` | Path/link/command timeout |
+| `-W sec` | Max result download time |
+| `--stdin str` | Remote stdin |
+| `--stdout N` / `--stderr N` | Max returned bytes |
+| `-json` | Structured JSON result (Go) |
+| `-p` | Print identity and destination hash |
+
+Allow lists: `/etc/rnx/`, `~/.config/rnx/`, `~/.rnx/`, plus `~/.config/rgox/` and `~/.rgox/`.
+
+Exit codes match Python `rnx` (241–249 for client failures, `-m` mirrors remote).
+
 ## Troubleshooting
 
 | Symptom | Fix |
@@ -226,6 +259,19 @@ Go extras: cleaner progress lines on stderr, `-json` is not used (transfer is bi
 | Top-level `rxb`/`txb` are `0` while interfaces show traffic | Python aggregate totals often omit some parent interfaces. Prefer per-interface counters. |
 | Identity load log lines on stderr | Harmless debug from loading `transport_identity` for derived auth when resolving keys. Prefer explicit `rpc_key` to avoid that path when possible. |
 | `rgocp` transfer ignored | Listener needs `-a` or an allow-list entry matching the sender identity hash. Metadata (`name`) is required on the wire. |
+
+## Debugging
+
+| Tool | Role |
+|------|------|
+| `reticulum-go status` | Interface stats over shared-instance RPC (`-json`, `-q`) |
+| `reticulum-go path -t` | Path table dump |
+| `reticulum-go debug` | Effective config path, log level, platform, RPC reachability (`-rates`, `-json`) |
+| `reticulum-go probe` | Connectivity / RTT (`-json`) |
+| Control API | HTTP `/v1/health`, `/v1/status`, `/v1/paths` when `enable_control_api = yes` |
+| Daemon `-debug N` | Override config loglevel for one run |
+
+TTY colors (status Up/Down, probe/path/cp/id outcomes, pageserver banner, daemon text log levels) honor `NO_COLOR` (off) and `FORCE_COLOR` / `CLICOLOR_FORCE` (on). JSON output and file logs stay plain.
 
 ## Related documents
 

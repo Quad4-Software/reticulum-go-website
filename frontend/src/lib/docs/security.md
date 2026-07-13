@@ -1,11 +1,5 @@
 # Security
 
-| Field | Value |
-|-------|-------|
-| Document version | 1.0 |
-| Last updated | 2026-07-07 |
-| Author | Ivan |
-
 ## Purpose
 
 This page summarizes security practices for Reticulum-Go. The repository root [SECURITY.md](https://github.com/Quad4-Software/Reticulum-Go/blob/master/SECURITY.md) remains the authoritative source for reporting contacts and detailed CI paths. [Cryptography](/docs/cryptography) covers algorithms and key handling.
@@ -69,6 +63,8 @@ Application code should use `pkg/cryptography` and `pkg/identity`. IFAC configur
 
 **Actions pinning.** GitHub-owned actions are pinned to full commit SHAs where this repository pins them.
 
+**Tree integrity.** Root file `reticulum-go.rsm` is an rnid signed message embedding SHA-256 hashes of tracked files (excluding `vendor/` trees). CI verifies signer `e46112d44649266d71fe2193e00a4710` and rechecks bytes at job start and end (`task tree-rsm-verify`).
+
 ## Releases
 
 Tagged releases publish from `.github/workflows/publish.yml` on GitHub Actions.
@@ -121,8 +117,15 @@ The control API binds to `127.0.0.1` by default. It is disabled unless `enable_c
 
 Resource and buffer decompression enforce size limits aligned with Python 1.1.9 to resist compression bombs.
 
+## Hop field validation (RNS 1.3.8)
+
+Python RNS 1.3.8 rejects packets whose hop byte is `>= PATHFINDER_M` (128) during unpack. Reticulum-Go mirrors that in `pkg/packet.Unpack`. Values 128 through 255 are dropped before transport processing.
+
+Link establishment also records `expected_hops` on both initiator and responder. Initiator LRPROOF acceptance requires the proof hop count to match (or `expected_hops == PATHFINDER_M` when the path length was unknown at link creation), matching Python `Transport` pending-link gating.
+
 ## Related documents
 
 - [Cryptography](/docs/cryptography)
 - [Configuration](/docs/configuration) for sandbox and control API keys
 - [SECURITY.md](https://github.com/Quad4-Software/Reticulum-Go/blob/master/SECURITY.md) full policy text
+- [Compatibility](/docs/compatibility) for RNS 1.3.8 parity

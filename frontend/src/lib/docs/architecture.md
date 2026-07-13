@@ -1,14 +1,8 @@
 # Architecture
 
-| Field | Value |
-|-------|-------|
-| Document version | 1.0 |
-| Last updated | 2026-07-07 |
-| Author | Ivan |
-
 ## Purpose of this document
 
-This page explains how Reticulum-Go is structured for architects and senior engineers. It describes layers, control flow, persistence, and deployment patterns without walking every source file.
+This page explains how Reticulum-Go is structured, describing layers, control flow, persistence, and deployment patterns.
 
 For package-level detail see [Package map](/docs/package-map). For wire-level behavior see [Transport](/docs/transport) and [Interfaces](/docs/interfaces).
 
