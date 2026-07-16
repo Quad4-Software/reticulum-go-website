@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ArrowLeft, ArrowRight, Search as SearchIcon } from 'lucide-svelte';
+	import { ArrowLeft, ArrowRight, Search as SearchIcon, TriangleAlert } from 'lucide-svelte';
 	import { t } from 'svelte-i18n';
 	import { listTutorials } from '$lib/tutorials';
 
@@ -11,7 +11,9 @@
 		if (!searchQuery.trim()) return tutorials;
 		const query = searchQuery.toLowerCase();
 		return tutorials.filter((chapter) => {
-			const haystack = [chapter.title, chapter.summary, ...chapter.tags].join(' ').toLowerCase();
+			const haystack = [chapter.title, chapter.summary, ...chapter.tags, chapter.learnLine]
+				.join(' ')
+				.toLowerCase();
 			return haystack.includes(query);
 		});
 	});
@@ -43,6 +45,16 @@
 			</div>
 			<p class="text-lg text-zinc-600 dark:text-zinc-400 max-w-3xl mx-auto">
 				{$t('tools.reticulum_guide.page_blurb')}
+			</p>
+		</div>
+
+		<div
+			class="mx-auto flex max-w-3xl items-start gap-3 rounded-xl border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-left"
+			role="status"
+		>
+			<TriangleAlert class="mt-0.5 h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400" />
+			<p class="text-sm leading-relaxed text-amber-950 dark:text-amber-100">
+				{$t('tools.reticulum_guide.alpha_warning')}
 			</p>
 		</div>
 	</div>

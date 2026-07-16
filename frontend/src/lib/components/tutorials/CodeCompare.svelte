@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Copy, Check } from 'lucide-svelte';
+	import { Copy, Check, ExternalLink } from 'lucide-svelte';
 	import { t } from 'svelte-i18n';
 	import type { TutorialCodePair, TutorialLang } from '$lib/tutorials/types';
 	import { highlightCode } from '$lib/code-highlight';
@@ -126,6 +126,21 @@
 		<pre class="overflow-x-auto p-4 text-sm leading-relaxed"><code
 				class="font-mono text-zinc-800 dark:text-zinc-200">{source}</code
 			></pre>
+	{/if}
+	{#if code.practiceLinks?.length}
+		<div class="flex flex-wrap gap-3 border-t border-zinc-200 px-4 py-3 dark:border-zinc-800">
+			{#each code.practiceLinks as link (link.href)}
+				<a
+					href={link.href}
+					class="inline-flex items-center gap-1.5 text-sm font-medium text-[#00ADD8] transition-colors hover:text-[#0099c0]"
+				>
+					{link.label}
+					{#if link.href.startsWith('http')}
+						<ExternalLink class="h-3.5 w-3.5" />
+					{/if}
+				</a>
+			{/each}
+		</div>
 	{/if}
 </div>
 

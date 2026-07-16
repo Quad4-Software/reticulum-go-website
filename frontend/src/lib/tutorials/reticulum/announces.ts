@@ -9,7 +9,8 @@ export const announcesTutorial: Tutorial = {
 	slug: 'announces-and-paths',
 	title: 'Announces and multi-hop paths',
 	summary: 'How public keys and reachability spread through signed announces, hop by hop.',
-	tags: ['announce', 'transport', 'routing'],
+	tags: ['announce', 'transport', 'routing', 'discovery'],
+	learnLine: 'Spread reachability with signed announces and hop-limited floods.',
 	zenNote:
 		'No node knows the full path. Each transport node only knows the next hop toward a destination.',
 	sources: [
@@ -76,6 +77,21 @@ export const announcesTutorial: Tutorial = {
 				pythonRequires: ['has_path', 'request_path'],
 				goRequires: ['HasPath', 'RequestPath', 'quad4/reticulum-go']
 			}
+		},
+		{
+			id: 'discovery',
+			title: 'Discovery modes and recursive path requests',
+			body: 'Unknown-path discovery rebroadcasts a path request when no path is known. That only runs when the receiving interface is in a discover mode (access_point, gateway, roaming, internal) or has recursive_prs = yes (RNS 1.3.6+).',
+			points: [
+				'Discover modes participate in recursive path help by default',
+				'Boundary and similar modes stay quieter unless recursive_prs is enabled',
+				'Announce rebroadcast also applies interface mode filters. See Interfaces'
+			],
+			visual: 'announce-flood',
+			visualFocus: 2,
+			interactive: 'discovery-modes',
+			tryIt:
+				'Pick each interface mode. Watch whether unknown-path discovery is allowed, then check recursive_prs.'
 		},
 		{
 			id: 'roaming',

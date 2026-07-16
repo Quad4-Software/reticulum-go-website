@@ -10,7 +10,8 @@ export const linksTutorial: Tutorial = {
 	title: 'Links and sessions',
 	summary:
 		'How encrypted links turn a destination into a reliable session for requests and transfers.',
-	tags: ['link', 'session', 'request', 'channel'],
+	tags: ['link', 'session', 'request', 'channel', 'resource'],
+	learnLine: 'Open encrypted sessions for requests, channels, and resources.',
 	zenNote:
 		'A link is not a server login. It is a bilateral encrypted session between destinations that already found each other.',
 	sources: [
@@ -40,7 +41,8 @@ export const linksTutorial: Tutorial = {
 				'Initiator anonymity still applies for the described link modes',
 				'Resources and channels ride on top of an established link'
 			],
-			visual: 'link-lifecycle'
+			visual: 'link-lifecycle',
+			visualFocus: 0
 		},
 		{
 			id: 'lifecycle',
@@ -52,27 +54,35 @@ export const linksTutorial: Tutorial = {
 				'Auto-reconnect helpers exist in Go when enabled on the node'
 			],
 			visual: 'link-lifecycle',
+			visualFocus: 2,
 			interactive: 'link-sim',
-			tryIt:
-				'Play the link simulator. Data only works after LINKREADY. Close ends the session.',
+			tryIt: 'Play the link simulator. Data only works after LINKREADY. Close ends the session.',
 			code: {
 				caption: 'Open an outbound link once you know the peer',
 				python: PY_LINK,
 				go: GO_LINK,
 				pythonRequires: ['RNS.Link', 'Identity.recall'],
-				goRequires: ['link.NewLink', 'Establish', 'quad4/reticulum-go']
+				goRequires: ['link.NewLink', 'Establish', 'quad4/reticulum-go'],
+				practiceLinks: [
+					{ label: 'Links docs', href: '/docs/links-channels-and-resources' },
+					{ label: 'Try WASM Demo', href: '/wasm-example' }
+				]
 			}
 		},
 		{
 			id: 'requests-resources',
-			title: 'Requests and resources',
+			title: 'Requests, channels, and resources',
 			body: 'On a ready link you can register request handlers, exchange channel messages, stream buffers, or send multi-part resources. These are application patterns built on the same encrypted session.',
 			points: [
 				'Request and response carry structured replies with timeouts',
 				'Channels give ordered reliable messages inside the link',
-				'Resources move larger payloads with hashing and coordination'
+				'Resources move larger payloads with hashing, proofs, and optional compression'
 			],
-			visual: 'packet-path'
+			visual: 'link-lifecycle',
+			visualFocus: 2,
+			interactive: 'resource-path',
+			tryIt:
+				'Step from LINKREADY through request, channel, buffer, and resource. Each layer still needs the link.'
 		}
 	]
 };

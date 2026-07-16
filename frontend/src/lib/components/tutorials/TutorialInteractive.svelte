@@ -7,12 +7,17 @@
 		evaluateHopLimit,
 		CRYPTO_PIPELINE,
 		buildAnnounceReplay,
-		LINK_STAGES,
 		INTERFACE_CARDS,
 		PATHFINDER_M,
 		PACKET_SIM_NODES,
 		stepPacketSim,
 		LINK_SIM_FRAMES,
+		IDENTITY_RECALL_STAGES,
+		RESOURCE_PATH_STAGES,
+		LXMF_FLOW_STAGES,
+		PACKET_WIRE_FIELDS,
+		blackholeAnnounceOutcome,
+		DISCOVERY_MODES,
 		type DestinationKind,
 		type InterfaceKind,
 		type PacketSimMode,
@@ -21,10 +26,14 @@
 
 	let {
 		kind,
-		tryIt: _tryIt
+		tryIt: _tryIt,
+		wireHeaderType = $bindable<1 | 2>(1),
+		wireFieldIndex = $bindable(0)
 	}: {
 		kind: TutorialInteractiveId;
 		tryIt?: string;
+		wireHeaderType?: 1 | 2;
+		wireFieldIndex?: number;
 	} = $props();
 
 	const destinationKinds: DestinationKind[] = ['single', 'plain', 'group', 'link'];
@@ -57,18 +66,6 @@
 	}
 	function prevFrame() {
 		if (!isFirstFrame) announceIndex -= 1;
-	}
-
-	let linkIndex = $state(0);
-	const linkStage = $derived(LINK_STAGES[linkIndex]);
-	const isFirstLink = $derived(linkIndex === 0);
-	const isLastLink = $derived(linkIndex === LINK_STAGES.length - 1);
-
-	function nextLink() {
-		if (!isLastLink) linkIndex += 1;
-	}
-	function prevLink() {
-		if (!isFirstLink) linkIndex -= 1;
 	}
 
 	const interfaceKinds: InterfaceKind[] = ['lora', 'tcp', 'udp', 'serial', 'websocket'];
@@ -130,6 +127,92 @@
 	function prevLinkSim() {
 		if (!isFirstLinkSim) linkSimIndex -= 1;
 	}
+
+	let identityRecallIndex = $state(0);
+	const identityRecallStage = $derived(IDENTITY_RECALL_STAGES[identityRecallIndex]);
+	const isFirstIdentityRecall = $derived(identityRecallIndex === 0);
+	const isLastIdentityRecall = $derived(identityRecallIndex === IDENTITY_RECALL_STAGES.length - 1);
+
+	function resetIdentityRecall() {
+		identityRecallIndex = 0;
+	}
+
+	function nextIdentityRecall() {
+		if (!isLastIdentityRecall) identityRecallIndex += 1;
+	}
+
+	function prevIdentityRecall() {
+		if (!isFirstIdentityRecall) identityRecallIndex -= 1;
+	}
+
+	let resourcePathIndex = $state(0);
+	const resourcePathStage = $derived(RESOURCE_PATH_STAGES[resourcePathIndex]);
+	const isFirstResourcePath = $derived(resourcePathIndex === 0);
+	const isLastResourcePath = $derived(resourcePathIndex === RESOURCE_PATH_STAGES.length - 1);
+
+	function resetResourcePath() {
+		resourcePathIndex = 0;
+	}
+
+	function nextResourcePath() {
+		if (!isLastResourcePath) resourcePathIndex += 1;
+	}
+
+	function prevResourcePath() {
+		if (!isFirstResourcePath) resourcePathIndex -= 1;
+	}
+
+	let lxmfFlowIndex = $state(0);
+	const lxmfFlowStage = $derived(LXMF_FLOW_STAGES[lxmfFlowIndex]);
+	const isFirstLxmfFlow = $derived(lxmfFlowIndex === 0);
+	const isLastLxmfFlow = $derived(lxmfFlowIndex === LXMF_FLOW_STAGES.length - 1);
+
+	function resetLxmfFlow() {
+		lxmfFlowIndex = 0;
+	}
+
+	function nextLxmfFlow() {
+		if (!isLastLxmfFlow) lxmfFlowIndex += 1;
+	}
+
+	function prevLxmfFlow() {
+		if (!isFirstLxmfFlow) lxmfFlowIndex -= 1;
+	}
+
+	const wireFields = $derived(
+		PACKET_WIRE_FIELDS.filter((field) => field.headerTypes.includes(wireHeaderType))
+	);
+	const wireField = $derived(wireFields[wireFieldIndex] ?? wireFields[0]);
+	const isFirstWireField = $derived(wireFieldIndex === 0);
+	const isLastWireField = $derived(wireFieldIndex >= wireFields.length - 1);
+
+	function setWireHeaderType(type: 1 | 2) {
+		wireHeaderType = type;
+		wireFieldIndex = 0;
+	}
+
+	function selectWireField(index: number) {
+		wireFieldIndex = index;
+	}
+
+	function resetWireframe() {
+		wireHeaderType = 1;
+		wireFieldIndex = 0;
+	}
+
+	function nextWireField() {
+		if (!isLastWireField) wireFieldIndex += 1;
+	}
+
+	function prevWireField() {
+		if (!isFirstWireField) wireFieldIndex -= 1;
+	}
+
+	let blackholeEnabled = $state(false);
+	const blackholeOutcome = $derived(blackholeAnnounceOutcome(blackholeEnabled));
+
+	let activeDiscoveryIndex = $state(0);
+	const activeDiscovery = $derived(DISCOVERY_MODES[activeDiscoveryIndex]);
 </script>
 
 <div
@@ -173,6 +256,167 @@
 			</div>
 			<p class="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">{activeRule.detail}</p>
 		</div>
+	{:else if kind === 'packet-wireframe'}
+		<div class="space-y-3">
+			<div class="flex flex-wrap gap-2">
+				<button
+					type="button"
+					class="rounded-xl border px-3 py-2 text-sm font-medium transition-colors sm:px-4 {wireHeaderType ===
+					1
+						? 'border-[#00ADD8] bg-[#00ADD8]/10 text-[#00ADD8]'
+						: 'border-zinc-200 text-zinc-600 hover:border-[#00ADD8] hover:text-[#00ADD8] dark:border-zinc-800 dark:text-zinc-400'}"
+					aria-pressed={wireHeaderType === 1}
+					onclick={() => setWireHeaderType(1)}
+				>
+					{$t('tools.reticulum_guide.header_type_1')}
+				</button>
+				<button
+					type="button"
+					class="rounded-xl border px-3 py-2 text-sm font-medium transition-colors sm:px-4 {wireHeaderType ===
+					2
+						? 'border-[#00ADD8] bg-[#00ADD8]/10 text-[#00ADD8]'
+						: 'border-zinc-200 text-zinc-600 hover:border-[#00ADD8] hover:text-[#00ADD8] dark:border-zinc-800 dark:text-zinc-400'}"
+					aria-pressed={wireHeaderType === 2}
+					onclick={() => setWireHeaderType(2)}
+				>
+					{$t('tools.reticulum_guide.header_type_2')}
+				</button>
+			</div>
+
+			<div class="flex flex-wrap gap-2">
+				{#each wireFields as field, index (field.id)}
+					<button
+						type="button"
+						class="rounded-xl border px-3 py-2 text-sm font-medium transition-colors {index ===
+						wireFieldIndex
+							? 'border-[#00ADD8] bg-[#00ADD8]/10 text-[#00ADD8]'
+							: 'border-zinc-200 text-zinc-600 hover:border-[#00ADD8] hover:text-[#00ADD8] dark:border-zinc-800 dark:text-zinc-400'}"
+						aria-pressed={index === wireFieldIndex}
+						onclick={() => selectWireField(index)}
+					>
+						{field.label}
+					</button>
+				{/each}
+			</div>
+
+			<div
+				class="space-y-3 rounded-xl border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-800 dark:bg-zinc-900/50"
+			>
+				<p class="text-sm font-semibold text-zinc-900 dark:text-zinc-100">{wireField.label}</p>
+				<p class="text-xs font-medium text-zinc-500 dark:text-zinc-400">
+					{$t('tools.reticulum_guide.bytes_label', { values: { bytes: wireField.bytes } })}
+				</p>
+				<p class="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">{wireField.detail}</p>
+			</div>
+
+			<div class="flex items-center justify-between gap-2">
+				<button
+					type="button"
+					class="rounded-lg border border-zinc-200 px-3 py-1.5 text-sm font-medium transition-colors hover:border-[#00ADD8] hover:text-[#00ADD8] dark:border-zinc-800"
+					onclick={resetWireframe}
+				>
+					{$t('tools.reticulum_guide.reset')}
+				</button>
+				<div class="flex items-center gap-2">
+					<button
+						type="button"
+						class="inline-flex items-center gap-1 rounded-lg border border-zinc-200 px-3 py-1.5 text-sm font-medium transition-colors hover:border-[#00ADD8] hover:text-[#00ADD8] disabled:cursor-not-allowed disabled:opacity-40 dark:border-zinc-800"
+						disabled={isFirstWireField}
+						onclick={prevWireField}
+					>
+						<ChevronLeft class="h-4 w-4" />
+						<span class="hidden sm:inline">{$t('tools.reticulum_guide.previous')}</span>
+					</button>
+					<button
+						type="button"
+						class="inline-flex items-center gap-1 rounded-lg bg-[#00ADD8] px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-[#0099c0] disabled:cursor-not-allowed disabled:opacity-40"
+						disabled={isLastWireField}
+						onclick={nextWireField}
+					>
+						<span class="hidden sm:inline">{$t('tools.reticulum_guide.next')}</span>
+						<ChevronRight class="h-4 w-4" />
+					</button>
+				</div>
+			</div>
+		</div>
+	{:else if kind === 'blackhole-toggle'}
+		<div class="space-y-3">
+			<div class="flex flex-wrap gap-2">
+				<button
+					type="button"
+					class="rounded-xl border px-3 py-2 text-sm font-medium transition-colors sm:px-4 {!blackholeEnabled
+						? 'border-[#00ADD8] bg-[#00ADD8]/10 text-[#00ADD8]'
+						: 'border-zinc-200 text-zinc-600 hover:border-[#00ADD8] hover:text-[#00ADD8] dark:border-zinc-800 dark:text-zinc-400'}"
+					aria-pressed={!blackholeEnabled}
+					onclick={() => (blackholeEnabled = false)}
+				>
+					{$t('tools.reticulum_guide.blackhole_off')}
+				</button>
+				<button
+					type="button"
+					class="rounded-xl border px-3 py-2 text-sm font-medium transition-colors sm:px-4 {blackholeEnabled
+						? 'border-[#00ADD8] bg-[#00ADD8]/10 text-[#00ADD8]'
+						: 'border-zinc-200 text-zinc-600 hover:border-[#00ADD8] hover:text-[#00ADD8] dark:border-zinc-800 dark:text-zinc-400'}"
+					aria-pressed={blackholeEnabled}
+					onclick={() => (blackholeEnabled = true)}
+				>
+					{$t('tools.reticulum_guide.blackhole_on')}
+				</button>
+			</div>
+
+			<div class="flex items-center justify-between gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+				<span>Announce</span>
+				<span
+					class="rounded-full px-2.5 py-1 text-xs font-semibold {blackholeOutcome.status ===
+					'accepted'
+						? 'bg-[#00ADD8]/10 text-[#00ADD8]'
+						: 'bg-red-500/10 text-red-500'}"
+				>
+					{blackholeOutcome.status === 'accepted'
+						? $t('tools.reticulum_guide.accepted')
+						: $t('tools.reticulum_guide.status_dropped')}
+				</span>
+			</div>
+
+			<div
+				class="rounded-xl border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-800 dark:bg-zinc-900/50"
+			>
+				<p class="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+					{blackholeOutcome.detail}
+				</p>
+			</div>
+		</div>
+	{:else if kind === 'discovery-modes'}
+		<div class="flex flex-wrap gap-2">
+			{#each DISCOVERY_MODES as mode, index (mode.id)}
+				<button
+					type="button"
+					class="rounded-xl border px-3 py-2 text-sm font-medium transition-colors {activeDiscoveryIndex ===
+					index
+						? 'border-[#00ADD8] bg-[#00ADD8]/10 text-[#00ADD8]'
+						: 'border-zinc-200 text-zinc-600 hover:border-[#00ADD8] hover:text-[#00ADD8] dark:border-zinc-800 dark:text-zinc-400'}"
+					aria-pressed={activeDiscoveryIndex === index}
+					onclick={() => (activeDiscoveryIndex = index)}
+				>
+					{mode.label}
+				</button>
+			{/each}
+		</div>
+		<div
+			class="space-y-3 rounded-xl border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-800 dark:bg-zinc-900/50"
+		>
+			<p class="text-sm text-zinc-600 dark:text-zinc-400">
+				Allows unknown path
+				<span class="font-semibold text-zinc-900 dark:text-zinc-100">
+					{activeDiscovery.allowsUnknownPath
+						? $t('tools.reticulum_guide.yes')
+						: $t('tools.reticulum_guide.no')}
+				</span>
+			</p>
+			<p class="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+				{activeDiscovery.detail}
+			</p>
+		</div>
 	{:else if kind === 'hop-limit'}
 		<div class="space-y-3">
 			<input
@@ -184,7 +428,7 @@
 				aria-label="Hop count"
 			/>
 			<div class="flex items-center justify-between text-sm text-zinc-600 dark:text-zinc-400">
-				<span>Hops: {hopOutcome.hops}</span>
+				<span>{$t('tools.reticulum_guide.hops_label', { values: { hops: hopOutcome.hops } })}</span>
 				<span
 					class="rounded-full px-2.5 py-1 text-xs font-semibold {hopOutcome.accepted
 						? 'bg-[#00ADD8]/10 text-[#00ADD8]'
@@ -279,46 +523,6 @@
 				</button>
 			</div>
 		</div>
-	{:else if kind === 'link-stages'}
-		<div class="space-y-3">
-			<div class="flex items-center justify-center gap-2">
-				{#each LINK_STAGES as stage, index (stage.id)}
-					<span
-						class="h-2 w-2 rounded-full {index === linkIndex
-							? 'bg-[#00ADD8]'
-							: 'bg-zinc-300 dark:bg-zinc-700'}"
-					></span>
-				{/each}
-			</div>
-			<div
-				class="rounded-xl border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-800 dark:bg-zinc-900/50"
-			>
-				<p class="text-sm font-semibold text-zinc-900 dark:text-zinc-100">{linkStage.label}</p>
-				<p class="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
-					{linkStage.detail}
-				</p>
-			</div>
-			<div class="flex items-center justify-between gap-2">
-				<button
-					type="button"
-					class="inline-flex items-center gap-1 rounded-lg border border-zinc-200 px-3 py-1.5 text-sm font-medium transition-colors hover:border-[#00ADD8] hover:text-[#00ADD8] disabled:cursor-not-allowed disabled:opacity-40 dark:border-zinc-800"
-					disabled={isFirstLink}
-					onclick={prevLink}
-				>
-					<ChevronLeft class="h-4 w-4" />
-					<span class="hidden sm:inline">{$t('tools.reticulum_guide.previous')}</span>
-				</button>
-				<button
-					type="button"
-					class="inline-flex items-center gap-1 rounded-lg bg-[#00ADD8] px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-[#0099c0] disabled:cursor-not-allowed disabled:opacity-40"
-					disabled={isLastLink}
-					onclick={nextLink}
-				>
-					<span class="hidden sm:inline">{$t('tools.reticulum_guide.next')}</span>
-					<ChevronRight class="h-4 w-4" />
-				</button>
-			</div>
-		</div>
 	{:else if kind === 'interface-pick'}
 		<div class="flex flex-wrap gap-2">
 			{#each interfaceKinds as iface (iface)}
@@ -364,7 +568,9 @@
 						aria-pressed={packetMode === mode}
 						onclick={() => setPacketMode(mode)}
 					>
-						{mode === 'encrypted' ? 'Encrypted' : 'Plain'}
+						{mode === 'encrypted'
+							? $t('tools.reticulum_guide.encrypted')
+							: $t('tools.reticulum_guide.plain')}
 					</button>
 				{/each}
 			</div>
@@ -389,8 +595,10 @@
 				{/each}
 			</div>
 
-			<div class="flex flex-wrap items-center justify-between gap-2 text-sm text-zinc-600 dark:text-zinc-400">
-				<span>Hops: {packetHops}</span>
+			<div
+				class="flex flex-wrap items-center justify-between gap-2 text-sm text-zinc-600 dark:text-zinc-400"
+			>
+				<span>{$t('tools.reticulum_guide.hops_label', { values: { hops: packetHops } })}</span>
 				<span
 					class="rounded-full px-2.5 py-1 text-xs font-semibold {packetStatus === 'moving'
 						? 'bg-[#00ADD8]/10 text-[#00ADD8]'
@@ -400,7 +608,13 @@
 								? 'bg-zinc-200 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300'
 								: 'bg-red-500/10 text-red-500'}"
 				>
-					{packetStatus}
+					{packetStatus === 'moving'
+						? $t('tools.reticulum_guide.status_moving')
+						: packetStatus === 'delivered'
+							? $t('tools.reticulum_guide.status_delivered')
+							: packetStatus === 'local-only'
+								? $t('tools.reticulum_guide.status_local_only')
+								: $t('tools.reticulum_guide.status_dropped')}
 				</span>
 			</div>
 
@@ -409,7 +623,7 @@
 			>
 				<p class="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">{packetDetail}</p>
 				<p class="mt-2 text-xs text-zinc-500 dark:text-zinc-500">
-					PATHFINDER_M is {PATHFINDER_M}. Hop bytes at or above that value are rejected at unpack.
+					{$t('tools.reticulum_guide.pathfinder_note', { values: { m: PATHFINDER_M } })}
 				</p>
 			</div>
 
@@ -419,7 +633,7 @@
 					class="rounded-lg border border-zinc-200 px-3 py-1.5 text-sm font-medium transition-colors hover:border-[#00ADD8] hover:text-[#00ADD8] dark:border-zinc-800"
 					onclick={resetPacketSim}
 				>
-					Reset
+					{$t('tools.reticulum_guide.reset')}
 				</button>
 				<button
 					type="button"
@@ -427,7 +641,7 @@
 					disabled={packetFinished}
 					onclick={stepPacket}
 				>
-					{packetMode === 'plain' ? 'Play one hop' : 'Step'}
+					{$t('tools.reticulum_guide.step_once')}
 				</button>
 			</div>
 		</div>
@@ -484,13 +698,15 @@
 					{linkSimFrame.detail}
 				</p>
 				<p class="mt-3 text-sm text-zinc-600 dark:text-zinc-400">
-					Can send data:
+					{$t('tools.reticulum_guide.can_send_data')}
 					<span
 						class="font-semibold {linkSimFrame.canSendData
 							? 'text-emerald-600 dark:text-emerald-400'
 							: 'text-zinc-500 dark:text-zinc-400'}"
 					>
-						{linkSimFrame.canSendData ? 'yes' : 'no'}
+						{linkSimFrame.canSendData
+							? $t('tools.reticulum_guide.yes')
+							: $t('tools.reticulum_guide.no')}
 					</span>
 				</p>
 			</div>
@@ -501,7 +717,7 @@
 					class="rounded-lg border border-zinc-200 px-3 py-1.5 text-sm font-medium transition-colors hover:border-[#00ADD8] hover:text-[#00ADD8] dark:border-zinc-800"
 					onclick={resetLinkSim}
 				>
-					Reset
+					{$t('tools.reticulum_guide.reset')}
 				</button>
 				<div class="flex items-center gap-2">
 					<button
@@ -519,7 +735,158 @@
 						disabled={isLastLinkSim}
 						onclick={nextLinkSim}
 					>
-						<span class="hidden sm:inline">Next stage</span>
+						<span class="hidden sm:inline">{$t('tools.reticulum_guide.next')}</span>
+						<ChevronRight class="h-4 w-4" />
+					</button>
+				</div>
+			</div>
+		</div>
+	{:else if kind === 'identity-recall'}
+		<div class="space-y-3">
+			<div class="flex items-center justify-center gap-2">
+				{#each IDENTITY_RECALL_STAGES as stage, index (stage.id)}
+					<span
+						class="h-2 w-2 rounded-full {index === identityRecallIndex
+							? 'bg-[#00ADD8]'
+							: 'bg-zinc-300 dark:bg-zinc-700'}"
+					></span>
+				{/each}
+			</div>
+			<div
+				class="rounded-xl border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-800 dark:bg-zinc-900/50"
+			>
+				<p class="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+					{identityRecallStage.label}
+				</p>
+				<p class="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+					{identityRecallStage.detail}
+				</p>
+			</div>
+			<div class="flex items-center justify-between gap-2">
+				<button
+					type="button"
+					class="rounded-lg border border-zinc-200 px-3 py-1.5 text-sm font-medium transition-colors hover:border-[#00ADD8] hover:text-[#00ADD8] dark:border-zinc-800"
+					onclick={resetIdentityRecall}
+				>
+					{$t('tools.reticulum_guide.reset')}
+				</button>
+				<div class="flex items-center gap-2">
+					<button
+						type="button"
+						class="inline-flex items-center gap-1 rounded-lg border border-zinc-200 px-3 py-1.5 text-sm font-medium transition-colors hover:border-[#00ADD8] hover:text-[#00ADD8] disabled:cursor-not-allowed disabled:opacity-40 dark:border-zinc-800"
+						disabled={isFirstIdentityRecall}
+						onclick={prevIdentityRecall}
+					>
+						<ChevronLeft class="h-4 w-4" />
+						<span class="hidden sm:inline">{$t('tools.reticulum_guide.previous')}</span>
+					</button>
+					<button
+						type="button"
+						class="inline-flex items-center gap-1 rounded-lg bg-[#00ADD8] px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-[#0099c0] disabled:cursor-not-allowed disabled:opacity-40"
+						disabled={isLastIdentityRecall}
+						onclick={nextIdentityRecall}
+					>
+						<span class="hidden sm:inline">{$t('tools.reticulum_guide.next')}</span>
+						<ChevronRight class="h-4 w-4" />
+					</button>
+				</div>
+			</div>
+		</div>
+	{:else if kind === 'resource-path'}
+		<div class="space-y-3">
+			<div class="flex items-center justify-center gap-2">
+				{#each RESOURCE_PATH_STAGES as stage, index (stage.id)}
+					<span
+						class="h-2 w-2 rounded-full {index === resourcePathIndex
+							? 'bg-[#00ADD8]'
+							: 'bg-zinc-300 dark:bg-zinc-700'}"
+					></span>
+				{/each}
+			</div>
+			<div
+				class="rounded-xl border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-800 dark:bg-zinc-900/50"
+			>
+				<p class="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+					{resourcePathStage.label}
+				</p>
+				<p class="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+					{resourcePathStage.detail}
+				</p>
+			</div>
+			<div class="flex items-center justify-between gap-2">
+				<button
+					type="button"
+					class="rounded-lg border border-zinc-200 px-3 py-1.5 text-sm font-medium transition-colors hover:border-[#00ADD8] hover:text-[#00ADD8] dark:border-zinc-800"
+					onclick={resetResourcePath}
+				>
+					{$t('tools.reticulum_guide.reset')}
+				</button>
+				<div class="flex items-center gap-2">
+					<button
+						type="button"
+						class="inline-flex items-center gap-1 rounded-lg border border-zinc-200 px-3 py-1.5 text-sm font-medium transition-colors hover:border-[#00ADD8] hover:text-[#00ADD8] disabled:cursor-not-allowed disabled:opacity-40 dark:border-zinc-800"
+						disabled={isFirstResourcePath}
+						onclick={prevResourcePath}
+					>
+						<ChevronLeft class="h-4 w-4" />
+						<span class="hidden sm:inline">{$t('tools.reticulum_guide.previous')}</span>
+					</button>
+					<button
+						type="button"
+						class="inline-flex items-center gap-1 rounded-lg bg-[#00ADD8] px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-[#0099c0] disabled:cursor-not-allowed disabled:opacity-40"
+						disabled={isLastResourcePath}
+						onclick={nextResourcePath}
+					>
+						<span class="hidden sm:inline">{$t('tools.reticulum_guide.next')}</span>
+						<ChevronRight class="h-4 w-4" />
+					</button>
+				</div>
+			</div>
+		</div>
+	{:else if kind === 'lxmf-flow'}
+		<div class="space-y-3">
+			<div class="flex items-center justify-center gap-2">
+				{#each LXMF_FLOW_STAGES as stage, index (stage.id)}
+					<span
+						class="h-2 w-2 rounded-full {index === lxmfFlowIndex
+							? 'bg-[#00ADD8]'
+							: 'bg-zinc-300 dark:bg-zinc-700'}"
+					></span>
+				{/each}
+			</div>
+			<div
+				class="rounded-xl border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-800 dark:bg-zinc-900/50"
+			>
+				<p class="text-sm font-semibold text-zinc-900 dark:text-zinc-100">{lxmfFlowStage.label}</p>
+				<p class="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+					{lxmfFlowStage.detail}
+				</p>
+			</div>
+			<div class="flex items-center justify-between gap-2">
+				<button
+					type="button"
+					class="rounded-lg border border-zinc-200 px-3 py-1.5 text-sm font-medium transition-colors hover:border-[#00ADD8] hover:text-[#00ADD8] dark:border-zinc-800"
+					onclick={resetLxmfFlow}
+				>
+					{$t('tools.reticulum_guide.reset')}
+				</button>
+				<div class="flex items-center gap-2">
+					<button
+						type="button"
+						class="inline-flex items-center gap-1 rounded-lg border border-zinc-200 px-3 py-1.5 text-sm font-medium transition-colors hover:border-[#00ADD8] hover:text-[#00ADD8] disabled:cursor-not-allowed disabled:opacity-40 dark:border-zinc-800"
+						disabled={isFirstLxmfFlow}
+						onclick={prevLxmfFlow}
+					>
+						<ChevronLeft class="h-4 w-4" />
+						<span class="hidden sm:inline">{$t('tools.reticulum_guide.previous')}</span>
+					</button>
+					<button
+						type="button"
+						class="inline-flex items-center gap-1 rounded-lg bg-[#00ADD8] px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-[#0099c0] disabled:cursor-not-allowed disabled:opacity-40"
+						disabled={isLastLxmfFlow}
+						onclick={nextLxmfFlow}
+					>
+						<span class="hidden sm:inline">{$t('tools.reticulum_guide.next')}</span>
 						<ChevronRight class="h-4 w-4" />
 					</button>
 				</div>

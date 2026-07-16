@@ -1,8 +1,10 @@
 <script lang="ts">
-	import { ChevronLeft, ChevronRight, BookOpen, Quote } from 'lucide-svelte';
+	import { ChevronLeft, ChevronRight, BookOpen, Quote, ArrowRight } from 'lucide-svelte';
 	import { t } from 'svelte-i18n';
+	import { page } from '$app/state';
+	import { goto } from '$app/navigation';
 	import type { Tutorial, TutorialCatalogEntry } from '$lib/tutorials/types';
-	import { listTutorials } from '$lib/tutorials';
+	import { listTutorials, getNextTutorial } from '$lib/tutorials';
 	import TutorialVisual from './TutorialVisual.svelte';
 	import ChapterSidebar from './ChapterSidebar.svelte';
 	import CodeCompare from './CodeCompare.svelte';
@@ -19,11 +21,69 @@
 	let stepIndex = $state(0);
 	let touchStartX = $state(0);
 	let touchStartY = $state(0);
+	let urlSyncReady = $state(false);
+	let wireHeaderType = $state<1 | 2>(1);
+	let wireFieldIndex = $state(0);
 
 	const currentStep = $derived(tutorial.steps[stepIndex]);
 	const totalSteps = $derived(tutorial.steps.length);
 	const isFirst = $derived(stepIndex === 0);
 	const isLast = $derived(stepIndex === totalSteps - 1);
+	const nextChapter = $derived(getNextTutorial(tutorial.slug));
+	const visualFocus = $derived(
+		currentStep.interactive === 'packet-wireframe' ? wireFieldIndex : currentStep.visualFocus
+	);
+
+	function resolveStepIndex(fromTutorial: Tutorial, stepParam: string | null): number {
+		if (!stepParam) return 0;
+		const byId = fromTutorial.steps.findIndex((step) => step.id === stepParam);
+		if (byId >= 0) return byId;
+		const index = Number.parseInt(stepParam, 10);
+		if (!Number.isNaN(index) && index >= 1 && index <= fromTutorial.steps.length) {
+			return index - 1;
+		}
+		return 0;
+	}
+
+	$effect(() => {
+		const slug = tutorial.slug;
+		const param = page.url.searchParams.get('step');
+		void slug;
+		stepIndex = resolveStepIndex(tutorial, param);
+		wireHeaderType = 1;
+		wireFieldIndex = 0;
+	});
+
+	$effect(() => {
+		const step = tutorial.steps[stepIndex];
+		if (!step) return;
+
+		if (!urlSyncReady) {
+			urlSyncReady = true;
+			const param = page.url.searchParams.get('step');
+			if (param !== step.id) {
+				const url = new URL(page.url);
+				url.searchParams.set('step', step.id);
+				goto(`${url.pathname}${url.search}`, {
+					replaceState: true,
+					keepFocus: true,
+					noScroll: true
+				});
+			}
+			return;
+		}
+
+		const currentParam = page.url.searchParams.get('step');
+		if (currentParam === step.id) return;
+
+		const url = new URL(page.url);
+		url.searchParams.set('step', step.id);
+		goto(`${url.pathname}${url.search}`, {
+			replaceState: true,
+			keepFocus: true,
+			noScroll: true
+		});
+	});
 
 	function goPrevious() {
 		if (!isFirst) stepIndex -= 1;
@@ -83,6 +143,8 @@
 		ontouchstart={onTouchStart}
 		ontouchend={onTouchEnd}
 	>
+		<p class="sr-only" aria-live="polite" aria-atomic="true">{currentStep.title}</p>
+
 		<div class="grid min-w-0 gap-6 md:grid-cols-2 md:items-start md:gap-8">
 			<div class="order-2 min-w-0 space-y-6 md:order-1">
 				<div class="space-y-3">
@@ -106,7 +168,13 @@
 			</div>
 
 			<div class="order-1 min-w-0 md:sticky md:top-24 md:order-2">
-				<TutorialVisual visual={currentStep.visual} {stepIndex} />
+				<TutorialVisual
+					visual={currentStep.visual}
+					{stepIndex}
+					{visualFocus}
+					stepId={currentStep.id}
+					headerType={wireHeaderType}
+				/>
 			</div>
 		</div>
 
@@ -117,8 +185,23 @@
 		{/if}
 
 		{#if currentStep.interactive}
+			{#if currentStep.tryIt}
+				<p
+					class="flex items-start gap-2 rounded-xl border border-zinc-200 bg-zinc-50 p-3 text-sm text-zinc-600 dark:border-zinc-800 dark:bg-zinc-900/50 dark:text-zinc-400"
+				>
+					<span class="shrink-0 font-semibold text-[#00ADD8]"
+						>{$t('tools.reticulum_guide.try_it')}:</span
+					>
+					<span class="min-w-0">{currentStep.tryIt}</span>
+				</p>
+			{/if}
 			<div class="min-w-0">
-				<TutorialInteractive kind={currentStep.interactive} tryIt={currentStep.tryIt} />
+				<TutorialInteractive
+					kind={currentStep.interactive}
+					tryIt={currentStep.tryIt}
+					bind:wireHeaderType
+					bind:wireFieldIndex
+				/>
 			</div>
 		{:else if currentStep.tryIt}
 			<p
@@ -148,16 +231,11 @@
 					</p>
 				</div>
 
-				<div
-					class="flex items-center justify-center gap-2"
-					role="tablist"
-					aria-label="Tutorial steps"
-				>
+				<nav class="flex items-center justify-center gap-2" aria-label="Tutorial steps">
 					{#each tutorial.steps as step, index (step.id)}
 						<button
 							type="button"
-							role="tab"
-							aria-selected={index === stepIndex}
+							aria-current={index === stepIndex ? 'step' : undefined}
 							aria-label={step.title}
 							class="h-2.5 w-2.5 rounded-full transition-all {index === stepIndex
 								? 'scale-110 bg-[#00ADD8]'
@@ -165,7 +243,7 @@
 							onclick={() => goToStep(index)}
 						></button>
 					{/each}
-				</div>
+				</nav>
 
 				<div class="flex items-center gap-2">
 					<button
@@ -190,6 +268,38 @@
 					</button>
 				</div>
 			</div>
+		</div>
+
+		<div
+			class="space-y-3 rounded-xl border p-4 {isLast
+				? 'border-[#00ADD8]/40 bg-[#00ADD8]/5 dark:border-[#00ADD8]/30 dark:bg-[#00ADD8]/10'
+				: 'border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900/50'}"
+		>
+			<a
+				href="/tools/reticulum-guide"
+				class="inline-flex items-center gap-2 text-sm font-medium text-zinc-600 transition-colors hover:text-[#00ADD8] dark:text-zinc-400"
+			>
+				{$t('tools.reticulum_guide.back_guide')}
+			</a>
+			{#if nextChapter}
+				<a
+					href="/tools/reticulum-guide/{nextChapter.slug}"
+					aria-label="{$t('tools.reticulum_guide.next_chapter')}: {nextChapter.title}"
+					class="flex items-center justify-between gap-3 rounded-lg border px-4 py-3 transition-colors {isLast
+						? 'border-[#00ADD8]/30 bg-white hover:border-[#00ADD8] dark:border-[#00ADD8]/20 dark:bg-zinc-950/80 dark:hover:border-[#00ADD8]'
+						: 'border-zinc-200 bg-white hover:border-zinc-300 dark:border-zinc-700 dark:bg-zinc-950/50 dark:hover:border-zinc-600'}"
+				>
+					<span class="min-w-0">
+						<span class="block text-xs font-semibold uppercase tracking-wide text-[#00ADD8]">
+							{$t('tools.reticulum_guide.next_chapter')}
+						</span>
+						<span class="block truncate text-sm font-medium text-zinc-900 dark:text-zinc-100">
+							{nextChapter.title}
+						</span>
+					</span>
+					<ArrowRight class="h-4 w-4 shrink-0 text-[#00ADD8]" aria-hidden="true" />
+				</a>
+			{/if}
 		</div>
 
 		<footer class="space-y-6 border-t border-zinc-200 pt-8 dark:border-zinc-800">

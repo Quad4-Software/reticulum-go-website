@@ -47,6 +47,38 @@ describe('reticulum guide wiring', () => {
 		expect(hub).toContain('opacity-100');
 		expect(hub).toContain('md:opacity-0');
 		expect(hub).toContain('md:group-hover:opacity-100');
+		expect(hub).toContain('alpha_warning');
+		expect(hub).not.toContain('path_title');
+	});
+
+	it('deep-links steps and shows next chapter continuity', () => {
+		const player = read('src/lib/components/tutorials/TutorialPlayer.svelte');
+		expect(player).toContain('getNextTutorial');
+		expect(player).toContain("searchParams.get('step')");
+		expect(player).toContain('next_chapter');
+		expect(player).toContain('visualFocus');
+		expect(player).toContain('stepId');
+		expect(player).toContain('bind:wireHeaderType');
+	});
+
+	it('uses static flow visuals without animated graphs', () => {
+		expect(read('src/lib/components/tutorials/visuals/PacketPathVisual.svelte')).toContain(
+			'FlowNodes'
+		);
+		expect(read('src/lib/components/tutorials/visuals/AnnounceFloodVisual.svelte')).toContain(
+			'FlowNodes'
+		);
+		expect(read('src/lib/components/tutorials/visuals/LinkLifecycleVisual.svelte')).toContain(
+			'FlowNodes'
+		);
+		expect(existsSync(resolve(root, 'src/lib/tutorials/visual-geometry.ts'))).toBe(false);
+		expect(existsSync(resolve(root, 'src/lib/tutorials/visual-motion.ts'))).toBe(false);
+		expect(
+			existsSync(resolve(root, 'src/lib/components/tutorials/visuals/PathDiscoveryVisual.svelte'))
+		).toBe(false);
+		expect(
+			existsSync(resolve(root, 'src/lib/components/tutorials/visuals/BlackholeDropVisual.svelte'))
+		).toBe(false);
 	});
 
 	it('highlights tutorial code with vendored Shiki', () => {

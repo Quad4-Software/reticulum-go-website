@@ -32,8 +32,8 @@
 		>
 			<div
 				role="listitem"
-				class="min-w-0 rounded-xl border px-3 py-3 transition-all duration-300 sm:px-4 {node.accent
-					? 'border-[#00ADD8] bg-[#00ADD8]/10 shadow-sm'
+				class="min-w-0 rounded-xl border px-3 py-3 transition-colors sm:px-4 {node.accent
+					? 'border-[#00ADD8] bg-[#00ADD8]/10'
 					: 'border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900'}"
 			>
 				<p

@@ -10,6 +10,7 @@ export const zenTutorial: Tutorial = {
 	summary:
 		'Why Reticulum exists: permissionless networks, medium agnosticism, and encryption by default.',
 	tags: ['zen', 'goals', 'motivation'],
+	learnLine: 'Why Reticulum exists and how sovereignty shapes the stack.',
 	zenNote:
 		'Reticulum is a tool to build thousands of networks, not one network with a kill switch.',
 	sources: [
@@ -57,6 +58,10 @@ export const zenTutorial: Tutorial = {
 					'identity.New',
 					'destination.New',
 					'Announce'
+				],
+				practiceLinks: [
+					{ label: 'Try WASM Demo', href: '/wasm-example' },
+					{ label: 'API reference', href: '/docs/api-reference' }
 				]
 			},
 			tryIt:

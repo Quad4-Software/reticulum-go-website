@@ -10,6 +10,7 @@ export const interfacesTutorial: Tutorial = {
 	summary:
 		'Reticulum rides any digital carrier. Learn what that means and what Reticulum-Go supports today.',
 	tags: ['interfaces', 'hardware', 'lora', 'tcp', 'websocket'],
+	learnLine: 'Pick carriers honestly for what Reticulum-Go supports today.',
 	zenNote:
 		'The interface is the medium. Radio, serial, fiber, or WebSocket are just ways bytes move. The stack stays the same.',
 	sources: [

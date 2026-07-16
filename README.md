@@ -81,12 +81,18 @@ The project uses a root `Makefile` for common tasks. Run `make help` to list tar
 
 | Task | Description |
 |------|-------------|
+| `task format` | Prettier write in `frontend/` |
+| `task lint` | ESLint in `frontend/` |
+| `task check` | `svelte-check` / TypeScript |
+| `task test` | Vitest |
+| `task validate` | format, lint, check, test |
 | `task docs:check` | Validate docs nav, files, and internal `/docs/` links |
 | `task docs:sync` | Sync English docs from a Reticulum-Go checkout |
 | `task docs` | Sync then validate |
 | `task docs:zip` | Package `releases/docs-en.zip` |
 | `task docs:release` | Release metadata + docs zip (CI) |
 | `task wasm:micron` | Fetch latest Micron-Parser-Go WASM and refresh SHA-384 SRI |
+| `task dev` | Frontend Vite dev server |
 
 ### CI and release automation
 

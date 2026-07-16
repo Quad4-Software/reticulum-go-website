@@ -10,6 +10,7 @@ export const destinationsTutorial: Tutorial = {
 	title: 'Destinations, not addresses',
 	summary: 'How Reticulum names endpoints with 16-byte destination hashes and destination types.',
 	tags: ['destinations', 'identity', 'naming'],
+	learnLine: 'Name endpoints with destination hashes and destination types.',
 	zenNote:
 		'Naming is power. Destinations move with you. They are not pinned to a network segment like IP addresses.',
 	sources: [

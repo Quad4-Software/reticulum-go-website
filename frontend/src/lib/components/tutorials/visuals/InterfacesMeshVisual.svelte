@@ -16,7 +16,7 @@
 	<div class="grid grid-cols-2 gap-2 sm:grid-cols-3">
 		{#each carriers as carrier, index (carrier.id)}
 			<div
-				class="rounded-xl border px-3 py-3 transition-all duration-300 {index === focus
+				class="rounded-xl border px-3 py-3 transition-colors {index === focus
 					? 'border-[#00ADD8] bg-[#00ADD8]/10'
 					: 'border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900'}"
 			>

@@ -10,6 +10,7 @@ export const cryptographyTutorial: Tutorial = {
 	summary:
 		'Primitives and the identity-encryption flow used for private single-destination traffic.',
 	tags: ['cryptography', 'x25519', 'ed25519', 'aes'],
+	learnLine: 'Walk the identity-encryption pipeline used for private traffic.',
 	zenNote:
 		'Encryption is not a feature bolted on later. To be transportable over multiple hops, information must be encrypted.',
 	sources: [

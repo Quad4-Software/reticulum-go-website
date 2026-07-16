@@ -88,8 +88,6 @@
 	const canUndo = $derived(undoStack.length > 0);
 	const canRedo = $derived(redoStack.length > 0);
 
-	const COLOR_SQUARE = 14;
-
 	type OverlayMetrics = {
 		paddingTop: number;
 		paddingLeft: number;
@@ -387,10 +385,12 @@
 
 	function colorSquareStyle(match: MicronColorMatch): string {
 		const m = overlayMetrics;
+		const width = Math.max(m.charWidth * 3, 12);
+		const height = Math.min(Math.max(m.lineHeight - 4, 12), m.charWidth * 2.4);
 		const top =
-			m.paddingTop + match.line * m.lineHeight - m.scrollTop + (m.lineHeight - COLOR_SQUARE) / 2;
-		const left = m.paddingLeft + match.column * m.charWidth - m.scrollLeft - COLOR_SQUARE - 2;
-		return `top: ${top}px; left: ${left}px; width: ${COLOR_SQUARE}px; height: ${COLOR_SQUARE}px`;
+			m.paddingTop + match.line * m.lineHeight - m.scrollTop + (m.lineHeight - height) / 2;
+		const left = m.paddingLeft + match.column * m.charWidth - m.scrollLeft;
+		return `top: ${top}px; left: ${left}px; width: ${width}px; height: ${height}px`;
 	}
 
 	function handleEditorKeydown(event: KeyboardEvent) {
@@ -827,7 +827,7 @@
 									onchange={finishColorDrag}
 								/>
 								<span
-									class="block h-3.5 w-3.5 rounded-sm border border-zinc-300 dark:border-zinc-600"
+									class="block h-full w-full rounded-sm border border-zinc-400/80 dark:border-zinc-500"
 									style="background: {micronToHex6(match.hex3)}"
 									title="{match.kind}{match.hex3}"
 								></span>

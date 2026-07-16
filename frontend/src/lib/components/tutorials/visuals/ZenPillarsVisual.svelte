@@ -23,10 +23,9 @@
 <div class="grid gap-4 sm:grid-cols-3">
 	{#each pillars as pillar, index (pillar.id)}
 		<div
-			class="rounded-xl border px-4 py-5 text-center transition-all duration-300 {index ===
-			activePillar
-				? 'border-[#00ADD8] bg-[#00ADD8]/10 shadow-sm scale-[1.02]'
-				: 'border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900 opacity-80'}"
+			class="rounded-xl border px-4 py-5 text-center transition-colors {index === activePillar
+				? 'border-[#00ADD8] bg-[#00ADD8]/10'
+				: 'border-zinc-200 bg-white opacity-80 dark:border-zinc-800 dark:bg-zinc-900'}"
 		>
 			<p
 				class="text-sm font-bold uppercase tracking-wide {index === activePillar

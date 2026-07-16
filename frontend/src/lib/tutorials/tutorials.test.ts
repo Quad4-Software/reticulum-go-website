@@ -10,7 +10,13 @@ import {
 	LINK_STAGES,
 	INTERFACE_CARDS,
 	stepPacketSim,
-	LINK_SIM_FRAMES
+	LINK_SIM_FRAMES,
+	IDENTITY_RECALL_STAGES,
+	RESOURCE_PATH_STAGES,
+	LXMF_FLOW_STAGES,
+	PACKET_WIRE_FIELDS,
+	blackholeAnnounceOutcome,
+	DISCOVERY_MODES
 } from './interactive';
 
 describe('tutorial catalog', () => {
@@ -24,9 +30,11 @@ describe('tutorial catalog', () => {
 			'cryptography',
 			'packets-and-hops',
 			'links-and-sessions',
+			'messaging-and-lxmf',
 			'interfaces-and-carriers'
 		]);
 		expect(listTutorials().map((t) => t.slug)).toEqual(slugs);
+		expect(listTutorials().every((t) => t.learnLine.length > 10 && t.stepCount >= 2)).toBe(true);
 	});
 
 	it('returns undefined for unknown slugs', () => {
@@ -68,8 +76,10 @@ describe('tutorial catalog', () => {
 					'announce-flood',
 					'crypto-stack',
 					'packet-path',
+					'packet-wireframe',
 					'link-lifecycle',
-					'interfaces-mesh'
+					'interfaces-mesh',
+					'messaging-flow'
 				]).toContain(step.visual);
 			}
 		}
@@ -187,5 +197,44 @@ describe('tutorial interactives', () => {
 	it('ends link sim frames with linkclose and includes a canSendData frame', () => {
 		expect(LINK_SIM_FRAMES.at(-1)?.id).toBe('linkclose');
 		expect(LINK_SIM_FRAMES.some((frame) => frame.canSendData)).toBe(true);
+	});
+
+	it('exposes identity, resource, and lxmf flow stages', () => {
+		expect(IDENTITY_RECALL_STAGES.map((s) => s.id)).toEqual([
+			'create',
+			'persist',
+			'announce',
+			'recall',
+			'outbound'
+		]);
+		expect(RESOURCE_PATH_STAGES.map((s) => s.id)).toEqual([
+			'link-ready',
+			'request',
+			'channel',
+			'buffer',
+			'resource'
+		]);
+		expect(LXMF_FLOW_STAGES.at(-1)?.id).toBe('app');
+	});
+
+	it('includes transport field only on header type 2 wireframe', () => {
+		const type1 = PACKET_WIRE_FIELDS.filter((field) => field.headerTypes.includes(1));
+		const type2 = PACKET_WIRE_FIELDS.filter((field) => field.headerTypes.includes(2));
+		expect(type1.some((field) => field.id === 'transport')).toBe(false);
+		expect(type2.some((field) => field.id === 'transport')).toBe(true);
+		expect(type2.length).toBe(type1.length + 1);
+	});
+
+	it('models blackhole announce drop when enabled', () => {
+		expect(blackholeAnnounceOutcome(false).status).toBe('accepted');
+		expect(blackholeAnnounceOutcome(true).status).toBe('dropped');
+		expect(blackholeAnnounceOutcome(true).detail.toLowerCase()).toMatch(/drop/);
+	});
+
+	it('lists discovery modes with boundary blocking unknown path by default', () => {
+		expect(DISCOVERY_MODES.length).toBeGreaterThan(3);
+		const boundary = DISCOVERY_MODES.find((mode) => mode.id === 'boundary');
+		expect(boundary?.allowsUnknownPath).toBe(false);
+		expect(DISCOVERY_MODES.filter((mode) => mode.allowsUnknownPath).length).toBeGreaterThan(1);
 	});
 });

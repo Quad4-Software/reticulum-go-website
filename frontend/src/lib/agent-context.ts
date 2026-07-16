@@ -89,7 +89,7 @@ ${AGENT_MUST_NOT.map((line) => `- ${line}`).join('\n')}
 - [Cryptography](${SITE_URL}/docs/cryptography): Go crypto inventory matching the reference
 - [Transport](${SITE_URL}/docs/transport): Paths, hops, PATHFINDER_M notes
 - [Security](${SITE_URL}/docs/security): Reporting (LXMF) and sandbox notes
-- [Reticulum Guide](${SITE_URL}/tools/reticulum-guide): Visual tutorials with Python and Go samples covering destinations, identities, announces, crypto, packets, links, and interfaces
+- [Reticulum Guide](${SITE_URL}/tools/reticulum-guide): Visual tutorials with Python and Go samples covering destinations, identities, announces, crypto, packets, links, messaging/LXMF, and interfaces
 - [Donate](${SITE_URL}/donate): Support. Half of donations go to Mark Qvist (reference creator)
 - [Contact](${SITE_URL}/contact): LXMF and email
 - [Agent JSON](${SITE_URL}/api/agent): Machine-readable copy of this guidance

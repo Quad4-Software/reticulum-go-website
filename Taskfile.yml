@@ -35,11 +35,6 @@ tasks:
     cmds:
       - task: docs:check
 
-  check:
-    desc: Run website documentation checks
-    cmds:
-      - task: docs:check
-
   wasm:micron:
     desc: Fetch latest Micron-Parser-Go WASM and refresh SHA-384 SRI hashes
     cmds:
@@ -50,3 +45,35 @@ tasks:
     dir: "{{.FRONTEND}}"
     cmds:
       - pnpm dev
+
+  format:
+    desc: Format frontend sources with Prettier
+    dir: "{{.FRONTEND}}"
+    cmds:
+      - pnpm exec prettier --write .
+
+  lint:
+    desc: Run ESLint in frontend
+    dir: "{{.FRONTEND}}"
+    cmds:
+      - pnpm exec eslint .
+
+  check:
+    desc: Typecheck and svelte-check
+    dir: "{{.FRONTEND}}"
+    cmds:
+      - pnpm run check
+
+  test:
+    desc: Run Vitest unit tests
+    dir: "{{.FRONTEND}}"
+    cmds:
+      - pnpm test
+
+  validate:
+    desc: Format, lint, check, and test the frontend
+    cmds:
+      - task: format
+      - task: lint
+      - task: check
+      - task: test

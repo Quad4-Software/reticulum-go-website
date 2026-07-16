@@ -315,7 +315,7 @@ export const LINK_SIM_FRAMES: LinkSimFrame[] = [
 		id: 'linkrequest',
 		label: 'LINKREQUEST',
 		from: 'A',
-		detail: 'A asks B to open an encrypted link toward B\'s SINGLE destination.',
+		detail: "A asks B to open an encrypted link toward B's SINGLE destination.",
 		canSendData: false
 	},
 	{
@@ -347,3 +347,231 @@ export const LINK_SIM_FRAMES: LinkSimFrame[] = [
 		canSendData: false
 	}
 ];
+
+export type IdentityRecallStage = {
+	id: string;
+	label: string;
+	detail: string;
+};
+
+export const IDENTITY_RECALL_STAGES: IdentityRecallStage[] = [
+	{
+		id: 'create',
+		label: 'Create',
+		detail: 'Generate a new identity keyset (X25519 encryption, Ed25519 signing).'
+	},
+	{
+		id: 'persist',
+		label: 'Persist',
+		detail: 'Write the identity to a file so restarts keep the same cryptographic self.'
+	},
+	{
+		id: 'announce',
+		label: 'Announce',
+		detail: 'Publish public material so peers can encrypt to your destination hash.'
+	},
+	{
+		id: 'recall',
+		label: 'Recall',
+		detail: 'Load a known peer public identity from the local store after an announce.'
+	},
+	{
+		id: 'outbound',
+		label: 'Outbound',
+		detail: 'Build an OUT SINGLE destination toward the recalled peer and open a link when needed.'
+	}
+];
+
+export type ResourcePathStage = {
+	id: string;
+	label: string;
+	detail: string;
+};
+
+export const RESOURCE_PATH_STAGES: ResourcePathStage[] = [
+	{
+		id: 'link-ready',
+		label: 'LINKREADY',
+		detail: 'An encrypted link is active. Application helpers can use the session.'
+	},
+	{
+		id: 'request',
+		label: 'Request',
+		detail: 'Register request handlers for structured request and response with timeouts.'
+	},
+	{
+		id: 'channel',
+		label: 'Channel',
+		detail: 'Open a reliable ordered channel for message envelopes inside the link.'
+	},
+	{
+		id: 'buffer',
+		label: 'Buffer',
+		detail: 'Stream larger payloads over a channel with optional bzip2 and bomb limits.'
+	},
+	{
+		id: 'resource',
+		label: 'Resource',
+		detail: 'Advertise, send, and prove multi-part file resources across the same link.'
+	}
+];
+
+export type LxmfFlowStage = {
+	id: string;
+	label: string;
+	detail: string;
+};
+
+/**
+ * Application messaging flow (LXMF-style) built on Reticulum primitives.
+ * LXMF itself lives in companion projects. The stack below is what Reticulum provides.
+ */
+export const LXMF_FLOW_STAGES: LxmfFlowStage[] = [
+	{
+		id: 'identity',
+		label: 'Identity',
+		detail: 'Each messenger holds a Reticulum identity and at least one SINGLE destination.'
+	},
+	{
+		id: 'announce',
+		label: 'Announce',
+		detail: 'Peers announce so destination hashes and public keys become known on the mesh.'
+	},
+	{
+		id: 'path',
+		label: 'Path',
+		detail: 'Before delivery, request or reuse a path toward the peer destination hash.'
+	},
+	{
+		id: 'deliver',
+		label: 'Deliver',
+		detail: 'Send an encrypted message packet (or link payload) to the peer destination.'
+	},
+	{
+		id: 'app',
+		label: 'App layer',
+		detail: 'LXMF and similar apps define message format, mailboxes, and UI on top of Reticulum.'
+	}
+];
+
+export type PacketWireField = {
+	id: string;
+	label: string;
+	bytes: string;
+	headerTypes: Array<1 | 2>;
+	detail: string;
+};
+
+/** Conceptual on-wire layout for teaching. Not a byte-accurate dump of pkg/packet. */
+export const PACKET_WIRE_FIELDS: PacketWireField[] = [
+	{
+		id: 'flags',
+		label: 'Flags',
+		bytes: '1',
+		headerTypes: [1, 2],
+		detail:
+			'Header type, packet type, and related flags that select how transport unpacks the frame.'
+	},
+	{
+		id: 'hops',
+		label: 'Hops',
+		bytes: '1',
+		headerTypes: [1, 2],
+		detail: 'Hop count. Values at or above PATHFINDER_M (128) are rejected at unpack (RNS 1.3.8).'
+	},
+	{
+		id: 'dest',
+		label: 'Destination',
+		bytes: '16',
+		headerTypes: [1, 2],
+		detail: 'Truncated destination hash. Addressing uses 16 bytes, not classical IP ports.'
+	},
+	{
+		id: 'transport',
+		label: 'Transport ID',
+		bytes: '16',
+		headerTypes: [2],
+		detail: 'Header type 2 only. Relays use transport ID when rewrapping multi-hop data.'
+	},
+	{
+		id: 'context',
+		label: 'Context',
+		bytes: 'var',
+		headerTypes: [1, 2],
+		detail: 'Context selects announce, path response, link, resource, and other handlers.'
+	},
+	{
+		id: 'payload',
+		label: 'Payload',
+		bytes: 'var',
+		headerTypes: [1, 2],
+		detail:
+			'Application or protocol payload. Encrypted for SINGLE traffic that leaves the local interface.'
+	}
+];
+
+export type DiscoveryMode = {
+	id: string;
+	label: string;
+	allowsUnknownPath: boolean;
+	detail: string;
+};
+
+export const DISCOVERY_MODES: DiscoveryMode[] = [
+	{
+		id: 'access_point',
+		label: 'access_point',
+		allowsUnknownPath: true,
+		detail: 'Discover mode. Unknown-path discovery can rebroadcast path requests.'
+	},
+	{
+		id: 'gateway',
+		label: 'gateway',
+		allowsUnknownPath: true,
+		detail: 'Discover mode. Useful when bridging networks that need recursive path help.'
+	},
+	{
+		id: 'roaming',
+		label: 'roaming',
+		allowsUnknownPath: true,
+		detail: 'Discover mode with roaming next-hop rules for announce rebroadcast.'
+	},
+	{
+		id: 'internal',
+		label: 'internal',
+		allowsUnknownPath: true,
+		detail: 'Discover mode for internal interfaces that participate in path discovery.'
+	},
+	{
+		id: 'boundary',
+		label: 'boundary',
+		allowsUnknownPath: false,
+		detail:
+			'Not a discover mode by default. Unknown-path rebroadcast stays off unless recursive_prs is set.'
+	},
+	{
+		id: 'recursive_prs',
+		label: 'recursive_prs=yes',
+		allowsUnknownPath: true,
+		detail:
+			'Config flag (RNS 1.3.6+) that enables unknown-path discovery even outside discover modes.'
+	}
+];
+
+export function blackholeAnnounceOutcome(enabled: boolean): {
+	status: 'accepted' | 'dropped';
+	detail: string;
+} {
+	if (enabled) {
+		return {
+			status: 'dropped',
+			detail:
+				'Announce from a blackholed identity hash is dropped. Go drops announces today. Link teardown at LINKIDENTIFY for blackholes is still a gap versus Python 1.3.2.'
+		};
+	}
+	return {
+		status: 'accepted',
+		detail:
+			'Announce is processed. Path table and known destinations can update from the signed packet.'
+	};
+}

@@ -33,10 +33,10 @@
 		{
 			title: 'Reticulum Guide',
 			description:
-				'Visual tutorials on destinations, announces, cryptography, and multi-hop packets, grounded in the official Reticulum manual.',
+				'Visual tutorials on destinations, announces, cryptography, packets, links, messaging, and interfaces, grounded in the official Reticulum manual.',
 			href: '/tools/reticulum-guide',
 			icon: BookOpen,
-			tags: ['tutorial', 'reticulum', 'cryptography', 'transport'],
+			tags: ['tutorial', 'reticulum', 'cryptography', 'transport', 'lxmf'],
 			status: 'stable'
 		}
 	];

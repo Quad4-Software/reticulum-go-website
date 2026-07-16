@@ -20,7 +20,6 @@
 
 <div class="space-y-4">
 	<FlowNodes {nodes} direction="row" />
-
 	<p class="text-center text-xs text-zinc-500 dark:text-zinc-400">
 		Each transport node only knows the next hop toward a destination, not the full path.
 	</p>

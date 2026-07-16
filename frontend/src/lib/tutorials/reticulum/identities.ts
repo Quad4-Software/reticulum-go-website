@@ -10,6 +10,7 @@ export const identitiesTutorial: Tutorial = {
 	title: 'Identities and keys',
 	summary: 'How a Reticulum identity becomes a portable cryptographic self you can take offline.',
 	tags: ['identity', 'keys', 'x25519', 'ed25519'],
+	learnLine: 'Create, persist, and recall the cryptographic self behind destinations.',
 	zenNote:
 		'Your address is who you are, not where you are. Move the device. Keep the identity file. Peers still find you.',
 	sources: [
@@ -40,15 +41,21 @@ export const identitiesTutorial: Tutorial = {
 				'Public material is what announces share so others can encrypt to you'
 			],
 			visual: 'crypto-stack',
+			visualFocus: 0,
 			code: {
 				caption: 'Create and persist an identity',
 				python: PY_IDENTITY,
 				go: GO_IDENTITY,
 				pythonRequires: ['RNS.Identity', 'to_file', 'from_file'],
-				goRequires: ['quad4/reticulum-go/pkg/identity', 'identity.New', 'ToFile', 'FromFile']
+				goRequires: ['quad4/reticulum-go/pkg/identity', 'identity.New', 'ToFile', 'FromFile'],
+				practiceLinks: [
+					{ label: 'Identity docs', href: '/docs/identity-and-destinations' },
+					{ label: 'Try WASM Demo', href: '/wasm-example' }
+				]
 			},
+			interactive: 'identity-recall',
 			tryIt:
-				'Flip to Go and back. Both examples write an identity file so a restart keeps the same cryptographic self.'
+				'Step Create through Outbound. Persist before you announce. Recall before you open a link to a peer.'
 		},
 		{
 			id: 'portable-self',
@@ -59,7 +66,8 @@ export const identitiesTutorial: Tutorial = {
 				'Fresh announces update reachability after you roam',
 				'Losing the private identity file loses the ability to prove you are that self'
 			],
-			visual: 'zen-pillars'
+			visual: 'zen-pillars',
+			visualFocus: 1
 		},
 		{
 			id: 'recall-and-trust',
@@ -70,7 +78,8 @@ export const identitiesTutorial: Tutorial = {
 				'Unknown keys can be requested via path mechanisms after an announce',
 				'Never invent peer keys. Wait for signed announces or another verified channel'
 			],
-			visual: 'announce-flood'
+			visual: 'announce-flood',
+			visualFocus: 1
 		}
 	]
 };
