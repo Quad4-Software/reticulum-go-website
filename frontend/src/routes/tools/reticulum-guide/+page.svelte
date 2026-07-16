@@ -37,9 +37,7 @@
 				<h1 class="text-4xl md:text-5xl font-extrabold tracking-tight">
 					{$t('tools.reticulum_guide.page_title')}
 				</h1>
-				<span
-					class="px-2 py-1 text-[10px] font-semibold rounded uppercase bg-amber-500 text-white"
-				>
+				<span class="px-2 py-1 text-[10px] font-semibold rounded uppercase bg-amber-500 text-white">
 					{$t('common.alpha')}
 				</span>
 			</div>

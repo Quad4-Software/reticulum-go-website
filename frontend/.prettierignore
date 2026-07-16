@@ -2,3 +2,6 @@ build/
 .svelte-kit/
 coverage/
 pnpm-lock.yaml
+
+static/wasm_exec.js
+static/micron-wasm_exec.js

@@ -8,7 +8,8 @@ import { GO_LINK, PY_LINK } from '../samples';
 export const linksTutorial: Tutorial = {
 	slug: 'links-and-sessions',
 	title: 'Links and sessions',
-	summary: 'How encrypted links turn a destination into a reliable session for requests and transfers.',
+	summary:
+		'How encrypted links turn a destination into a reliable session for requests and transfers.',
 	tags: ['link', 'session', 'request', 'channel'],
 	zenNote:
 		'A link is not a server login. It is a bilateral encrypted session between destinations that already found each other.',
@@ -52,7 +53,8 @@ export const linksTutorial: Tutorial = {
 			],
 			visual: 'link-lifecycle',
 			interactive: 'link-stages',
-			tryIt: 'Step through LINKREQUEST to LINKCLOSE. Notice READY is where application traffic belongs.',
+			tryIt:
+				'Step through LINKREQUEST to LINKCLOSE. Notice READY is where application traffic belongs.',
 			code: {
 				caption: 'Open an outbound link once you know the peer',
 				python: PY_LINK,

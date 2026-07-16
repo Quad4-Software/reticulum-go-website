@@ -7,7 +7,8 @@ import type { Tutorial } from '../types';
 export const interfacesTutorial: Tutorial = {
 	slug: 'interfaces-and-carriers',
 	title: 'Interfaces and carriers',
-	summary: 'Reticulum rides any digital carrier. Learn what that means and what Reticulum-Go supports today.',
+	summary:
+		'Reticulum rides any digital carrier. Learn what that means and what Reticulum-Go supports today.',
 	tags: ['interfaces', 'hardware', 'lora', 'tcp', 'websocket'],
 	zenNote:
 		'The interface is the medium. Radio, serial, fiber, or WebSocket are just ways bytes move. The stack stays the same.',
@@ -56,7 +57,8 @@ export const interfacesTutorial: Tutorial = {
 			],
 			visual: 'interfaces-mesh',
 			interactive: 'interface-pick',
-			tryIt: 'Tap RNode versus TCP. See which path this Go implementation can run today without pretending.'
+			tryIt:
+				'Tap RNode versus TCP. See which path this Go implementation can run today without pretending.'
 		},
 		{
 			id: 'mix-strategies',

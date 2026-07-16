@@ -68,7 +68,18 @@
 			"cheatsheet": "Kurzreferenz",
 			"insert_snippet": "Snippet einfuegen",
 			"lines": "Zeilen",
-			"chars": "Zeichen"
+			"chars": "Zeichen",
+			"undo": "Rueckgaengig",
+			"redo": "Wiederholen",
+			"fullscreen": "Vollbild",
+			"exit_fullscreen": "Vollbild beenden",
+			"new_tab": "Editor-Tabs",
+			"close_tab": "Tab schliessen",
+			"rename_tab": "Tab umbenennen",
+			"colors": "Farben",
+			"no_colors": "Keine F/B-Farben auf dieser Seite",
+			"next_steps": "Naechste Schritte",
+			"add_tab": "Tab hinzufuegen"
 		},
 		"reticulum_guide": {
 			"title": "Reticulum Guide",

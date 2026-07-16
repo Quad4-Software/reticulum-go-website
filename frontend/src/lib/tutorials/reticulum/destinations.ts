@@ -86,8 +86,7 @@ export const destinationsTutorial: Tutorial = {
 				'Next chapters cover identities, announces, and links in that order'
 			],
 			visual: 'destination-types',
-			tryIt:
-				'After this chapter, open Identities and keys, then Announces and multi-hop paths.'
+			tryIt: 'After this chapter, open Identities and keys, then Announces and multi-hop paths.'
 		}
 	]
 };

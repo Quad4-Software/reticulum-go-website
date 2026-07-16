@@ -47,7 +47,8 @@ export const identitiesTutorial: Tutorial = {
 				pythonRequires: ['RNS.Identity', 'to_file', 'from_file'],
 				goRequires: ['quad4/reticulum-go/pkg/identity', 'identity.New', 'ToFile', 'FromFile']
 			},
-			tryIt: 'Flip to Go and back. Both examples write an identity file so a restart keeps the same cryptographic self.'
+			tryIt:
+				'Flip to Go and back. Both examples write an identity file so a restart keeps the same cryptographic self.'
 		},
 		{
 			id: 'portable-self',

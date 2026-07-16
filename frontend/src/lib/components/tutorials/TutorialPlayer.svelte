@@ -73,7 +73,9 @@
 
 <svelte:window onkeydown={onKeydown} />
 
-<div class="grid min-w-0 gap-6 md:grid-cols-[240px_minmax(0,1fr)] md:items-start lg:grid-cols-[260px_minmax(0,1fr)] lg:gap-8">
+<div
+	class="grid min-w-0 gap-6 md:grid-cols-[240px_minmax(0,1fr)] md:items-start lg:grid-cols-[260px_minmax(0,1fr)] lg:gap-8"
+>
 	<ChapterSidebar {chapters} currentSlug={tutorial.slug} />
 
 	<article
@@ -94,9 +96,7 @@
 					<ul class="space-y-2">
 						{#each currentStep.points as point, index (index)}
 							<li class="flex gap-3 text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
-								<span
-									class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#00ADD8]"
-									aria-hidden="true"
+								<span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#00ADD8]" aria-hidden="true"
 								></span>
 								<span class="min-w-0">{point}</span>
 							</li>
@@ -134,7 +134,9 @@
 		<div
 			class="fixed inset-x-0 bottom-0 z-20 border-t border-zinc-200 bg-white/95 px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/95 md:static md:inset-auto md:z-10 md:border-0 md:bg-transparent md:p-0 md:backdrop-blur-none"
 		>
-			<div class="mx-auto flex max-w-5xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+			<div
+				class="mx-auto flex max-w-5xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
+			>
 				<div class="flex items-center justify-between gap-3 sm:justify-start">
 					<p class="text-sm font-medium text-zinc-500 dark:text-zinc-400">
 						{$t('tools.reticulum_guide.step_of', {

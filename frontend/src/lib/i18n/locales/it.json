@@ -68,7 +68,18 @@
 			"cheatsheet": "Guida rapida",
 			"insert_snippet": "Inserisci snippet",
 			"lines": "Righe",
-			"chars": "Caratteri"
+			"chars": "Caratteri",
+			"undo": "Annulla",
+			"redo": "Ripeti",
+			"fullscreen": "Schermo intero",
+			"exit_fullscreen": "Esci da schermo intero",
+			"new_tab": "Schede editor",
+			"close_tab": "Chiudi scheda",
+			"rename_tab": "Rinomina scheda",
+			"colors": "Colori",
+			"no_colors": "Nessun colore F/B in questa pagina",
+			"next_steps": "Prossimi passi",
+			"add_tab": "Aggiungi scheda"
 		},
 		"reticulum_guide": {
 			"title": "Reticulum Guide",

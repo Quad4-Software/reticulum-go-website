@@ -38,6 +38,14 @@ export default ts.config(
 		}
 	},
 	{
-		ignores: ['build/', '.svelte-kit/', 'dist/', 'cmd/', 'static/wasm_exec.js', 'coverage/']
+		ignores: [
+			'build/',
+			'.svelte-kit/',
+			'dist/',
+			'cmd/',
+			'static/wasm_exec.js',
+			'static/micron-wasm_exec.js',
+			'coverage/'
+		]
 	}
 );

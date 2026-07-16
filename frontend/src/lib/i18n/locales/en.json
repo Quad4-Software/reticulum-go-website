@@ -68,7 +68,18 @@
 			"cheatsheet": "Cheatsheet",
 			"insert_snippet": "Insert snippet",
 			"lines": "Lines",
-			"chars": "Chars"
+			"chars": "Chars",
+			"undo": "Undo",
+			"redo": "Redo",
+			"fullscreen": "Fullscreen",
+			"exit_fullscreen": "Exit fullscreen",
+			"new_tab": "Editor tabs",
+			"close_tab": "Close tab",
+			"rename_tab": "Rename tab",
+			"colors": "Colors",
+			"no_colors": "No F/B colors in this page",
+			"next_steps": "Next steps",
+			"add_tab": "Add tab"
 		},
 		"reticulum_guide": {
 			"title": "Reticulum Guide",
