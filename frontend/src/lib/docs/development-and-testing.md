@@ -56,15 +56,15 @@ make bench
 
 ## Project layout for contributors
 
-| Path | Purpose |
-|------|---------|
-| `pkg/` | Public library code |
-| `cmd/` | Binaries and e2e tests |
-| `internal/` | Daemon-only code |
-| `tests/crossref/` | Python vector parity |
-| `tests/interop/` | Live Go/Python tests |
-| `scripts/ci/` | CI install and release scripts |
-| `.github/workflows/` | GitHub Actions |
+| Path                 | Purpose                        |
+| -------------------- | ------------------------------ |
+| `pkg/`               | Public library code            |
+| `cmd/`               | Binaries and e2e tests         |
+| `internal/`          | Daemon-only code               |
+| `tests/crossref/`    | Python vector parity           |
+| `tests/interop/`     | Live Go/Python tests           |
+| `scripts/ci/`        | CI install and release scripts |
+| `.github/workflows/` | GitHub Actions                 |
 
 Follow existing naming, error wrapping, and SPDX headers in each file.
 
@@ -122,27 +122,27 @@ Enable:
 RUN_LIVE_INTEROP=1 go test -v ./tests/interop/...
 ```
 
-| Test file | Topic |
-|-----------|-------|
-| `link_live_test.go` | Link sessions |
-| `auto_live_test.go` | AutoInterface |
-| `ifac_live_test.go` | IFAC |
-| `transport_path_live_test.go` | Path requests |
-| `transport_relay_live_test.go` | Transport relay |
-| `backbone_live_test.go` | Backbone |
-| `quic_live_test.go` | QUIC Go-Go echo (no Python peer) |
-| `pipe_live_test.go` | PipeInterface with Python echo |
-| `shared_rpc_live_test.go` | Shared-instance RPC |
-| `pageserver_live_test.go` | Pageserver example |
-| `nomadnet_crawl_live_test.go` | Nomadnet crawl |
+| Test file                      | Topic                            |
+| ------------------------------ | -------------------------------- |
+| `link_live_test.go`            | Link sessions                    |
+| `auto_live_test.go`            | AutoInterface                    |
+| `ifac_live_test.go`            | IFAC                             |
+| `transport_path_live_test.go`  | Path requests                    |
+| `transport_relay_live_test.go` | Transport relay                  |
+| `backbone_live_test.go`        | Backbone                         |
+| `quic_live_test.go`            | QUIC Go-Go echo (no Python peer) |
+| `pipe_live_test.go`            | PipeInterface with Python echo   |
+| `shared_rpc_live_test.go`      | Shared-instance RPC              |
+| `pageserver_live_test.go`      | Pageserver example               |
+| `nomadnet_crawl_live_test.go`  | Nomadnet crawl                   |
 
 ### Package-specific live tests
 
-| Package | Env var |
-|---------|---------|
-| `pkg/i2p`, `pkg/interfaces` I2P | `RUN_LIVE_I2P=1` |
-| `pkg/blackhole` | `RUN_PY_INTEROP=1` |
-| `pkg/discovery` | `RUN_PY_INTEROP=1` |
+| Package                         | Env var            |
+| ------------------------------- | ------------------ |
+| `pkg/i2p`, `pkg/interfaces` I2P | `RUN_LIVE_I2P=1`   |
+| `pkg/blackhole`                 | `RUN_PY_INTEROP=1` |
+| `pkg/discovery`                 | `RUN_PY_INTEROP=1` |
 
 ### End-to-end daemon tests
 
@@ -164,11 +164,11 @@ Day-to-day clones only need `vendor/` to build offline.
 
 GitHub Actions workflows in `.github/workflows/`:
 
-| Workflow | Role |
-|----------|------|
-| ci.yml | Build, test, reproducibility |
+| Workflow     | Role                                     |
+| ------------ | ---------------------------------------- |
+| ci.yml       | Build, test, reproducibility             |
 | security.yml | Gosec, govulncheck, Trivy, SBOM dispatch |
-| publish.yml | Tagged releases, cosign attestations |
+| publish.yml  | Tagged releases, cosign attestations     |
 
 CI uses Go 1.26.5 via `actions/setup-go` in `.github/actions/setup-ci` with `GOTOOLCHAIN=local` and vendored modules.
 

@@ -2,3 +2,9 @@ User-agent: *
 Allow: /
 
 Sitemap: https://reticulum-go.quad4.io/sitemap.xml
+
+# Curated context for language models and coding agents
+# https://llmstxt.org/
+# https://reticulum-go.quad4.io/llms.txt
+# https://reticulum-go.quad4.io/llms-full.txt
+# https://reticulum-go.quad4.io/api/agent

@@ -8,10 +8,10 @@ This page summarizes security practices for Reticulum-Go. The repository root [S
 
 Report security issues privately before public disclosure.
 
-| Channel | Contact |
-|---------|---------|
+| Channel        | Contact                            |
+| -------------- | ---------------------------------- |
 | Reticulum LXMF | `f489752fbef161c64d65e385a4e9fc74` |
-| Email | `security@quad4.io` |
+| Email          | `security@quad4.io`                |
 
 Include enough detail to reproduce the issue: component, expected behavior, actual behavior, and environment.
 
@@ -32,14 +32,14 @@ The `reticulum-go` daemon calls `sandbox.Apply` from `pkg/sandbox` after config 
 
 Default: `enable_sandbox = yes` in `[reticulum]`. Set `enable_sandbox = no` to disable (not recommended for production).
 
-| OS | Mechanism | Effect |
-|----|-----------|--------|
-| Linux | Landlock, PR_SET_NO_NEW_PRIVS, rlimits | Whitelists config and storage paths, limits caps |
-| OpenBSD | unveil, pledge | Restricts visible paths and syscalls |
-| FreeBSD | cap_enter, rlimits | Capability mode after resource limits |
-| Darwin | rlimits | Memory, FD, core dump, stack, process limits |
-| Windows | Job object | Limits breakaway, processes, working set |
-| Other / WASM | no-op | Logs unsupported, continues |
+| OS           | Mechanism                              | Effect                                           |
+| ------------ | -------------------------------------- | ------------------------------------------------ |
+| Linux        | Landlock, PR_SET_NO_NEW_PRIVS, rlimits | Whitelists config and storage paths, limits caps |
+| OpenBSD      | unveil, pledge                         | Restricts visible paths and syscalls             |
+| FreeBSD      | cap_enter, rlimits                     | Capability mode after resource limits            |
+| Darwin       | rlimits                                | Memory, FD, core dump, stack, process limits     |
+| Windows      | Job object                             | Limits breakaway, processes, working set         |
+| Other / WASM | no-op                                  | Logs unsupported, continues                      |
 
 Landlock requires Linux kernel 5.13 or newer. Older kernels skip Landlock gracefully where possible.
 
@@ -83,12 +83,12 @@ SBOMs (SPDX and CycloneDX) are attached to tagged releases via Trivy (`task sbom
 
 ## Static analysis in development
 
-| Tool | Purpose |
-|------|---------|
-| Gosec | Go security linter |
+| Tool        | Purpose                                     |
+| ----------- | ------------------------------------------- |
+| Gosec       | Go security linter                          |
 | govulncheck | Go vulnerability database with reachability |
-| Trivy | Filesystem and dependency scan |
-| revive | Style and lint (`make lint`) |
+| Trivy       | Filesystem and dependency scan              |
+| revive      | Style and lint (`make lint`)                |
 
 Run locally:
 

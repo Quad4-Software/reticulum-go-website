@@ -75,8 +75,7 @@
 				stroke-width="2"
 				stroke-linecap="round"
 				stroke-linejoin="round"
-				aria-hidden="true"
-				><path d="m6 9 6 6 6-6" /></svg
+				aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg
 			>
 			<span class="text-lg font-semibold truncate">Network Identity</span>
 		</span>
@@ -121,95 +120,95 @@
 
 	{#if expanded}
 		<div id="identity-card-body" role="region" aria-labelledby="identity-card-heading">
-	{#if reticulum.identity}
-		<div class="space-y-4">
-			{#if userName}
-				<div>
-					<span class="text-xs font-medium text-zinc-500 uppercase tracking-wider block mb-1"
-						>Display Name</span
-					>
-					<div
-						class="text-sm font-semibold p-2 bg-zinc-50 dark:bg-zinc-950 rounded border border-zinc-200 dark:border-zinc-800"
-					>
-						{userName}
+			{#if reticulum.identity}
+				<div class="space-y-4">
+					{#if userName}
+						<div>
+							<span class="text-xs font-medium text-zinc-500 uppercase tracking-wider block mb-1"
+								>Display Name</span
+							>
+							<div
+								class="text-sm font-semibold p-2 bg-zinc-50 dark:bg-zinc-950 rounded border border-zinc-200 dark:border-zinc-800"
+							>
+								{userName}
+							</div>
+						</div>
+					{/if}
+					<div>
+						<span class="text-xs font-medium text-zinc-500 uppercase tracking-wider block mb-1"
+							>Identity</span
+						>
+						<div
+							class="font-mono text-sm break-all p-2 bg-zinc-50 dark:bg-zinc-950 rounded border border-zinc-200 dark:border-zinc-800"
+						>
+							{reticulum.identity.address}
+						</div>
+					</div>
+					<div>
+						<span class="text-xs font-medium text-zinc-500 uppercase tracking-wider block mb-1"
+							>Destination Hash</span
+						>
+						<div
+							class="font-mono text-xs break-all p-2 bg-zinc-50 dark:bg-zinc-950 rounded border border-zinc-200 dark:border-zinc-800"
+						>
+							{reticulum.identity.publicKey}
+						</div>
+					</div>
+
+					{#if !reticulum.connected}
+						<button
+							onclick={() => reticulum.connect()}
+							class="w-full px-4 py-2 text-sm font-medium text-white bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-zinc-200 rounded-lg transition-colors"
+						>
+							Reconnect
+						</button>
+					{/if}
+
+					<div class="pt-4 border-t border-zinc-100 dark:border-zinc-800 flex gap-3">
+						<button
+							onclick={handleClear}
+							class="flex-1 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-lg border border-red-200 dark:border-red-900/50 transition-colors"
+						>
+							Clear Identity
+						</button>
 					</div>
 				</div>
-			{/if}
-			<div>
-				<span class="text-xs font-medium text-zinc-500 uppercase tracking-wider block mb-1"
-					>Identity</span
-				>
-				<div
-					class="font-mono text-sm break-all p-2 bg-zinc-50 dark:bg-zinc-950 rounded border border-zinc-200 dark:border-zinc-800"
-				>
-					{reticulum.identity.address}
+			{:else}
+				<div class="space-y-4">
+					<div>
+						<label for="username" class="text-xs font-medium text-zinc-500 uppercase tracking-wider"
+							>Display Name</label
+						>
+						<input
+							id="username"
+							type="text"
+							bind:value={userName}
+							placeholder="Enter your name"
+							class="mt-1 w-full px-3 py-2 text-sm bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg focus:ring-2 ring-zinc-500 outline-none"
+						/>
+					</div>
+					<div>
+						<label for="wsurl" class="text-xs font-medium text-zinc-500 uppercase tracking-wider"
+							>Websockets server</label
+						>
+						<input
+							id="wsurl"
+							type="text"
+							bind:value={wsUrl}
+							placeholder="wss://..."
+							class="mt-1 w-full px-3 py-2 text-sm bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg focus:ring-2 ring-zinc-500 outline-none"
+						/>
+					</div>
+
+					<button
+						onclick={handleInit}
+						disabled={loading || !wsUrl}
+						class="w-full px-4 py-2 text-sm font-medium text-white bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-zinc-200 rounded-lg transition-colors disabled:opacity-50"
+					>
+						{loading ? 'Initializing...' : 'Join Network'}
+					</button>
 				</div>
-			</div>
-			<div>
-				<span class="text-xs font-medium text-zinc-500 uppercase tracking-wider block mb-1"
-					>Destination Hash</span
-				>
-				<div
-					class="font-mono text-xs break-all p-2 bg-zinc-50 dark:bg-zinc-950 rounded border border-zinc-200 dark:border-zinc-800"
-				>
-					{reticulum.identity.publicKey}
-				</div>
-			</div>
-
-			{#if !reticulum.connected}
-				<button
-					onclick={() => reticulum.connect()}
-					class="w-full px-4 py-2 text-sm font-medium text-white bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-zinc-200 rounded-lg transition-colors"
-				>
-					Reconnect
-				</button>
 			{/if}
-
-			<div class="pt-4 border-t border-zinc-100 dark:border-zinc-800 flex gap-3">
-				<button
-					onclick={handleClear}
-					class="flex-1 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-lg border border-red-200 dark:border-red-900/50 transition-colors"
-				>
-					Clear Identity
-				</button>
-			</div>
-		</div>
-	{:else}
-		<div class="space-y-4">
-			<div>
-				<label for="username" class="text-xs font-medium text-zinc-500 uppercase tracking-wider"
-					>Display Name</label
-				>
-				<input
-					id="username"
-					type="text"
-					bind:value={userName}
-					placeholder="Enter your name"
-					class="mt-1 w-full px-3 py-2 text-sm bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg focus:ring-2 ring-zinc-500 outline-none"
-				/>
-			</div>
-			<div>
-				<label for="wsurl" class="text-xs font-medium text-zinc-500 uppercase tracking-wider"
-					>Websockets server</label
-				>
-				<input
-					id="wsurl"
-					type="text"
-					bind:value={wsUrl}
-					placeholder="wss://..."
-					class="mt-1 w-full px-3 py-2 text-sm bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg focus:ring-2 ring-zinc-500 outline-none"
-				/>
-			</div>
-
-			<button
-				onclick={handleInit}
-				disabled={loading || !wsUrl}
-				class="w-full px-4 py-2 text-sm font-medium text-white bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-zinc-200 rounded-lg transition-colors disabled:opacity-50"
-			>
-				{loading ? 'Initializing...' : 'Join Network'}
-			</button>
-		</div>
-	{/if}
 		</div>
 	{/if}
 </div>

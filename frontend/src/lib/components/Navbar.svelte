@@ -56,12 +56,12 @@
 						: ''}">{$t('common.docs')}</a
 				>
 				<a
-					href="/interactive"
+					href="/tools"
 					class="hover:text-zinc-900 dark:hover:text-white transition-colors {page.url.pathname.startsWith(
-						'/interactive'
+						'/tools'
 					)
 						? 'text-zinc-900 dark:text-white'
-						: ''}">{$t('common.interactive')}</a
+						: ''}">{$t('common.tools')}</a
 				>
 				<a
 					href="/apps"
@@ -97,7 +97,9 @@
 						<span class="min-w-0 max-w-[5rem] sm:min-w-[4.5rem] text-left truncate hidden sm:inline"
 							>{LOCALE_LABELS[$locale as keyof typeof LOCALE_LABELS] ?? $locale ?? 'en'}</span
 						>
-						<ChevronDown class="w-4 h-4 shrink-0 text-zinc-400 dark:text-zinc-500 hidden sm:block" />
+						<ChevronDown
+							class="w-4 h-4 shrink-0 text-zinc-400 dark:text-zinc-500 hidden sm:block"
+						/>
 					</summary>
 					<div
 						class="absolute right-0 mt-2 min-w-[11rem] rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 shadow-xl shadow-zinc-900/10 dark:shadow-black/40 py-1.5 z-[70]"
@@ -178,14 +180,12 @@
 					>{$t('common.docs')}</a
 				>
 				<a
-					href="/interactive"
+					href="/tools"
 					onclick={closeMenu}
-					class="py-2.5 px-3 rounded-lg transition-colors {page.url.pathname.startsWith(
-						'/interactive'
-					)
+					class="py-2.5 px-3 rounded-lg transition-colors {page.url.pathname.startsWith('/tools')
 						? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white'
 						: 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900'}"
-					>{$t('common.interactive')}</a
+					>{$t('common.tools')}</a
 				>
 				<a
 					href="/apps"

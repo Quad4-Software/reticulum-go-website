@@ -53,11 +53,11 @@ The control API bridges requests to WebSocket `requestIncomingEvent` and `reques
 
 `pkg/channel` provides reliable ordered message delivery inside a link.
 
-| Concept | Description |
-|---------|-------------|
-| `Channel` | Session over an established link |
-| `Envelope` | Wire wrapper for channel messages |
-| `MessageBase` | Base type for message payloads |
+| Concept       | Description                       |
+| ------------- | --------------------------------- |
+| `Channel`     | Session over an established link  |
+| `Envelope`    | Wire wrapper for channel messages |
+| `MessageBase` | Base type for message payloads    |
 
 Python 1.3.0 fixed ghost envelopes on multiple outlets. Go uses a simpler single-outlet model. Wire compatibility for the supported paths is verified in crossref tests.
 
@@ -121,12 +121,12 @@ Python 1.3.2 tears down links at LINKIDENTIFY when the remote identity is blackh
 
 ## Testing
 
-| Area | Location |
-|------|----------|
-| Wire parity | `tests/crossref` (links, channel, buffer, resource) |
-| Live link interop | `tests/interop/link_live_test.go` |
-| Property tests | `pkg/buffer/*_pbt_test.go`, `pkg/resource/*_pbt_test.go` |
-| Fuzz | `pkg/link/*_fuzz_test.go` |
+| Area              | Location                                                 |
+| ----------------- | -------------------------------------------------------- |
+| Wire parity       | `tests/crossref` (links, channel, buffer, resource)      |
+| Live link interop | `tests/interop/link_live_test.go`                        |
+| Property tests    | `pkg/buffer/*_pbt_test.go`, `pkg/resource/*_pbt_test.go` |
+| Fuzz              | `pkg/link/*_fuzz_test.go`                                |
 
 ## Application guidance
 

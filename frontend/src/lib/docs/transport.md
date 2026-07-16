@@ -7,6 +7,7 @@
 Transport sits between interfaces and application destinations. Every enabled interface registers with `Transport.RegisterInterface`, which sets a callback from inbound frames to `HandlePacket`.
 
 Inbound packets are unpacked in `pkg/packet`. Hop counts `>= PATHFINDER_M` (128) are rejected at unpack time (RNS 1.3.8). Transport also drops announces and relayed packets that would exceed `MaxHops` after increment.
+
 ## Path table
 
 The path table maps a 16-byte destination hash to:
@@ -120,13 +121,13 @@ Raise `loglevel` in config. Transport logs at debug levels 5 and above include p
 
 ## Testing
 
-| Test area | Location |
-|-----------|----------|
-| Wire parity | `tests/crossref` (path requests, announces, relay) |
-| Live relay | `tests/interop/transport_relay_live_test.go` (`RUN_LIVE_INTEROP=1`) |
-| Live paths | `tests/interop/transport_path_live_test.go` |
-| Property tests | `pkg/transport/*_pbt_test.go` |
-| Race tests | `pkg/transport/*_race_test.go` |
+| Test area      | Location                                                            |
+| -------------- | ------------------------------------------------------------------- |
+| Wire parity    | `tests/crossref` (path requests, announces, relay)                  |
+| Live relay     | `tests/interop/transport_relay_live_test.go` (`RUN_LIVE_INTEROP=1`) |
+| Live paths     | `tests/interop/transport_path_live_test.go`                         |
+| Property tests | `pkg/transport/*_pbt_test.go`                                       |
+| Race tests     | `pkg/transport/*_race_test.go`                                      |
 
 ## Related documents
 

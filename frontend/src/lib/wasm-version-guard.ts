@@ -44,16 +44,12 @@ export async function ensureWasmMatchesDeployedBuildWithDeps(
 }
 
 export async function ensureWasmMatchesDeployedBuild(): Promise<boolean> {
-	return ensureWasmMatchesDeployedBuildWithDeps(
-		import.meta.env.VITE_WASM_SHA256,
-		browser,
-		{
-			fetchImpl: fetch,
-			clearAllCachesImpl: clearAllCaches,
-			session: sessionStorage,
-			reload: () => {
-				window.location.reload();
-			}
+	return ensureWasmMatchesDeployedBuildWithDeps(import.meta.env.VITE_WASM_SHA256, browser, {
+		fetchImpl: fetch,
+		clearAllCachesImpl: clearAllCaches,
+		session: sessionStorage,
+		reload: () => {
+			window.location.reload();
 		}
-	);
+	});
 }

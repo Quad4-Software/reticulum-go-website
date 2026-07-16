@@ -18,8 +18,10 @@ describe('Navbar', () => {
 		expect(screen.getByText('Reticulum-Go')).toBeTruthy();
 		expect(screen.getAllByRole('link', { name: 'Home' }).length).toBeGreaterThan(0);
 		expect(screen.getAllByRole('link', { name: 'Docs' }).length).toBeGreaterThan(0);
+		expect(screen.getAllByRole('link', { name: 'Tools' }).length).toBeGreaterThan(0);
 		expect(screen.getAllByRole('link', { name: 'Donate' }).length).toBeGreaterThan(0);
 		expect(screen.getByRole('link', { name: 'Source Code' })).toBeTruthy();
+		expect(screen.queryByRole('link', { name: 'Interactive' })).toBeNull();
 	});
 
 	it('language links include set-locale and redirect', () => {

@@ -17,21 +17,41 @@ function readWasmSha256(): string {
 	return crypto.createHash('sha256').update(buf).digest('hex');
 }
 
+function readWasmSriMap(): Record<string, string> {
+	const staticDir = path.join(__dirname, 'static');
+	const names = ['reticulum-go.wasm', 'micron-parser-go.wasm'];
+	const map: Record<string, string> = {};
+	for (const name of names) {
+		const filePath = path.join(staticDir, name);
+		if (!fs.existsSync(filePath)) continue;
+		const hash = crypto.createHash('sha384').update(fs.readFileSync(filePath)).digest('base64');
+		map[`/${name}`] = `sha384-${hash}`;
+	}
+	return map;
+}
+
 export default defineConfig(({ command }) => {
 	const isProd = command === 'build';
 	const isTest = process.env.VITEST === 'true';
 	let wasmSha256 = '';
+	let wasmSri = {};
 	try {
 		wasmSha256 = readWasmSha256();
 	} catch {
 		wasmSha256 = '';
+	}
+	try {
+		wasmSri = readWasmSriMap();
+	} catch {
+		wasmSri = {};
 	}
 	return {
 		resolve: {
 			conditions: isTest ? ['browser'] : []
 		},
 		define: {
-			'import.meta.env.VITE_WASM_SHA256': JSON.stringify(wasmSha256)
+			'import.meta.env.VITE_WASM_SHA256': JSON.stringify(wasmSha256),
+			'import.meta.env.VITE_WASM_SRI': JSON.stringify(wasmSri)
 		},
 		test: {
 			environment: 'jsdom',
@@ -112,8 +132,25 @@ export default defineConfig(({ command }) => {
 								cacheName: 'pages',
 								networkTimeoutSeconds: 5,
 								expiration: {
-									maxEntries: 32,
+									maxEntries: 48,
 									maxAgeSeconds: 24 * 60 * 60
+								}
+							}
+						},
+						{
+							urlPattern: ({ url }) =>
+								url.pathname.endsWith('.wasm') ||
+								url.pathname === '/wasm_exec.js' ||
+								url.pathname === '/micron-wasm_exec.js',
+							handler: 'CacheFirst',
+							options: {
+								cacheName: 'wasm-assets',
+								expiration: {
+									maxEntries: 8,
+									maxAgeSeconds: 60 * 60 * 24 * 30
+								},
+								cacheableResponse: {
+									statuses: [0, 200]
 								}
 							}
 						}

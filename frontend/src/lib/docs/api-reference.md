@@ -8,13 +8,13 @@ For generated signatures, use `go doc` on the import path or browse the module o
 
 ## How this differs from the Python reference
 
-| Python RNS manual | This document |
-|-------------------|---------------|
-| Class catalog (`RNS.Reticulum`, `Identity`, `Destination`, …) | Task-first recipes, then API tables |
-| One process model (`RNS.Reticulum(...)`) | Four integration paths with trade-offs |
-| Little concurrency guidance | Explicit callback and locking rules |
-| No C / WASM / control-plane docs in the same place | Links to Control API, librns, WASM |
-| Examples live elsewhere | Recipes point at `examples/` |
+| Python RNS manual                                             | This document                          |
+| ------------------------------------------------------------- | -------------------------------------- |
+| Class catalog (`RNS.Reticulum`, `Identity`, `Destination`, …) | Task-first recipes, then API tables    |
+| One process model (`RNS.Reticulum(...)`)                      | Four integration paths with trade-offs |
+| Little concurrency guidance                                   | Explicit callback and locking rules    |
+| No C / WASM / control-plane docs in the same place            | Links to Control API, librns, WASM     |
+| Examples live elsewhere                                       | Recipes point at `examples/`           |
 
 ## Choose an integration path
 
@@ -42,12 +42,12 @@ Need Reticulum in my app
          destination + link
 ```
 
-| Path | Package / surface | Use when |
-|------|-------------------|----------|
-| In-process Go | `pkg/node` | Default for Go services and tools |
+| Path          | Package / surface                | Use when                                    |
+| ------------- | -------------------------------- | ------------------------------------------- |
+| In-process Go | `pkg/node`                       | Default for Go services and tools           |
 | Daemon + JSON | [Control API](/docs/control-api) | Python, Rust, scripts, multi-language hosts |
-| In-process C | [librns](/docs/librns) | Native hosts that cannot embed Go source |
-| Browser | `pkg/wasm` | WebSocket gateway clients |
+| In-process C  | [librns](/docs/librns)           | Native hosts that cannot embed Go source    |
+| Browser       | `pkg/wasm`                       | WebSocket gateway clients                   |
 
 Most of this page describes the **`pkg/node` happy path**. Other paths expose the same concepts with different bindings.
 
@@ -198,148 +198,148 @@ Optional: `n.EnableLinkAutoReconnect(node.LinkReconnectOptions{MaxAttempts: 5, B
 
 Orchestrates transport, interfaces, shared instance, and lifecycle. Prefer this over constructing `transport.Transport` by hand.
 
-| Symbol | Role |
-|--------|------|
-| `New(cfg) (*Node, error)` | Build without starting |
-| `Start() error` | Transport, path handler, shared instance, interfaces |
-| `Stop() error` | Tear down in reverse order |
-| `Transport() *transport.Transport` | Pass to destinations and links |
-| `Config() *common.ReticulumConfig` | Active config |
-| `Interfaces() []interfaces.Interface` | Configured interfaces |
-| `OnNetworkAvailable() error` | Resume after outage |
-| `OnNetworkLost() error` | Pause for sleep / NIC down |
-| `SetPauseMode(PauseMode)` | `PauseModeDisable` or `PauseModeStop` |
-| `WatchDestination(hash)` | Include hash in wake refreshes |
-| `RefreshPaths(dests...)` | Force path refresh |
-| `ReloadInterfaces(newCfg)` | Hot-reload interface blocks |
-| `EnableLinkAutoReconnect(opts)` | Re-establish registered links |
-| `RegisterLink(l)` | Track link for reconnect |
-| `StartInterfaceDiscovery()` | rnstransport discovery when configured |
+| Symbol                                | Role                                                 |
+| ------------------------------------- | ---------------------------------------------------- |
+| `New(cfg) (*Node, error)`             | Build without starting                               |
+| `Start() error`                       | Transport, path handler, shared instance, interfaces |
+| `Stop() error`                        | Tear down in reverse order                           |
+| `Transport() *transport.Transport`    | Pass to destinations and links                       |
+| `Config() *common.ReticulumConfig`    | Active config                                        |
+| `Interfaces() []interfaces.Interface` | Configured interfaces                                |
+| `OnNetworkAvailable() error`          | Resume after outage                                  |
+| `OnNetworkLost() error`               | Pause for sleep / NIC down                           |
+| `SetPauseMode(PauseMode)`             | `PauseModeDisable` or `PauseModeStop`                |
+| `WatchDestination(hash)`              | Include hash in wake refreshes                       |
+| `RefreshPaths(dests...)`              | Force path refresh                                   |
+| `ReloadInterfaces(newCfg)`            | Hot-reload interface blocks                          |
+| `EnableLinkAutoReconnect(opts)`       | Re-establish registered links                        |
+| `RegisterLink(l)`                     | Track link for reconnect                             |
+| `StartInterfaceDiscovery()`           | rnstransport discovery when configured               |
 
 ### Identity (`pkg/identity`)
 
-| Symbol | Role |
-|--------|------|
-| `New() (*Identity, error)` | Generate software identity (preferred) |
-| `NewIdentity()` | Alternate generator |
-| `FromFile` / `ToFile` | 64-byte `[X25519 priv][Ed25519 seed]` |
-| `FromBytes` / `FromPublicKey` | Load from bytes |
-| `LoadIdentityFile(path, signer)` | Software or RHB1 hardware-bound |
-| `NewIdentityWithSigner(...)` | External Ed25519 signer (HSM) |
-| `Hash() []byte` | 16-byte truncated hash |
-| `GetPublicKey() []byte` | 64-byte combined public key |
-| `Sign` / `Verify` | Ed25519 |
-| `Encrypt` / `Decrypt` | Identity tokens with optional ratchets |
-| `Recall(destHash)` | Public identity from known destinations |
-| `Remember` / `ValidateAnnounce` | Announce storage |
-| `LoadOrCreateTransportIdentity` | Daemon transport identity |
-| `RotateRatchet` / `GetRatchets` | Forward secrecy material |
+| Symbol                           | Role                                    |
+| -------------------------------- | --------------------------------------- |
+| `New() (*Identity, error)`       | Generate software identity (preferred)  |
+| `NewIdentity()`                  | Alternate generator                     |
+| `FromFile` / `ToFile`            | 64-byte `[X25519 priv][Ed25519 seed]`   |
+| `FromBytes` / `FromPublicKey`    | Load from bytes                         |
+| `LoadIdentityFile(path, signer)` | Software or RHB1 hardware-bound         |
+| `NewIdentityWithSigner(...)`     | External Ed25519 signer (HSM)           |
+| `Hash() []byte`                  | 16-byte truncated hash                  |
+| `GetPublicKey() []byte`          | 64-byte combined public key             |
+| `Sign` / `Verify`                | Ed25519                                 |
+| `Encrypt` / `Decrypt`            | Identity tokens with optional ratchets  |
+| `Recall(destHash)`               | Public identity from known destinations |
+| `Remember` / `ValidateAnnounce`  | Announce storage                        |
+| `LoadOrCreateTransportIdentity`  | Daemon transport identity               |
+| `RotateRatchet` / `GetRatchets`  | Forward secrecy material                |
 
 Constants: `KeySize` (bits), `TruncatedHashLength` (bits). Hex destination or identity hashes are **32 characters**.
 
 ### Destination (`pkg/destination`)
 
-| Constant | Meaning |
-|----------|---------|
-| `In` / `Out` | Direction bit flags (`In\|Out` for both) |
-| `Single` / `Group` / `Plain` | Destination types |
-| `ProveNone` / `ProveAll` / `ProveApp` | Proof strategy |
-| `AllowNone` / `AllowAll` / `AllowList` | Request handler ACL |
+| Constant                               | Meaning                                  |
+| -------------------------------------- | ---------------------------------------- |
+| `In` / `Out`                           | Direction bit flags (`In\|Out` for both) |
+| `Single` / `Group` / `Plain`           | Destination types                        |
+| `ProveNone` / `ProveAll` / `ProveApp`  | Proof strategy                           |
+| `AllowNone` / `AllowAll` / `AllowList` | Request handler ACL                      |
 
-| Symbol | Role |
-|--------|------|
+| Symbol                                                 | Role                                       |
+| ------------------------------------------------------ | ------------------------------------------ |
 | `New(id, direction, type, app, transport, aspects...)` | Create and optionally auto-register (`In`) |
-| `FromHash(hash, id, type, transport)` | Outbound destination for a known peer |
-| `Hash(id, app, aspects...)` | Compute destination hash |
-| `ParseName` / `ExpandAppName` | Dotted name helpers |
-| `Announce(pathResponse, tag, iface)` | Publish reachability |
-| `AcceptsLinks(bool)` | Accept link requests |
-| `Encrypt` / `Decrypt` / `Sign` | Destination crypto |
-| `SetPacketCallback` | Single-packet inbound data |
-| `SetLinkEstablishedCallback` | Inbound link ready (`func(any)`) |
-| `RegisterRequestHandler` / `RegisterRequestHandlerAny` | Link request paths |
-| `EnableRatchets` / `RotateRatchets` | Group ratchet files |
+| `FromHash(hash, id, type, transport)`                  | Outbound destination for a known peer      |
+| `Hash(id, app, aspects...)`                            | Compute destination hash                   |
+| `ParseName` / `ExpandAppName`                          | Dotted name helpers                        |
+| `Announce(pathResponse, tag, iface)`                   | Publish reachability                       |
+| `AcceptsLinks(bool)`                                   | Accept link requests                       |
+| `Encrypt` / `Decrypt` / `Sign`                         | Destination crypto                         |
+| `SetPacketCallback`                                    | Single-packet inbound data                 |
+| `SetLinkEstablishedCallback`                           | Inbound link ready (`func(any)`)           |
+| `RegisterRequestHandler` / `RegisterRequestHandlerAny` | Link request paths                         |
+| `EnableRatchets` / `RotateRatchets`                    | Group ratchet files                        |
 
 ### Link (`pkg/link`)
 
-| Status | Value | Meaning on `Link` |
-|--------|-------|-------------------|
-| `StatusPending` | `0x00` | Not established |
-| `StatusHandshake` | `0x01` | Handshake |
-| `StatusActive` | `0x02` | Ready |
-| `StatusStale` | `0x03` | Stale |
-| `StatusClosed` | `0x04` | Closed |
-| `StatusFailed` | `0x05` | Failed |
+| Status            | Value  | Meaning on `Link` |
+| ----------------- | ------ | ----------------- |
+| `StatusPending`   | `0x00` | Not established   |
+| `StatusHandshake` | `0x01` | Handshake         |
+| `StatusActive`    | `0x02` | Ready             |
+| `StatusStale`     | `0x03` | Stale             |
+| `StatusClosed`    | `0x04` | Closed            |
+| `StatusFailed`    | `0x05` | Failed            |
 
-| Symbol | Role |
-|--------|------|
-| `NewLink(dest, transport, iface, onEst, onClose)` | Outbound link object |
-| `Establish() error` | Initiator handshake |
-| `Teardown()` | Close |
-| `Identify(id)` | Prove local identity to peer |
-| `Send` / `SendPacket` / `SendPacketWithContext` | Encrypted data |
-| `Request(path, data, timeout)` | Msgpack request (auto resource if large) |
-| `SendResource(res)` | Outbound resource transfer |
-| `GetChannel()` | Reliable channel over the link |
-| `SetResourceStrategy` | `AcceptNone` / `AcceptAll` / `AcceptApp` |
-| `SetResourceConcludedCallback` | `[]byte` or `IncomingResource` |
-| `GetRTT` / idle timers / PHY stats | Link health |
+| Symbol                                            | Role                                     |
+| ------------------------------------------------- | ---------------------------------------- |
+| `NewLink(dest, transport, iface, onEst, onClose)` | Outbound link object                     |
+| `Establish() error`                               | Initiator handshake                      |
+| `Teardown()`                                      | Close                                    |
+| `Identify(id)`                                    | Prove local identity to peer             |
+| `Send` / `SendPacket` / `SendPacketWithContext`   | Encrypted data                           |
+| `Request(path, data, timeout)`                    | Msgpack request (auto resource if large) |
+| `SendResource(res)`                               | Outbound resource transfer               |
+| `GetChannel()`                                    | Reliable channel over the link           |
+| `SetResourceStrategy`                             | `AcceptNone` / `AcceptAll` / `AcceptApp` |
+| `SetResourceConcludedCallback`                    | `[]byte` or `IncomingResource`           |
+| `GetRTT` / idle timers / PHY stats                | Link health                              |
 
 #### RequestReceipt
 
-| Method | Role |
-|--------|------|
-| `Concluded()` | Finished (success or failure) |
-| `GetStatus()` | **`StatusActive` means response OK**, `StatusFailed` means timeout or error |
-| `GetResponse()` / `GetResponseValue()` | Bytes or decoded msgpack |
-| `GetMetadata()` | Resource response metadata |
-| `Progress()` | Bytes received / total for resource replies |
-| `SetResponseCallback` / `SetFailedCallback` | Async completion |
+| Method                                      | Role                                                                        |
+| ------------------------------------------- | --------------------------------------------------------------------------- |
+| `Concluded()`                               | Finished (success or failure)                                               |
+| `GetStatus()`                               | **`StatusActive` means response OK**, `StatusFailed` means timeout or error |
+| `GetResponse()` / `GetResponseValue()`      | Bytes or decoded msgpack                                                    |
+| `GetMetadata()`                             | Resource response metadata                                                  |
+| `Progress()`                                | Bytes received / total for resource replies                                 |
+| `SetResponseCallback` / `SetFailedCallback` | Async completion                                                            |
 
 Do not confuse `RequestReceipt.GetStatus()` with `Link.GetStatus()`. Both reuse status byte constants with different meanings.
 
 ### Resource (`pkg/resource`)
 
-| Symbol | Role |
-|--------|------|
-| `New(data, autoCompress)` | `[]byte` or seekable file |
-| `SetMetadata(map)` | Prepended msgpack metadata (Python-compatible) |
-| `GetProgress` / `GetStatus` / `GetHash` | Transfer state |
-| `PrepareOutboundForLink` | Called by `Link.SendResource` |
+| Symbol                                  | Role                                           |
+| --------------------------------------- | ---------------------------------------------- |
+| `New(data, autoCompress)`               | `[]byte` or seekable file                      |
+| `SetMetadata(map)`                      | Prepended msgpack metadata (Python-compatible) |
+| `GetProgress` / `GetStatus` / `GetHash` | Transfer state                                 |
+| `PrepareOutboundForLink`                | Called by `Link.SendResource`                  |
 
 Statuses: `StatusPending`, `StatusActive`, `StatusComplete`, `StatusFailed`, `StatusCancelled`.
 
 ### Transport (via `Node.Transport()`)
 
-| Method | Role |
-|--------|------|
-| `HasPath(hash)` | Cached route present |
-| `RequestPath(hash, iface, tag, recursive)` | Path request (throttled) |
-| `HopsTo` / `NextHop` / `NextHopInterface` | Route inspection |
-| `ExpirePath` / `PrepareFreshPathRequest` | Drop or refresh cache |
-| `RegisterInterface` / `GetInterfaces` | Interface table |
-| `RegisterDestination` | Usually automatic for `In` destinations |
-| `SendPacket` / `HandlePacket` | Low-level inject (advanced) |
-| `RegisterAnnounceHandler` | Observe announces |
+| Method                                     | Role                                    |
+| ------------------------------------------ | --------------------------------------- |
+| `HasPath(hash)`                            | Cached route present                    |
+| `RequestPath(hash, iface, tag, recursive)` | Path request (throttled)                |
+| `HopsTo` / `NextHop` / `NextHopInterface`  | Route inspection                        |
+| `ExpirePath` / `PrepareFreshPathRequest`   | Drop or refresh cache                   |
+| `RegisterInterface` / `GetInterfaces`      | Interface table                         |
+| `RegisterDestination`                      | Usually automatic for `In` destinations |
+| `SendPacket` / `HandlePacket`              | Low-level inject (advanced)             |
+| `RegisterAnnounceHandler`                  | Observe announces                       |
 
 Avoid `transport.Destination` and `transport.Link` placeholder types. Use `destination.Destination` and `link.Link`.
 
 ### Packet (`pkg/packet`)
 
-| Symbol | Role |
-|--------|------|
-| `MTU` | 500 |
-| `NewPacket` / `Pack` / `Unpack` | Wire encode/decode |
-| `PacketReceipt` | Delivery proofs for data packets |
-| Context constants | `ContextRequest`, `ContextResource`, link contexts, … |
+| Symbol                          | Role                                                  |
+| ------------------------------- | ----------------------------------------------------- |
+| `MTU`                           | 500                                                   |
+| `NewPacket` / `Pack` / `Unpack` | Wire encode/decode                                    |
+| `PacketReceipt`                 | Delivery proofs for data packets                      |
+| Context constants               | `ContextRequest`, `ContextResource`, link contexts, … |
 
 ### Config (`pkg/reticulumconfig`, `pkg/common`)
 
-| Function | Role |
-|----------|------|
-| `InitConfig()` | Load or create `~/.reticulum-go/config` |
-| `LoadConfig(path)` | Parse INI (unknown keys ignored) |
-| `SaveConfig` / `DefaultConfig` / `CreateDefaultConfig` | Persist defaults |
+| Function                                               | Role                                    |
+| ------------------------------------------------------ | --------------------------------------- |
+| `InitConfig()`                                         | Load or create `~/.reticulum-go/config` |
+| `LoadConfig(path)`                                     | Parse INI (unknown keys ignored)        |
+| `SaveConfig` / `DefaultConfig` / `CreateDefaultConfig` | Persist defaults                        |
 
 Important `ReticulumConfig` fields: `EnableTransport`, `ShareInstance`, `SharedInstanceType`, ports, `RPCKey`, `Interfaces`, `EnableControlAPI`, `InMemoryPathTable`, `WatchInterfaces`, `DiscoverInterfaces`, `BackboneIO`.
 
@@ -347,59 +347,59 @@ Default config directory is **`~/.reticulum-go`**, not `~/.reticulum`.
 
 ## Python to Go map
 
-| Python | Go |
-|--------|-----|
-| `RNS.Reticulum(configdir=...)` | `reticulumconfig.LoadConfig` + `node.New` + `Start` |
-| `RNS.Identity()` | `identity.New()` |
-| `Identity.from_file` / `to_file` | `FromFile` / `ToFile` |
-| `Identity.recall(hash)` | `identity.Recall(hash)` |
+| Python                                             | Go                                                                             |
+| -------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `RNS.Reticulum(configdir=...)`                     | `reticulumconfig.LoadConfig` + `node.New` + `Start`                            |
+| `RNS.Identity()`                                   | `identity.New()`                                                               |
+| `Identity.from_file` / `to_file`                   | `FromFile` / `ToFile`                                                          |
+| `Identity.recall(hash)`                            | `identity.Recall(hash)`                                                        |
 | `Destination(identity, IN, SINGLE, app, *aspects)` | `destination.New(id, destination.In, destination.Single, app, tr, aspects...)` |
-| `Destination(..., OUT, ...)` | `destination.Out` or `FromHash` for known peers |
-| `destination.announce()` | `dest.Announce(false, nil, nil)` |
-| `destination.set_link_established_callback` | `SetLinkEstablishedCallback` (`func(any)`) |
-| `destination.register_request_handler` | `RegisterRequestHandler` / `RegisterRequestHandlerAny` |
-| `RNS.Link(destination)` | `link.NewLink` + `Establish` |
-| `link.identify(identity)` | `l.Identify(id)` |
-| `link.request(path, data=...)` | `l.Request(path, data, timeout)` |
-| `RNS.Resource(data, link, metadata=...)` | `resource.New` + `SetMetadata` + `l.SendResource` |
-| `RNS.Transport.has_path` / `request_path` | `tr.HasPath` / `tr.RequestPath` |
-| Shared instance master | First `share_instance = yes` process (daemon or `Node`) |
-| `~/.reticulum` | `~/.reticulum-go` |
+| `Destination(..., OUT, ...)`                       | `destination.Out` or `FromHash` for known peers                                |
+| `destination.announce()`                           | `dest.Announce(false, nil, nil)`                                               |
+| `destination.set_link_established_callback`        | `SetLinkEstablishedCallback` (`func(any)`)                                     |
+| `destination.register_request_handler`             | `RegisterRequestHandler` / `RegisterRequestHandlerAny`                         |
+| `RNS.Link(destination)`                            | `link.NewLink` + `Establish`                                                   |
+| `link.identify(identity)`                          | `l.Identify(id)`                                                               |
+| `link.request(path, data=...)`                     | `l.Request(path, data, timeout)`                                               |
+| `RNS.Resource(data, link, metadata=...)`           | `resource.New` + `SetMetadata` + `l.SendResource`                              |
+| `RNS.Transport.has_path` / `request_path`          | `tr.HasPath` / `tr.RequestPath`                                                |
+| Shared instance master                             | First `share_instance = yes` process (daemon or `Node`)                        |
+| `~/.reticulum`                                     | `~/.reticulum-go`                                                              |
 
 ## Concurrency and callbacks
 
-| Component | Rule |
-|-----------|------|
-| Transport / interfaces | Packet handlers run on interface or transport goroutines |
-| Destination / link callbacks | May fire concurrently. Return quickly. Do heavy work in your own goroutine |
-| `Link.Request` receipts | Timeout and response callbacks run in separate goroutines |
-| Same `Link` | Do not call `Establish`, `Teardown`, and `Request` concurrently without external locking |
-| `Node.ReloadInterfaces` / network hooks | Serialized by an internal mutex |
-| Identities / destinations | Internally mutex-protected. Still treat callbacks as re-entrant |
+| Component                               | Rule                                                                                     |
+| --------------------------------------- | ---------------------------------------------------------------------------------------- |
+| Transport / interfaces                  | Packet handlers run on interface or transport goroutines                                 |
+| Destination / link callbacks            | May fire concurrently. Return quickly. Do heavy work in your own goroutine               |
+| `Link.Request` receipts                 | Timeout and response callbacks run in separate goroutines                                |
+| Same `Link`                             | Do not call `Establish`, `Teardown`, and `Request` concurrently without external locking |
+| `Node.ReloadInterfaces` / network hooks | Serialized by an internal mutex                                                          |
+| Identities / destinations               | Internally mutex-protected. Still treat callbacks as re-entrant                          |
 
 Python RNS is largely single-threaded asyncio. Go is multi-threaded by default. Design for that.
 
 ## Errors and empty results
 
-| Situation | Typical signal |
-|-----------|----------------|
-| No path yet | `HasPath` false. Call `RequestPath` and wait |
-| Link not ready | `Establish` error or `GetStatus() != StatusActive` |
-| Request timeout | `RequestReceipt` status `StatusFailed` |
-| Recall before announce | `identity.Recall` error. Wait for announce or seed known destinations |
-| Shared instance auth failure | RPC dial / auth error. Align `rpc_key` or transport identity |
-| Hardware-bound identity without signer | `ErrHardwareBoundSignerRequired` |
+| Situation                              | Typical signal                                                        |
+| -------------------------------------- | --------------------------------------------------------------------- |
+| No path yet                            | `HasPath` false. Call `RequestPath` and wait                          |
+| Link not ready                         | `Establish` error or `GetStatus() != StatusActive`                    |
+| Request timeout                        | `RequestReceipt` status `StatusFailed`                                |
+| Recall before announce                 | `identity.Recall` error. Wait for announce or seed known destinations |
+| Shared instance auth failure           | RPC dial / auth error. Align `rpc_key` or transport identity          |
+| Hardware-bound identity without signer | `ErrHardwareBoundSignerRequired`                                      |
 
 ## Other API surfaces
 
-| Surface | Document |
-|---------|----------|
-| Localhost JSON and WebSocket | [Control API](/docs/control-api) |
-| C ABI (`include/rns.h`) | [librns](/docs/librns) |
-| Browser JS bridge | [Embedding and WebAssembly](/docs/embedding-and-wasm) |
-| CLI tools | [CLI utilities](/docs/utilities) |
-| Crypto details | [Cryptography](/docs/cryptography) |
-| Interface types | [Interfaces](/docs/interfaces) |
+| Surface                      | Document                                              |
+| ---------------------------- | ----------------------------------------------------- |
+| Localhost JSON and WebSocket | [Control API](/docs/control-api)                      |
+| C ABI (`include/rns.h`)      | [librns](/docs/librns)                                |
+| Browser JS bridge            | [Embedding and WebAssembly](/docs/embedding-and-wasm) |
+| CLI tools                    | [CLI utilities](/docs/utilities)                      |
+| Crypto details               | [Cryptography](/docs/cryptography)                    |
+| Interface types              | [Interfaces](/docs/interfaces)                        |
 
 ## Related documents
 

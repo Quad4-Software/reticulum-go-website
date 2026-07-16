@@ -2,6 +2,7 @@ import { browser } from '$app/environment';
 import { SvelteMap } from 'svelte/reactivity';
 import { ensureWasmMatchesDeployedBuild } from './wasm-version-guard';
 import { loadWasmExec } from './wasm-exec-loader';
+import { fetchWasmWithSri } from './wasm-sri';
 import {
 	loadIdentity,
 	saveIdentity,
@@ -173,13 +174,16 @@ class ReticulumService {
 	 * In-app toast always. Web Notification when permission is granted and the
 	 * tab is hidden (or forceWeb is true).
 	 */
-	notify(title: string, body: string, opts?: { forceWeb?: boolean; tag?: string; toast?: boolean }) {
+	notify(
+		title: string,
+		body: string,
+		opts?: { forceWeb?: boolean; tag?: string; toast?: boolean }
+	) {
 		if (opts?.toast !== false) {
 			this.showToast(body ? `${title}: ${body}` : title);
 		}
 		const shouldWeb =
-			this.notificationsEnabled &&
-			(opts?.forceWeb || document.visibilityState === 'hidden');
+			this.notificationsEnabled && (opts?.forceWeb || document.visibilityState === 'hidden');
 		if (shouldWeb) {
 			this.showWebNotification(title, body, opts?.tag);
 		}
@@ -192,8 +196,8 @@ class ReticulumService {
 				body,
 				icon: '/logo.svg',
 				tag,
-				renotify: Boolean(tag)
-			});
+				...(tag ? { renotify: true } : {})
+			} as NotificationOptions);
 		} catch (e) {
 			console.error('[reticulum] Notification failed:', e);
 		}
@@ -438,10 +442,7 @@ class ReticulumService {
 
 		const go = new window.Go();
 		try {
-			const response = await fetch('/reticulum-go.wasm', { cache: 'no-cache' });
-			if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-
-			const buffer = await response.arrayBuffer();
+			const buffer = await fetchWasmWithSri('/reticulum-go.wasm', { cache: 'no-cache' });
 			this.wasmSizeBytes = buffer.byteLength;
 			const result = await WebAssembly.instantiate(buffer, go.importObject);
 			go.run(result.instance);
@@ -538,10 +539,14 @@ class ReticulumService {
 					window.onPeerDiscovered(peerData);
 				} catch (e) {
 					console.error('[reticulum] onPeerDiscovered threw:', e, peerData);
-					this.log(`onPeerDiscovered threw: ${e instanceof Error ? e.message : String(e)}`, 'error', {
-						peerData,
-						error: String(e)
-					});
+					this.log(
+						`onPeerDiscovered threw: ${e instanceof Error ? e.message : String(e)}`,
+						'error',
+						{
+							peerData,
+							error: String(e)
+						}
+					);
 				}
 			});
 		} else {

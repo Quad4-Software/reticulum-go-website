@@ -19,7 +19,9 @@ describe('GET /set-theme', () => {
 		const cookiesSet = vi.fn();
 		const { GET } = await import('./+server');
 		try {
-			await GET(miniEvent(new URL('http://localhost/set-theme?theme=dark&redirect=/'), cookiesSet) as never);
+			await GET(
+				miniEvent(new URL('http://localhost/set-theme?theme=dark&redirect=/'), cookiesSet) as never
+			);
 			expect.fail('expected redirect');
 		} catch (e) {
 			if (!isRedirect(e)) throw e;
@@ -37,7 +39,12 @@ describe('GET /set-theme', () => {
 		const cookiesSet = vi.fn();
 		const { GET } = await import('./+server');
 		try {
-			await GET(miniEvent(new URL('http://localhost/set-theme?theme=hacker&redirect=/docs'), cookiesSet) as never);
+			await GET(
+				miniEvent(
+					new URL('http://localhost/set-theme?theme=hacker&redirect=/docs'),
+					cookiesSet
+				) as never
+			);
 			expect.fail('expected redirect');
 		} catch (e) {
 			if (!isRedirect(e)) throw e;
@@ -49,7 +56,12 @@ describe('GET /set-theme', () => {
 	it('uses safe redirect target for non-path redirect', async () => {
 		const { GET } = await import('./+server');
 		try {
-			await GET(miniEvent(new URL('http://localhost/set-theme?theme=light&redirect=//evil.example'), vi.fn()) as never);
+			await GET(
+				miniEvent(
+					new URL('http://localhost/set-theme?theme=light&redirect=//evil.example'),
+					vi.fn()
+				) as never
+			);
 			expect.fail('expected redirect');
 		} catch (e) {
 			if (!isRedirect(e)) throw e;

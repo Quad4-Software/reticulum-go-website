@@ -96,11 +96,11 @@
 	<meta property="twitter:image" content={`${SITE_URL}/logo.svg`} />
 </svelte:head>
 
-<div class="flex flex-col gap-8">
-	<Breadcrumbs items={breadcrumbItems} class="no-print" />
-	<div class="flex justify-end no-print">
+<div class="flex flex-col gap-6">
+	<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between no-print">
+		<Breadcrumbs items={breadcrumbItems} />
 		<div
-			class="flex items-center gap-1 p-1 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg shadow-sm"
+			class="flex items-center gap-1 p-1 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg shadow-sm self-start sm:self-auto shrink-0"
 		>
 			<span class="px-2 text-[10px] font-bold uppercase tracking-wider text-zinc-500">
 				{$t('common.export')}

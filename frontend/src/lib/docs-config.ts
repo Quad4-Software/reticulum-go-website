@@ -59,4 +59,6 @@ export const DOC_NAV: DocNavSection[] = [
 	}
 ];
 
-export const DOC_SLUGS: string[] = DOC_NAV.flatMap((section) => section.items.map((item) => item.slug));
+export const DOC_SLUGS: string[] = DOC_NAV.flatMap((section) =>
+	section.items.map((item) => item.slug)
+);

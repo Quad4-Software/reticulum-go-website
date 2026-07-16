@@ -36,7 +36,10 @@ const config = {
 				const ignorable = (r) =>
 					r === '/docs' ||
 					r.startsWith('/docs/') ||
-					r === '/sitemap.xml';
+					r === '/sitemap.xml' ||
+					r === '/llms.txt' ||
+					r === '/llms-full.txt' ||
+					r === '/api/agent';
 				const unseen = safeRoutes.filter((r) => !ignorable(r));
 				if (unseen.length === 0) return;
 				throw new Error(`Unseen prerenderable routes: ${unseen.join(', ')}`);

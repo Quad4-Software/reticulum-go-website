@@ -41,26 +41,26 @@ See [Architecture](/docs/architecture) for a fuller picture.
 
 Below is a summary of major features. For line-by-line parity with Python, see [Compatibility](/docs/compatibility) and [COMPATIBILITY.md](https://github.com/Quad4-Software/Reticulum-Go/blob/master/COMPATIBILITY.md).
 
-| Area | Status | Location |
-|------|--------|----------|
-| Wire-compatible crypto and packets | Complete | `pkg/cryptography`, `pkg/packet`, `tests/crossref` |
-| Transport core (paths, announces, relay) | Complete | `pkg/transport` |
-| Identity and destinations | Complete | `pkg/identity`, `pkg/destination` |
-| Links, channel, buffer, resources | Complete | `pkg/link`, `pkg/channel`, `pkg/buffer`, `pkg/resource` |
-| IFAC | Complete | `pkg/ifac` |
-| UDP, TCP, Auto, I2P, Backbone interfaces | Complete | `pkg/interfaces` |
-| WebSocket interface | Go-only | `pkg/interfaces/websocket_*.go` |
-| QUIC interface | Go-only | `pkg/interfaces/quic.go`, `quic_tls.go` |
-| Daemon and config | Complete | `cmd/reticulum-go`, `pkg/reticulumconfig` |
-| Discovery (rnstransport) | Partial | Listening works. Announcer and autoconnect loops are not auto-started |
-| Blackhole | Partial | Table and announce drop work. Link teardown at identify is not implemented |
-| RNode, KISS, Serial, Weave | Not implemented | No driver in this tree |
-| PipeInterface, LocalInterface | Implemented | `pipe.go`, `local.go`, `sharedinstance` |
-| Python CLI utilities | Yes (core) | `reticulum-go status|id|probe|path|cp` via `pkg/cli` / `pkg/rnsutil` |
-| Interface hot reload | Go-only | `pkg/node/reload.go`, SIGHUP on Unix |
-| Control API | Go-only | `pkg/controlapi` |
-| librns C ABI | Go-only | `pkg/librns`, `include/rns.h`, `task build-librns` |
-| Runtime sandbox | Go-only | `pkg/sandbox` |
+| Area                                     | Status          | Location                                                                   |
+| ---------------------------------------- | --------------- | -------------------------------------------------------------------------- |
+| Wire-compatible crypto and packets       | Complete        | `pkg/cryptography`, `pkg/packet`, `tests/crossref`                         |
+| Transport core (paths, announces, relay) | Complete        | `pkg/transport`                                                            |
+| Identity and destinations                | Complete        | `pkg/identity`, `pkg/destination`                                          |
+| Links, channel, buffer, resources        | Complete        | `pkg/link`, `pkg/channel`, `pkg/buffer`, `pkg/resource`                    |
+| IFAC                                     | Complete        | `pkg/ifac`                                                                 |
+| UDP, TCP, Auto, I2P, Backbone interfaces | Complete        | `pkg/interfaces`                                                           |
+| WebSocket interface                      | Go-only         | `pkg/interfaces/websocket_*.go`                                            |
+| QUIC interface                           | Go-only         | `pkg/interfaces/quic.go`, `quic_tls.go`                                    |
+| Daemon and config                        | Complete        | `cmd/reticulum-go`, `pkg/reticulumconfig`                                  |
+| Discovery (rnstransport)                 | Partial         | Listening works. Announcer and autoconnect loops are not auto-started      |
+| Blackhole                                | Partial         | Table and announce drop work. Link teardown at identify is not implemented |
+| RNode, KISS, Serial, Weave               | Not implemented | No driver in this tree                                                     |
+| PipeInterface, LocalInterface            | Implemented     | `pipe.go`, `local.go`, `sharedinstance`                                    |
+| Python CLI utilities                     | Yes (core)      | `reticulum-go status                                                       | id  | probe | path | cp`via`pkg/cli`/`pkg/rnsutil` |
+| Interface hot reload                     | Go-only         | `pkg/node/reload.go`, SIGHUP on Unix                                       |
+| Control API                              | Go-only         | `pkg/controlapi`                                                           |
+| librns C ABI                             | Go-only         | `pkg/librns`, `include/rns.h`, `task build-librns`                         |
+| Runtime sandbox                          | Go-only         | `pkg/sandbox`                                                              |
 
 ## Repository layout
 
@@ -99,14 +99,14 @@ Reticulum-Go adds features that Python does not ship today (control API, librns,
 
 ## Who should read which document
 
-| Role | Start here |
-|------|------------|
-| Architect evaluating adoption | This page, then [Architecture](/docs/architecture) and [Compatibility](/docs/compatibility) |
-| Network operator | [Getting started](/docs/getting-started), [Configuration](/docs/configuration), [Interfaces](/docs/interfaces), [CLI utilities](/docs/utilities) |
-| Go application author | [API reference](/docs/api-reference), [Package map](/docs/package-map), [Examples](/docs/examples), [Embedding and WebAssembly](/docs/embedding-and-wasm) |
-| Native / FFI embedder | [librns](/docs/librns), [Compatibility](/docs/compatibility) |
-| Security reviewer | [Cryptography](/docs/cryptography), [Security](/docs/security) |
-| Developer | [Development and testing](/docs/development-and-testing) |
+| Role                          | Start here                                                                                                                                                |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Architect evaluating adoption | This page, then [Architecture](/docs/architecture) and [Compatibility](/docs/compatibility)                                                               |
+| Network operator              | [Getting started](/docs/getting-started), [Configuration](/docs/configuration), [Interfaces](/docs/interfaces), [CLI utilities](/docs/utilities)          |
+| Go application author         | [API reference](/docs/api-reference), [Package map](/docs/package-map), [Examples](/docs/examples), [Embedding and WebAssembly](/docs/embedding-and-wasm) |
+| Native / FFI embedder         | [librns](/docs/librns), [Compatibility](/docs/compatibility)                                                                                              |
+| Security reviewer             | [Cryptography](/docs/cryptography), [Security](/docs/security)                                                                                            |
+| Developer                     | [Development and testing](/docs/development-and-testing)                                                                                                  |
 
 ## License and credit
 

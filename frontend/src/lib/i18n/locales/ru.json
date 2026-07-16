@@ -4,6 +4,7 @@
 		"docs": "Документация",
 		"interactive": "Интерактивные",
 		"apps": "Приложения",
+		"tools": "Инструменты",
 		"ren_browser": "Ren Browser",
 		"wasm_example": "Пример WASM",
 		"contact": "Контакты",
@@ -23,6 +24,7 @@
 		"export_txt": "TXT",
 		"coming_soon": "Скоро",
 		"available": "Доступно",
+		"alpha": "Alpha",
 		"try_demo": "Попробовать демо",
 		"explore": "Исследовать",
 		"learn_more": "Узнать больше",
@@ -39,6 +41,76 @@
 		"description": "Приложения и инструменты на базе Reticulum-Go, включая Ren Browser и Micron Parser Go.",
 		"search_placeholder": "Поиск приложений..."
 	},
+	"tools": {
+		"title": "Инструменты",
+		"description": "Браузерные инструменты на базе Reticulum-Go и связанных WASM-модулей. Кэшируются PWA сайта для офлайн-использования после первого визита.",
+		"search_placeholder": "Поиск инструментов...",
+		"micron_editor": {
+			"title": "Micron Editor",
+			"description": "Редактор разметки Micron с live-предпросмотром через WASM и Micron-Parser-Go.",
+			"page_title": "Micron Editor",
+			"page_blurb": "Пишите Micron и смотрите HTML-предпросмотр в реальном времени. Работает полностью в браузере с Micron-Parser-Go WASM.",
+			"back": "Все инструменты",
+			"source": "Исходник",
+			"preview": "Предпросмотр",
+			"monospace": "Monospace",
+			"reset": "Сбросить пример",
+			"copy": "Копировать",
+			"copied": "Скопировано",
+			"loading": "Загрузка Micron WASM…",
+			"ready": "Live-предпросмотр готов",
+			"error": "Не удалось загрузить Micron WASM",
+			"powered_by": "Powered by Micron-Parser-Go",
+			"clear": "Очистить",
+			"download": "Скачать",
+			"retry": "Повторить",
+			"snippets": "Сниппеты",
+			"cheatsheet": "Шпаргалка",
+			"insert_snippet": "Вставить сниппет",
+			"lines": "Строки",
+			"chars": "Символы"
+		},
+		"reticulum_guide": {
+			"title": "Reticulum Guide",
+			"description": "Визуальные туториалы о destinations, identities, announces, криптографии, links, interfaces и multi-hop пакетах, на основе официального руководства Reticulum.",
+			"page_title": "Reticulum Guide",
+			"page_blurb": "Интерактивные объяснения с учётом Zen of Reticulum: суверенные сети, destinations вместо адресов, шифрование по умолчанию.",
+			"back": "Все инструменты",
+			"back_guide": "Все главы гайда",
+			"search_placeholder": "Поиск глав...",
+			"sources": "Источники",
+			"zen": "Сохраняя zen",
+			"step_of": "Шаг {current} из {total}",
+			"previous": "Назад",
+			"next": "Далее",
+			"open_chapter": "Открыть главу",
+			"chapters": "Главы",
+			"chapters_toggle": "Показать или скрыть список глав",
+			"python": "Python",
+			"go": "Go",
+			"try_it": "Попробуйте сами",
+			"code_sample": "Язык примера кода",
+			"encrypted": "Зашифровано",
+			"multi_hop": "Multi-hop",
+			"local_only": "Только локально",
+			"accepted": "Принято",
+			"rejected": "Отклонено",
+			"interactive_title": "Попробуйте сами",
+			"copy": "Копировать",
+			"copied": "Скопировано",
+			"nav_hint": "Свайп или стрелки",
+			"in_go": "Доступно в Go",
+			"python_ref": "Справка Python"
+		},
+		"rnode_flasher": {
+			"title": "RNODE Flasher",
+			"description": "Прошивка и подготовка RNode-прошивки из браузера. Планируется совместимость с tiny-reticulum-go и официальными сборками RNode Firmware."
+		},
+		"bot_builder": {
+			"title": "Bot Builder",
+			"description": "Визуальный конструктор LXMF-ботов на базе LXMFy-Go. Проектируйте обработчики, destinations и сценарии бота без пустого файла."
+		}
+	},
 	"time": {
 		"seconds": "секунд",
 		"minutes": "минут",
@@ -51,6 +123,9 @@
 		"title": "Пожертвовать",
 		"subtitle": "Поддержите разработку и сопровождение Reticulum-Go.",
 		"intro": "Выберите платформу ниже или отправьте Monero напрямую.",
+		"meta_description": "Поддержите разработку Reticulum-Go. 50% пожертвований идут Mark Qvist, создателю эталонной реализации Reticulum на reticulum.network.",
+		"markqvist_share": "50% пожертвований идут Mark Qvist, создателю эталонной реализации Reticulum.",
+		"markqvist_link": "reticulum.network",
 		"buymeacoffee": "Buy Me a Coffee",
 		"liberapay": "Liberapay",
 		"kofi": "Ko-fi",
@@ -67,7 +142,7 @@
 		"features": {
 			"encrypted": {
 				"title": "Шифрование по умолчанию",
-				"description": "Все в Reticulum зашифровано с использованием сильных, современных примитивов. Незашифрованный трафик никогда не покидает ваше устройство."
+				"description": "Reticulum использует сильную современную криптографию сквозным образом. Форматы на проводе совпадают с Python-референсом, чтобы пиры оставались совместимы."
 			},
 			"resilient": {
 				"title": "Устойчивость и суверенитет",
@@ -75,8 +150,24 @@
 			},
 			"go": {
 				"title": "Реализация на Go",
-				"description": "Создан на Go для максимальной производительности, безопасности и кроссплатформенной совместимости. Запускайте его где угодно - от встраиваемых систем до облачных серверов."
+				"description": "Создан на Go для переносимости, аудируемости и параллелизма. Запускайте от встраиваемых устройств до облачных серверов."
+			},
+			"interop": {
+				"title": "Полная совместимость с RNS",
+				"description": "Совместим на уровне провода с официальным Python Reticulum (RNS). Пакеты, каналы и криптография работают peer-to-peer."
+			},
+			"sandbox": {
+				"title": "Безопасность по замыслу",
+				"description": "Нативный демон по умолчанию включает OS-песочницу. WASM-сборка работает в песочнице браузера среды выполнения."
+			},
+			"modular": {
+				"title": "Модульность и встраиваемость",
+				"description": "Используйте как демон, Go-библиотеку, C ABI (librns), control API или WASM-модуль."
 			}
+		},
+		"coexistence": {
+			"title": "Расширяя охват Reticulum",
+			"description": "Reticulum-Go создан для работы с эталонной реализацией на Python от Mark Qvist, а не для её замены. Цель — помочь сети и расширить, где может работать Reticulum, в то время как Python RNS остаётся референсом, определяющим протокол."
 		},
 		"ren_promo": {
 			"title": "Браузер для сети Reticulum",

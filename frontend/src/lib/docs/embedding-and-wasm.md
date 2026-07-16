@@ -2,12 +2,12 @@
 
 ## Integration paths
 
-| Path | Use when |
-|------|----------|
-| `pkg/node` | Go app, full transport and interfaces in-process |
-| `pkg/librns` / [librns](/docs/librns) | Native host (C, C++, FFI) wants the same stack in-process |
-| Control API | Separate language talking to a local `reticulum-go` daemon |
-| `pkg/wasm` | Browser client over WebSocket |
+| Path                                  | Use when                                                   |
+| ------------------------------------- | ---------------------------------------------------------- |
+| `pkg/node`                            | Go app, full transport and interfaces in-process           |
+| `pkg/librns` / [librns](/docs/librns) | Native host (C, C++, FFI) wants the same stack in-process  |
+| Control API                           | Separate language talking to a local `reticulum-go` daemon |
+| `pkg/wasm`                            | Browser client over WebSocket                              |
 
 ## Embedding with pkg/node
 
@@ -28,13 +28,13 @@ n.Stop()
 
 ### Lifecycle hooks
 
-| Method | When to use |
-|--------|-------------|
-| `OnNetworkAvailable` | NIC came up, Wi-Fi reassociated, or manual resume |
-| `OnNetworkLost` | NIC down or airplane mode |
-| `RefreshPaths` | Stale paths, force path requests for watched destinations |
-| `ReloadInterfaces` | Config file interface blocks changed |
-| `StartInterfaceDiscovery` | rnstransport discovery when `discover_interfaces = yes` |
+| Method                    | When to use                                               |
+| ------------------------- | --------------------------------------------------------- |
+| `OnNetworkAvailable`      | NIC came up, Wi-Fi reassociated, or manual resume         |
+| `OnNetworkLost`           | NIC down or airplane mode                                 |
+| `RefreshPaths`            | Stale paths, force path requests for watched destinations |
+| `ReloadInterfaces`        | Config file interface blocks changed                      |
+| `StartInterfaceDiscovery` | rnstransport discovery when `discover_interfaces = yes`   |
 
 `watch_interfaces = yes` in config enables NIC polling via `netmon.go` on Linux, Android, Windows, macOS, and BSD. WASM builds use a stub.
 
@@ -76,23 +76,23 @@ task test-wasm
 
 `pkg/wasm.RegisterJSFunctions` exposes a `reticulum` global:
 
-| Function | Role |
-|----------|------|
-| `init` | Initialize transport and identity |
-| `getIdentity` | Read local identity |
-| `getDestination` | Read destination handle |
-| `connect` | Connect WebSocket interface |
-| `disconnect` | Close WebSocket |
-| `isConnected` | Connection state |
-| `announce` | Send announce |
-| `sendData` / `sendMessage` | Send data packet |
-| `requestPath` | Request path to destination |
-| `setPacketCallback` | JS callback for packets |
-| `setAnnounceCallback` | JS callback for announces |
-| `getStats` | Traffic counters |
-| `onNetworkAvailable` | Resume after browser online |
-| `onNetworkLost` | Pause on offline |
-| `setWatchedDestinations` | Watch list for paths |
+| Function                   | Role                              |
+| -------------------------- | --------------------------------- |
+| `init`                     | Initialize transport and identity |
+| `getIdentity`              | Read local identity               |
+| `getDestination`           | Read destination handle           |
+| `connect`                  | Connect WebSocket interface       |
+| `disconnect`               | Close WebSocket                   |
+| `isConnected`              | Connection state                  |
+| `announce`                 | Send announce                     |
+| `sendData` / `sendMessage` | Send data packet                  |
+| `requestPath`              | Request path to destination       |
+| `setPacketCallback`        | JS callback for packets           |
+| `setAnnounceCallback`      | JS callback for announces         |
+| `getStats`                 | Traffic counters                  |
+| `onNetworkAvailable`       | Resume after browser online       |
+| `onNetworkLost`            | Pause on offline                  |
+| `setWatchedDestinations`   | Watch list for paths              |
 
 On load, the module calls the JavaScript function `reticulumReady()` if defined.
 

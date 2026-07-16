@@ -1,0 +1,15 @@
+{
+	"updatedAt": "2026-07-16T12:43:19.362Z",
+	"assets": {
+		"/reticulum-go.wasm": {
+			"sha256": "ce282ffefd0461479d446629ac225a43d4c7f6b4fe1634c40dbbd5e2bddd24b8",
+			"sri": "sha384-vNKrvmoRnm3dCRsqMYdKRVQBgJ49QhwHBf61JPMSJrjW9GpzkbKETy2G4tkn9vI1",
+			"bytes": 6914606
+		},
+		"/micron-parser-go.wasm": {
+			"sha256": "10ac22580a610e5f87408e5eb5da9da37f3ce5a0513100c872d608ab077b0c57",
+			"sri": "sha384-v8PajPnZcEzOx9l7nBD+cV9zvpJbmgHyWOmeRW9KXCJ2Z7g0S7mRIBAvIHXElH9B",
+			"bytes": 4059515
+		}
+	}
+}

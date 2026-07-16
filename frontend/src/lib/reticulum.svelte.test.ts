@@ -378,9 +378,7 @@ describe('reticulum service – peer discovery wiring', () => {
 		const peerHash = '1111111111111111aaaaaaaaaaaaaaaa';
 		api.sendMessage.mockReturnValueOnce({ error: 'Identity not found.' });
 
-		await expect(reticulum.sendMessage(peerHash, 'queued')).rejects.toThrow(
-			/Identity not found/
-		);
+		await expect(reticulum.sendMessage(peerHash, 'queued')).rejects.toThrow(/Identity not found/);
 
 		flushSync();
 

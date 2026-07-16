@@ -49,7 +49,7 @@
 			</p>
 			<div class="flex flex-col gap-1">
 				<div class="flex items-center gap-3">
-					<p class="text-xs text-zinc-400">Implementation: Apache-2.0</p>
+					<p class="text-xs text-zinc-400">Implementation License: Apache-2.0</p>
 					{#if latestTag}
 						<span class="text-zinc-300 dark:text-zinc-700">•</span>
 						<a
@@ -118,10 +118,7 @@
 			<ul class="space-y-2 text-sm text-zinc-500 dark:text-zinc-400">
 				<li><a href="/" class="hover:text-zinc-900 dark:hover:text-zinc-100">Home</a></li>
 				<li><a href="/docs" class="hover:text-zinc-900 dark:hover:text-zinc-100">Docs</a></li>
-				<li>
-					<a href="/interactive" class="hover:text-zinc-900 dark:hover:text-zinc-100">Interactive</a
-					>
-				</li>
+				<li><a href="/tools" class="hover:text-zinc-900 dark:hover:text-zinc-100">Tools</a></li>
 				<li><a href="/apps" class="hover:text-zinc-900 dark:hover:text-zinc-100">Apps</a></li>
 				<li>
 					<a
@@ -148,7 +145,9 @@
 					</a>
 				</li>
 				<li>
-					<a href="/donate" class="hover:text-zinc-900 dark:hover:text-zinc-100">{$t('common.donate')}</a>
+					<a href="/donate" class="hover:text-zinc-900 dark:hover:text-zinc-100"
+						>{$t('common.donate')}</a
+					>
 				</li>
 				<li><a href="/contact" class="hover:text-zinc-900 dark:hover:text-zinc-100">Contact</a></li>
 				<li>

@@ -33,20 +33,20 @@ Transport.SendPacket -> Send -> ProcessOutgoing -> wire
 
 ## Supported types
 
-| Config `type` | Status | File |
-|---------------|--------|------|
-| `UDPInterface` | Complete | `udp.go` |
-| `TCPClientInterface` | Complete | `tcp.go` |
-| `TCPServerInterface` | Complete | `tcp.go` |
-| `AutoInterface` | Complete | `auto.go`, `auto_rescan.go`, `auto_roam.go` |
-| `I2PInterface` | Complete | `i2p.go` (SAM in `pkg/i2p`) |
-| `BackboneInterface` | Complete | `backbone.go` |
-| `BackboneClientInterface` | Complete | `backbone_client.go` |
-| `PipeInterface` | Complete | `pipe.go` |
-| `LocalInterface` / `LocalServerInterface` | Complete | `local.go`, `sharedinstance` |
-| `WebSocketInterface` | Go-only | `websocket_native.go`, `websocket_wasm.go` |
-| `QUICClientInterface` | Go-only | `quic.go`, `quic_tls.go` |
-| `QUICServerInterface` | Go-only | `quic.go`, `quic_tls.go` |
+| Config `type`                             | Status   | File                                        |
+| ----------------------------------------- | -------- | ------------------------------------------- |
+| `UDPInterface`                            | Complete | `udp.go`                                    |
+| `TCPClientInterface`                      | Complete | `tcp.go`                                    |
+| `TCPServerInterface`                      | Complete | `tcp.go`                                    |
+| `AutoInterface`                           | Complete | `auto.go`, `auto_rescan.go`, `auto_roam.go` |
+| `I2PInterface`                            | Complete | `i2p.go` (SAM in `pkg/i2p`)                 |
+| `BackboneInterface`                       | Complete | `backbone.go`                               |
+| `BackboneClientInterface`                 | Complete | `backbone_client.go`                        |
+| `PipeInterface`                           | Complete | `pipe.go`                                   |
+| `LocalInterface` / `LocalServerInterface` | Complete | `local.go`, `sharedinstance`                |
+| `WebSocketInterface`                      | Go-only  | `websocket_native.go`, `websocket_wasm.go`  |
+| `QUICClientInterface`                     | Go-only  | `quic.go`, `quic_tls.go`                    |
+| `QUICServerInterface`                     | Go-only  | `quic.go`, `quic_tls.go`                    |
 
 ## Not implemented
 
@@ -115,11 +115,11 @@ Features:
 
 Modes match Python RNS wire values (`full` 0x01 through `internal` 0x07). Set with `mode` or `interface_mode` on an interface block.
 
-| Mode | Effect (summary) |
-|------|------------------|
-| `full` | Default. Normal announce and path behavior |
-| `access_point` | Does not rebroadcast announces |
-| `gateway` / `roaming` / `internal` | Participate in unknown-path discovery (`DISCOVER_PATHS_FOR`) |
+| Mode                                | Effect (summary)                                             |
+| ----------------------------------- | ------------------------------------------------------------ |
+| `full`                              | Default. Normal announce and path behavior                   |
+| `access_point`                      | Does not rebroadcast announces                               |
+| `gateway` / `roaming` / `internal`  | Participate in unknown-path discovery (`DISCOVER_PATHS_FOR`) |
 | `boundary` / `roaming` / `internal` | Extra announce forward filters vs next-hop mode (RNS 1.3.6+) |
 
 `recursive_prs = yes` forces unknown-path discovery on any mode. `announces_from_internal = no` blocks rebroadcast of announces learned via an internal-mode next hop.
@@ -136,13 +136,13 @@ Live tests require `RUN_LIVE_I2P=1` and a running SAM bridge.
 
 Backbone interfaces multiplex many TCP streams through `pkg/backbone` hubs. Select poller backend with `backbone_io` in `[reticulum]`:
 
-| Value | Platform |
-|-------|----------|
-| auto | Best available |
-| epoll | Linux |
-| kqueue | BSD, macOS |
+| Value    | Platform               |
+| -------- | ---------------------- |
+| auto     | Best available         |
+| epoll    | Linux                  |
+| kqueue   | BSD, macOS             |
 | io_uring | Linux (when available) |
-| go | Portable fallback |
+| go       | Portable fallback      |
 
 ## WebSocketInterface
 
@@ -193,13 +193,13 @@ Details: [Cryptography](/docs/cryptography#ifac).
 
 ## Reconnect behavior
 
-| Aspect | Python RNS | Reticulum-Go |
-|--------|------------|--------------|
-| TCP / backbone / QUIC client | Yes for TCP/backbone, 5 s wait | Yes via `reconnect.go` |
-| I2P | Yes, 15 s wait | Yes in `i2p.go` |
-| UDP | No | Yes when `max_reconnect_tries > 0` (opt-in) |
-| Default max tries | Unlimited (`None`) | Unlimited (`-1` or omitted) |
-| After exhaustion | Teardown | Teardown (`Stop`) |
+| Aspect                       | Python RNS                     | Reticulum-Go                                |
+| ---------------------------- | ------------------------------ | ------------------------------------------- |
+| TCP / backbone / QUIC client | Yes for TCP/backbone, 5 s wait | Yes via `reconnect.go`                      |
+| I2P                          | Yes, 15 s wait                 | Yes in `i2p.go`                             |
+| UDP                          | No                             | Yes when `max_reconnect_tries > 0` (opt-in) |
+| Default max tries            | Unlimited (`None`)             | Unlimited (`-1` or omitted)                 |
+| After exhaustion             | Teardown                       | Teardown (`Stop`)                           |
 
 `ConnectivityNotifier` hooks allow embedders to observe reconnect state (Go-only).
 
@@ -227,14 +227,14 @@ Per-interface keys `announce_cap`, `announce_rate_*`, `ingress_control`, and `ic
 
 ## Testing
 
-| Test | Env |
-|------|-----|
-| IFAC live | `RUN_LIVE_INTEROP=1`, `tests/interop/ifac_live_test.go` |
-| Pipe live | `RUN_LIVE_INTEROP=1`, `tests/interop/pipe_live_test.go` |
+| Test            | Env                                                           |
+| --------------- | ------------------------------------------------------------- |
+| IFAC live       | `RUN_LIVE_INTEROP=1`, `tests/interop/ifac_live_test.go`       |
+| Pipe live       | `RUN_LIVE_INTEROP=1`, `tests/interop/pipe_live_test.go`       |
 | Shared RPC live | `RUN_LIVE_INTEROP=1`, `tests/interop/shared_rpc_live_test.go` |
-| Auto live | `tests/interop/auto_live_test.go` |
-| Backbone live | `tests/interop/backbone_live_test.go` |
-| I2P live | `RUN_LIVE_I2P=1` |
+| Auto live       | `tests/interop/auto_live_test.go`                             |
+| Backbone live   | `tests/interop/backbone_live_test.go`                         |
+| I2P live        | `RUN_LIVE_I2P=1`                                              |
 
 ## Related documents
 

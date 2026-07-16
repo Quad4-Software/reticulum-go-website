@@ -6,13 +6,13 @@ Pair this page with the [API reference](/docs/api-reference) for types and recip
 
 ## Which Example to Open
 
-| Goal | Start Here |
-| :--- | :--- |
-| Pages and files over Reticulum | `reticulum-go pageserver` or `examples/pageserver` |
-| Browser WebSocket client | `examples/wasm` |
-| Python talking to the daemon | `examples/control-client` |
-| C / FFI integration smoke test | `examples/librns-smoke` |
-| Operator CLIs | `reticulum-go status \| id \| probe \| path \| cp` then [CLI Utilities](/docs/utilities) |
+| Goal                           | Start Here                                                                               |
+| :----------------------------- | :--------------------------------------------------------------------------------------- |
+| Pages and files over Reticulum | `reticulum-go pageserver` or `examples/pageserver`                                       |
+| Browser WebSocket client       | `examples/wasm`                                                                          |
+| Python talking to the daemon   | `examples/control-client`                                                                |
+| C / FFI integration smoke test | `examples/librns-smoke`                                                                  |
+| Operator CLIs                  | `reticulum-go status \| id \| probe \| path \| cp` then [CLI Utilities](/docs/utilities) |
 
 ## pageserver
 
@@ -20,8 +20,8 @@ Preferred: `reticulum-go pageserver` (built into the main binary). Sample pages,
 
 Serves content over Reticulum request handlers:
 
-*   `/page/` for HTML pages
-*   `/file/` for static files
+- `/page/` for HTML pages
+- `/file/` for static files
 
 This is a useful Nomadnet style pattern. Live interoperability is tested via `tests/interop/pageserver_live_test.go` when `RUN_LIVE_INTEROP=1` is set.
 
@@ -76,9 +76,9 @@ See [librns](/docs/librns).
 
 ## Related Documents
 
-*   [API Reference](/docs/api-reference)
-*   [Getting Started](/docs/getting-started)
-*   [Embedding and WebAssembly](/docs/embedding-and-wasm)
-*   [Control API](/docs/control-api)
-*   [librns](/docs/librns)
-*   [CLI Utilities](/docs/utilities)
+- [API Reference](/docs/api-reference)
+- [Getting Started](/docs/getting-started)
+- [Embedding and WebAssembly](/docs/embedding-and-wasm)
+- [Control API](/docs/control-api)
+- [librns](/docs/librns)
+- [CLI Utilities](/docs/utilities)

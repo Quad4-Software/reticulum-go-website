@@ -1,12 +1,21 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { t } from 'svelte-i18n';
-	import { GitBranch } from 'lucide-svelte';
+	import { GitBranch, Lock, Mountain, Code2, Network, ShieldCheck, Boxes } from 'lucide-svelte';
 	import { getRepoUpdatedAt, calculateTimeAgo } from '$lib/version';
 
 	let repoUpdatedAt = $state<string | null>(null);
 	let timeAgo = $derived.by(() => calculateTimeAgo(repoUpdatedAt));
 	let showActivity = $state(false);
+
+	const features = [
+		{ key: 'encrypted', Icon: Lock },
+		{ key: 'resilient', Icon: Mountain },
+		{ key: 'go', Icon: Code2 },
+		{ key: 'interop', Icon: Network },
+		{ key: 'sandbox', Icon: ShieldCheck },
+		{ key: 'modular', Icon: Boxes }
+	] as const;
 
 	onMount(async () => {
 		repoUpdatedAt = await getRepoUpdatedAt();
@@ -21,8 +30,8 @@
 	/>
 </svelte:head>
 
-<div class="space-y-24">
-	<section class="text-center space-y-8 py-12">
+<div>
+	<section class="text-center space-y-8 pt-12 pb-8">
 		<h1
 			class="text-5xl md:text-7xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-zinc-900 via-zinc-700 to-zinc-500 dark:from-white dark:via-zinc-300 dark:to-zinc-500"
 		>
@@ -69,73 +78,37 @@
 		</div>
 	</section>
 
-	<section class="grid md:grid-cols-3 gap-8">
-		<div class="p-8 rounded-2xl border border-zinc-200 dark:border-zinc-800 space-y-4">
-			<div
-				class="w-12 h-12 rounded-xl bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center"
-			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					class="w-6 h-6"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					><rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path
-						d="M7 11V7a5 5 0 0 1 10 0v4"
-					/></svg
+	<section class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-16 md:mb-24">
+		{#each features as feature (feature.key)}
+			<div class="p-8 rounded-2xl border border-zinc-200 dark:border-zinc-800 space-y-4">
+				<div
+					class="w-12 h-12 rounded-xl bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center"
 				>
+					<feature.Icon class="w-6 h-6" />
+				</div>
+				<h3 class="text-xl font-bold">{$t(`home.features.${feature.key}.title`)}</h3>
+				<p class="text-zinc-500 dark:text-zinc-400">
+					{$t(`home.features.${feature.key}.description`)}
+				</p>
 			</div>
-			<h3 class="text-xl font-bold">{$t('home.features.encrypted.title')}</h3>
-			<p class="text-zinc-500 dark:text-zinc-400">
-				{$t('home.features.encrypted.description')}
-			</p>
-		</div>
+		{/each}
+	</section>
 
-		<div class="p-8 rounded-2xl border border-zinc-200 dark:border-zinc-800 space-y-4">
-			<div
-				class="w-12 h-12 rounded-xl bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center"
+	<section class="max-w-3xl mx-auto text-center space-y-4 px-2 mb-16 md:mb-24">
+		<h2 class="text-2xl md:text-3xl font-bold tracking-tight">{$t('home.coexistence.title')}</h2>
+		<p class="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed">
+			{$t('home.coexistence.description')}
+		</p>
+		<p class="pt-2">
+			<a
+				href="https://github.com/markqvist/Reticulum"
+				target="_blank"
+				rel="noopener noreferrer"
+				class="text-[#00ADD8] font-medium hover:underline"
 			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					class="w-6 h-6"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
-					stroke-linecap="round"
-					stroke-linejoin="round"><path d="m8 3 4 8 5-5 5 15H2L8 3z" /></svg
-				>
-			</div>
-			<h3 class="text-xl font-bold">{$t('home.features.resilient.title')}</h3>
-			<p class="text-zinc-500 dark:text-zinc-400">
-				{$t('home.features.resilient.description')}
-			</p>
-		</div>
-
-		<div class="p-8 rounded-2xl border border-zinc-200 dark:border-zinc-800 space-y-4">
-			<div
-				class="w-12 h-12 rounded-xl bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center"
-			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					class="w-6 h-6"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					><polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" /></svg
-				>
-			</div>
-			<h3 class="text-xl font-bold">{$t('home.features.go.title')}</h3>
-			<p class="text-zinc-500 dark:text-zinc-400">
-				{$t('home.features.go.description')}
-			</p>
-		</div>
+				Python Reticulum (RNS)
+			</a>
+		</p>
 	</section>
 
 	<section

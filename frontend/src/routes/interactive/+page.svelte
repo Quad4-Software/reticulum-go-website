@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Search as SearchIcon, Code, ExternalLink } from 'lucide-svelte';
+	import { Search as SearchIcon, Code, FileCode, BookOpen, ExternalLink } from 'lucide-svelte';
 	import { t } from 'svelte-i18n';
 
 	interface InteractiveItem {
@@ -20,6 +20,24 @@
 			icon: Code,
 			tags: ['wasm', 'chat', 'demo', 'interactive'],
 			status: 'wip'
+		},
+		{
+			title: 'Micron Editor',
+			description:
+				'Live Micron markup editor with smooth WASM preview via Micron-Parser-Go. Works offline after the first visit through the site PWA.',
+			href: '/tools/micron-editor',
+			icon: FileCode,
+			tags: ['micron', 'wasm', 'editor', 'tools'],
+			status: 'stable'
+		},
+		{
+			title: 'Reticulum Guide',
+			description:
+				'Visual tutorials on destinations, announces, cryptography, and multi-hop packets, grounded in the official Reticulum manual.',
+			href: '/tools/reticulum-guide',
+			icon: BookOpen,
+			tags: ['tutorial', 'reticulum', 'cryptography', 'transport'],
+			status: 'stable'
 		}
 	];
 

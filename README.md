@@ -70,6 +70,7 @@ The project uses a root `Makefile` for common tasks. Run `make help` to list tar
 | `docs-zip`       | Zip English docs into `releases/docs-en.zip` |
 | `docs-release`   | Same as docs workflow prep (see below) |
 | `locale-template`| New UI locale file (see below)       |
+| `update-micron-wasm` | Fetch latest Micron-Parser-Go WASM + refresh SHA-384 SRI |
 | `check-links`    | Probe external URLs (see Testing)    |
 | `bench`          | Vitest micro-benchmarks (see below)   |
 | `bundle-budget`  | Size limits on `frontend/build`       |
@@ -85,6 +86,7 @@ The project uses a root `Makefile` for common tasks. Run `make help` to list tar
 | `task docs` | Sync then validate |
 | `task docs:zip` | Package `releases/docs-en.zip` |
 | `task docs:release` | Release metadata + docs zip (CI) |
+| `task wasm:micron` | Fetch latest Micron-Parser-Go WASM and refresh SHA-384 SRI |
 
 ### CI and release automation
 

@@ -15,7 +15,9 @@
 	<title>{page.status} | Reticulum-Go</title>
 </svelte:head>
 
-<div class="min-h-[60vh] flex flex-col items-center justify-center text-center space-y-8 max-w-2xl mx-auto">
+<div
+	class="min-h-[60vh] flex flex-col items-center justify-center text-center space-y-8 max-w-2xl mx-auto"
+>
 	<div class="space-y-2">
 		<h1 class="text-8xl font-black text-zinc-200 dark:text-zinc-800">
 			{page.status}

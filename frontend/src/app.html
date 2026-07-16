@@ -11,12 +11,14 @@
 		<title>Reticulum-Go | Resilient, Sovereign Networking</title>
 		<meta
 			name="description"
-			content="Reticulum-Go is a high-performance Go implementation of the Reticulum Network Stack. Build resilient, encrypted, and decentralised communication networks."
+			content="Wire-compatible Go implementation of the Reticulum Network Stack. Build resilient, encrypted mesh networks in the browser and beyond, alongside the Python reference by Mark Qvist."
 		/>
 		<meta
 			name="keywords"
-			content="reticulum, reticulum-go, mesh network, cryptography, p2p, decentralised, go, wasm, quad4"
+			content="reticulum, reticulum-go, mesh network, cryptography, p2p, decentralised, go, wasm, quad4, mark qvist, lxmf"
 		/>
+		<meta name="author" content="Quad4" />
+		<meta name="robots" content="index,follow" />
 
 		<!-- Open Graph / Facebook -->
 		<meta property="og:type" content="website" />
@@ -24,7 +26,7 @@
 		<meta property="og:title" content="Reticulum-Go | Resilient, Sovereign Networking" />
 		<meta
 			property="og:description"
-			content="Reticulum-Go is a high-performance Go implementation of the Reticulum Network Stack. Build resilient, encrypted, and decentralised communication networks."
+			content="Wire-compatible Go implementation of the Reticulum Network Stack. Build resilient, encrypted mesh networks in the browser and beyond, alongside the Python reference by Mark Qvist."
 		/>
 		<meta property="og:image" content="https://reticulum-go.quad4.io/logo.svg" />
 		<meta property="og:image:alt" content="Reticulum-Go Logo" />
@@ -40,7 +42,7 @@
 		<meta name="twitter:title" content="Reticulum-Go | Resilient, Sovereign Networking" />
 		<meta
 			name="twitter:description"
-			content="Reticulum-Go is a high-performance Go implementation of the Reticulum Network Stack. Build resilient, encrypted, and decentralised communication networks."
+			content="Wire-compatible Go implementation of the Reticulum Network Stack. Build resilient, encrypted mesh networks in the browser and beyond, alongside the Python reference by Mark Qvist."
 		/>
 		<meta name="twitter:image" content="https://reticulum-go.quad4.io/logo.svg" />
 		<meta name="twitter:image:alt" content="Reticulum-Go Logo" />
@@ -50,9 +52,20 @@
 
 		<script>
 			(function () {
-				var t = localStorage.getItem('theme');
-				var dark = t === 'dark' || (t !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+				function cookieTheme() {
+					var m = document.cookie.match(/(?:^|;\s*)theme=(light|dark|system)(?:;|$)/);
+					return m ? m[1] : null;
+				}
+				var t = cookieTheme() || localStorage.getItem('theme');
+				var dark =
+					t === 'dark' ||
+					((t === 'system' || !t) && window.matchMedia('(prefers-color-scheme: dark)').matches);
 				document.documentElement.classList.toggle('dark', dark);
+				if (t === 'light' || t === 'dark' || t === 'system') {
+					try {
+						localStorage.setItem('theme', t);
+					} catch (e) {}
+				}
 				window.reticulumReady = function () {
 					console.log('Reticulum WASM initialized');
 				};
@@ -113,9 +126,12 @@
 			<div id="js-disabled-banner-dismissed"></div>
 			<div id="js-disabled-banner">
 				<span id="js-disabled-banner-text"
-					>JavaScript is disabled. Main pages work without it. Interactive WASM pages require JavaScript.</span
+					>JavaScript is disabled. Main pages work without it. Interactive WASM pages require
+					JavaScript.</span
 				>
-				<a id="js-disabled-banner-close" href="#js-disabled-banner-dismissed" aria-label="Close">X</a>
+				<a id="js-disabled-banner-close" href="#js-disabled-banner-dismissed" aria-label="Close"
+					>X</a
+				>
 			</div>
 		</noscript>
 		<div style="display: contents">%sveltekit.body%</div>

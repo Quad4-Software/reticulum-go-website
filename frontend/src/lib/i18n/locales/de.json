@@ -4,6 +4,7 @@
 		"docs": "Dokumentation",
 		"interactive": "Interaktiv",
 		"apps": "Apps",
+		"tools": "Tools",
 		"ren_browser": "Ren Browser",
 		"wasm_example": "WASM Beispiel",
 		"contact": "Kontakt",
@@ -23,6 +24,7 @@
 		"export_txt": "TXT",
 		"coming_soon": "Demnächst",
 		"available": "Verfügbar",
+		"alpha": "Alpha",
 		"try_demo": "Demo ausprobieren",
 		"explore": "Erkunden",
 		"learn_more": "Mehr erfahren",
@@ -39,6 +41,76 @@
 		"description": "Entdecken Sie Anwendungen und Tools mit Reticulum-Go, darunter Ren Browser und Micron Parser Go.",
 		"search_placeholder": "Anwendungen suchen..."
 	},
+	"tools": {
+		"title": "Tools",
+		"description": "Browser-Tools mit Reticulum-Go und zugehörigen WASM-Modulen. Nach dem ersten Besuch vom PWA der Website für Offline-Nutzung zwischengespeichert.",
+		"search_placeholder": "Tools suchen...",
+		"micron_editor": {
+			"title": "Micron Editor",
+			"description": "Live-Micron-Markup-Editor mit WASM-Vorschau über Micron-Parser-Go.",
+			"page_title": "Micron Editor",
+			"page_blurb": "Schreiben Sie Micron und sehen Sie eine Live-HTML-Vorschau. Läuft vollständig im Browser mit Micron-Parser-Go WASM.",
+			"back": "Alle Tools",
+			"source": "Quelle",
+			"preview": "Vorschau",
+			"monospace": "Monospace",
+			"reset": "Beispiel zurücksetzen",
+			"copy": "Kopieren",
+			"copied": "Kopiert",
+			"loading": "Micron WASM wird geladen…",
+			"ready": "Live-Vorschau bereit",
+			"error": "Micron WASM konnte nicht geladen werden",
+			"powered_by": "Powered by Micron-Parser-Go",
+			"clear": "Leeren",
+			"download": "Download",
+			"retry": "Erneut versuchen",
+			"snippets": "Snippets",
+			"cheatsheet": "Kurzreferenz",
+			"insert_snippet": "Snippet einfuegen",
+			"lines": "Zeilen",
+			"chars": "Zeichen"
+		},
+		"reticulum_guide": {
+			"title": "Reticulum Guide",
+			"description": "Visuelle Tutorials zu Destinations, Identities, Announces, Kryptografie, Links, Interfaces und Multi-Hop-Paketen, basierend auf dem offiziellen Reticulum-Handbuch.",
+			"page_title": "Reticulum Guide",
+			"page_blurb": "Interaktive Erklärungen im Sinne des Zen von Reticulum: souveräne Netzwerke, Destinations statt Adressen, Verschlüsselung standardmäßig.",
+			"back": "Alle Tools",
+			"back_guide": "Alle Guide-Kapitel",
+			"search_placeholder": "Kapitel suchen...",
+			"sources": "Quellen",
+			"zen": "Den Zen bewahren",
+			"step_of": "Schritt {current} von {total}",
+			"previous": "Zurück",
+			"next": "Weiter",
+			"open_chapter": "Kapitel öffnen",
+			"chapters": "Kapitel",
+			"chapters_toggle": "Kapitelliste umschalten",
+			"python": "Python",
+			"go": "Go",
+			"try_it": "Selbst ausprobieren",
+			"code_sample": "Sprache des Codebeispiels",
+			"encrypted": "Verschlüsselt",
+			"multi_hop": "Multi-Hop",
+			"local_only": "Nur lokal",
+			"accepted": "Akzeptiert",
+			"rejected": "Abgelehnt",
+			"interactive_title": "Selbst ausprobieren",
+			"copy": "Kopieren",
+			"copied": "Kopiert",
+			"nav_hint": "Wischen oder Pfeiltasten",
+			"in_go": "In Go verfuegbar",
+			"python_ref": "Python-Referenz"
+		},
+		"rnode_flasher": {
+			"title": "RNODE Flasher",
+			"description": "RNode-Firmware im Browser flashen und provisionieren. Geplante Kompatibilität mit tiny-reticulum-go und offiziellen RNode-Firmware-Builds."
+		},
+		"bot_builder": {
+			"title": "Bot Builder",
+			"description": "Visueller Builder für LXMF-Bots mit LXMFy-Go. Handler, Destinations und Bot-Abläufe entwerfen, ohne mit einer leeren Datei zu starten."
+		}
+	},
 	"time": {
 		"seconds": "Sekunden",
 		"minutes": "Minuten",
@@ -51,6 +123,9 @@
 		"title": "Spenden",
 		"subtitle": "Unterstützen Sie die Entwicklung und Wartung von Reticulum-Go.",
 		"intro": "Wählen Sie unten eine Plattform oder senden Sie Monero direkt.",
+		"meta_description": "Unterstützen Sie die Entwicklung von Reticulum-Go. 50% der Spenden gehen an Mark Qvist, den Schöpfer der Reticulum-Referenzimplementierung auf reticulum.network.",
+		"markqvist_share": "50% der Spenden gehen an Mark Qvist, den Schöpfer der Reticulum-Referenzimplementierung.",
+		"markqvist_link": "reticulum.network",
 		"buymeacoffee": "Buy Me a Coffee",
 		"liberapay": "Liberapay",
 		"kofi": "Ko-fi",
@@ -67,7 +142,7 @@
 		"features": {
 			"encrypted": {
 				"title": "Standardmäßig verschlüsselt",
-				"description": "Alles in Reticulum ist mit starken, modernen Primitiven verschlüsselt. Unverschlüsselter Datenverkehr verlässt niemals Ihr Gerät."
+				"description": "Reticulum nutzt starke, moderne Kryptografie Ende-zu-Ende. Die On-Wire-Formate entsprechen der Python-Referenz, damit Peers kompatibel bleiben."
 			},
 			"resilient": {
 				"title": "Belastbar & Souverän",
@@ -75,8 +150,24 @@
 			},
 			"go": {
 				"title": "Go Implementierung",
-				"description": "Gebaut mit Go für maximale Performance, Sicherheit und plattformübergreifende Kompatibilität. Läuft überall, von Embedded-Systemen bis hin zu Cloud-Servern."
+				"description": "Gebaut mit Go für Portabilität, Auditierbarkeit und Nebenläufigkeit. Läuft von Embedded-Systemen bis zu Cloud-Servern."
+			},
+			"interop": {
+				"title": "Volle RNS-Interoperabilität",
+				"description": "Protokollkompatibel mit dem offiziellen Python-Reticulum (RNS). Pakete, Links und Kryptografie funktionieren peer-to-peer."
+			},
+			"sandbox": {
+				"title": "Sicher konzipiert",
+				"description": "Der native Daemon aktiviert standardmäßig eine OS-Sandbox. Der WASM-Build läuft in der Browser-Sandbox der Host-Laufzeit."
+			},
+			"modular": {
+				"title": "Modular & Einbettbar",
+				"description": "Als Daemon, Go-Bibliothek, C-ABI (librns), Control-API oder WASM-Modul nutzbar."
 			}
+		},
+		"coexistence": {
+			"title": "Die Reichweite von Reticulum erweitern",
+			"description": "Reticulum-Go wurde gebaut, um mit der Python-Referenzimplementierung von Mark Qvist zusammenzuarbeiten, nicht um sie zu ersetzen. Ziel ist es, dem Netzwerk zu helfen und die Reichweite von Reticulum zu erweitern, während Python RNS die Referenz bleibt, die das Protokoll definiert."
 		},
 		"ren_promo": {
 			"title": "Das Reticulum-Netzwerk browsen",

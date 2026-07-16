@@ -183,15 +183,15 @@ Native hosts link `librns.so` and call `include/rns.h`. Same stack as `pkg/node`
 
 ## Persistence and state
 
-| State | Default location | Notes |
-|-------|------------------|-------|
-| Config | `~/.reticulum-go/config` | INI format, Python-compatible keys |
-| Path table | `storage/destination_table` | Optional RAM-only mode |
-| Known destinations | `storage/known_destinations` | Loads Python-format files |
-| Identities | `storage/identities/` | Per-hash blobs |
-| Ratchets | `storage/ratchets/` | Forward secrecy material |
-| Blackhole table | `storage/blackhole` | msgpack |
-| Transport identity | `storage/transport_identity` | Used when transport enabled |
+| State              | Default location             | Notes                              |
+| ------------------ | ---------------------------- | ---------------------------------- |
+| Config             | `~/.reticulum-go/config`     | INI format, Python-compatible keys |
+| Path table         | `storage/destination_table`  | Optional RAM-only mode             |
+| Known destinations | `storage/known_destinations` | Loads Python-format files          |
+| Identities         | `storage/identities/`        | Per-hash blobs                     |
+| Ratchets           | `storage/ratchets/`          | Forward secrecy material           |
+| Blackhole table    | `storage/blackhole`          | msgpack                            |
+| Transport identity | `storage/transport_identity` | Used when transport enabled        |
 
 ## Security boundaries
 
@@ -201,13 +201,13 @@ See [Cryptography](/docs/cryptography) and [Security](/docs/security).
 
 ## Extension points
 
-| Extension | Mechanism |
-|-----------|-----------|
-| Custom crypto for tests | `cryptography.SetProvider` |
-| Hardware signing | `identity.NewIdentityWithSigner` with `cryptography.Ed25519Signer` |
-| Embedder lifecycle | `node.Node` hooks and control API lifecycle routes |
-| New interface types | Implement `interfaces.Interface`, register in `fromconfig.go` |
-| Non-Go clients | Control API (out-of-process) or librns (in-process C ABI) |
+| Extension               | Mechanism                                                          |
+| ----------------------- | ------------------------------------------------------------------ |
+| Custom crypto for tests | `cryptography.SetProvider`                                         |
+| Hardware signing        | `identity.NewIdentityWithSigner` with `cryptography.Ed25519Signer` |
+| Embedder lifecycle      | `node.Node` hooks and control API lifecycle routes                 |
+| New interface types     | Implement `interfaces.Interface`, register in `fromconfig.go`      |
+| Non-Go clients          | Control API (out-of-process) or librns (in-process C ABI)          |
 
 Adding a new interface type or changing on-wire layouts requires coordinated updates across implementations and crossref vectors.
 

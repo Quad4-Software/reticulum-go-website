@@ -17,15 +17,15 @@ make build
 
 `make install` also creates legacy symlinks (`rgostatus`, `rgoid`, `rgoprobe`, `rgopath`, `rgocp`, `rgox`, `rnx`, `rgopageserver`) that invoke the same binary. Man pages: `man reticulum-go`, `man reticulum-go-status`, and so on.
 
-| Tool / subcommand | Python counterpart | Role |
-|-------------------|--------------------|------|
-| `reticulum-go status` (`rgostatus`) | `rnstatus` | Interface and transport status over shared-instance RPC |
-| `reticulum-go id` (`rgoid`) | `rnid` | Identity generate, hash, `.rsg` / `.rsm` / `.rfe` |
-| `reticulum-go probe` (`rgoprobe`) | `rnprobe` | Path wait, encrypted probe, RTT |
-| `reticulum-go path` (`rgopath`) | `rnpath` | Path table, drop, blackhole, path request |
-| `reticulum-go cp` (`rgocp`) | `rncp` | File send / listen / fetch over links |
-| `reticulum-go x` (`rgox`, `rnx`) | `rnx` | Remote command execution over links (`rnx.execute`) |
-| `reticulum-go pageserver` | (example app) | NomadNet-style page and file server |
+| Tool / subcommand                   | Python counterpart | Role                                                    |
+| ----------------------------------- | ------------------ | ------------------------------------------------------- |
+| `reticulum-go status` (`rgostatus`) | `rnstatus`         | Interface and transport status over shared-instance RPC |
+| `reticulum-go id` (`rgoid`)         | `rnid`             | Identity generate, hash, `.rsg` / `.rsm` / `.rfe`       |
+| `reticulum-go probe` (`rgoprobe`)   | `rnprobe`          | Path wait, encrypted probe, RTT                         |
+| `reticulum-go path` (`rgopath`)     | `rnpath`           | Path table, drop, blackhole, path request               |
+| `reticulum-go cp` (`rgocp`)         | `rncp`             | File send / listen / fetch over links                   |
+| `reticulum-go x` (`rgox`, `rnx`)    | `rnx`              | Remote command execution over links (`rnx.execute`)     |
+| `reticulum-go pageserver`           | (example app)      | NomadNet-style page and file server                     |
 
 Library code lives in `pkg/rnsutil` and `pkg/cli`. Pageserver logic lives in `pkg/pageserver`.
 
@@ -76,10 +76,10 @@ If both configs share ports and `rpc_key`, `-config ~/.reticulum-go` also works 
 
 ### Auth key rules
 
-| Config | Authkey used |
-|--------|----------------|
-| `rpc_key` set (64 hex chars) | That exact 32-byte key |
-| `rpc_key` empty | SHA-256 of the daemon `storage/transport_identity` private key |
+| Config                       | Authkey used                                                   |
+| ---------------------------- | -------------------------------------------------------------- |
+| `rpc_key` set (64 hex chars) | That exact 32-byte key                                         |
+| `rpc_key` empty              | SHA-256 of the daemon `storage/transport_identity` private key |
 
 Go and Python must agree. Prefer an explicit shared `rpc_key` when mixing stacks so you do not depend on identical transport identity files.
 
@@ -100,16 +100,16 @@ Only one process should own the shared instance ports at a time.
 rgostatus [flags]
 ```
 
-| Flag | Meaning |
-|------|---------|
-| `-config dir` | Config directory (default: `~/.reticulum-go`) |
-| `-json` | Emit JSON (bytes as hex, same field names as Python where populated) |
-| `-a` | Include all interfaces (less filtering of local/client peers) |
-| `-n substr` | Filter interface names |
-| `-l` | Include link count |
-| `-s key` | Sort by `rate`, `rx`, `tx`, `rxs`, `txs`, `traffic`, `announce`, `arx`, `atx`, `prx`, `ptx`, `held` |
-| `-r` | Sort ascending (default descending) |
-| `-timeout dur` | RPC timeout (default 10s) |
+| Flag           | Meaning                                                                                             |
+| -------------- | --------------------------------------------------------------------------------------------------- |
+| `-config dir`  | Config directory (default: `~/.reticulum-go`)                                                       |
+| `-json`        | Emit JSON (bytes as hex, same field names as Python where populated)                                |
+| `-a`           | Include all interfaces (less filtering of local/client peers)                                       |
+| `-n substr`    | Filter interface names                                                                              |
+| `-l`           | Include link count                                                                                  |
+| `-s key`       | Sort by `rate`, `rx`, `tx`, `rxs`, `txs`, `traffic`, `announce`, `arx`, `atx`, `prx`, `ptx`, `held` |
+| `-r`           | Sort ascending (default descending)                                                                 |
+| `-timeout dur` | RPC timeout (default 10s)                                                                           |
 
 JSON includes per-interface announce and path-request frequencies, held announces, burst flags, and traffic counters when the daemon provides them.
 
@@ -117,12 +117,12 @@ JSON includes per-interface announce and path-request frequencies, held announce
 
 Identity and signing tool. Files are wire-compatible with Python:
 
-| Extension | Format |
-|-----------|--------|
-| `.rid` | 64 raw bytes (X25519 private + Ed25519 seed) |
-| `.rsg` | 64-byte Ed25519 signature + msgpack envelope (`hashtype`, `hash`, `meta`) |
-| `.rsm` | Same as `.rsg` with embedded `message` |
-| `.rfe` | Chunked identity encrypt (same token layout as Python) |
+| Extension | Format                                                                    |
+| --------- | ------------------------------------------------------------------------- |
+| `.rid`    | 64 raw bytes (X25519 private + Ed25519 seed)                              |
+| `.rsg`    | 64-byte Ed25519 signature + msgpack envelope (`hashtype`, `hash`, `meta`) |
+| `.rsm`    | Same as `.rsg` with embedded `message`                                    |
+| `.rfe`    | Chunked identity encrypt (same token layout as Python)                    |
 
 Examples:
 
@@ -163,22 +163,22 @@ Path table and blackhole management over shared-instance RPC, plus a default pat
 rgopath [flags] [destination_hash]
 ```
 
-| Flag | Meaning |
-|------|---------|
-| `-config dir` | Config directory |
-| `-t` | Show path table (optional hash filter) |
-| `-json` | JSON for `-t` / `-blackholed` |
-| `-m N` | Max hops filter for path table |
-| `-d` | Drop path to hash |
-| `-D` | Drop all paths via transport hash |
-| `-q` | Drop announce queues |
-| `-w sec` | Path request timeout (default 15) |
-| `-blackholed` | List blackholed identities |
-| `-blackhole` | Blackhole identity hash |
-| `-unblackhole` | Lift blackhole |
-| `-for hours` | Blackhole duration (0 = indefinite) |
-| `-reason str` | Blackhole reason |
-| `-filter substr` | Filter blackhole list lines |
+| Flag             | Meaning                                |
+| ---------------- | -------------------------------------- |
+| `-config dir`    | Config directory                       |
+| `-t`             | Show path table (optional hash filter) |
+| `-json`          | JSON for `-t` / `-blackholed`          |
+| `-m N`           | Max hops filter for path table         |
+| `-d`             | Drop path to hash                      |
+| `-D`             | Drop all paths via transport hash      |
+| `-q`             | Drop announce queues                   |
+| `-w sec`         | Path request timeout (default 15)      |
+| `-blackholed`    | List blackholed identities             |
+| `-blackhole`     | Blackhole identity hash                |
+| `-unblackhole`   | Lift blackhole                         |
+| `-for hours`     | Blackhole duration (0 = indefinite)    |
+| `-reason str`    | Blackhole reason                       |
+| `-filter substr` | Filter blackhole list lines            |
 
 Go extras (compat preserved): `-json` on path and blackhole lists, drop-via count in the success line, clearer path-found summary after a successful request.
 
@@ -194,23 +194,23 @@ rgocp -l [flags]                            # listen
 rgocp -f -F <remote_path> [flags] <hash>    # fetch
 ```
 
-| Flag | Meaning |
-|------|---------|
-| `-config dir` | Config directory |
+| Flag             | Meaning                                           |
+| ---------------- | ------------------------------------------------- |
+| `-config dir`    | Config directory                                  |
 | `-identity path` | Identity file (default `storage/identities/rncp`) |
-| `-l` | Listen for pushes |
-| `-f` / `-F path` | Fetch remote file |
-| `-a` | Allow unauthenticated senders (listen) |
-| `-allowed hash` | Allowed identity (repeatable) |
-| `-allow-fetch` | Enable `fetch_file` requests |
-| `-jail dir` | Restrict fetch paths |
-| `-save dir` | Save directory for received files |
-| `-overwrite` | Overwrite on receive |
-| `-no-compress` | Disable auto compression |
-| `-announce sec` | Announce interval (`0` once, `<0` never) |
-| `-w sec` | Path/link timeout |
-| `-s` | Silent progress |
-| `-p` | Print identity and destination hash |
+| `-l`             | Listen for pushes                                 |
+| `-f` / `-F path` | Fetch remote file                                 |
+| `-a`             | Allow unauthenticated senders (listen)            |
+| `-allowed hash`  | Allowed identity (repeatable)                     |
+| `-allow-fetch`   | Enable `fetch_file` requests                      |
+| `-jail dir`      | Restrict fetch paths                              |
+| `-save dir`      | Save directory for received files                 |
+| `-overwrite`     | Overwrite on receive                              |
+| `-no-compress`   | Disable auto compression                          |
+| `-announce sec`  | Announce interval (`0` once, `<0` never)          |
+| `-w sec`         | Path/link timeout                                 |
+| `-s`             | Silent progress                                   |
+| `-p`             | Print identity and destination hash               |
 
 Allow lists are loaded from `/etc/rncp/allowed_identities`, `~/.config/rncp/`, `~/.rncp/`, plus Go-specific `~/.config/rgocp/` and `~/.rgocp/`.
 
@@ -226,24 +226,24 @@ reticulum-go x [flags] <destination_hash> <cmd>   # execute
 reticulum-go x -x [flags] <destination_hash>      # interactive
 ```
 
-| Flag | Meaning |
-|------|---------|
-| `-config dir` | Config directory |
-| `-i path` | Identity file (default `storage/identities/rnx`) |
-| `-l` | Listen for commands |
-| `-x` | Interactive REPL |
-| `-a hash` | Allowed identity (repeatable, listen) |
-| `-n` | Accept from anyone (listen) |
-| `-N` | Do not identify to listener |
-| `-b` | Skip announce on listen start |
-| `-m` | Mirror remote exit code |
-| `-d` | Detailed timing/size summary |
-| `-w sec` | Path/link/command timeout |
-| `-W sec` | Max result download time |
-| `--stdin str` | Remote stdin |
-| `--stdout N` / `--stderr N` | Max returned bytes |
-| `-json` | Structured JSON result (Go) |
-| `-p` | Print identity and destination hash |
+| Flag                        | Meaning                                          |
+| --------------------------- | ------------------------------------------------ |
+| `-config dir`               | Config directory                                 |
+| `-i path`                   | Identity file (default `storage/identities/rnx`) |
+| `-l`                        | Listen for commands                              |
+| `-x`                        | Interactive REPL                                 |
+| `-a hash`                   | Allowed identity (repeatable, listen)            |
+| `-n`                        | Accept from anyone (listen)                      |
+| `-N`                        | Do not identify to listener                      |
+| `-b`                        | Skip announce on listen start                    |
+| `-m`                        | Mirror remote exit code                          |
+| `-d`                        | Detailed timing/size summary                     |
+| `-w sec`                    | Path/link/command timeout                        |
+| `-W sec`                    | Max result download time                         |
+| `--stdin str`               | Remote stdin                                     |
+| `--stdout N` / `--stderr N` | Max returned bytes                               |
+| `-json`                     | Structured JSON result (Go)                      |
+| `-p`                        | Print identity and destination hash              |
 
 Allow lists: `/etc/rnx/`, `~/.config/rnx/`, `~/.rnx/`, plus `~/.config/rgox/` and `~/.rgox/`.
 
@@ -251,25 +251,25 @@ Exit codes match Python `rnx` (241–249 for client failures, `-m` mirrors remot
 
 ## Troubleshooting
 
-| Symptom | Fix |
-|---------|-----|
-| `dial tcp 127.0.0.1:37429: connection refused` | Start the daemon. Set `shared_instance_type = tcp`. Restart after config change. Use `-config` for that daemon's config dir. |
-| `rpc auth` failure | Align `rpc_key`, or use the same `storage/transport_identity` when keys are derived. |
-| Empty or missing announce rates from Python | Field is present but may be `0` until traffic accumulates. Sorting and JSON keys still work. |
-| Top-level `rxb`/`txb` are `0` while interfaces show traffic | Python aggregate totals often omit some parent interfaces. Prefer per-interface counters. |
-| Identity load log lines on stderr | Harmless debug from loading `transport_identity` for derived auth when resolving keys. Prefer explicit `rpc_key` to avoid that path when possible. |
-| `rgocp` transfer ignored | Listener needs `-a` or an allow-list entry matching the sender identity hash. Metadata (`name`) is required on the wire. |
+| Symptom                                                     | Fix                                                                                                                                                |
+| ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `dial tcp 127.0.0.1:37429: connection refused`              | Start the daemon. Set `shared_instance_type = tcp`. Restart after config change. Use `-config` for that daemon's config dir.                       |
+| `rpc auth` failure                                          | Align `rpc_key`, or use the same `storage/transport_identity` when keys are derived.                                                               |
+| Empty or missing announce rates from Python                 | Field is present but may be `0` until traffic accumulates. Sorting and JSON keys still work.                                                       |
+| Top-level `rxb`/`txb` are `0` while interfaces show traffic | Python aggregate totals often omit some parent interfaces. Prefer per-interface counters.                                                          |
+| Identity load log lines on stderr                           | Harmless debug from loading `transport_identity` for derived auth when resolving keys. Prefer explicit `rpc_key` to avoid that path when possible. |
+| `rgocp` transfer ignored                                    | Listener needs `-a` or an allow-list entry matching the sender identity hash. Metadata (`name`) is required on the wire.                           |
 
 ## Debugging
 
-| Tool | Role |
-|------|------|
-| `reticulum-go status` | Interface stats over shared-instance RPC (`-json`, `-q`) |
-| `reticulum-go path -t` | Path table dump |
-| `reticulum-go debug` | Effective config path, log level, platform, RPC reachability (`-rates`, `-json`) |
-| `reticulum-go probe` | Connectivity / RTT (`-json`) |
-| Control API | HTTP `/v1/health`, `/v1/status`, `/v1/paths` when `enable_control_api = yes` |
-| Daemon `-debug N` | Override config loglevel for one run |
+| Tool                   | Role                                                                             |
+| ---------------------- | -------------------------------------------------------------------------------- |
+| `reticulum-go status`  | Interface stats over shared-instance RPC (`-json`, `-q`)                         |
+| `reticulum-go path -t` | Path table dump                                                                  |
+| `reticulum-go debug`   | Effective config path, log level, platform, RPC reachability (`-rates`, `-json`) |
+| `reticulum-go probe`   | Connectivity / RTT (`-json`)                                                     |
+| Control API            | HTTP `/v1/health`, `/v1/status`, `/v1/paths` when `enable_control_api = yes`     |
+| Daemon `-debug N`      | Override config loglevel for one run                                             |
 
 TTY colors (status Up/Down, probe/path/cp/id outcomes, pageserver banner, daemon text log levels) honor `NO_COLOR` (off) and `FORCE_COLOR` / `CLICOLOR_FORCE` (on). JSON output and file logs stay plain.
 

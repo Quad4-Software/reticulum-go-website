@@ -203,10 +203,10 @@ See [Security](/docs/security) for platform behavior.
 
 ## Next steps
 
-| Goal | Document |
-|------|----------|
-| Configure interfaces and rates | [Configuration](/docs/configuration), [Interfaces](/docs/interfaces) |
-| Status / identity / probe / path / copy CLIs | [CLI utilities](/docs/utilities) |
-| Write a Go app | [API reference](/docs/api-reference), [Examples](/docs/examples), [Embedding and WebAssembly](/docs/embedding-and-wasm) |
-| Use Python interop | [Compatibility](/docs/compatibility) |
-| Run examples | [Examples](/docs/examples) |
+| Goal                                         | Document                                                                                                                |
+| -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| Configure interfaces and rates               | [Configuration](/docs/configuration), [Interfaces](/docs/interfaces)                                                    |
+| Status / identity / probe / path / copy CLIs | [CLI utilities](/docs/utilities)                                                                                        |
+| Write a Go app                               | [API reference](/docs/api-reference), [Examples](/docs/examples), [Embedding and WebAssembly](/docs/embedding-and-wasm) |
+| Use Python interop                           | [Compatibility](/docs/compatibility)                                                                                    |
+| Run examples                                 | [Examples](/docs/examples)                                                                                              |

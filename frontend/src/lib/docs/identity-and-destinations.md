@@ -8,10 +8,10 @@ Implementation: `pkg/identity` with primitives from `pkg/cryptography`.
 
 ### Key material
 
-| Component | Size | Purpose |
-|-----------|------|---------|
+| Component             | Size     | Purpose                |
+| --------------------- | -------- | ---------------------- |
 | X25519 private scalar | 32 bytes | ECDH, identity encrypt |
-| Ed25519 seed | 32 bytes | Signing |
+| Ed25519 seed          | 32 bytes | Signing                |
 
 Together these form the 512-bit keyset described in Reticulum documentation.
 
@@ -45,11 +45,11 @@ id, err := identity.LoadIdentityFile(path)
 
 Reticulum-Go supports a 72-byte hardware-bound layout:
 
-| Field | Size |
-|-------|------|
-| Magic `RHB1` | 4 bytes |
-| Version | 1 byte |
-| Reserved | 3 bytes |
+| Field          | Size     |
+| -------------- | -------- |
+| Magic `RHB1`   | 4 bytes  |
+| Version        | 1 byte   |
+| Reserved       | 3 bytes  |
 | X25519 private | 32 bytes |
 | Ed25519 public | 32 bytes |
 
@@ -75,12 +75,12 @@ A destination is an application endpoint on the network. Implementation: `pkg/de
 
 ### Destination types
 
-| Type | Constant | Use |
-|------|----------|-----|
-| Single | SINGLE | One-to-one application endpoint |
-| Group | GROUP | Group messaging |
-| Plain | PLAIN | Unencrypted endpoint (rare) |
-| Link | LINK | Link-mode endpoint |
+| Type   | Constant | Use                             |
+| ------ | -------- | ------------------------------- |
+| Single | SINGLE   | One-to-one application endpoint |
+| Group  | GROUP    | Group messaging                 |
+| Plain  | PLAIN    | Unencrypted endpoint (rare)     |
+| Link   | LINK     | Link-mode endpoint              |
 
 ### Destination hash
 
@@ -123,11 +123,11 @@ Register with `accepts_links` semantics. Incoming link requests dispatch to `lin
 
 ## Storage layout
 
-| Artifact | Path |
-|----------|------|
-| Identity blobs | `storage/identities/` (per hash in Go) |
-| Known destinations | `storage/known_destinations/` |
-| Ratchets | `storage/ratchets/` |
+| Artifact           | Path                                   |
+| ------------------ | -------------------------------------- |
+| Identity blobs     | `storage/identities/` (per hash in Go) |
+| Known destinations | `storage/known_destinations/`          |
+| Ratchets           | `storage/ratchets/`                    |
 
 Go writes identity files keyed by hash. Python may use per-name files. Go loads Python-format known destination files for interoperability.
 

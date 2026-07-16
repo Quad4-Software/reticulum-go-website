@@ -1,4 +1,4 @@
-Contact: mailto:security@quad4.io
+Contact: lxmf:f489752fbef161c64d65e385a4e9fc74
 Expires: 2026-12-31T23:59:59.000Z
 Preferred-Languages: en
 Canonical: https://reticulum-go.quad4.io/.well-known/security.txt

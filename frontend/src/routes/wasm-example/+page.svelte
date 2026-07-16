@@ -11,11 +11,11 @@
 	let showManualEntry = $state(false);
 	let nowMs = $state(Date.now());
 
-	onMount(async () => {
+	onMount(() => {
 		const clockId = setInterval(() => {
 			nowMs = Date.now();
 		}, 1000);
-		await reticulum.ensureWasmLoaded();
+		void reticulum.ensureWasmLoaded();
 		return () => clearInterval(clockId);
 	});
 
@@ -139,34 +139,38 @@
 		<section class="pb-2">
 			<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4 mb-2">
 				<div class="flex items-center gap-3 sm:gap-4">
-				<div class="shrink-0 p-2.5 bg-[#00ADD8] rounded-2xl shadow-md shadow-[#00ADD8]/10 text-white">
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						class="w-6 h-6"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg
+					<div
+						class="shrink-0 p-2.5 bg-[#00ADD8] rounded-2xl shadow-md shadow-[#00ADD8]/10 text-white"
 					>
-				</div>
-				<div class="min-w-0">
-					<div class="flex flex-wrap items-center gap-2 sm:gap-3">
-						<h1 class="text-2xl sm:text-3xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">
-							WASM Chat
-						</h1>
-						<span
-							class="px-2 py-0.5 text-[10px] font-black uppercase tracking-widest bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-lg"
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="w-6 h-6"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg
 						>
-							Beta
-						</span>
 					</div>
-					<p class="text-xs text-zinc-500 dark:text-zinc-400 font-medium">
-						Secure P2P messaging via Reticulum-Go
-					</p>
-				</div>
+					<div class="min-w-0">
+						<div class="flex flex-wrap items-center gap-2 sm:gap-3">
+							<h1
+								class="text-2xl sm:text-3xl font-black tracking-tight text-zinc-900 dark:text-zinc-50"
+							>
+								WASM Chat
+							</h1>
+							<span
+								class="px-2 py-0.5 text-[10px] font-black uppercase tracking-widest bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-lg"
+							>
+								Beta
+							</span>
+						</div>
+						<p class="text-xs text-zinc-500 dark:text-zinc-400 font-medium">
+							Secure P2P messaging via Reticulum-Go
+						</p>
+					</div>
 				</div>
 			</div>
 
@@ -324,9 +328,7 @@
 						>Status</span
 					>
 					<div
-						class="text-[11px] font-bold {reticulum.connected
-							? 'text-green-500'
-							: 'text-zinc-500'}"
+						class="text-[11px] font-bold {reticulum.connected ? 'text-green-500' : 'text-zinc-500'}"
 					>
 						{reticulum.connected ? 'Connected' : 'Offline'}
 					</div>
@@ -346,9 +348,7 @@
 
 		{#if reticulum.initialized}
 			<section class="border-t border-zinc-200 dark:border-zinc-800 pt-6">
-				<div
-					class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between mb-6 min-w-0"
-				>
+				<div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between mb-6 min-w-0">
 					<div class="min-w-0">
 						<h2 class="text-xl sm:text-2xl font-black text-zinc-900 dark:text-zinc-50">
 							Network Peers
@@ -615,9 +615,7 @@
 										{reticulum.peers.get(reticulum.selectedPeerHash)?.name[0].toUpperCase()}
 									</div>
 									<div class="min-w-0">
-										<div
-											class="truncate font-bold text-sm text-zinc-900 dark:text-zinc-50"
-										>
+										<div class="truncate font-bold text-sm text-zinc-900 dark:text-zinc-50">
 											{reticulum.peers.get(reticulum.selectedPeerHash)?.name}
 										</div>
 										<div
@@ -680,7 +678,9 @@
 								<div
 									class="flex flex-col gap-3 px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-6 bg-amber-50 dark:bg-amber-900/20 border-t border-amber-200 dark:border-amber-900/50"
 								>
-									<div class="flex min-w-0 items-start gap-3 text-amber-700 dark:text-amber-400 sm:items-center">
+									<div
+										class="flex min-w-0 items-start gap-3 text-amber-700 dark:text-amber-400 sm:items-center"
+									>
 										<svg
 											xmlns="http://www.w3.org/2000/svg"
 											class="w-5 h-5"
@@ -780,9 +780,12 @@
 				class="bg-zinc-100 dark:bg-zinc-950 rounded-2xl p-3 font-mono text-xs leading-relaxed text-zinc-700 dark:text-zinc-300 min-h-[14rem] max-h-[min(70vh,36rem)] overflow-y-auto space-y-3 border border-zinc-200 dark:border-zinc-800 shadow-inner custom-scrollbar"
 			>
 				{#each reticulum.logs as log, i (i)}
-					<div class="min-w-0 break-words border-b border-zinc-200/80 pb-3 last:border-0 last:pb-0 dark:border-zinc-700/50">
+					<div
+						class="min-w-0 break-words border-b border-zinc-200/80 pb-3 last:border-0 last:pb-0 dark:border-zinc-700/50"
+					>
 						<div class="flex flex-wrap gap-x-2 gap-y-0.5">
-							<span class="shrink-0 text-[10px] text-zinc-500 dark:text-zinc-500">[{log.time}]</span>
+							<span class="shrink-0 text-[10px] text-zinc-500 dark:text-zinc-500">[{log.time}]</span
+							>
 							<span
 								class="font-semibold uppercase tracking-wide text-[10px] text-zinc-400 dark:text-zinc-500"
 								>{log.type}</span
@@ -799,8 +802,7 @@
 						</div>
 						{#if log.detail}
 							<pre
-								class="mt-2 max-h-48 overflow-auto rounded-lg border border-zinc-200/90 bg-white/60 p-2 text-[10px] leading-normal text-zinc-600 dark:border-zinc-700 dark:bg-zinc-900/60 dark:text-zinc-300"
-							>{log.detail}</pre>
+								class="mt-2 max-h-48 overflow-auto rounded-lg border border-zinc-200/90 bg-white/60 p-2 text-[10px] leading-normal text-zinc-600 dark:border-zinc-700 dark:bg-zinc-900/60 dark:text-zinc-300">{log.detail}</pre>
 						{/if}
 					</div>
 				{/each}
@@ -809,7 +811,9 @@
 				{/if}
 			</div>
 			<div class="mt-2 text-[10px] text-zinc-500 dark:text-zinc-600">
-				Same entries are written to the browser console (prefixed with <code class="font-mono text-zinc-600 dark:text-zinc-400">[reticulum]</code>); objects stay expandable in DevTools.
+				Same entries are written to the browser console (prefixed with <code
+					class="font-mono text-zinc-600 dark:text-zinc-400">[reticulum]</code
+				>); objects stay expandable in DevTools.
 			</div>
 		</section>
 	</div>

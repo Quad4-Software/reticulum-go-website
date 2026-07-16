@@ -6,7 +6,10 @@
 		Bot,
 		ExternalLink,
 		FileCode,
-		Server
+		Server,
+		MessageCircle,
+		Store,
+		Layers
 	} from 'lucide-svelte';
 	import { t } from 'svelte-i18n';
 
@@ -41,7 +44,34 @@
 			platforms: ['Go', 'WebAssembly', 'Browser'],
 			status: 'available',
 			link: 'https://github.com/Quad4-Software/Micron-Parser-Go',
-			demoLink: 'https://micron-parser-go.quad4.io/'
+			demoLink: '/tools/micron-editor'
+		},
+		{
+			name: 'Ren Chat',
+			description:
+				'LXMF messaging client for conversations over Reticulum. Built around Reticulum-Go for portable, encrypted chat across the mesh.',
+			icon: MessageCircle,
+			tags: ['chat', 'lxmf', 'messaging', 'reticulum-go'],
+			platforms: ['Linux', 'Windows', 'macOS', 'Android'],
+			status: 'coming-soon'
+		},
+		{
+			name: 'Ren Store',
+			description:
+				'App and package discovery for the Ren ecosystem. Browse, install, and update Reticulum-related software from one place.',
+			icon: Store,
+			tags: ['store', 'packages', 'distribution', 'ren'],
+			platforms: ['Linux', 'Windows', 'macOS', 'Android'],
+			status: 'coming-soon'
+		},
+		{
+			name: 'Strata API Framework',
+			description:
+				'API framework for building services and integrations on Reticulum-Go. Structured endpoints, tooling, and reusable building blocks for mesh-native apps.',
+			icon: Layers,
+			tags: ['api', 'framework', 'reticulum-go', 'services'],
+			platforms: ['Go', 'Linux', 'BSD'],
+			status: 'coming-soon'
 		},
 		{
 			name: 'TUI',
@@ -159,14 +189,17 @@
 								</a>
 							{/if}
 							{#if app.demoLink}
+								{@const demoExternal = app.demoLink.startsWith('http')}
 								<a
 									href={app.demoLink}
-									target="_blank"
-									rel="noopener noreferrer"
+									target={demoExternal ? '_blank' : undefined}
+									rel={demoExternal ? 'noopener noreferrer' : undefined}
 									class="inline-flex items-center gap-2 text-sm font-medium text-[#00ADD8] hover:underline"
 								>
 									<span>{$t('common.try_demo')}</span>
-									<Server class="w-4 h-4" />
+									{#if demoExternal}
+										<Server class="w-4 h-4" />
+									{/if}
 								</a>
 							{/if}
 						</div>

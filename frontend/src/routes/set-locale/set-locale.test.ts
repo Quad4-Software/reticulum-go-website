@@ -19,7 +19,12 @@ describe('GET /set-locale', () => {
 		const cookiesSet = vi.fn();
 		const { GET } = await import('./+server');
 		try {
-			await GET(miniEvent(new URL('http://localhost/set-locale?locale=de&redirect=/docs'), cookiesSet) as never);
+			await GET(
+				miniEvent(
+					new URL('http://localhost/set-locale?locale=de&redirect=/docs'),
+					cookiesSet
+				) as never
+			);
 			expect.fail('expected redirect');
 		} catch (e) {
 			if (!isRedirect(e)) throw e;
@@ -37,7 +42,9 @@ describe('GET /set-locale', () => {
 		const cookiesSet = vi.fn();
 		const { GET } = await import('./+server');
 		try {
-			await GET(miniEvent(new URL('http://localhost/set-locale?locale=xx&redirect=/'), cookiesSet) as never);
+			await GET(
+				miniEvent(new URL('http://localhost/set-locale?locale=xx&redirect=/'), cookiesSet) as never
+			);
 			expect.fail('expected redirect');
 		} catch (e) {
 			if (!isRedirect(e)) throw e;
@@ -49,7 +56,12 @@ describe('GET /set-locale', () => {
 	it('uses safe redirect target for open redirects', async () => {
 		const { GET } = await import('./+server');
 		try {
-			await GET(miniEvent(new URL('http://localhost/set-locale?locale=en&redirect=https://evil.example'), vi.fn()) as never);
+			await GET(
+				miniEvent(
+					new URL('http://localhost/set-locale?locale=en&redirect=https://evil.example'),
+					vi.fn()
+				) as never
+			);
 			expect.fail('expected redirect');
 		} catch (e) {
 			if (!isRedirect(e)) throw e;
@@ -60,7 +72,12 @@ describe('GET /set-locale', () => {
 	it('rejects protocol-relative redirect targets', async () => {
 		const { GET } = await import('./+server');
 		try {
-			await GET(miniEvent(new URL('http://localhost/set-locale?locale=en&redirect=//evil.example'), vi.fn()) as never);
+			await GET(
+				miniEvent(
+					new URL('http://localhost/set-locale?locale=en&redirect=//evil.example'),
+					vi.fn()
+				) as never
+			);
 			expect.fail('expected redirect');
 		} catch (e) {
 			if (!isRedirect(e)) throw e;

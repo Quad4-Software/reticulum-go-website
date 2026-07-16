@@ -4,9 +4,6 @@
 
 <div class="space-y-2 {className}">
 	{#each Array(lines) as _, i (i)}
-		<div
-			class="rounded bg-zinc-200 dark:bg-zinc-800 animate-pulse"
-			style="height: {height};"
-		></div>
+		<div class="rounded bg-zinc-200 dark:bg-zinc-800 animate-pulse" style="height: {height};"></div>
 	{/each}
 </div>

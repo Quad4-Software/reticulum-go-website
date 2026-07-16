@@ -4,6 +4,7 @@
 		"docs": "Docs",
 		"interactive": "Interactive",
 		"apps": "Apps",
+		"tools": "Tools",
 		"ren_browser": "Ren Browser",
 		"wasm_example": "WASM Example",
 		"contact": "Contact",
@@ -23,6 +24,7 @@
 		"export_txt": "TXT",
 		"coming_soon": "Coming Soon",
 		"available": "Available",
+		"alpha": "Alpha",
 		"try_demo": "Try demo",
 		"explore": "Explore",
 		"learn_more": "Learn more",
@@ -39,6 +41,76 @@
 		"description": "Discover applications and tools built with Reticulum-Go, including Ren Browser and Micron Parser Go.",
 		"search_placeholder": "Search applications..."
 	},
+	"tools": {
+		"title": "Tools",
+		"description": "Browser tools powered by Reticulum-Go and related WASM modules. Cached by the site PWA for offline use after first visit.",
+		"search_placeholder": "Search tools...",
+		"micron_editor": {
+			"title": "Micron Editor",
+			"description": "Live Micron markup editor with WASM preview via Micron-Parser-Go.",
+			"page_title": "Micron Editor",
+			"page_blurb": "Write Micron and see a live HTML preview. Runs entirely in your browser with Micron-Parser-Go WASM.",
+			"back": "All tools",
+			"source": "Source",
+			"preview": "Preview",
+			"monospace": "Monospace",
+			"reset": "Reset sample",
+			"copy": "Copy",
+			"copied": "Copied",
+			"loading": "Loading Micron WASM…",
+			"ready": "Live preview ready",
+			"error": "Failed to load Micron WASM",
+			"powered_by": "Powered by Micron-Parser-Go",
+			"clear": "Clear",
+			"download": "Download",
+			"retry": "Retry",
+			"snippets": "Snippets",
+			"cheatsheet": "Cheatsheet",
+			"insert_snippet": "Insert snippet",
+			"lines": "Lines",
+			"chars": "Chars"
+		},
+		"reticulum_guide": {
+			"title": "Reticulum Guide",
+			"description": "Visual tutorials on destinations, identities, announces, cryptography, links, interfaces, and multi-hop packets, grounded in the official Reticulum manual.",
+			"page_title": "Reticulum Guide",
+			"page_blurb": "Interactive explainers that keep the Zen of Reticulum in mind: sovereign networks, destinations not addresses, encryption by default.",
+			"back": "All tools",
+			"back_guide": "All guide chapters",
+			"search_placeholder": "Search chapters...",
+			"sources": "Sources",
+			"zen": "Keeping the zen",
+			"step_of": "Step {current} of {total}",
+			"previous": "Previous",
+			"next": "Next",
+			"open_chapter": "Open chapter",
+			"chapters": "Chapters",
+			"chapters_toggle": "Toggle chapter list",
+			"python": "Python",
+			"go": "Go",
+			"try_it": "Try it",
+			"code_sample": "Code sample language",
+			"encrypted": "Encrypted",
+			"multi_hop": "Multi-hop",
+			"local_only": "Local only",
+			"accepted": "Accepted",
+			"rejected": "Rejected",
+			"interactive_title": "Try it yourself",
+			"copy": "Copy",
+			"copied": "Copied",
+			"nav_hint": "Swipe or use arrow keys",
+			"in_go": "Available in Go",
+			"python_ref": "Python reference"
+		},
+		"rnode_flasher": {
+			"title": "RNODE Flasher",
+			"description": "Flash and provision RNode firmware from the browser. Planned compatibility with tiny-reticulum-go and official RNode firmware builds."
+		},
+		"bot_builder": {
+			"title": "Bot Builder",
+			"description": "Visual builder for LXMF bots powered by LXMFy-Go. Design handlers, destinations, and bot flows without starting from a blank file."
+		}
+	},
 	"time": {
 		"seconds": "seconds",
 		"minutes": "minutes",
@@ -51,6 +123,9 @@
 		"title": "Donate",
 		"subtitle": "Support the development and maintenance of Reticulum-Go.",
 		"intro": "Choose a platform below or send Monero directly.",
+		"meta_description": "Support Reticulum-Go development. 50% of donations go to Mark Qvist, creator of the Reticulum reference implementation at reticulum.network.",
+		"markqvist_share": "50% of donations go to Mark Qvist, creator of the Reticulum reference implementation.",
+		"markqvist_link": "reticulum.network",
 		"buymeacoffee": "Buy Me a Coffee",
 		"liberapay": "Liberapay",
 		"kofi": "Ko-fi",
@@ -67,7 +142,7 @@
 		"features": {
 			"encrypted": {
 				"title": "Encrypted by Default",
-				"description": "Everything in Reticulum is encrypted with strong, modern primitives. No unencrypted traffic ever leaves your device."
+				"description": "Reticulum uses strong, modern cryptography end to end. On-wire layouts match the Python reference so peers stay compatible."
 			},
 			"resilient": {
 				"title": "Resilient & Sovereign",
@@ -75,8 +150,24 @@
 			},
 			"go": {
 				"title": "Go Implementation",
-				"description": "Built with Go for maximum performance, safety, and cross-platform compatibility. Run it anywhere from embedded to cloud servers."
+				"description": "Built with Go for portability, auditability, and concurrency. Run it from embedded devices to cloud servers."
+			},
+			"interop": {
+				"title": "Full RNS Interoperability",
+				"description": "Wire-compatible with the official Python Reticulum (RNS). Packets, links, and cryptography work peer-to-peer."
+			},
+			"sandbox": {
+				"title": "Secure by Design",
+				"description": "The native daemon enables an OS sandbox by default. The WASM build runs inside the browser sandbox of the host runtime."
+			},
+			"modular": {
+				"title": "Modular & Embeddable",
+				"description": "Use it as a daemon, Go library, C ABI (librns), control API, or WASM module."
 			}
+		},
+		"coexistence": {
+			"title": "Expanding Reticulum's Reach",
+			"description": "Reticulum-Go was built to work with the Python reference implementation by Mark Qvist, not to replace it. The goal is to help the network and expand where Reticulum can run, while Python RNS remains the reference that defines the protocol."
 		},
 		"ren_promo": {
 			"title": "Browse the Reticulum Network",

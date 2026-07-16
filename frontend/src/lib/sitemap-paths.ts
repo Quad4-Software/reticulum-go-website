@@ -1,4 +1,5 @@
 import { DOC_SLUGS } from '$lib/docs-config';
+import { getTutorialSlugs } from '$lib/tutorials';
 
 export const SITEMAP_PATHS = [
 	'/',
@@ -9,6 +10,10 @@ export const SITEMAP_PATHS = [
 	'/contact',
 	'/donate',
 	'/interactive',
+	'/tools',
+	'/tools/reticulum-guide',
+	...getTutorialSlugs().map((slug) => `/tools/reticulum-guide/${slug}`),
+	'/tools/micron-editor',
 	'/wasm-example',
 	'/identity',
 	'/settings',

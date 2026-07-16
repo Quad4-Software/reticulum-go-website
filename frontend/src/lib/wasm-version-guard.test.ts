@@ -53,21 +53,33 @@ describe('ensureWasmMatchesDeployedBuildWithDeps', () => {
 
 	it('returns true when embedded SHA is empty', async () => {
 		const fetchImpl = vi.fn();
-		const out = await ensureWasmMatchesDeployedBuildWithDeps('', true, deps(fetchImpl as unknown as typeof fetch));
+		const out = await ensureWasmMatchesDeployedBuildWithDeps(
+			'',
+			true,
+			deps(fetchImpl as unknown as typeof fetch)
+		);
 		expect(out).toBe(true);
 		expect(fetchImpl).not.toHaveBeenCalled();
 	});
 
 	it('returns true when not in browser (SSR)', async () => {
 		const fetchImpl = vi.fn();
-		const out = await ensureWasmMatchesDeployedBuildWithDeps('abc', false, deps(fetchImpl as unknown as typeof fetch));
+		const out = await ensureWasmMatchesDeployedBuildWithDeps(
+			'abc',
+			false,
+			deps(fetchImpl as unknown as typeof fetch)
+		);
 		expect(out).toBe(true);
 		expect(fetchImpl).not.toHaveBeenCalled();
 	});
 
 	it('returns true when wasm-version.json is missing (non-OK)', async () => {
 		const fetchImpl = vi.fn(async () => new Response(null, { status: 404 }));
-		const out = await ensureWasmMatchesDeployedBuildWithDeps('abc', true, deps(fetchImpl as unknown as typeof fetch));
+		const out = await ensureWasmMatchesDeployedBuildWithDeps(
+			'abc',
+			true,
+			deps(fetchImpl as unknown as typeof fetch)
+		);
 		expect(out).toBe(true);
 		expect(clearAllCachesMock).not.toHaveBeenCalled();
 	});
@@ -81,7 +93,11 @@ describe('ensureWasmMatchesDeployedBuildWithDeps', () => {
 					headers: { 'Content-Type': 'application/json' }
 				})
 		);
-		const out = await ensureWasmMatchesDeployedBuildWithDeps('same', true, deps(fetchImpl as unknown as typeof fetch));
+		const out = await ensureWasmMatchesDeployedBuildWithDeps(
+			'same',
+			true,
+			deps(fetchImpl as unknown as typeof fetch)
+		);
 		expect(out).toBe(true);
 		expect(session.getItem(WASM_SKEW_KEY)).toBeNull();
 	});
@@ -94,7 +110,11 @@ describe('ensureWasmMatchesDeployedBuildWithDeps', () => {
 					headers: { 'Content-Type': 'application/json' }
 				})
 		);
-		const out = await ensureWasmMatchesDeployedBuildWithDeps('abc', true, deps(fetchImpl as unknown as typeof fetch));
+		const out = await ensureWasmMatchesDeployedBuildWithDeps(
+			'abc',
+			true,
+			deps(fetchImpl as unknown as typeof fetch)
+		);
 		expect(out).toBe(true);
 		expect(clearAllCachesMock).not.toHaveBeenCalled();
 	});
@@ -107,7 +127,11 @@ describe('ensureWasmMatchesDeployedBuildWithDeps', () => {
 					headers: { 'Content-Type': 'application/json' }
 				})
 		);
-		const out = await ensureWasmMatchesDeployedBuildWithDeps('bundle-sha', true, deps(fetchImpl as unknown as typeof fetch));
+		const out = await ensureWasmMatchesDeployedBuildWithDeps(
+			'bundle-sha',
+			true,
+			deps(fetchImpl as unknown as typeof fetch)
+		);
 		expect(out).toBe(false);
 		expect(clearAllCachesMock).toHaveBeenCalledTimes(1);
 		expect(session.getItem(WASM_SKEW_KEY)).toBe('1');
@@ -125,7 +149,11 @@ describe('ensureWasmMatchesDeployedBuildWithDeps', () => {
 					headers: { 'Content-Type': 'application/json' }
 				})
 		);
-		const out = await ensureWasmMatchesDeployedBuildWithDeps('bundle', true, deps(fetchImpl as unknown as typeof fetch));
+		const out = await ensureWasmMatchesDeployedBuildWithDeps(
+			'bundle',
+			true,
+			deps(fetchImpl as unknown as typeof fetch)
+		);
 		expect(out).toBe(true);
 		expect(clearAllCachesMock).not.toHaveBeenCalled();
 		expect(reloadMock).not.toHaveBeenCalled();
@@ -137,19 +165,30 @@ describe('ensureWasmMatchesDeployedBuildWithDeps', () => {
 		const fetchImpl = vi.fn(async () => {
 			throw new Error('network');
 		});
-		const out = await ensureWasmMatchesDeployedBuildWithDeps('abc', true, deps(fetchImpl as unknown as typeof fetch));
+		const out = await ensureWasmMatchesDeployedBuildWithDeps(
+			'abc',
+			true,
+			deps(fetchImpl as unknown as typeof fetch)
+		);
 		expect(out).toBe(true);
 		expect(reloadMock).not.toHaveBeenCalled();
 	});
 
 	it('returns true when response.json throws', async () => {
-		const fetchImpl = vi.fn(async () => ({
-			ok: true,
-			json: async () => {
-				throw new Error('invalid json');
-			}
-		}) as unknown as Response);
-		const out = await ensureWasmMatchesDeployedBuildWithDeps('abc', true, deps(fetchImpl as unknown as typeof fetch));
+		const fetchImpl = vi.fn(
+			async () =>
+				({
+					ok: true,
+					json: async () => {
+						throw new Error('invalid json');
+					}
+				}) as unknown as Response
+		);
+		const out = await ensureWasmMatchesDeployedBuildWithDeps(
+			'abc',
+			true,
+			deps(fetchImpl as unknown as typeof fetch)
+		);
 		expect(out).toBe(true);
 	});
 });

@@ -22,6 +22,7 @@ const LANGS = [
 	'rust'
 ];
 
+/** @type {Record<string, string>} */
 const LANG_ALIASES = {
 	sh: 'bash',
 	shell: 'bash',

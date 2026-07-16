@@ -2,16 +2,10 @@
 	import { Calendar, ChevronDown, FileText, Hash, Tag, User } from 'lucide-svelte';
 	import type { DocMetaField } from '$lib/doc-meta';
 
-	let {
-		fields = [] as DocMetaField[]
-	} = $props();
+	let { fields = [] as DocMetaField[] } = $props();
 
-	const version = $derived(
-		fields.find((f) => /^document\s*version$/i.test(f.label))?.value
-	);
-	const updated = $derived(
-		fields.find((f) => /^last\s*updated$/i.test(f.label))?.value
-	);
+	const version = $derived(fields.find((f) => /^document\s*version$/i.test(f.label))?.value);
+	const updated = $derived(fields.find((f) => /^last\s*updated$/i.test(f.label))?.value);
 
 	type FieldIcon = typeof Hash;
 

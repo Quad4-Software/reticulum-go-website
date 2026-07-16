@@ -1,14 +1,18 @@
 import { describe, it, expect } from 'vitest';
-import { SITE_URL } from './site-config';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { SITE_DESCRIPTION, SITE_URL } from './site-config';
 import {
 	buildJsonLd,
 	getBreadcrumbJsonLd,
 	getCanonicalUrl,
+	getDonateWebPageJsonLd,
 	getHreflangLinks,
 	getOrganizationJsonLd,
 	getSoftwareApplicationJsonLd,
 	getWebSiteJsonLd,
-	jsonLdScript
+	jsonLdScript,
+	RETICULUM_SITE
 } from './seo';
 
 describe('seo', () => {
@@ -40,9 +44,40 @@ describe('seo', () => {
 	});
 
 	it('JSON-LD helpers return parseable JSON', () => {
-		for (const fn of [getOrganizationJsonLd, getSoftwareApplicationJsonLd, getWebSiteJsonLd]) {
+		for (const fn of [
+			getOrganizationJsonLd,
+			getSoftwareApplicationJsonLd,
+			getWebSiteJsonLd,
+			getDonateWebPageJsonLd
+		]) {
 			expect(() => JSON.parse(fn())).not.toThrow();
 		}
+	});
+
+	it('software JSON-LD credits Mark Qvist and reticulum.network', () => {
+		const parsed = JSON.parse(getSoftwareApplicationJsonLd()) as {
+			description: string;
+			isBasedOn: { url: string; author: { name: string } };
+			sameAs: string[];
+			license: string;
+		};
+		expect(parsed.description).toBe(SITE_DESCRIPTION);
+		expect(parsed.isBasedOn.url).toBe(RETICULUM_SITE);
+		expect(parsed.isBasedOn.author.name).toBe('Mark Qvist');
+		expect(parsed.sameAs).toContain(RETICULUM_SITE);
+		expect(parsed.license).toContain('LICENSE-2.0');
+	});
+
+	it('donate JSON-LD mentions the Mark Qvist share', () => {
+		const parsed = JSON.parse(getDonateWebPageJsonLd()) as {
+			url: string;
+			description: string;
+			about: { name: string; url: string };
+		};
+		expect(parsed.url).toBe(`${SITE_URL}/donate`);
+		expect(parsed.description).toMatch(/Half of donations|Mark Qvist/);
+		expect(parsed.about.name).toBe('Mark Qvist');
+		expect(parsed.about.url).toBe(RETICULUM_SITE);
 	});
 
 	it('getBreadcrumbJsonLd encodes positions and URLs', () => {
@@ -59,5 +94,27 @@ describe('seo', () => {
 		expect(parsed.itemListElement[0].position).toBe(1);
 		expect(parsed.itemListElement[1].position).toBe(2);
 		expect(parsed.itemListElement[0].name).toBe('Home');
+	});
+
+	it('keeps app.html meta description aligned with site-config', () => {
+		const appHtml = readFileSync(resolve(import.meta.dirname, '../app.html'), 'utf8');
+		expect(appHtml).toContain(SITE_DESCRIPTION);
+		expect(appHtml).toContain('og:description');
+		expect(appHtml).toContain('twitter:description');
+	});
+
+	it('points security.txt Contact at the LXMF address', () => {
+		const securityTxt = readFileSync(
+			resolve(import.meta.dirname, '../../static/.well-known/security.txt'),
+			'utf8'
+		);
+		expect(securityTxt).toContain('Contact: lxmf:f489752fbef161c64d65e385a4e9fc74');
+		expect(securityTxt).not.toContain('mailto:security@quad4.io');
+	});
+
+	it('advertises llms.txt on the website JSON-LD', () => {
+		const parsed = JSON.parse(getWebSiteJsonLd()) as { relatedLink?: string[] };
+		expect(parsed.relatedLink).toContain(`${SITE_URL}/llms.txt`);
+		expect(parsed.relatedLink).toContain(`${SITE_URL}/api/agent`);
 	});
 });

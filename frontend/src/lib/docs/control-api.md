@@ -36,26 +36,26 @@ Requests without a valid bearer token are rejected.
 
 ## HTTP routes
 
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/v1/health` | Node health |
-| GET | `/v1/status` | Interface statistics |
-| GET | `/v1/paths` | Path table snapshot |
-| POST | `/v1/sessions` | Create session (identity) |
-| DELETE | `/v1/sessions/{id}` | Tear down session |
-| POST | `/v1/sessions/{id}/destinations` | Register destination |
-| POST | `/v1/sessions/{id}/destinations/{hash}/announce` | Send announce |
-| POST | `/v1/sessions/{id}/destinations/{hash}/requests` | Bridge request path to WebSocket |
-| POST | `/v1/sessions/{id}/path/request` | Request path to destination |
-| GET | `/v1/sessions/{id}/events` | WebSocket event stream |
+| Method | Path                                             | Description                      |
+| ------ | ------------------------------------------------ | -------------------------------- |
+| GET    | `/v1/health`                                     | Node health                      |
+| GET    | `/v1/status`                                     | Interface statistics             |
+| GET    | `/v1/paths`                                      | Path table snapshot              |
+| POST   | `/v1/sessions`                                   | Create session (identity)        |
+| DELETE | `/v1/sessions/{id}`                              | Tear down session                |
+| POST   | `/v1/sessions/{id}/destinations`                 | Register destination             |
+| POST   | `/v1/sessions/{id}/destinations/{hash}/announce` | Send announce                    |
+| POST   | `/v1/sessions/{id}/destinations/{hash}/requests` | Bridge request path to WebSocket |
+| POST   | `/v1/sessions/{id}/path/request`                 | Request path to destination      |
+| GET    | `/v1/sessions/{id}/events`                       | WebSocket event stream           |
 
 Lifecycle routes (Go node integration):
 
-| Method | Path | Description |
-|--------|------|-------------|
-| POST | `/v1/lifecycle/resume` | Resume after pause |
-| POST | `/v1/lifecycle/pause` | Pause interfaces |
-| POST | `/v1/lifecycle/refresh-paths` | Refresh stale paths |
+| Method | Path                          | Description         |
+| ------ | ----------------------------- | ------------------- |
+| POST   | `/v1/lifecycle/resume`        | Resume after pause  |
+| POST   | `/v1/lifecycle/pause`         | Pause interfaces    |
+| POST   | `/v1/lifecycle/refresh-paths` | Refresh stale paths |
 
 Binary fields (hashes, app data, link payloads) are hex- or base64-encoded as documented in `pkg/controlapi/protocol.go`.
 
@@ -87,24 +87,24 @@ GET /v1/sessions/{id}/events (WebSocket)
 
 Server to client JSON events include:
 
-| Event | Meaning |
-|-------|---------|
-| `announceEvent` | Remote announce received |
-| `linkEstablishedEvent` | Link is active |
-| `linkFailedEvent` | Outbound link failed |
-| `linkDataEvent` | Data received on link |
-| `linkClosedEvent` | Link closed |
+| Event                  | Meaning                            |
+| ---------------------- | ---------------------------------- |
+| `announceEvent`        | Remote announce received           |
+| `linkEstablishedEvent` | Link is active                     |
+| `linkFailedEvent`      | Outbound link failed               |
+| `linkDataEvent`        | Data received on link              |
+| `linkClosedEvent`      | Link closed                        |
 | `requestIncomingEvent` | Request arrived on registered path |
 
 Client to server commands include:
 
-| Command | Meaning |
-|---------|---------|
-| `subscribeAnnouncesCommand` | Filter announces |
-| `linkOpenCommand` | Open outbound link |
-| `linkSendCommand` | Send on link |
-| `linkCloseCommand` | Close link |
-| `requestRespondCommand` | Answer a request |
+| Command                     | Meaning            |
+| --------------------------- | ------------------ |
+| `subscribeAnnouncesCommand` | Filter announces   |
+| `linkOpenCommand`           | Open outbound link |
+| `linkSendCommand`           | Send on link       |
+| `linkCloseCommand`          | Close link         |
+| `requestRespondCommand`     | Answer a request   |
 
 Full type definitions: `pkg/controlapi/protocol.go`.
 
@@ -135,14 +135,14 @@ Handlers block the underlying link goroutine until response or timeout. Keep pro
 
 ## Implementation files
 
-| File | Role |
-|------|------|
-| `server.go` | HTTP server and routing |
-| `session.go` | Session state |
-| `protocol.go` | Request and event types |
-| `ws.go` | WebSocket handling |
-| `auth.go` | Bearer validation |
-| `lifecycle.go` | Lifecycle routes |
+| File           | Role                    |
+| -------------- | ----------------------- |
+| `server.go`    | HTTP server and routing |
+| `session.go`   | Session state           |
+| `protocol.go`  | Request and event types |
+| `ws.go`        | WebSocket handling      |
+| `auth.go`      | Bearer validation       |
+| `lifecycle.go` | Lifecycle routes        |
 
 Daemon wiring: `cmd/reticulum-go/main.go` starts `controlapi.Server` when enabled.
 

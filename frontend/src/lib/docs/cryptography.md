@@ -23,15 +23,15 @@ On-wire layouts match the Python reference. Changing algorithms or sizes without
 
 ## Primitive inventory
 
-| Primitive | Role | Implementation |
-|-----------|------|----------------|
-| X25519 | Static identity DH, ephemeral ECDH, ratchets, IFAC input | `golang.org/x/crypto/curve25519` via `pkg/cryptography` |
-| Ed25519 | Identity signatures, IFAC inner identity | `crypto/ed25519` via `pkg/cryptography` |
-| SHA-256 | Hashes, destination construction, digests | `crypto/sha256` |
-| HKDF-SHA256 | Identity encrypt keys, IFAC derivation | `golang.org/x/crypto/hkdf` |
-| AES-256-CBC | Identity tokens, link traffic where reference uses CBC | `crypto/aes`, PKCS#7 in `pkg/cryptography` |
-| HMAC-SHA256 | Identity ciphertext authentication | `crypto/hmac` |
-| Random bytes | Key generation, IVs | `crypto/rand` |
+| Primitive    | Role                                                     | Implementation                                          |
+| ------------ | -------------------------------------------------------- | ------------------------------------------------------- |
+| X25519       | Static identity DH, ephemeral ECDH, ratchets, IFAC input | `golang.org/x/crypto/curve25519` via `pkg/cryptography` |
+| Ed25519      | Identity signatures, IFAC inner identity                 | `crypto/ed25519` via `pkg/cryptography`                 |
+| SHA-256      | Hashes, destination construction, digests                | `crypto/sha256`                                         |
+| HKDF-SHA256  | Identity encrypt keys, IFAC derivation                   | `golang.org/x/crypto/hkdf`                              |
+| AES-256-CBC  | Identity tokens, link traffic where reference uses CBC   | `crypto/aes`, PKCS#7 in `pkg/cryptography`              |
+| HMAC-SHA256  | Identity ciphertext authentication                       | `crypto/hmac`                                           |
+| Random bytes | Key generation, IVs                                      | `crypto/rand`                                           |
 
 Pinned extended module: `golang.org/x/crypto` (version in `go.mod`, currently v0.52.0).
 
@@ -124,21 +124,21 @@ Optional X25519 ratchet private keys (256 bits) for forward secrecy on identity-
 
 ## Verification
 
-| Method | Location |
-|--------|----------|
-| Automated cross tests | `tests/crossref`, package tests under `pkg/` |
-| Live interop | `tests/interop` |
-| External spec | [Reticulum manual](https://reticulum.network/manual/reference.html), [crypto overview](https://reticulum.network/crypto.html) |
+| Method                | Location                                                                                                                      |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| Automated cross tests | `tests/crossref`, package tests under `pkg/`                                                                                  |
+| Live interop          | `tests/interop`                                                                                                               |
+| External spec         | [Reticulum manual](https://reticulum.network/manual/reference.html), [crypto overview](https://reticulum.network/crypto.html) |
 
 Parity claims are listed in [Compatibility](/docs/compatibility).
 
 ## Protocol constants
 
-| Item | Value |
-|------|-------|
-| Curve | Curve25519 (X25519 + Ed25519) |
-| KEYSIZE | 512 bits (256 encryption + 256 signing) |
-| TRUNCATED_HASHLENGTH | 128 bits |
-| RATCHETSIZE | 256 bits |
-| RATCHET_EXPIRY | 2 592 000 seconds (30 days) |
-| Default MTU | 500 bytes (`pkg/packet.MTU`) |
+| Item                 | Value                                   |
+| -------------------- | --------------------------------------- |
+| Curve                | Curve25519 (X25519 + Ed25519)           |
+| KEYSIZE              | 512 bits (256 encryption + 256 signing) |
+| TRUNCATED_HASHLENGTH | 128 bits                                |
+| RATCHETSIZE          | 256 bits                                |
+| RATCHET_EXPIRY       | 2 592 000 seconds (30 days)             |
+| Default MTU          | 500 bytes (`pkg/packet.MTU`)            |

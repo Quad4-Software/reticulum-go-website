@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { isDark, initTheme, applyDarkClass } from '$lib/theme';
+	import { isDark, initTheme, applyDarkClass, type Theme } from '$lib/theme';
 
-	let { children } = $props();
+	let { children, currentTheme = 'system' as Theme } = $props();
 
 	onMount(() => {
-		initTheme();
+		initTheme(currentTheme);
 		const unsub = isDark.subscribe(applyDarkClass);
 		return unsub;
 	});

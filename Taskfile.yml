@@ -40,6 +40,11 @@ tasks:
     cmds:
       - task: docs:check
 
+  wasm:micron:
+    desc: Fetch latest Micron-Parser-Go WASM and refresh SHA-384 SRI hashes
+    cmds:
+      - node scripts/update-micron-wasm.mjs
+
   dev:
     desc: Run frontend development server
     dir: "{{.FRONTEND}}"

@@ -182,7 +182,9 @@
 		</div>
 
 		<div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto text-left">
-			<div class="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 space-y-4">
+			<div
+				class="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 space-y-4"
+			>
 				<div class="flex items-center gap-3 text-[#00ADD8]">
 					<Layout class="w-6 h-6" />
 					<h3 class="font-bold text-lg">{$t('ren_browser.platforms_app_title')}</h3>
@@ -203,7 +205,9 @@
 				</div>
 			</div>
 
-			<div class="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 space-y-4">
+			<div
+				class="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 space-y-4"
+			>
 				<div class="flex items-center gap-3 text-[#00ADD8]">
 					<Server class="w-6 h-6" />
 					<h3 class="font-bold text-lg">{$t('ren_browser.platforms_web_title')}</h3>

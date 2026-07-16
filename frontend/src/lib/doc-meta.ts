@@ -5,8 +5,7 @@ function cellText(cell: Element | undefined | null): string {
 }
 
 function headerCells(table: HTMLTableElement): Element[] {
-	const firstRow =
-		table.querySelector('thead tr') ?? table.querySelector('tr');
+	const firstRow = table.querySelector('thead tr') ?? table.querySelector('tr');
 	if (!firstRow) return [];
 	return Array.from(firstRow.querySelectorAll('th, td'));
 }
@@ -16,8 +15,7 @@ export function isDocMetaTable(table: HTMLTableElement): boolean {
 	const cells = headerCells(table);
 	if (cells.length < 2) return false;
 	return (
-		cellText(cells[0]).toLowerCase() === 'field' &&
-		cellText(cells[1]).toLowerCase() === 'value'
+		cellText(cells[0]).toLowerCase() === 'field' && cellText(cells[1]).toLowerCase() === 'value'
 	);
 }
 

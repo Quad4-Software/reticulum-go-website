@@ -4,7 +4,7 @@ import type { LayoutLoad } from './$types';
 
 export const prerender = false;
 export const ssr = true;
-export const csr = false;
+export const csr = true;
 
 export const load: LayoutLoad = async ({ data }) => {
 	locale.set(data.currentLocale);

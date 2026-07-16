@@ -103,13 +103,52 @@ if (fs.existsSync(BUILD_DIR)) {
 	fs.writeFileSync(MANIFEST_FILE, JSON.stringify(manifest, null, 2));
 	console.log(`SRI manifest created: ${MANIFEST_FILE}`);
 
-	const wasmBuild = path.join(BUILD_DIR, 'reticulum-go.wasm');
-	if (fs.existsSync(wasmBuild)) {
-		const sha256 = crypto.createHash('sha256').update(fs.readFileSync(wasmBuild)).digest('hex');
-		const wasmVersionPath = path.join(BUILD_DIR, 'wasm-version.json');
-		fs.writeFileSync(wasmVersionPath, JSON.stringify({ sha256 }, null, 2));
-		console.log(`WASM version file created: ${wasmVersionPath}`);
-	}
+	const wasmAssets = {};
+	walkDir(BUILD_DIR, (filePath) => {
+		if (!filePath.endsWith('.wasm')) return;
+		const relativePath = '/' + path.relative(BUILD_DIR, filePath).replace(/\\/g, '/');
+		const buf = fs.readFileSync(filePath);
+		const sha256 = crypto.createHash('sha256').update(buf).digest('hex');
+		const sri = calculateSRI(filePath);
+		wasmAssets[relativePath] = { sha256, sri, bytes: buf.byteLength };
+		manifest[relativePath] = sri;
+	});
+
+	const reticulum = wasmAssets['/reticulum-go.wasm'];
+	const wasmVersionPath = path.join(BUILD_DIR, 'wasm-version.json');
+	fs.writeFileSync(
+		wasmVersionPath,
+		JSON.stringify(
+			{
+				sha256: reticulum?.sha256 ?? null,
+				assets: wasmAssets
+			},
+			null,
+			2
+		)
+	);
+	console.log(`WASM version file created: ${wasmVersionPath}`);
+
+	const wasmSriPath = path.join(BUILD_DIR, 'wasm-sri.json');
+	fs.writeFileSync(
+		wasmSriPath,
+		JSON.stringify(
+			{
+				updatedAt: new Date().toISOString(),
+				assets: Object.fromEntries(
+					Object.entries(wasmAssets).map(([p, meta]) => [
+						p,
+						{ sha256: meta.sha256, sri: meta.sri, bytes: meta.bytes }
+					])
+				)
+			},
+			null,
+			2
+		)
+	);
+	console.log(`WASM SRI file created: ${wasmSriPath}`);
+
+	fs.writeFileSync(MANIFEST_FILE, JSON.stringify(manifest, null, 2));
 
 	console.log('SRI generation complete.');
 } else {
