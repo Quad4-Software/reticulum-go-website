@@ -16,4 +16,10 @@ describe('apps catalog', () => {
 		expect(pageSource).toMatch(/name: 'Ren Store'[\s\S]*?status: 'coming-soon'/);
 		expect(pageSource).toMatch(/name: 'Strata API Framework'[\s\S]*?status: 'coming-soon'/);
 	});
+
+	it('lists WASM Demo as available and links to the wasm example', () => {
+		expect(pageSource).toContain("name: 'WASM Demo'");
+		expect(pageSource).toMatch(/name: 'WASM Demo'[\s\S]*?status: 'available'/);
+		expect(pageSource).toMatch(/name: 'WASM Demo'[\s\S]*?demoLink: '\/wasm-example'/);
+	});
 });

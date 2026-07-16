@@ -8,7 +8,9 @@ import {
 	CRYPTO_PIPELINE,
 	buildAnnounceReplay,
 	LINK_STAGES,
-	INTERFACE_CARDS
+	INTERFACE_CARDS,
+	stepPacketSim,
+	LINK_SIM_FRAMES
 } from './interactive';
 
 describe('tutorial catalog', () => {
@@ -153,5 +155,37 @@ describe('tutorial interactives', () => {
 		expect(INTERFACE_CARDS.lora.inGo).toBe(false);
 		expect(INTERFACE_CARDS.tcp.inGo).toBe(true);
 		expect(INTERFACE_CARDS.websocket.inGo).toBe(true);
+	});
+
+	it('keeps plain packet sim local-only on step', () => {
+		const result = stepPacketSim('plain', 0, 0);
+		expect(result.status).toBe('local-only');
+		expect(result.nodeIndex).toBe(0);
+		expect(result.hops).toBe(0);
+	});
+
+	it('delivers encrypted packet sim across the path', () => {
+		let node = 0;
+		let hops = 0;
+		let status: ReturnType<typeof stepPacketSim>['status'] = 'moving';
+		while (status === 'moving') {
+			const next = stepPacketSim('encrypted', node, hops);
+			node = next.nodeIndex;
+			hops = next.hops;
+			status = next.status;
+		}
+		expect(status).toBe('delivered');
+		expect(node).toBe(3);
+	});
+
+	it('drops encrypted packet sim at PATHFINDER_M hops', () => {
+		const result = stepPacketSim('encrypted', 1, PATHFINDER_M);
+		expect(result.status).toBe('dropped');
+		expect(result.hops).toBe(PATHFINDER_M);
+	});
+
+	it('ends link sim frames with linkclose and includes a canSendData frame', () => {
+		expect(LINK_SIM_FRAMES.at(-1)?.id).toBe('linkclose');
+		expect(LINK_SIM_FRAMES.some((frame) => frame.canSendData)).toBe(true);
 	});
 });

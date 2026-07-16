@@ -51,7 +51,7 @@ describe('micron editor tool', () => {
 		expect(editor).toContain('MICRON_SNIPPETS');
 		expect(editor).toContain('findMicronColors');
 		expect(editor).toContain('tabDownloadName');
-		expect(editor).toContain('MICRON_NEXT_STEPS');
+		expect(editor).toContain('colorSquareStyle');
 		const parser = read('src/lib/micron-parser.ts');
 		expect(parser).not.toMatch(/from '\$app\/environment'/);
 		expect(parser).toContain('waitForMicronConvert');

@@ -1,6 +1,5 @@
 <script lang="ts">
 	import {
-		ArrowRight,
 		Check,
 		ChevronDown,
 		Code2,
@@ -24,7 +23,6 @@
 		loadMicronEditorState,
 		saveMicronEditorState,
 		MICRON_SNIPPETS,
-		MICRON_NEXT_STEPS,
 		insertAtCursor,
 		createTab,
 		tabDownloadName,
@@ -89,8 +87,28 @@
 	const activeTab = $derived(tabs.find((tab) => tab.id === activeTabId));
 	const canUndo = $derived(undoStack.length > 0);
 	const canRedo = $derived(redoStack.length > 0);
-	const fgSnippet = $derived(MICRON_SNIPPETS.find((snippet) => snippet.id === 'fg'));
-	const bgSnippet = $derived(MICRON_SNIPPETS.find((snippet) => snippet.id === 'bg'));
+
+	const COLOR_SQUARE = 14;
+
+	type OverlayMetrics = {
+		paddingTop: number;
+		paddingLeft: number;
+		lineHeight: number;
+		charWidth: number;
+		scrollTop: number;
+		scrollLeft: number;
+	};
+
+	let overlayMetrics = $state<OverlayMetrics>({
+		paddingTop: 0,
+		paddingLeft: 0,
+		lineHeight: 0,
+		charWidth: 0,
+		scrollTop: 0,
+		scrollLeft: 0
+	});
+
+	let measureCanvas: HTMLCanvasElement | undefined;
 
 	function flushActiveToTabs() {
 		const idx = tabs.findIndex((tab) => tab.id === activeTabId);
@@ -331,6 +349,50 @@
 		colorDragBase = null;
 	}
 
+	function measureCharWidth(font: string): number {
+		if (typeof document === 'undefined') return 8;
+		measureCanvas ??= document.createElement('canvas');
+		const ctx = measureCanvas.getContext('2d');
+		if (!ctx) return 8;
+		ctx.font = font;
+		const width = ctx.measureText('M').width;
+		if (width > 0) return width;
+		const match = font.match(/(\d+(?:\.\d+)?)px/);
+		const fontSize = match ? parseFloat(match[1]) : 14;
+		return fontSize * 0.6;
+	}
+
+	function updateOverlayMetrics() {
+		const el = textareaEl;
+		if (!el) return;
+		const style = getComputedStyle(el);
+		const paddingTop = parseFloat(style.paddingTop) || 0;
+		const paddingLeft = parseFloat(style.paddingLeft) || 0;
+		const fontSize = parseFloat(style.fontSize) || 14;
+		const lineHeight = parseFloat(style.lineHeight) || fontSize * 1.625;
+		const font = style.font || `${style.fontSize} ${style.fontFamily}`;
+		overlayMetrics = {
+			paddingTop,
+			paddingLeft,
+			lineHeight,
+			charWidth: measureCharWidth(font),
+			scrollTop: el.scrollTop,
+			scrollLeft: el.scrollLeft
+		};
+	}
+
+	function syncScroll() {
+		updateOverlayMetrics();
+	}
+
+	function colorSquareStyle(match: MicronColorMatch): string {
+		const m = overlayMetrics;
+		const top =
+			m.paddingTop + match.line * m.lineHeight - m.scrollTop + (m.lineHeight - COLOR_SQUARE) / 2;
+		const left = m.paddingLeft + match.column * m.charWidth - m.scrollLeft - COLOR_SQUARE - 2;
+		return `top: ${top}px; left: ${left}px; width: ${COLOR_SQUARE}px; height: ${COLOR_SQUARE}px`;
+	}
+
 	function handleEditorKeydown(event: KeyboardEvent) {
 		if (renamingTabId) return;
 		const mod = event.metaKey || event.ctrlKey;
@@ -439,6 +501,23 @@
 			document.body.style.overflow = prev;
 		};
 	});
+
+	$effect(() => {
+		void source;
+		void colorMatches;
+		void monospace;
+		void fullscreen;
+		queueMicrotask(() => updateOverlayMetrics());
+	});
+
+	$effect(() => {
+		const el = textareaEl;
+		if (!el || typeof window === 'undefined') return;
+		const onResize = () => updateOverlayMetrics();
+		window.addEventListener('resize', onResize);
+		queueMicrotask(() => updateOverlayMetrics());
+		return () => window.removeEventListener('resize', onResize);
+	});
 </script>
 
 <svelte:window onkeydown={handleEditorKeydown} />
@@ -451,7 +530,7 @@
 			: 'rounded-xl'}"
 	>
 		<div
-			class="flex flex-wrap items-center gap-2 border-b border-zinc-200 bg-zinc-50 px-3 py-3 dark:border-zinc-800 dark:bg-zinc-950/50 sm:gap-3 sm:px-4"
+			class="flex flex-wrap items-center gap-2 border-b border-zinc-200 bg-zinc-50 px-3 py-2 dark:border-zinc-800 dark:bg-zinc-950/50 sm:gap-3 sm:px-3"
 		>
 			<div class="flex flex-wrap items-center gap-2">
 				<button
@@ -567,7 +646,7 @@
 		</div>
 
 		<div
-			class="flex min-w-0 items-center gap-1 overflow-x-auto border-b border-zinc-200 bg-zinc-50 px-2 py-1.5 dark:border-zinc-800 dark:bg-zinc-950/50 sm:px-3"
+			class="flex min-w-0 items-center gap-1 overflow-x-auto border-b border-zinc-200 bg-zinc-50 px-2 py-1 dark:border-zinc-800 dark:bg-zinc-950/50 sm:px-3"
 			role="tablist"
 			aria-label={$t('tools.micron_editor.new_tab')}
 		>
@@ -629,70 +708,7 @@
 		</div>
 
 		<div
-			class="flex min-w-0 flex-wrap items-center gap-2 border-b border-zinc-200 bg-zinc-50 px-3 py-2 dark:border-zinc-800 dark:bg-zinc-950/50 sm:px-4"
-		>
-			<span
-				class="shrink-0 text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400"
-			>
-				{$t('tools.micron_editor.colors')}
-			</span>
-
-			{#if colorMatches.length === 0}
-				<span class="text-xs text-zinc-400 dark:text-zinc-500">
-					{$t('tools.micron_editor.no_colors')}
-				</span>
-			{:else}
-				{#each colorMatches as match, index (`${match.index}-${match.kind}-${index}`)}
-					<label class="relative inline-block h-5 w-5 shrink-0 cursor-pointer">
-						<input
-							type="color"
-							value={micronToHex6(match.hex3)}
-							class="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-							aria-label="{match.kind} color {match.hex3}"
-							oninput={(event) => changeColor(match, event)}
-							onchange={finishColorDrag}
-						/>
-						<span
-							class="pointer-events-none relative block h-5 w-5 overflow-hidden rounded border border-zinc-300 dark:border-zinc-600"
-							style="background-color: {micronToHex6(match.hex3)}"
-							title="{match.kind}{match.hex3}"
-						>
-							<span
-								class="absolute bottom-0 right-0 rounded-tl bg-black/60 px-0.5 text-[8px] font-bold leading-none text-white"
-							>
-								{match.kind}
-							</span>
-						</span>
-					</label>
-				{/each}
-			{/if}
-
-			{#if fgSnippet}
-				<button
-					type="button"
-					onclick={() => insertSnippet(fgSnippet.insert)}
-					title={fgSnippet.hint}
-					aria-label="{$t('tools.micron_editor.insert_snippet')}: {fgSnippet.label}"
-					class="shrink-0 rounded-full border border-zinc-200 px-2.5 py-1 text-xs font-medium text-zinc-600 transition-colors hover:border-[#00ADD8] hover:text-[#00ADD8] dark:border-zinc-700 dark:text-zinc-400"
-				>
-					{fgSnippet.label}
-				</button>
-			{/if}
-			{#if bgSnippet}
-				<button
-					type="button"
-					onclick={() => insertSnippet(bgSnippet.insert)}
-					title={bgSnippet.hint}
-					aria-label="{$t('tools.micron_editor.insert_snippet')}: {bgSnippet.label}"
-					class="shrink-0 rounded-full border border-zinc-200 px-2.5 py-1 text-xs font-medium text-zinc-600 transition-colors hover:border-[#00ADD8] hover:text-[#00ADD8] dark:border-zinc-700 dark:text-zinc-400"
-				>
-					{bgSnippet.label}
-				</button>
-			{/if}
-		</div>
-
-		<div
-			class="flex min-w-0 flex-wrap items-center gap-2 border-b border-zinc-200 bg-zinc-50 px-3 py-2 dark:border-zinc-800 dark:bg-zinc-950/50 sm:px-4"
+			class="flex min-w-0 flex-wrap items-center gap-2 border-b border-zinc-200 bg-zinc-50 px-3 py-1.5 dark:border-zinc-800 dark:bg-zinc-950/50 sm:px-3"
 		>
 			<span
 				class="shrink-0 text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400"
@@ -718,7 +734,7 @@
 				onclick={() => (cheatsheetOpen = !cheatsheetOpen)}
 				aria-expanded={cheatsheetOpen}
 				aria-label={$t('tools.micron_editor.cheatsheet')}
-				class="flex w-full items-center justify-between gap-2 px-3 py-2 text-left text-sm font-medium text-zinc-700 transition-colors hover:text-[#00ADD8] dark:text-zinc-300 sm:px-4"
+				class="flex w-full items-center justify-between gap-2 px-3 py-1.5 text-left text-sm font-medium text-zinc-700 transition-colors hover:text-[#00ADD8] dark:text-zinc-300 sm:px-3"
 			>
 				<span>{$t('tools.micron_editor.cheatsheet')}</span>
 				<ChevronDown
@@ -774,8 +790,8 @@
 
 		<div
 			class="grid min-h-0 min-w-0 flex-1 md:grid-cols-2 {fullscreen
-				? 'h-[calc(100dvh-18rem)] min-h-0 sm:h-[calc(100dvh-16rem)]'
-				: 'h-[min(70vh,720px)] min-h-[40vh]'}"
+				? 'min-h-0'
+				: 'h-[min(85vh,960px)] min-h-[32rem]'}"
 		>
 			<div
 				class="flex min-w-0 flex-col border-b border-zinc-200 dark:border-zinc-800 md:border-b-0 md:border-r {mobileTab !==
@@ -784,16 +800,41 @@
 					: 'flex'}"
 			>
 				<div
-					class="hidden border-b border-zinc-200 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:border-zinc-800 dark:text-zinc-400 md:block"
+					class="hidden border-b border-zinc-200 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:border-zinc-800 dark:text-zinc-400 md:block"
 				>
 					{$t('tools.micron_editor.source')}
 				</div>
-				<textarea
-					bind:this={textareaEl}
-					bind:value={source}
-					spellcheck="false"
-					class="min-h-0 min-w-0 flex-1 resize-none bg-zinc-50 p-4 font-mono text-sm leading-relaxed text-zinc-900 outline-none ring-inset focus:ring-2 focus:ring-[#00ADD8]/30 dark:bg-zinc-950 dark:text-zinc-100"
-					aria-label={$t('tools.micron_editor.source')}></textarea>
+				<div class="relative min-h-0 min-w-0 flex-1">
+					<textarea
+						bind:this={textareaEl}
+						bind:value={source}
+						spellcheck="false"
+						onscroll={syncScroll}
+						class="absolute inset-0 h-full w-full resize-none overflow-auto bg-zinc-50 p-4 font-mono text-sm leading-relaxed text-zinc-900 outline-none ring-inset focus:ring-2 focus:ring-[#00ADD8]/30 dark:bg-zinc-950 dark:text-zinc-100"
+						aria-label={$t('tools.micron_editor.source')}></textarea>
+					<div class="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="false">
+						{#each colorMatches as match, index (`${match.index}-${match.kind}-${index}`)}
+							<label
+								class="pointer-events-auto absolute z-10 cursor-pointer"
+								style={colorSquareStyle(match)}
+							>
+								<input
+									type="color"
+									value={micronToHex6(match.hex3)}
+									class="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+									aria-label="{match.kind} color {match.hex3}"
+									oninput={(event) => changeColor(match, event)}
+									onchange={finishColorDrag}
+								/>
+								<span
+									class="block h-3.5 w-3.5 rounded-sm border border-zinc-300 dark:border-zinc-600"
+									style="background: {micronToHex6(match.hex3)}"
+									title="{match.kind}{match.hex3}"
+								></span>
+							</label>
+						{/each}
+					</div>
+				</div>
 			</div>
 
 			<div
@@ -802,7 +843,7 @@
 					: 'flex'}"
 			>
 				<div
-					class="hidden border-b border-zinc-200 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:border-zinc-800 dark:text-zinc-400 md:block"
+					class="hidden border-b border-zinc-200 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:border-zinc-800 dark:text-zinc-400 md:block"
 				>
 					{$t('tools.micron_editor.preview')}
 				</div>
@@ -831,7 +872,7 @@
 		</div>
 
 		<div
-			class="flex min-w-0 flex-wrap items-center justify-between gap-x-4 gap-y-1 border-t border-zinc-200 bg-zinc-50 px-4 py-2 text-xs text-zinc-500 dark:border-zinc-800 dark:bg-zinc-950/50 dark:text-zinc-400"
+			class="flex min-w-0 flex-wrap items-center justify-between gap-x-4 gap-y-1 border-t border-zinc-200 bg-zinc-50 px-3 py-1.5 text-xs text-zinc-500 dark:border-zinc-800 dark:bg-zinc-950/50 dark:text-zinc-400"
 		>
 			<div class="min-w-0">
 				{#if loadStatus === 'loading'}
@@ -844,8 +885,6 @@
 							<span class="ml-1 font-mono opacity-80">({loadError})</span>
 						{/if}
 					</span>
-				{:else}
-					<span class="text-[#00ADD8]">{$t('tools.micron_editor.ready')}</span>
 				{/if}
 			</div>
 			<div class="flex shrink-0 gap-3 tabular-nums">
@@ -854,37 +893,4 @@
 			</div>
 		</div>
 	</div>
-
-	{#if !fullscreen}
-		<section
-			class="mt-6 min-w-0 rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 sm:p-6"
-			aria-labelledby="micron-next-steps"
-		>
-			<h2
-				id="micron-next-steps"
-				class="mb-4 text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400"
-			>
-				{$t('tools.micron_editor.next_steps')}
-			</h2>
-			<div class="grid min-w-0 gap-3 sm:grid-cols-2">
-				{#each MICRON_NEXT_STEPS as step (step.id)}
-					<a
-						href={step.href}
-						class="group flex min-w-0 items-start gap-3 rounded-lg border border-zinc-200 p-3 transition-colors hover:border-[#00ADD8] dark:border-zinc-700"
-					>
-						<div class="min-w-0 flex-1">
-							<div class="font-medium text-zinc-900 group-hover:text-[#00ADD8] dark:text-zinc-100">
-								{step.title}
-							</div>
-							<p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400">{step.blurb}</p>
-						</div>
-						<ArrowRight
-							class="mt-0.5 h-4 w-4 shrink-0 text-zinc-400 transition-colors group-hover:text-[#00ADD8]"
-							aria-hidden="true"
-						/>
-					</a>
-				{/each}
-			</div>
-		</section>
-	{/if}
 </div>

@@ -29,7 +29,7 @@
 			titleKey: 'tools.micron_editor.title',
 			descriptionKey: 'tools.micron_editor.description',
 			tags: ['micron', 'wasm', 'editor', 'parser'],
-			status: 'available'
+			status: 'alpha'
 		},
 		{
 			id: 'rnode-flasher',

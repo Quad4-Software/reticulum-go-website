@@ -28,9 +28,10 @@ describe('tools catalog', () => {
 	it('keeps available and alpha tools linked and coming-soon tools unlinked', () => {
 		expect(pageSource).toContain("status === 'available' || tool.status === 'alpha'");
 		expect(pageSource).toContain("href: '/tools/reticulum-guide'");
-		expect(pageSource).toContain("status: 'alpha'");
 		expect(pageSource).toContain('common.alpha');
 		expect(pageSource).toContain("href: '/tools/micron-editor'");
+		expect(pageSource).toMatch(/id: 'reticulum-guide'[\s\S]*?status: 'alpha'/);
+		expect(pageSource).toMatch(/id: 'micron-editor'[\s\S]*?status: 'alpha'/);
 
 		const flasherBlock = pageSource.match(
 			/\{\s*id: 'rnode-flasher'[\s\S]*?status: 'coming-soon'\s*\}/

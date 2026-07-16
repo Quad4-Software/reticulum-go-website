@@ -52,9 +52,9 @@ export const linksTutorial: Tutorial = {
 				'Auto-reconnect helpers exist in Go when enabled on the node'
 			],
 			visual: 'link-lifecycle',
-			interactive: 'link-stages',
+			interactive: 'link-sim',
 			tryIt:
-				'Step through LINKREQUEST to LINKCLOSE. Notice READY is where application traffic belongs.',
+				'Play the link simulator. Data only works after LINKREADY. Close ends the session.',
 			code: {
 				caption: 'Open an outbound link once you know the peer',
 				python: PY_LINK,

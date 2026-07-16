@@ -101,40 +101,6 @@ export type MicronEditorState = {
 	monospace: boolean;
 };
 
-export type MicronNextStep = {
-	id: string;
-	title: string;
-	blurb: string;
-	href: string;
-};
-
-export const MICRON_NEXT_STEPS: MicronNextStep[] = [
-	{
-		id: 'guide',
-		title: 'Reticulum Guide',
-		blurb: 'Learn destinations, announces, links, and interfaces with interactive steps.',
-		href: '/tools/reticulum-guide'
-	},
-	{
-		id: 'destinations',
-		title: 'Destinations chapter',
-		blurb: 'How SINGLE destinations and aspect names map to pages you author in Micron.',
-		href: '/tools/reticulum-guide/destinations'
-	},
-	{
-		id: 'interfaces',
-		title: 'Interfaces chapter',
-		blurb: 'Which carriers Reticulum-Go speaks today, including WebSocket for browser nodes.',
-		href: '/tools/reticulum-guide/interfaces-and-carriers'
-	},
-	{
-		id: 'ren',
-		title: 'Ren Browser',
-		blurb: 'Browse and edit Micron pages on the mesh when the app ships.',
-		href: '/apps'
-	}
-];
-
 function newTabId(): string {
 	return `tab-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
 }

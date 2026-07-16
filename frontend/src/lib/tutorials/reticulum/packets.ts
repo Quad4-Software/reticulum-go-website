@@ -39,9 +39,9 @@ export const packetsTutorial: Tutorial = {
 				'Blackholed identity announces are dropped when blackhole entries exist'
 			],
 			visual: 'packet-path',
-			interactive: 'hop-limit',
+			interactive: 'packet-sim',
 			tryIt:
-				'Drag the hop byte toward 128. At 128 and above the packet is rejected at unpack, matching RNS 1.3.8.'
+				'Run the packet simulator. Switch Encrypted versus Plain, then step hops until delivery or PATHFINDER_M drop.'
 		},
 		{
 			id: 'forward',
@@ -53,6 +53,9 @@ export const packetsTutorial: Tutorial = {
 				'Encrypted single-destination traffic can traverse multiple hops. Plain destination packets do not'
 			],
 			visual: 'packet-path',
+			interactive: 'hop-limit',
+			tryIt:
+				'Drag the hop byte toward 128. At 128 and above the packet is rejected at unpack, matching RNS 1.3.8.',
 			code: {
 				caption: 'Request a path before you try to send',
 				python: PY_PATH,

@@ -16,8 +16,13 @@ describe('micron-colors', () => {
 	it('finds F and B color tags in source', () => {
 		const matches = findMicronColors('`Faaa`B333 text `f`b');
 		expect(matches).toHaveLength(2);
-		expect(matches[0]).toMatchObject({ kind: 'F', hex3: 'aaa' });
-		expect(matches[1]).toMatchObject({ kind: 'B', hex3: '333' });
+		expect(matches[0]).toMatchObject({ kind: 'F', hex3: 'aaa', line: 0, column: 2 });
+		expect(matches[1]).toMatchObject({ kind: 'B', hex3: '333', line: 0, column: 7 });
+	});
+
+	it('reports line and column for multiline color tags', () => {
+		const matches = findMicronColors('line0\n`F0a0 rest');
+		expect(matches[0]).toMatchObject({ kind: 'F', hex3: '0a0', line: 1, column: 2 });
 	});
 
 	it('replaces a single color occurrence', () => {

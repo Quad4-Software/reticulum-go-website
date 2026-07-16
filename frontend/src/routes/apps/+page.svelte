@@ -9,7 +9,8 @@
 		Server,
 		MessageCircle,
 		Store,
-		Layers
+		Layers,
+		Cpu
 	} from 'lucide-svelte';
 	import { t } from 'svelte-i18n';
 
@@ -45,6 +46,16 @@
 			status: 'available',
 			link: 'https://github.com/Quad4-Software/Micron-Parser-Go',
 			demoLink: '/tools/micron-editor'
+		},
+		{
+			name: 'WASM Demo',
+			description:
+				'Interactive chat demo using Reticulum-Go compiled to WebAssembly. Connect to a gateway, discover peers, and send messages from the browser.',
+			icon: Cpu,
+			tags: ['wasm', 'chat', 'demo', 'reticulum-go', 'browser'],
+			platforms: ['Browser', 'WebAssembly'],
+			status: 'available',
+			demoLink: '/wasm-example'
 		},
 		{
 			name: 'Ren Chat',
@@ -110,7 +121,7 @@
 	<title>Applications | Reticulum-Go</title>
 	<meta
 		name="description"
-		content="Applications and tools built with Reticulum-Go, including Ren Browser and Micron Parser Go."
+		content="Applications and tools built with Reticulum-Go, including Ren Browser, Micron Parser Go, and the WASM Demo."
 	/>
 </svelte:head>
 

@@ -20,6 +20,8 @@ export type TutorialInteractiveId =
 	| 'crypto-pipeline'
 	| 'announce-replay'
 	| 'link-stages'
+	| 'link-sim'
+	| 'packet-sim'
 	| 'interface-pick';
 
 export type TutorialSource = {

@@ -11,6 +11,10 @@ export type MicronColorMatch = {
 	/** Inclusive start of the 3-digit hex inside the source string. */
 	hexStart: number;
 	hexEnd: number;
+	/** 0-based line of the match. */
+	line: number;
+	/** 0-based column of hexStart on that line. */
+	column: number;
 };
 
 export function micronToHex6(hex3: string): string {
@@ -28,6 +32,18 @@ export function hex6ToMicron(hex6: string): string {
 	return `${toNibble(raw.slice(0, 2))}${toNibble(raw.slice(2, 4))}${toNibble(raw.slice(4, 6))}`;
 }
 
+function lineColumnAt(source: string, offset: number): { line: number; column: number } {
+	let line = 0;
+	let lastNl = -1;
+	for (let i = 0; i < offset && i < source.length; i++) {
+		if (source[i] === '\n') {
+			line += 1;
+			lastNl = i;
+		}
+	}
+	return { line, column: offset - (lastNl + 1) };
+}
+
 export function findMicronColors(source: string): MicronColorMatch[] {
 	const out: MicronColorMatch[] = [];
 	COLOR_TAG_RE.lastIndex = 0;
@@ -36,12 +52,15 @@ export function findMicronColors(source: string): MicronColorMatch[] {
 		const kind = match[1] as 'F' | 'B';
 		const hex3 = match[2].toLowerCase();
 		const hexStart = match.index + 2;
+		const { line, column } = lineColumnAt(source, hexStart);
 		out.push({
 			index: match.index,
 			kind,
 			hex3,
 			hexStart,
-			hexEnd: hexStart + 3
+			hexEnd: hexStart + 3,
+			line,
+			column
 		});
 	}
 	return out;

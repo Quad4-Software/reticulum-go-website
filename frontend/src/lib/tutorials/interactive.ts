@@ -205,3 +205,145 @@ export const INTERFACE_CARDS: Record<InterfaceKind, InterfaceCard> = {
 		detail: 'WebSocket carriers support browser WASM clients and gateway bridges.'
 	}
 };
+
+export type PacketSimNode = {
+	id: string;
+	label: string;
+};
+
+export const PACKET_SIM_NODES: PacketSimNode[] = [
+	{ id: 'a', label: 'A' },
+	{ id: 'b', label: 'B' },
+	{ id: 'c', label: 'C' },
+	{ id: 'd', label: 'D' }
+];
+
+export type PacketSimMode = 'encrypted' | 'plain';
+
+export type PacketSimState = {
+	nodeIndex: number;
+	hops: number;
+	status: 'moving' | 'delivered' | 'dropped' | 'local-only';
+	detail: string;
+};
+
+/**
+ * Advances a packet one hop. Encrypted multi-hop traffic can traverse the path.
+ * Plain traffic stays on the first interface (local only).
+ * Hop bytes at or above PATHFINDER_M are rejected.
+ */
+export function stepPacketSim(
+	mode: PacketSimMode,
+	nodeIndex: number,
+	hops: number
+): PacketSimState {
+	if (mode === 'plain') {
+		if (nodeIndex === 0) {
+			return {
+				nodeIndex: 0,
+				hops: 0,
+				status: 'local-only',
+				detail: 'PLAIN destinations are not transported over multiple hops. Delivery stays local.'
+			};
+		}
+		return {
+			nodeIndex: 0,
+			hops: 0,
+			status: 'local-only',
+			detail: 'PLAIN destinations are not transported over multiple hops. Delivery stays local.'
+		};
+	}
+
+	if (hops >= PATHFINDER_M) {
+		return {
+			nodeIndex,
+			hops,
+			status: 'dropped',
+			detail: `Rejected at unpack. Hop byte ${hops} is >= PATHFINDER_M (${PATHFINDER_M}).`
+		};
+	}
+
+	const last = PACKET_SIM_NODES.length - 1;
+	if (nodeIndex >= last) {
+		return {
+			nodeIndex: last,
+			hops,
+			status: 'delivered',
+			detail: 'Local delivery. The destination node holds a matching SINGLE destination.'
+		};
+	}
+
+	const nextIndex = nodeIndex + 1;
+	const nextHops = hops + 1;
+	if (nextHops >= PATHFINDER_M) {
+		return {
+			nodeIndex,
+			hops: nextHops,
+			status: 'dropped',
+			detail: `Relay aborted. Incremented hop ${nextHops} would hit PATHFINDER_M (${PATHFINDER_M}).`
+		};
+	}
+
+	return {
+		nodeIndex: nextIndex,
+		hops: nextHops,
+		status: nextIndex >= last ? 'delivered' : 'moving',
+		detail:
+			nextIndex >= last
+				? 'Arrived at destination after multi-hop forward.'
+				: `Forwarded toward next hop. Path table only needs the neighbor, not the full route.`
+	};
+}
+
+export type LinkSimFrame = {
+	id: string;
+	label: string;
+	from: 'A' | 'B' | 'both';
+	detail: string;
+	canSendData: boolean;
+};
+
+export const LINK_SIM_FRAMES: LinkSimFrame[] = [
+	{
+		id: 'idle',
+		label: 'Idle',
+		from: 'both',
+		detail: 'Peers know destination hashes. No session yet.',
+		canSendData: false
+	},
+	{
+		id: 'linkrequest',
+		label: 'LINKREQUEST',
+		from: 'A',
+		detail: 'A asks B to open an encrypted link toward B\'s SINGLE destination.',
+		canSendData: false
+	},
+	{
+		id: 'linkidentify',
+		label: 'LINKIDENTIFY',
+		from: 'both',
+		detail: 'Identity material is exchanged. Hop expectations are checked.',
+		canSendData: false
+	},
+	{
+		id: 'linkready',
+		label: 'LINKREADY',
+		from: 'both',
+		detail: 'Session is active. Requests, channels, and resources can flow.',
+		canSendData: true
+	},
+	{
+		id: 'data',
+		label: 'DATA',
+		from: 'A',
+		detail: 'Application payload rides the ready link with forward secrecy.',
+		canSendData: true
+	},
+	{
+		id: 'linkclose',
+		label: 'LINKCLOSE',
+		from: 'B',
+		detail: 'Either side tears the session down. Further data needs a new Establish.',
+		canSendData: false
+	}
+];
