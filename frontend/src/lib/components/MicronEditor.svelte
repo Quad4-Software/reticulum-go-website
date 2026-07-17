@@ -1,11 +1,12 @@
 <script lang="ts">
 	import {
+		AppWindow,
+		BookOpen,
+		Braces,
 		Check,
 		ChevronDown,
-		Code2,
 		Copy,
 		Download,
-		Eye,
 		Maximize2,
 		Minimize2,
 		Plus,
@@ -13,6 +14,7 @@
 		RefreshCw,
 		RotateCcw,
 		Trash2,
+		Type,
 		Undo2,
 		X
 	} from 'lucide-svelte';
@@ -31,6 +33,7 @@
 	} from '$lib/micron-editor-state';
 	import {
 		findMicronColors,
+		findMicronColorAt,
 		micronToHex6,
 		hex6ToMicron,
 		replaceMicronColorAt,
@@ -38,7 +41,8 @@
 	} from '$lib/micron-colors';
 
 	type LoadStatus = 'loading' | 'ready' | 'error';
-	type MobileTab = 'source' | 'preview';
+
+	let { popout = false }: { popout?: boolean } = $props();
 
 	const saved = loadMicronEditorState();
 
@@ -53,14 +57,15 @@
 	let loadStatus = $state<LoadStatus>('loading');
 	let loadError = $state('');
 	let previewHtml = $state('');
-	let mobileTab = $state<MobileTab>('source');
 	let copied = $state(false);
 	let darkTheme = $state(true);
 	let cheatsheetOpen = $state(false);
+	let snippetsOpen = $state(false);
 	let retryNonce = $state(0);
 	let fullscreen = $state(false);
 	let textareaEl = $state<HTMLTextAreaElement | null>(null);
 	let rootEl = $state<HTMLElement | null>(null);
+	let popoutWindow: Window | null = null;
 
 	let renamingTabId = $state<string | null>(null);
 	let renameValue = $state('');
@@ -87,7 +92,6 @@
 	const activeTab = $derived(tabs.find((tab) => tab.id === activeTabId));
 	const canUndo = $derived(undoStack.length > 0);
 	const canRedo = $derived(redoStack.length > 0);
-
 	type OverlayMetrics = {
 		paddingTop: number;
 		paddingLeft: number;
@@ -309,6 +313,20 @@
 		fullscreen = !fullscreen;
 	}
 
+	function popOutEditor() {
+		if (popout || typeof window === 'undefined') return;
+		flushActiveToTabs();
+		saveMicronEditorState({ tabs, activeTabId, monospace });
+		const url = `${window.location.origin}/tools/micron-editor?popout=1`;
+		const features = 'popup=yes,width=1400,height=900,menubar=no,toolbar=no,location=yes,status=no';
+		if (popoutWindow && !popoutWindow.closed) {
+			popoutWindow.focus();
+			return;
+		}
+		popoutWindow = window.open(url, 'micron-editor-popout', features);
+		popoutWindow?.focus();
+	}
+
 	function insertSnippet(insert: string) {
 		const el = textareaEl;
 		if (!el) return;
@@ -327,6 +345,10 @@
 	}
 
 	let colorDragBase: string | null = null;
+	let hoveredColor = $state<MicronColorMatch | null>(null);
+	let colorPopoverPinned = $state(false);
+	let colorHideTimer: ReturnType<typeof setTimeout> | undefined;
+	let sourcePaneEl = $state<HTMLElement | null>(null);
 
 	function changeColor(match: MicronColorMatch, event: Event) {
 		const input = event.currentTarget as HTMLInputElement;
@@ -341,6 +363,8 @@
 		flushActiveToTabs();
 		previousSource = next;
 		suppressHistory = false;
+		const refreshed = findMicronColorAt(next, match.index);
+		if (refreshed) hoveredColor = refreshed;
 	}
 
 	function finishColorDrag() {
@@ -355,8 +379,13 @@
 		ctx.font = font;
 		const width = ctx.measureText('M').width;
 		if (width > 0) return width;
-		const match = font.match(/(\d+(?:\.\d+)?)px/);
-		const fontSize = match ? parseFloat(match[1]) : 14;
+		const pxIndex = font.indexOf('px');
+		let fontSize = 14;
+		if (pxIndex > 0) {
+			const start = font.lastIndexOf(' ', pxIndex - 1) + 1;
+			const parsed = Number.parseFloat(font.slice(start, pxIndex));
+			if (Number.isFinite(parsed) && parsed > 0) fontSize = parsed;
+		}
 		return fontSize * 0.6;
 	}
 
@@ -381,16 +410,92 @@
 
 	function syncScroll() {
 		updateOverlayMetrics();
+		if (hoveredColor && !colorPopoverPinned) {
+			hoveredColor = findMicronColorAt(source, hoveredColor.index);
+		}
 	}
 
-	function colorSquareStyle(match: MicronColorMatch): string {
+	function offsetFromPointer(clientX: number, clientY: number): number | null {
+		const el = textareaEl;
+		if (!el || overlayMetrics.charWidth <= 0 || overlayMetrics.lineHeight <= 0) return null;
+		const rect = el.getBoundingClientRect();
+		const x = clientX - rect.left + el.scrollLeft - overlayMetrics.paddingLeft;
+		const y = clientY - rect.top + el.scrollTop - overlayMetrics.paddingTop;
+		if (x < 0 || y < 0) return null;
+		const line = Math.floor(y / overlayMetrics.lineHeight);
+		const column = Math.floor(x / overlayMetrics.charWidth);
+		const lines = source.split('\n');
+		if (line < 0 || line >= lines.length) return null;
+		let offset = 0;
+		for (let i = 0; i < line; i++) offset += lines[i].length + 1;
+		offset += Math.min(Math.max(column, 0), lines[line].length);
+		return offset;
+	}
+
+	function showColorAtPointer(clientX: number, clientY: number) {
+		updateOverlayMetrics();
+		const offset = offsetFromPointer(clientX, clientY);
+		if (offset === null) {
+			if (!colorPopoverPinned) hoveredColor = null;
+			return;
+		}
+		const match = findMicronColorAt(source, offset);
+		if (match) {
+			if (colorHideTimer) {
+				clearTimeout(colorHideTimer);
+				colorHideTimer = undefined;
+			}
+			hoveredColor = match;
+			return;
+		}
+		if (!colorPopoverPinned) scheduleHideColorPopover();
+	}
+
+	function onSourceMouseMove(event: MouseEvent) {
+		if (colorPopoverPinned) return;
+		showColorAtPointer(event.clientX, event.clientY);
+	}
+
+	function onSourceMouseLeave() {
+		if (colorPopoverPinned) return;
+		scheduleHideColorPopover();
+	}
+
+	function scheduleHideColorPopover() {
+		if (colorHideTimer) clearTimeout(colorHideTimer);
+		colorHideTimer = setTimeout(() => {
+			colorHideTimer = undefined;
+			if (!colorPopoverPinned) hoveredColor = null;
+		}, 160);
+	}
+
+	function pinColorPopover() {
+		if (colorHideTimer) {
+			clearTimeout(colorHideTimer);
+			colorHideTimer = undefined;
+		}
+		colorPopoverPinned = true;
+	}
+
+	function unpinColorPopover() {
+		colorPopoverPinned = false;
+		scheduleHideColorPopover();
+	}
+
+	function colorPopoverStyle(match: MicronColorMatch): string {
 		const m = overlayMetrics;
-		const width = Math.max(m.charWidth * 3, 12);
-		const height = Math.min(Math.max(m.lineHeight - 4, 12), m.charWidth * 2.4);
-		const top =
-			m.paddingTop + match.line * m.lineHeight - m.scrollTop + (m.lineHeight - height) / 2;
-		const left = m.paddingLeft + match.column * m.charWidth - m.scrollLeft;
-		return `top: ${top}px; left: ${left}px; width: ${width}px; height: ${height}px`;
+		const pane = sourcePaneEl;
+		const paneWidth = pane?.clientWidth ?? 320;
+		const popoverWidth = 168;
+		const popoverHeight = 44;
+		let top = m.paddingTop + (match.line + 1) * m.lineHeight - m.scrollTop + 6;
+		let left = m.paddingLeft + match.column * m.charWidth - m.scrollLeft;
+		if (top + popoverHeight > (pane?.clientHeight ?? 0) - 8) {
+			top = m.paddingTop + match.line * m.lineHeight - m.scrollTop - popoverHeight - 6;
+		}
+		left = Math.max(8, Math.min(left, paneWidth - popoverWidth - 8));
+		top = Math.max(8, top);
+		return `top: ${top}px; left: ${left}px`;
 	}
 
 	function handleEditorKeydown(event: KeyboardEvent) {
@@ -418,8 +523,11 @@
 		}
 	}
 
-	const toolbarBtn =
-		'inline-flex items-center gap-2 rounded-lg border border-zinc-200 px-3 py-1.5 text-sm font-medium text-zinc-700 transition-colors hover:border-[#00ADD8] hover:text-[#00ADD8] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-zinc-200 disabled:hover:text-zinc-700 dark:border-zinc-700 dark:text-zinc-300 dark:disabled:hover:border-zinc-700 dark:disabled:hover:text-zinc-300';
+	const iconBtn =
+		'inline-flex h-8 shrink-0 items-center justify-center gap-1.5 rounded-md px-2 text-zinc-600 transition-colors hover:bg-zinc-200/70 hover:text-[#00ADD8] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-zinc-600 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:disabled:hover:bg-transparent dark:disabled:hover:text-zinc-400';
+
+	const toggleChipBtn =
+		'inline-flex shrink-0 items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium text-zinc-600 transition-colors hover:bg-zinc-200/70 hover:text-[#00ADD8] dark:text-zinc-400 dark:hover:bg-zinc-800';
 
 	$effect(() => {
 		if (typeof window === 'undefined' || typeof document === 'undefined') return;
@@ -494,7 +602,7 @@
 	});
 
 	$effect(() => {
-		if (!fullscreen) return;
+		if (!fullscreen && !popout) return;
 		const prev = document.body.style.overflow;
 		document.body.style.overflow = 'hidden';
 		return () => {
@@ -522,140 +630,163 @@
 
 <svelte:window onkeydown={handleEditorKeydown} />
 
-<div class="min-w-0">
+<div class="min-w-0 max-w-full overflow-x-clip">
 	<div
 		bind:this={rootEl}
-		class="flex min-w-0 flex-col overflow-hidden border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900 {fullscreen
-			? 'fixed inset-0 z-50 h-dvh rounded-none'
-			: 'rounded-xl'}"
+		class="flex min-w-0 flex-col overflow-hidden border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900 {fullscreen ||
+		popout
+			? 'fixed inset-0 z-50 h-dvh rounded-none border-0 pt-[env(safe-area-inset-top)] pr-[env(safe-area-inset-right)] pb-[env(safe-area-inset-bottom)] pl-[env(safe-area-inset-left)]'
+			: 'h-[min(85dvh,52rem)] rounded-xl md:h-[calc(100dvh-11rem)]'}"
 	>
 		<div
-			class="flex flex-wrap items-center gap-2 border-b border-zinc-200 bg-zinc-50 px-3 py-2 dark:border-zinc-800 dark:bg-zinc-950/50 sm:gap-3 sm:px-3"
+			class="flex min-w-0 flex-nowrap items-center gap-0.5 overflow-x-auto border-b border-zinc-200 bg-zinc-50 px-2 py-1.5 dark:border-zinc-800 dark:bg-zinc-950/60"
 		>
-			<div class="flex flex-wrap items-center gap-2">
-				<button
-					type="button"
-					onclick={undo}
-					disabled={!canUndo}
-					aria-label={$t('tools.micron_editor.undo')}
-					class={toolbarBtn}
-				>
-					<Undo2 class="h-4 w-4" aria-hidden="true" />
-					<span class="hidden sm:inline">{$t('tools.micron_editor.undo')}</span>
-				</button>
+			<button
+				type="button"
+				onclick={undo}
+				disabled={!canUndo}
+				aria-label={$t('tools.micron_editor.undo')}
+				title={$t('tools.micron_editor.undo')}
+				class={iconBtn}
+			>
+				<Undo2 class="h-4 w-4" aria-hidden="true" />
+			</button>
+			<button
+				type="button"
+				onclick={redo}
+				disabled={!canRedo}
+				aria-label={$t('tools.micron_editor.redo')}
+				title={$t('tools.micron_editor.redo')}
+				class={iconBtn}
+			>
+				<Redo2 class="h-4 w-4" aria-hidden="true" />
+			</button>
 
-				<button
-					type="button"
-					onclick={redo}
-					disabled={!canRedo}
-					aria-label={$t('tools.micron_editor.redo')}
-					class={toolbarBtn}
-				>
-					<Redo2 class="h-4 w-4" aria-hidden="true" />
-					<span class="hidden sm:inline">{$t('tools.micron_editor.redo')}</span>
-				</button>
-			</div>
-
-			<div class="hidden h-6 w-px bg-zinc-200 dark:bg-zinc-700 sm:block" aria-hidden="true"></div>
+			<div class="mx-0.5 h-5 w-px shrink-0 bg-zinc-200 dark:bg-zinc-700" aria-hidden="true"></div>
 
 			<button
 				type="button"
 				onclick={resetSample}
 				aria-label={$t('tools.micron_editor.reset')}
-				class={toolbarBtn}
+				title={$t('tools.micron_editor.reset')}
+				class={iconBtn}
 			>
 				<RotateCcw class="h-4 w-4" aria-hidden="true" />
-				<span>{$t('tools.micron_editor.reset')}</span>
+				<span class="hidden sm:inline">{$t('tools.micron_editor.reset')}</span>
 			</button>
-
 			<button
 				type="button"
 				onclick={clearSource}
 				aria-label={$t('tools.micron_editor.clear')}
-				class={toolbarBtn}
+				title={$t('tools.micron_editor.clear')}
+				class={iconBtn}
 			>
 				<Trash2 class="h-4 w-4" aria-hidden="true" />
-				<span>{$t('tools.micron_editor.clear')}</span>
+				<span class="hidden sm:inline">{$t('tools.micron_editor.clear')}</span>
 			</button>
+
+			<div class="mx-0.5 h-5 w-px shrink-0 bg-zinc-200 dark:bg-zinc-700" aria-hidden="true"></div>
 
 			<button
 				type="button"
 				onclick={copySource}
 				aria-label={copied ? $t('tools.micron_editor.copied') : $t('tools.micron_editor.copy')}
-				class={toolbarBtn}
+				title={copied ? $t('tools.micron_editor.copied') : $t('tools.micron_editor.copy')}
+				class={iconBtn}
 			>
 				{#if copied}
 					<Check class="h-4 w-4 text-[#00ADD8]" aria-hidden="true" />
-					<span>{$t('tools.micron_editor.copied')}</span>
+					<span class="hidden sm:inline">{$t('tools.micron_editor.copied')}</span>
 				{:else}
 					<Copy class="h-4 w-4" aria-hidden="true" />
-					<span>{$t('tools.micron_editor.copy')}</span>
+					<span class="hidden sm:inline">{$t('tools.micron_editor.copy')}</span>
 				{/if}
 			</button>
-
 			<button
 				type="button"
 				onclick={downloadMu}
 				aria-label={$t('tools.micron_editor.download')}
-				class={toolbarBtn}
+				title={$t('tools.micron_editor.download')}
+				class={iconBtn}
 			>
 				<Download class="h-4 w-4" aria-hidden="true" />
-				<span>{$t('tools.micron_editor.download')}</span>
+				<span class="hidden sm:inline">{$t('tools.micron_editor.download')}</span>
 			</button>
 
-			<label
-				class="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-zinc-200 px-3 py-1.5 text-sm font-medium text-zinc-700 transition-colors hover:border-[#00ADD8] has-[:checked]:border-[#00ADD8] has-[:checked]:text-[#00ADD8] dark:border-zinc-700 dark:text-zinc-300"
-			>
-				<input
-					type="checkbox"
-					bind:checked={monospace}
-					aria-label={$t('tools.micron_editor.monospace')}
-					class="rounded border-zinc-300 text-[#00ADD8] focus:ring-[#00ADD8] dark:border-zinc-600"
-				/>
-				<span>{$t('tools.micron_editor.monospace')}</span>
-			</label>
+			<div class="mx-0.5 h-5 w-px shrink-0 bg-zinc-200 dark:bg-zinc-700" aria-hidden="true"></div>
 
+			<button
+				type="button"
+				onclick={() => (monospace = !monospace)}
+				aria-pressed={monospace}
+				aria-label={$t('tools.micron_editor.monospace')}
+				title={$t('tools.micron_editor.monospace')}
+				class="{iconBtn} {monospace ? 'bg-[#00ADD8]/10 text-[#00ADD8] dark:bg-[#00ADD8]/15' : ''}"
+			>
+				<Type class="h-4 w-4" aria-hidden="true" />
+				<span class="hidden sm:inline">{$t('tools.micron_editor.monospace')}</span>
+			</button>
 			<button
 				type="button"
 				onclick={toggleFullscreen}
 				aria-label={fullscreen
 					? $t('tools.micron_editor.exit_fullscreen')
 					: $t('tools.micron_editor.fullscreen')}
-				class={toolbarBtn}
+				title={fullscreen
+					? $t('tools.micron_editor.exit_fullscreen')
+					: $t('tools.micron_editor.fullscreen')}
+				class={iconBtn}
 			>
 				{#if fullscreen}
 					<Minimize2 class="h-4 w-4" aria-hidden="true" />
-					<span class="hidden sm:inline">{$t('tools.micron_editor.exit_fullscreen')}</span>
 				{:else}
 					<Maximize2 class="h-4 w-4" aria-hidden="true" />
-					<span class="hidden sm:inline">{$t('tools.micron_editor.fullscreen')}</span>
 				{/if}
+				<span class="hidden sm:inline"
+					>{fullscreen
+						? $t('tools.micron_editor.exit_fullscreen')
+						: $t('tools.micron_editor.fullscreen')}</span
+				>
 			</button>
 
+			{#if !popout}
+				<button
+					type="button"
+					onclick={popOutEditor}
+					aria-label={$t('tools.micron_editor.popout')}
+					title={$t('tools.micron_editor.popout')}
+					class={iconBtn}
+				>
+					<AppWindow class="h-4 w-4" aria-hidden="true" />
+					<span class="hidden sm:inline">{$t('tools.micron_editor.popout')}</span>
+				</button>
+			{/if}
+
 			{#if loadStatus === 'error'}
+				<div class="mx-0.5 h-5 w-px shrink-0 bg-zinc-200 dark:bg-zinc-700" aria-hidden="true"></div>
 				<button
 					type="button"
 					onclick={retryLoad}
 					aria-label={$t('tools.micron_editor.retry')}
-					class="inline-flex items-center gap-2 rounded-lg border border-red-300 px-3 py-1.5 text-sm font-medium text-red-700 transition-colors hover:border-[#00ADD8] hover:text-[#00ADD8] dark:border-red-800 dark:text-red-400"
+					title={$t('tools.micron_editor.retry')}
+					class="{iconBtn} text-red-600 hover:bg-red-500/10 hover:text-red-600 dark:text-red-400 dark:hover:bg-red-500/10 dark:hover:text-red-400"
 				>
 					<RefreshCw class="h-4 w-4" aria-hidden="true" />
-					<span>{$t('tools.micron_editor.retry')}</span>
+					<span class="hidden sm:inline">{$t('tools.micron_editor.retry')}</span>
 				</button>
 			{/if}
 		</div>
 
 		<div
-			class="flex min-w-0 items-center gap-1 overflow-x-auto border-b border-zinc-200 bg-zinc-50 px-2 py-1 dark:border-zinc-800 dark:bg-zinc-950/50 sm:px-3"
+			class="flex min-w-0 items-center gap-0.5 overflow-x-auto border-b border-zinc-200 bg-white px-2 dark:border-zinc-800 dark:bg-zinc-900"
 			role="tablist"
 			aria-label={$t('tools.micron_editor.new_tab')}
 		>
 			{#each tabs as tab (tab.id)}
 				<div
-					class="group flex min-w-0 shrink-0 items-center rounded-lg border text-sm transition-colors {activeTabId ===
-					tab.id
-						? 'border-[#00ADD8] bg-white text-[#00ADD8] dark:bg-zinc-900'
-						: 'border-transparent text-zinc-600 hover:border-zinc-200 hover:bg-white dark:text-zinc-400 dark:hover:border-zinc-700 dark:hover:bg-zinc-900'}"
+					class="group flex min-w-0 shrink-0 items-center border-b-2 {activeTabId === tab.id
+						? 'border-[#00ADD8]'
+						: 'border-transparent hover:border-zinc-300 dark:hover:border-zinc-700'}"
 					role="presentation"
 				>
 					{#if renamingTabId === tab.id}
@@ -663,7 +794,7 @@
 							bind:this={renameInputEl}
 							bind:value={renameValue}
 							type="text"
-							class="min-w-[5rem] max-w-[10rem] rounded-lg bg-transparent px-2 py-1 text-sm outline-none ring-2 ring-[#00ADD8]/40"
+							class="min-w-[5rem] max-w-[10rem] rounded-md bg-transparent px-2 py-1.5 text-sm outline-none ring-2 ring-[#00ADD8]/40"
 							aria-label={$t('tools.micron_editor.rename_tab')}
 							onkeydown={handleRenameKeydown}
 							onblur={commitRename}
@@ -674,7 +805,10 @@
 							role="tab"
 							aria-selected={activeTabId === tab.id}
 							aria-label="{tab.name}.mu"
-							class="min-w-0 max-w-[10rem] truncate px-2.5 py-1 font-medium"
+							class="min-w-0 max-w-[9rem] truncate rounded-t-md px-2.5 py-1.5 text-sm font-medium transition-colors {activeTabId ===
+							tab.id
+								? 'text-[#00ADD8]'
+								: 'text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100'}"
 							onclick={() => handleTabClick(tab)}
 							ondblclick={() => startRename(tab)}
 						>
@@ -686,9 +820,9 @@
 							type="button"
 							onclick={(event) => closeTab(tab.id, event)}
 							aria-label="{$t('tools.micron_editor.close_tab')}: {tab.name}"
-							class="mr-1 rounded p-0.5 text-zinc-400 opacity-0 transition-opacity hover:bg-zinc-100 hover:text-zinc-700 group-hover:opacity-100 dark:hover:bg-zinc-800 dark:hover:text-zinc-200 {activeTabId ===
+							class="mr-1 rounded p-0.5 text-zinc-400 opacity-100 transition-opacity hover:bg-zinc-100 hover:text-zinc-700 md:opacity-0 md:group-hover:opacity-100 dark:hover:bg-zinc-800 dark:hover:text-zinc-200 {activeTabId ===
 							tab.id
-								? 'opacity-100'
+								? 'md:opacity-100'
 								: ''}"
 						>
 							<X class="h-3.5 w-3.5" aria-hidden="true" />
@@ -701,155 +835,150 @@
 				type="button"
 				onclick={addTab}
 				aria-label={$t('tools.micron_editor.add_tab')}
-				class="inline-flex shrink-0 items-center gap-1 rounded-lg border border-dashed border-zinc-300 px-2 py-1 text-sm text-zinc-500 transition-colors hover:border-[#00ADD8] hover:text-[#00ADD8] dark:border-zinc-600 dark:text-zinc-400"
+				title={$t('tools.micron_editor.add_tab')}
+				class="ml-0.5 inline-flex shrink-0 items-center rounded-md p-1.5 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-[#00ADD8] dark:hover:bg-zinc-800 dark:hover:text-[#00ADD8]"
 			>
 				<Plus class="h-4 w-4" aria-hidden="true" />
 			</button>
 		</div>
 
 		<div
-			class="flex min-w-0 flex-wrap items-center gap-2 border-b border-zinc-200 bg-zinc-50 px-3 py-1.5 dark:border-zinc-800 dark:bg-zinc-950/50 sm:px-3"
+			class="flex min-w-0 flex-nowrap items-center gap-0.5 overflow-x-auto border-b border-zinc-200 bg-zinc-50 px-2 py-1 dark:border-zinc-800 dark:bg-zinc-950/60"
 		>
-			<span
-				class="shrink-0 text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400"
+			<button
+				type="button"
+				onclick={() => (snippetsOpen = !snippetsOpen)}
+				aria-expanded={snippetsOpen}
+				class="{toggleChipBtn} {snippetsOpen ? 'bg-[#00ADD8]/10 text-[#00ADD8]' : ''}"
 			>
-				{$t('tools.micron_editor.snippets')}
-			</span>
-			{#each MICRON_SNIPPETS as snippet (snippet.id)}
-				<button
-					type="button"
-					onclick={() => insertSnippet(snippet.insert)}
-					title={snippet.hint}
-					aria-label="{$t('tools.micron_editor.insert_snippet')}: {snippet.label}"
-					class="shrink-0 rounded-full border border-zinc-200 px-2.5 py-1 text-xs font-medium text-zinc-600 transition-colors hover:border-[#00ADD8] hover:text-[#00ADD8] dark:border-zinc-700 dark:text-zinc-400"
-				>
-					{snippet.label}
-				</button>
-			{/each}
-		</div>
+				<Braces class="h-3.5 w-3.5" aria-hidden="true" />
+				<span>{$t('tools.micron_editor.snippets')}</span>
+				<ChevronDown
+					class="h-3 w-3 transition-transform {snippetsOpen ? 'rotate-180' : ''}"
+					aria-hidden="true"
+				/>
+			</button>
 
-		<div class="border-b border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-950/50">
+			<div class="mx-0.5 h-4 w-px shrink-0 bg-zinc-200 dark:bg-zinc-700" aria-hidden="true"></div>
+
 			<button
 				type="button"
 				onclick={() => (cheatsheetOpen = !cheatsheetOpen)}
 				aria-expanded={cheatsheetOpen}
 				aria-label={$t('tools.micron_editor.cheatsheet')}
-				class="flex w-full items-center justify-between gap-2 px-3 py-1.5 text-left text-sm font-medium text-zinc-700 transition-colors hover:text-[#00ADD8] dark:text-zinc-300 sm:px-3"
+				class="{toggleChipBtn} {cheatsheetOpen ? 'bg-[#00ADD8]/10 text-[#00ADD8]' : ''}"
 			>
+				<BookOpen class="h-3.5 w-3.5" aria-hidden="true" />
 				<span>{$t('tools.micron_editor.cheatsheet')}</span>
 				<ChevronDown
-					class="h-4 w-4 shrink-0 transition-transform {cheatsheetOpen ? 'rotate-180' : ''}"
+					class="h-3 w-3 transition-transform {cheatsheetOpen ? 'rotate-180' : ''}"
 					aria-hidden="true"
 				/>
 			</button>
-			{#if cheatsheetOpen}
-				<div
-					class="grid gap-2 border-t border-zinc-200 px-3 py-3 text-xs text-zinc-600 dark:border-zinc-800 dark:text-zinc-400 sm:grid-cols-2 sm:px-4 lg:grid-cols-3"
-				>
-					<div>
-						<code class="font-mono text-[#00ADD8]">&gt;</code> /
-						<code class="font-mono text-[#00ADD8]">&gt;&gt;</code> headings
-					</div>
-					<div><code class="font-mono">`!bold!`</code> emphasis</div>
-					<div><code class="font-mono">`*italic*`</code> emphasis</div>
-					<div><code class="font-mono">`[label`url]</code> links</div>
-					<div><code class="font-mono">`Faaa`B333</code> colors</div>
-					<div><code class="font-mono">-</code> divider on its own line</div>
-				</div>
-			{/if}
 		</div>
 
-		<div class="flex min-w-0 border-b border-zinc-200 dark:border-zinc-800 md:hidden">
-			<button
-				type="button"
-				onclick={() => (mobileTab = 'source')}
-				aria-label={$t('tools.micron_editor.source')}
-				aria-pressed={mobileTab === 'source'}
-				class="flex min-w-0 flex-1 items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium transition-colors {mobileTab ===
-				'source'
-					? 'border-b-2 border-[#00ADD8] bg-zinc-50 text-[#00ADD8] dark:bg-zinc-950/50'
-					: 'text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-300'}"
-			>
-				<Code2 class="h-4 w-4 shrink-0" aria-hidden="true" />
-				<span class="truncate">{$t('tools.micron_editor.source')}</span>
-			</button>
-			<button
-				type="button"
-				onclick={() => (mobileTab = 'preview')}
-				aria-label={$t('tools.micron_editor.preview')}
-				aria-pressed={mobileTab === 'preview'}
-				class="flex min-w-0 flex-1 items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium transition-colors {mobileTab ===
-				'preview'
-					? 'border-b-2 border-[#00ADD8] bg-zinc-50 text-[#00ADD8] dark:bg-zinc-950/50'
-					: 'text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-300'}"
-			>
-				<Eye class="h-4 w-4 shrink-0" aria-hidden="true" />
-				<span class="truncate">{$t('tools.micron_editor.preview')}</span>
-			</button>
-		</div>
-
-		<div
-			class="grid min-h-0 min-w-0 flex-1 md:grid-cols-2 {fullscreen
-				? 'min-h-0'
-				: 'h-[min(85vh,960px)] min-h-[32rem]'}"
-		>
+		{#if snippetsOpen}
 			<div
-				class="flex min-w-0 flex-col border-b border-zinc-200 dark:border-zinc-800 md:border-b-0 md:border-r {mobileTab !==
-				'source'
-					? 'hidden md:flex'
-					: 'flex'}"
+				class="flex min-w-0 flex-nowrap gap-1.5 overflow-x-auto border-b border-zinc-200 bg-white px-2 py-2 dark:border-zinc-800 dark:bg-zinc-900"
+			>
+				{#each MICRON_SNIPPETS as snippet (snippet.id)}
+					<button
+						type="button"
+						onclick={() => insertSnippet(snippet.insert)}
+						title={snippet.hint}
+						aria-label="{$t('tools.micron_editor.insert_snippet')}: {snippet.label}"
+						class="shrink-0 whitespace-nowrap rounded-md border border-zinc-200 px-2.5 py-1 text-xs font-medium text-zinc-600 transition-colors hover:border-[#00ADD8] hover:text-[#00ADD8] dark:border-zinc-700 dark:text-zinc-400"
+					>
+						{snippet.label}
+					</button>
+				{/each}
+			</div>
+		{/if}
+
+		{#if cheatsheetOpen}
+			<div
+				class="grid gap-1.5 border-b border-zinc-200 bg-white px-3 py-2.5 text-xs text-zinc-600 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-400 sm:grid-cols-2 lg:grid-cols-3"
+			>
+				<div>
+					<code class="font-mono text-[#00ADD8]">&gt;</code> /
+					<code class="font-mono text-[#00ADD8]">&gt;&gt;</code> headings
+				</div>
+				<div><code class="font-mono">`!bold!`</code> emphasis</div>
+				<div><code class="font-mono">`*italic*`</code> emphasis</div>
+				<div><code class="font-mono">`[label`url]</code> links</div>
+				<div><code class="font-mono">`Faaa`B333</code> colors</div>
+				<div><code class="font-mono">-</code> divider on its own line</div>
+			</div>
+		{/if}
+
+		<div class="grid min-h-0 min-w-0 flex-1 grid-rows-2 md:grid-cols-2 md:grid-rows-1">
+			<div
+				class="flex min-h-0 min-w-0 flex-col border-b border-zinc-200 dark:border-zinc-800 md:border-b-0 md:border-r"
 			>
 				<div
-					class="hidden border-b border-zinc-200 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:border-zinc-800 dark:text-zinc-400 md:block"
+					class="shrink-0 border-b border-zinc-200 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:border-zinc-800 dark:text-zinc-400"
 				>
 					{$t('tools.micron_editor.source')}
 				</div>
-				<div class="relative min-h-0 min-w-0 flex-1">
+				<div class="relative min-h-0 min-w-0 flex-1" bind:this={sourcePaneEl}>
 					<textarea
 						bind:this={textareaEl}
 						bind:value={source}
 						spellcheck="false"
+						wrap="off"
 						onscroll={syncScroll}
-						class="absolute inset-0 h-full w-full resize-none overflow-auto bg-zinc-50 p-4 font-mono text-sm leading-relaxed text-zinc-900 outline-none ring-inset focus:ring-2 focus:ring-[#00ADD8]/30 dark:bg-zinc-950 dark:text-zinc-100"
+						onmousemove={onSourceMouseMove}
+						onmouseleave={onSourceMouseLeave}
+						class="absolute inset-0 h-full w-full resize-none overflow-auto bg-zinc-100 p-3 font-mono text-sm leading-relaxed text-zinc-900 outline-none ring-inset focus:ring-2 focus:ring-[#00ADD8]/30 dark:bg-zinc-950 dark:text-zinc-100 sm:p-4"
 						aria-label={$t('tools.micron_editor.source')}></textarea>
-					<div class="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="false">
-						{#each colorMatches as match, index (`${match.index}-${match.kind}-${index}`)}
-							<label
-								class="pointer-events-auto absolute z-10 cursor-pointer"
-								style={colorSquareStyle(match)}
+					{#if hoveredColor}
+						<div
+							class="absolute z-20 flex items-center gap-2 rounded-lg border border-zinc-200 bg-white px-2.5 py-1.5 shadow-lg dark:border-zinc-700 dark:bg-zinc-900"
+							style={colorPopoverStyle(hoveredColor)}
+							role="group"
+							tabindex="-1"
+							aria-label={$t('tools.micron_editor.colors')}
+							onmouseenter={pinColorPopover}
+							onmouseleave={unpinColorPopover}
+						>
+							<span
+								class="font-mono text-xs font-semibold tabular-nums text-zinc-700 dark:text-zinc-200"
 							>
+								`{hoveredColor.kind}{hoveredColor.hex3}
+							</span>
+							<label
+								class="relative inline-flex h-7 w-7 shrink-0 cursor-pointer overflow-hidden rounded-md border border-zinc-300 dark:border-zinc-600"
+								title="{$t('tools.micron_editor.colors')}: {hoveredColor.kind}{hoveredColor.hex3}"
+							>
+								<span
+									class="pointer-events-none absolute inset-0"
+									style="background: {micronToHex6(hoveredColor.hex3)}"
+									aria-hidden="true"
+								></span>
 								<input
 									type="color"
-									value={micronToHex6(match.hex3)}
+									value={micronToHex6(hoveredColor.hex3)}
 									class="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-									aria-label="{match.kind} color {match.hex3}"
-									oninput={(event) => changeColor(match, event)}
+									aria-label="{hoveredColor.kind} color {hoveredColor.hex3}"
+									oninput={(event) => changeColor(hoveredColor!, event)}
 									onchange={finishColorDrag}
+									onfocus={pinColorPopover}
 								/>
-								<span
-									class="block h-full w-full rounded-sm border border-zinc-400/80 dark:border-zinc-500"
-									style="background: {micronToHex6(match.hex3)}"
-									title="{match.kind}{match.hex3}"
-								></span>
 							</label>
-						{/each}
-					</div>
+						</div>
+					{/if}
 				</div>
 			</div>
 
-			<div
-				class="flex min-w-0 flex-col overflow-hidden {mobileTab !== 'preview'
-					? 'hidden md:flex'
-					: 'flex'}"
-			>
+			<div class="flex min-h-0 min-w-0 flex-col overflow-hidden">
 				<div
-					class="hidden border-b border-zinc-200 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:border-zinc-800 dark:text-zinc-400 md:block"
+					class="shrink-0 border-b border-zinc-200 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:border-zinc-800 dark:text-zinc-400"
 				>
 					{$t('tools.micron_editor.preview')}
 				</div>
 				<div
 					id="micron-preview"
-					class="min-h-0 min-w-0 flex-1 overflow-auto bg-zinc-50 p-4 text-sm leading-relaxed text-zinc-900 dark:bg-black dark:text-zinc-100 {monospace
+					class="min-h-0 min-w-0 flex-1 overflow-auto bg-white p-3 text-sm leading-relaxed text-zinc-900 dark:bg-black dark:text-zinc-100 sm:p-4 {monospace
 						? 'font-mono'
 						: ''}"
 				>
@@ -872,7 +1001,7 @@
 		</div>
 
 		<div
-			class="flex min-w-0 flex-wrap items-center justify-between gap-x-4 gap-y-1 border-t border-zinc-200 bg-zinc-50 px-3 py-1.5 text-xs text-zinc-500 dark:border-zinc-800 dark:bg-zinc-950/50 dark:text-zinc-400"
+			class="flex min-w-0 flex-wrap items-center justify-between gap-x-4 gap-y-1 border-t border-zinc-200 bg-zinc-50 px-3 py-1.5 text-xs dark:border-zinc-800 dark:bg-zinc-950/60"
 		>
 			<div class="min-w-0">
 				{#if loadStatus === 'loading'}
@@ -887,7 +1016,7 @@
 					</span>
 				{/if}
 			</div>
-			<div class="flex shrink-0 gap-3 tabular-nums">
+			<div class="flex shrink-0 gap-3 tabular-nums text-zinc-500 dark:text-zinc-400">
 				<span>{$t('tools.micron_editor.lines')}: {lineCount}</span>
 				<span>{$t('tools.micron_editor.chars')}: {charCount}</span>
 			</div>

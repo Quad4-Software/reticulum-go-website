@@ -27,7 +27,7 @@ link.HandleIncomingLinkRequest(...)
 
 The responder records `expected_hops` from the RTT packet hop field when the link becomes active.
 
-There is no separate `Transport.CreateIncomingLink` helper. Incoming link requests use `HandleIncomingLinkRequest` directly. Split resource advertisements (`AdvFlagSplit`) are rejected with a clear error (full multi-segment ads deferred).
+There is no separate `Transport.CreateIncomingLink` helper. Incoming link requests use `HandleIncomingLinkRequest` directly.
 
 ### Link lifecycle
 
@@ -59,7 +59,7 @@ The control API bridges requests to WebSocket `requestIncomingEvent` and `reques
 | `Envelope`    | Wire wrapper for channel messages |
 | `MessageBase` | Base type for message payloads    |
 
-Python 1.3.0 fixed ghost envelopes on multiple outlets. Go uses a simpler single-outlet model. Wire compatibility for the supported paths is verified in crossref tests.
+Python 1.3.0 fixed ghost envelopes on failing outlets. Go matches that behavior: sequence allocation and tx-ring emplace happen only after a successful outlet send, with rewind on failure. Channel accepts both transport wrapper ACTIVE status and real link ACTIVE (`0x02`).
 
 Typical pattern:
 
@@ -94,8 +94,11 @@ Features:
 - Hash map of parts
 - RESOURCE_PRF proof flow
 - bzip2 compression optional (`bzip2_compress.go`)
+- Split advertisements when the payload exceeds `MaxEfficientSize` (~1 MiB), matching Python segment chaining
 
 Python utility `rncp` is ported as `rgocp` ([CLI utilities](/docs/utilities)). The primitives remain available in this package for Go applications.
+
+See `examples/resources` for a minimal send/receive demo and `examples/filetransfer` for a directory browser.
 
 Transfer flow at a high level:
 
@@ -106,6 +109,7 @@ Sender                           Receiver
   |<-- proof / acceptance -----------|
   |-- parts ------------------------>|
   |<-- proof ------------------------|
+  |-- next segment (if split) ------>|
   |-- completion -------------------->|
 ```
 
@@ -115,9 +119,9 @@ Link packets use `PacketTypeLink`. Data packets for link payloads use contexts h
 
 The transport link table tracks which local link object owns each session hash.
 
-## Blackhole gap
+## Blackhole
 
-Python 1.3.2 tears down links at LINKIDENTIFY when the remote identity is blackholed. Reticulum-Go drops blackholed announces but does not check blackhole status during link identify. See [Compatibility](/docs/compatibility).
+Python 1.3.2 tears down links at LINKIDENTIFY when the remote identity is blackholed. Reticulum-Go does the same via `pkg/blackhole` during link identify. Federation publish and remote blackhole sources are not implemented. See [Compatibility](/docs/compatibility).
 
 ## Testing
 

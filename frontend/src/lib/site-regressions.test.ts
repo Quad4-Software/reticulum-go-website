@@ -71,4 +71,18 @@ describe('theme FOUC bootstrap', () => {
 		expect(html).toMatch(/cookieTheme/);
 		expect(html).toMatch(/cookieTheme\(\) \|\| localStorage\.getItem\('theme'\)/);
 	});
+
+	it('enables viewport-fit cover for safe-area insets', () => {
+		const html = read('src/app.html');
+		expect(html).toContain('viewport-fit=cover');
+	});
+});
+
+describe('docs mobile chrome', () => {
+	it('keeps docs nav behind a mobile drawer', () => {
+		const source = read('src/routes/docs/+layout.svelte');
+		expect(source).toContain('mobileMenuOpen');
+		expect(source).toContain('docs_menu');
+		expect(source).toContain('max-h-[calc(100dvh-7rem)]');
+	});
 });

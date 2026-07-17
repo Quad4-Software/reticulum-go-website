@@ -10,10 +10,11 @@ export type MicronColorMatch = {
 	hex3: string;
 	/** Inclusive start of the 3-digit hex inside the source string. */
 	hexStart: number;
+	/** Exclusive end of the 3-digit hex. */
 	hexEnd: number;
 	/** 0-based line of the match. */
 	line: number;
-	/** 0-based column of hexStart on that line. */
+	/** 0-based column of the tag start (backtick) on that line. */
 	column: number;
 };
 
@@ -52,7 +53,7 @@ export function findMicronColors(source: string): MicronColorMatch[] {
 		const kind = match[1] as 'F' | 'B';
 		const hex3 = match[2].toLowerCase();
 		const hexStart = match.index + 2;
-		const { line, column } = lineColumnAt(source, hexStart);
+		const { line, column } = lineColumnAt(source, match.index);
 		out.push({
 			index: match.index,
 			kind,
@@ -64,6 +65,15 @@ export function findMicronColors(source: string): MicronColorMatch[] {
 		});
 	}
 	return out;
+}
+
+/** Returns the color tag under a source offset, or null. */
+export function findMicronColorAt(source: string, offset: number): MicronColorMatch | null {
+	if (offset < 0) return null;
+	for (const match of findMicronColors(source)) {
+		if (offset >= match.index && offset < match.hexEnd) return match;
+	}
+	return null;
 }
 
 export function replaceMicronColorAt(

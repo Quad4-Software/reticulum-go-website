@@ -14,6 +14,7 @@ export const SITEMAP_PATHS = [
 	'/tools/reticulum-guide',
 	...getTutorialSlugs().map((slug) => `/tools/reticulum-guide/${slug}`),
 	'/tools/micron-editor',
+	'/tools/rnode-flasher',
 	'/wasm-example',
 	'/identity',
 	'/settings',

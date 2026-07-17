@@ -36,18 +36,18 @@ Requests without a valid bearer token are rejected.
 
 ## HTTP routes
 
-| Method | Path                                             | Description                      |
-| ------ | ------------------------------------------------ | -------------------------------- |
-| GET    | `/v1/health`                                     | Node health                      |
-| GET    | `/v1/status`                                     | Interface statistics             |
-| GET    | `/v1/paths`                                      | Path table snapshot              |
-| POST   | `/v1/sessions`                                   | Create session (identity)        |
-| DELETE | `/v1/sessions/{id}`                              | Tear down session                |
-| POST   | `/v1/sessions/{id}/destinations`                 | Register destination             |
-| POST   | `/v1/sessions/{id}/destinations/{hash}/announce` | Send announce                    |
-| POST   | `/v1/sessions/{id}/destinations/{hash}/requests` | Bridge request path to WebSocket |
-| POST   | `/v1/sessions/{id}/path/request`                 | Request path to destination      |
-| GET    | `/v1/sessions/{id}/events`                       | WebSocket event stream           |
+| Method | Path                                             | Description                                                                   |
+| ------ | ------------------------------------------------ | ----------------------------------------------------------------------------- |
+| GET    | `/v1/health`                                     | Liveness probe (process up, transport id, uptime). Not mesh integrity scoring |
+| GET    | `/v1/status`                                     | Interface statistics, including Go local integrity counters when present      |
+| GET    | `/v1/paths`                                      | Path table snapshot                                                           |
+| POST   | `/v1/sessions`                                   | Create session (identity)                                                     |
+| DELETE | `/v1/sessions/{id}`                              | Tear down session                                                             |
+| POST   | `/v1/sessions/{id}/destinations`                 | Register destination                                                          |
+| POST   | `/v1/sessions/{id}/destinations/{hash}/announce` | Send announce                                                                 |
+| POST   | `/v1/sessions/{id}/destinations/{hash}/requests` | Bridge request path to WebSocket                                              |
+| POST   | `/v1/sessions/{id}/path/request`                 | Request path to destination                                                   |
+| GET    | `/v1/sessions/{id}/events`                       | WebSocket event stream                                                        |
 
 Lifecycle routes (Go node integration):
 
@@ -58,6 +58,23 @@ Lifecycle routes (Go node integration):
 | POST   | `/v1/lifecycle/refresh-paths` | Refresh stale paths |
 
 Binary fields (hashes, app data, link payloads) are hex- or base64-encoded as documented in `pkg/controlapi/protocol.go`.
+
+### Status integrity fields (Go daemon)
+
+`GET /v1/status` mirrors shared-instance interface stats. Against a Reticulum-Go daemon each interface object may include:
+
+| JSON field            | Meaning                                     |
+| --------------------- | ------------------------------------------- |
+| `ifac_fail`           | IFAC verify failures                        |
+| `hmac_fail`           | Link HMAC failures                          |
+| `announce_sig_fail`   | Invalid announce signatures                 |
+| `unpack_fail`         | Packet unpack failures                      |
+| `integrity_fail_rate` | Windowed fails / (fails + accepted)         |
+| `stale_closes`        | Links closed after going stale              |
+| `link_stale_close`    | Same lifetime total as exposed on the iface |
+| `keepalive_timeout`   | Transitions into keepalive stale            |
+
+These counters are local observability only. They do not change packet accept or reject policy. For scored findings use `reticulum-go slow`. See [Security](/docs/security#local-mesh-health-observe-only) and [CLI utilities](/docs/utilities#rgoslow).
 
 ## Sessions
 
@@ -152,4 +169,43 @@ Daemon wiring: `cmd/reticulum-go/main.go` starts `controlapi.Server` when enable
 - [Configuration](/docs/configuration)
 - [Links, channels, and resources](/docs/links-channels-and-resources)
 - [librns](/docs/librns) for in-process C ABI
+- [librns](/docs/librns#odin-bindings) for in-process Odin bindings
 - [Examples](/docs/examples)
+
+## Dart and Flutter
+
+Path: `bindings/dart/` (package `rns_control`).
+
+### Control API client
+
+HTTP and WebSocket client for a local or LAN `reticulum-go` daemon. Import `package:rns_control/rns_control.dart`.
+
+```dart
+import 'package:rns_control/rns_control.dart';
+
+final client = ControlClient(rpcKey: rpcKey);
+final session = await client.createSession();
+final events = client.openEvents(session.sessionId);
+events.subscribeAnnounces();
+```
+
+Coverage includes health, status, paths, sessions, destinations, announce, request handlers, lifecycle, and WebSocket commands or events. Authenticated WebSocket upgrades require `dart:io` (Flutter mobile or desktop). Browser clients cannot set the Authorization header on WebSocket.
+
+### In-process FFI
+
+For embedding without a daemon, use `package:rns_control/ffi.dart` over `librns` on Linux, Android, and Windows. See [librns Dart FFI](/docs/librns#dart-ffi-bindings).
+
+```bash
+task build-librns
+task test-dart
+# or
+make -C bindings/dart test
+```
+
+Add to a Flutter app with a path dependency:
+
+```yaml
+dependencies:
+  rns_control:
+    path: ../Reticulum-Go/bindings/dart
+```

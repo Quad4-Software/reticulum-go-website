@@ -87,6 +87,8 @@ Go CLI tools such as `rgostatus` dial this RPC. On Linux, Python `rnsd` defaults
 
 The daemon persists ratchets, identity blobs, destination tables, and related artifacts under `~/.reticulum-go/storage/`. Library embedders can use the same paths or keep tables in memory with `in_memory_path_table` and `in_memory_known_destinations`.
 
+Set `in_memory_storage = yes` (or `RETICULUM_IN_MEMORY_STORAGE=1`) for fully ephemeral operation: no transport identity file, no blackhole directory, no split-resource staging on disk, and no `~/.reticulum-go` bootstrap. Empty `ConfigPath` with no `RETICULUM_STORAGE_PATH` also stays off disk. Soft caps (`max_in_memory_*`, `soft_memory_limit`) bound RAM growth under explicit in-memory storage.
+
 ## Inbound packet flow
 
 ```
@@ -179,7 +181,11 @@ Non-Go applications talk HTTP and WebSocket to `pkg/controlapi` on localhost whi
 
 ### librns in-process
 
-Native hosts link `librns.so` and call `include/rns.h`. Same stack as `pkg/node`, no separate daemon. Linux first. See [librns](/docs/librns).
+Native hosts link `librns.so` and call `include/rns.h`. Same stack as `pkg/node`, no separate daemon. Linux first. Odin hosts can use `bindings/odin`. See [librns](/docs/librns).
+
+### Firecracker microvm
+
+`microvm/` packages a static guest rootfs and a host vsock bridge for nested or isolated nodes. Default networking keeps clearnet on the host and pipes the guest over Firecracker vsock. See [Firecracker microvm](/docs/microvm).
 
 ## Persistence and state
 
@@ -201,13 +207,13 @@ See [Cryptography](/docs/cryptography) and [Security](/docs/security).
 
 ## Extension points
 
-| Extension               | Mechanism                                                          |
-| ----------------------- | ------------------------------------------------------------------ |
-| Custom crypto for tests | `cryptography.SetProvider`                                         |
-| Hardware signing        | `identity.NewIdentityWithSigner` with `cryptography.Ed25519Signer` |
-| Embedder lifecycle      | `node.Node` hooks and control API lifecycle routes                 |
-| New interface types     | Implement `interfaces.Interface`, register in `fromconfig.go`      |
-| Non-Go clients          | Control API (out-of-process) or librns (in-process C ABI)          |
+| Extension               | Mechanism                                                                                                          |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Custom crypto for tests | `cryptography.SetProvider`                                                                                         |
+| Hardware signing        | `identity.NewIdentityWithSigner` with `cryptography.Ed25519Signer`                                                 |
+| Embedder lifecycle      | `node.Node` hooks and control API lifecycle routes                                                                 |
+| New interface types     | Implement `interfaces.Interface`, register in `fromconfig.go`                                                      |
+| Non-Go clients          | Control API (out-of-process), librns (in-process C ABI), `bindings/odin`, or `bindings/dart` (FFI and Control API) |
 
 Adding a new interface type or changing on-wire layouts requires coordinated updates across implementations and crossref vectors.
 

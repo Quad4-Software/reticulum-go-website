@@ -1,0 +1,213 @@
+{
+	"generatedAt": "2026-07-17T09:32:23.364Z",
+	"sources": {
+		"official": {
+			"repo": "markqvist/RNode_Firmware",
+			"latestTag": "1.86"
+		},
+		"microreticulum": {
+			"repo": "attermann/microReticulum_Firmware",
+			"latestTag": "1.86"
+		},
+		"tinyReticulumGo": {
+			"status": "coming-soon"
+		}
+	},
+	"entries": [
+		{
+			"id": "official-heltec-v3",
+			"name": "rnode_firmware_heltec32v3.bin",
+			"source": "official",
+			"version": "1.86",
+			"boardId": "heltec-v3",
+			"boardLabel": "Heltec WiFi LoRa 32 V3",
+			"chip": "esp32s3",
+			"path": "official/rnode_firmware_heltec32v3.bin",
+			"sha256": "ab5596835afc95bdab503fc472cd33e9eff11c8549924eacf29794d1e61c730e",
+			"available": true,
+			"comingSoon": false
+		},
+		{
+			"id": "official-heltec-v2",
+			"name": "rnode_firmware_heltec32v2.bin",
+			"source": "official",
+			"version": "1.86",
+			"boardId": "heltec-v2",
+			"boardLabel": "Heltec WiFi LoRa 32 V2",
+			"chip": "esp32",
+			"path": "official/rnode_firmware_heltec32v2.bin",
+			"sha256": "84375ae06244f9b0a441ef889f9518d9e4d811fd05f099f153f851e2177e4ab0",
+			"available": true,
+			"comingSoon": false
+		},
+		{
+			"id": "official-tbeam",
+			"name": "rnode_firmware_tbeam.bin",
+			"source": "official",
+			"version": "1.86",
+			"boardId": "tbeam",
+			"boardLabel": "LilyGO T-Beam",
+			"chip": "esp32",
+			"path": "official/rnode_firmware_tbeam.bin",
+			"sha256": "103b1853bae414f011c11993ba0347e0c70f76c2a66fe8483d12c85d787eb2db",
+			"available": true,
+			"comingSoon": false
+		},
+		{
+			"id": "official-t-deck",
+			"name": "rnode_firmware_tdeck.bin",
+			"source": "official",
+			"version": "1.86",
+			"boardId": "t-deck",
+			"boardLabel": "LilyGO T-Deck",
+			"chip": "esp32s3",
+			"path": "official/rnode_firmware_tdeck.bin",
+			"sha256": "c72a31c775b6a62af1f859e32e61d5130e1fbac3662ba1e6cd2c1dbc6c9e9a1f",
+			"available": true,
+			"comingSoon": false
+		},
+		{
+			"id": "official-rak4631",
+			"name": "rnode_firmware_rak4631.bin",
+			"source": "official",
+			"version": "1.86",
+			"boardId": "rak4631",
+			"boardLabel": "RAK4631",
+			"chip": "nrf52",
+			"path": "official/rnode_firmware_rak4631.bin",
+			"sha256": "25820129029e453de2614b100bfb002ac9ba1162cd63ac75d9d804bbc4b40fdd",
+			"available": true,
+			"comingSoon": false
+		},
+		{
+			"id": "official-t-echo",
+			"name": "rnode_firmware_techo.bin",
+			"source": "official",
+			"version": "1.86",
+			"boardId": "t-echo",
+			"boardLabel": "LilyGO T-Echo",
+			"chip": "nrf52",
+			"path": "official/rnode_firmware_techo.bin",
+			"sha256": "b609af620a6e662e3d35fd552904b5252235f3014ef95505264f20ecef1e380b",
+			"available": true,
+			"comingSoon": false
+		},
+		{
+			"id": "official-generic-esp32",
+			"name": "rnode_firmware_esp32_generic.bin",
+			"source": "official",
+			"version": "1.86",
+			"boardId": "generic-esp32",
+			"boardLabel": "Generic ESP32",
+			"chip": "esp32",
+			"path": "official/rnode_firmware_esp32_generic.bin",
+			"sha256": "e74120d8f3f75a35059a9d19699ee5c5dec02100f4ecbfd26960f90c7b8b47a5",
+			"available": true,
+			"comingSoon": false
+		},
+		{
+			"id": "microreticulum-heltec-v3",
+			"name": "rnode_firmware_heltec32v3.bin",
+			"source": "microreticulum",
+			"version": "1.86",
+			"boardId": "heltec-v3",
+			"boardLabel": "Heltec WiFi LoRa 32 V3",
+			"chip": "esp32s3",
+			"path": "microreticulum/rnode_firmware_heltec32v3.bin",
+			"sha256": "f5d121a21747646b4a7395659f8e074059c62a3724c325bc23aeadc64b96e5c2",
+			"available": true,
+			"comingSoon": false
+		},
+		{
+			"id": "microreticulum-heltec-v2",
+			"name": "rnode_firmware_heltec32v2.bin",
+			"source": "microreticulum",
+			"version": "1.86",
+			"boardId": "heltec-v2",
+			"boardLabel": "Heltec WiFi LoRa 32 V2",
+			"chip": "esp32",
+			"path": "microreticulum/rnode_firmware_heltec32v2.bin",
+			"sha256": "8811fbfd361fc16a07a9c8543e85142ccbaf0930a858ad8c1690fd7718ea074e",
+			"available": true,
+			"comingSoon": false
+		},
+		{
+			"id": "microreticulum-tbeam",
+			"name": "rnode_firmware_tbeam.bin",
+			"source": "microreticulum",
+			"version": "1.86",
+			"boardId": "tbeam",
+			"boardLabel": "LilyGO T-Beam",
+			"chip": "esp32",
+			"path": "microreticulum/rnode_firmware_tbeam.bin",
+			"sha256": "4b686ed4f9f69f6f1d8814a827fd59d5252047cdb463eb91b73b5fde1b6dc102",
+			"available": true,
+			"comingSoon": false
+		},
+		{
+			"id": "microreticulum-t-deck",
+			"name": "rnode_firmware_tdeck.bin",
+			"source": "microreticulum",
+			"version": "1.86",
+			"boardId": "t-deck",
+			"boardLabel": "LilyGO T-Deck",
+			"chip": "esp32s3",
+			"path": "microreticulum/rnode_firmware_tdeck.bin",
+			"sha256": "bd0dfe5973c5068899280205c21ff688f0859b88c5690f903be3e7332d2637b3",
+			"available": true,
+			"comingSoon": false
+		},
+		{
+			"id": "microreticulum-rak4631",
+			"name": "rnode_firmware_rak4631.bin",
+			"source": "microreticulum",
+			"version": "1.86",
+			"boardId": "rak4631",
+			"boardLabel": "RAK4631",
+			"chip": "nrf52",
+			"path": "microreticulum/rnode_firmware_rak4631.bin",
+			"sha256": "e97428383e32f02f4a02d3b73ab9af08c7c60d110aa0ea455b022fe6e02d75c2",
+			"available": true,
+			"comingSoon": false
+		},
+		{
+			"id": "microreticulum-t-echo",
+			"name": "rnode_firmware_techo.bin",
+			"source": "microreticulum",
+			"version": "1.86",
+			"boardId": "t-echo",
+			"boardLabel": "LilyGO T-Echo",
+			"chip": "nrf52",
+			"path": "microreticulum/rnode_firmware_techo.bin",
+			"sha256": "690cc0d7efe0afc7d555f9240611870d4c820538e0cf3583f97fc03be0a7e01d",
+			"available": true,
+			"comingSoon": false
+		},
+		{
+			"id": "microreticulum-generic-esp32",
+			"name": "rnode_firmware_esp32_generic.bin",
+			"source": "microreticulum",
+			"version": "1.86",
+			"boardId": "generic-esp32",
+			"boardLabel": "Generic ESP32",
+			"chip": "esp32",
+			"path": "microreticulum/rnode_firmware_esp32_generic.bin",
+			"sha256": "991a1ec10e3b229c4f08f1cd9aecce62dc4bf4ea92322611fb38e96b8aa8aeb2",
+			"available": true,
+			"comingSoon": false
+		},
+		{
+			"id": "tiny-reticulum-go-placeholder",
+			"name": "Tiny-Reticulum-Go",
+			"source": "tiny-reticulum-go",
+			"version": "pending",
+			"boardId": "generic-esp32",
+			"boardLabel": "Generic ESP32",
+			"chip": "esp32",
+			"path": "",
+			"sha256": "",
+			"available": false,
+			"comingSoon": true
+		}
+	]
+}

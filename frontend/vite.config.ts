@@ -153,6 +153,37 @@ export default defineConfig(({ command }) => {
 									statuses: [0, 200]
 								}
 							}
+						},
+						{
+							urlPattern: ({ url }) => url.pathname === '/rnode-firmware/catalog.json',
+							handler: 'NetworkFirst',
+							options: {
+								cacheName: 'rnode-firmware-catalog',
+								networkTimeoutSeconds: 5,
+								expiration: {
+									maxEntries: 4,
+									maxAgeSeconds: 60 * 60 * 24
+								},
+								cacheableResponse: {
+									statuses: [0, 200]
+								}
+							}
+						},
+						{
+							urlPattern: ({ url }) =>
+								url.pathname.startsWith('/rnode-firmware/') &&
+								url.pathname !== '/rnode-firmware/catalog.json',
+							handler: 'CacheFirst',
+							options: {
+								cacheName: 'rnode-firmware',
+								expiration: {
+									maxEntries: 64,
+									maxAgeSeconds: 60 * 60 * 24 * 30
+								},
+								cacheableResponse: {
+									statuses: [0, 200]
+								}
+							}
 						}
 					]
 				},

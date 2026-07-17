@@ -17,15 +17,18 @@ make build
 
 `make install` also creates legacy symlinks (`rgostatus`, `rgoid`, `rgoprobe`, `rgopath`, `rgocp`, `rgox`, `rnx`, `rgopageserver`) that invoke the same binary. Man pages: `man reticulum-go`, `man reticulum-go-status`, and so on.
 
-| Tool / subcommand                   | Python counterpart | Role                                                    |
-| ----------------------------------- | ------------------ | ------------------------------------------------------- |
-| `reticulum-go status` (`rgostatus`) | `rnstatus`         | Interface and transport status over shared-instance RPC |
-| `reticulum-go id` (`rgoid`)         | `rnid`             | Identity generate, hash, `.rsg` / `.rsm` / `.rfe`       |
-| `reticulum-go probe` (`rgoprobe`)   | `rnprobe`          | Path wait, encrypted probe, RTT                         |
-| `reticulum-go path` (`rgopath`)     | `rnpath`           | Path table, drop, blackhole, path request               |
-| `reticulum-go cp` (`rgocp`)         | `rncp`             | File send / listen / fetch over links                   |
-| `reticulum-go x` (`rgox`, `rnx`)    | `rnx`              | Remote command execution over links (`rnx.execute`)     |
-| `reticulum-go pageserver`           | (example app)      | NomadNet-style page and file server                     |
+| Tool / subcommand                          | Python counterpart      | Role                                                                 |
+| ------------------------------------------ | ----------------------- | -------------------------------------------------------------------- |
+| `reticulum-go status` (`rgostatus`)        | `rnstatus`              | Interface and transport status over shared-instance RPC              |
+| `reticulum-go slow` (`rgoslow`)            | (Go-only)               | Bottleneck and local health findings from interface/path stats       |
+| `reticulum-go id` (`rgoid`)                | `rnid`                  | Identity generate, hash, `.rsg` / `.rsm` / `.rfe`                    |
+| `reticulum-go probe` (`rgoprobe`)          | `rnprobe`               | Path wait, encrypted probe, RTT                                      |
+| `reticulum-go path` (`rgopath`)            | `rnpath`                | Path table, drop, blackhole, path request                            |
+| `reticulum-go cp` (`rgocp`)                | `rncp`                  | File send / listen / fetch over links                                |
+| `reticulum-go x` (`rgox`, `rnx`)           | `rnx`                   | Remote command execution over links (`rnx.execute`)                  |
+| `reticulum-go pageserver`                  | (example app)           | NomadNet-style page and file server                                  |
+| `reticulum-go self-check` (`rgoselfcheck`) | (Go-only)               | Host OS preflight for sandbox, crypto, and interfaces                |
+| `reticulum-go speedtest` (`rgospeed`)      | `Examples/Speedtest.py` | Loopback smoke plus cross-host / docker daemon (`-daemon`, `-iface`) |
 
 Library code lives in `pkg/rnsutil` and `pkg/cli`. Pageserver logic lives in `pkg/pageserver`.
 
@@ -33,15 +36,25 @@ Library code lives in `pkg/rnsutil` and `pkg/cli`. Pageserver logic lives in `pk
 
 `rgostatus` and `rgopath -t` / drop / blackhole modes dial a running shared instance (Python `rnsd` or `reticulum-go`) over the same multiprocessing.connection + msgpack protocol Python uses.
 
+RPC is fully supported on **both** transports:
+
+| `shared_instance_type` | Listen / dial address                               |
+| ---------------------- | --------------------------------------------------- |
+| `tcp`                  | `127.0.0.1:<instance_control_port>` (default 37429) |
+| `unix`                 | Abstract socket `@rns/<instance_name>/rpc` (Linux)  |
+
+Go implements both server and client for TCP and Unix. Cross-stack tool interop works on either transport when both sides agree.
+
 ### Why connection refused is common
 
-Three separate issues usually stack:
+Issues that usually stack:
 
 1. **Wrong config directory.** Python uses `~/.reticulum`. Go defaults to `~/.reticulum-go`. Point `-config` at the directory of the daemon you are querying.
-2. **Linux Python defaults to Unix RPC.** Without `shared_instance_type = tcp`, `rnsd` listens on an abstract Unix socket (`@rns/<instance_name>/rpc`), not `127.0.0.1:37429`. Go tools dial TCP by default when the config says `tcp` or when the type is unset in Go configs.
+2. **Default transport mismatch.** On Linux, Python `rnsd` defaults to **Unix** RPC when `shared_instance_type` is unset. Go defaults to **TCP**. Stock configs therefore miss each other even though both speak RPC.
 3. **Daemon not sharing.** The process that owns interfaces must have `share_instance = yes` and be running.
+4. **Auth key mismatch.** Align `rpc_key`, or share the same derived `transport_identity`.
 
-### Working config for Python rnsd + Go tools
+### Working config for Python rnsd + Go tools (TCP)
 
 Add the same block to **both** `~/.reticulum/config` and `~/.reticulum-go/config` when you want either path to reach the same daemon:
 
@@ -74,6 +87,20 @@ Then:
 
 If both configs share ports and `rpc_key`, `-config ~/.reticulum-go` also works against a Python `rnsd` that was started with the matching `~/.reticulum` settings.
 
+### Unix RPC (Linux)
+
+Both sides can use abstract Unix sockets instead:
+
+```ini
+[reticulum]
+share_instance = yes
+instance_name = default
+shared_instance_type = unix
+rpc_key = <64 hex characters>
+```
+
+Go tools with that config dial `@rns/default/rpc`. This matches stock Linux Python when it is left on Unix. Prefer TCP when you want the same recipe on every OS.
+
 ### Auth key rules
 
 | Config                       | Authkey used                                                   |
@@ -85,14 +112,14 @@ Go and Python must agree. Prefer an explicit shared `rpc_key` when mixing stacks
 
 ### Query a Go daemon instead
 
-Run `reticulum-go` with `share_instance = yes` and `shared_instance_type = tcp` under `~/.reticulum-go`, then:
+Run `reticulum-go` with `share_instance = yes` under `~/.reticulum-go`. Match `shared_instance_type` to how you will dial (TCP is the Go default):
 
 ```bash
 ./bin/reticulum-go status -config ~/.reticulum-go -json
 ./bin/reticulum-go path -config ~/.reticulum-go -t
 ```
 
-Only one process should own the shared instance ports at a time.
+Only one process should own the shared instance ports (or Unix RPC name) at a time.
 
 ## rgostatus
 
@@ -112,6 +139,111 @@ rgostatus [flags]
 | `-timeout dur` | RPC timeout (default 10s)                                                                           |
 
 JSON includes per-interface announce and path-request frequencies, held announces, burst flags, and traffic counters when the daemon provides them.
+
+Against a Go daemon, human and JSON output also include local mesh health fields when counters are non-zero: `ifac_fail`, `hmac_fail`, `announce_sig_fail`, `unpack_fail`, `integrity_fail_rate`, `stale_closes`, `keepalive_timeout`, and related totals. Python `rnsd` does not populate these keys. Missing fields mean zero or unknown, not a protocol error.
+
+## rgoslow
+
+```bash
+reticulum-go slow [flags]
+# legacy: rgoslow
+```
+
+Ranks congestion and local health signals that commonly explain stalled transfers or noisy interfaces. Uses the same shared-instance RPC as `status` (`interface_stats` plus path table).
+
+| Flag           | Meaning                                       |
+| -------------- | --------------------------------------------- |
+| `-config dir`  | Config directory (default: `~/.reticulum-go`) |
+| `-json`        | Emit full JSON report                         |
+| `-a`           | Include all interfaces                        |
+| `-n substr`    | Filter interface names                        |
+| `-l`           | Include link count                            |
+| `-dest hash`   | Focus analysis on a destination (32 hex)      |
+| `-top n`       | Max interfaces to rank (default 12)           |
+| `-high-hop n`  | Hop count treated as high (default 6)         |
+| `-m`           | Continuously refresh                          |
+| `-I dur`       | Monitor interval (default 2s)                 |
+| `-timeout dur` | RPC timeout (default 10s)                     |
+
+Bottleneck findings cover bitrate utilization, announce/PR bursts, held announces, bandwidth gates, socket RTT, and high-hop paths.
+
+When talking to a Go daemon, health findings can also appear:
+
+| Kind               | Meaning                                                        |
+| ------------------ | -------------------------------------------------------------- |
+| `integrity_burst`  | Elevated IFAC/HMAC/unpack fail rate vs accepted frames         |
+| `auth_pressure`    | Announce signature or link proof rejects clustered on an iface |
+| `link_degraded`    | Rising stale closes or keepalive timeouts                      |
+| `ingress_pressure` | Held announces or burst limiters active                        |
+
+Counters stay local to the node. `slow` only observes and scores. It does not change ingress policy or blackhole tables.
+
+## rgospeed
+
+```bash
+reticulum-go speedtest [flags]
+# legacy: rgospeed
+```
+
+Link throughput test modeled on Python `Examples/Speedtest.py`.
+
+| Mode                          | Command                                     |
+| ----------------------------- | ------------------------------------------- |
+| Loopback smoke (default / CI) | `reticulum-go speedtest` or `-loopback`     |
+| Server (oneshot)              | `reticulum-go speedtest -l`                 |
+| Daemon (VPS / docker)         | `reticulum-go speedtest -daemon`            |
+| Client (cross-host)           | `reticulum-go speedtest <server_dest_hash>` |
+
+Destination is `speedtest.server`. Server and client must use the same `-bytes` size. After the transfer the server sends a `SPEEDOK` ack with the confirmed RX count. Networked clients pace sends (100 µs per packet by default) so UDP sockets are not overrun; loopback does not pace.
+
+Every run prints a grep-friendly `speedtest_result ...` line on stdout (visible in `docker logs`). With `-json`, a JSON object follows on stdout as well.
+
+Use a real config with UDP/TCP (or a shared path). `share_instance` is forced off so the tool owns its interfaces. Python-style `forward_ip` / `forward_port` are accepted as aliases for `target_host` / `target_port`.
+
+| Flag             | Meaning                                                       |
+| ---------------- | ------------------------------------------------------------- |
+| `-loopback`      | In-process pipe (CI liveness, default when no args)           |
+| `-l`             | Listen as server (one client then exit)                       |
+| `-daemon`        | Listen forever (implies `-l -m`, default announce every 120s) |
+| `-m`             | Listen: serve multiple clients                                |
+| `-iface`         | `all` (default) or comma-separated config section names       |
+| `-p`             | Print identity / destination hash and exit                    |
+| `-config dir`    | Config directory (default `~/.reticulum-go`)                  |
+| `-identity path` | Persistent identity for listen mode                           |
+| `-bytes n`       | Plaintext bytes to transfer (default 2 MiB)                   |
+| `-min-bps n`     | Fail below this rate (`0` disables; loopback defaults to 1e6) |
+| `-timeout sec`   | Overall timeout (default 60)                                  |
+| `-announce sec`  | Listen announce interval (`0` once, `<0` never)               |
+| `-json`          | Emit JSON after each `speedtest_result` line                  |
+| `-q`             | Quieter debug                                                 |
+
+Cross-host example (two machines / configs with a shared path):
+
+```bash
+# server
+reticulum-go speedtest -daemon -iface tcp -bytes 4194304
+# client (paste the 32-hex hash printed by the server)
+reticulum-go speedtest -iface tcp -bytes 4194304 <hash_from_server>
+```
+
+### Docker VPS reference
+
+Build and run a persistent public TCP listener:
+
+```bash
+task docker:build:speedtest
+docker run -d --name rgo-speedtest -p 4242:4242 \
+  -e SPEEDTEST_IFACE=tcp \
+  -v reticulum-go-speedtest:/data \
+  reticulum-go-speedtest:latest
+docker logs -f rgo-speedtest
+```
+
+Env knobs: `SPEEDTEST_IFACE` (`all` or names), `SPEEDTEST_BYTES`, `SPEEDTEST_ANNOUNCE`, `SPEEDTEST_PORT`, `SPEEDTEST_JSON`, `RNS_CONFIG`. Persist `/data` so the identity (and thus dest hash) stays stable for CI secrets.
+
+CI client config needs a `TCPClientInterface` to the VPS host:port and the printed dest hash. Treat measured rates as a path floor (runner to VPS), not a lab loopback number.
+
+Nightly CI runs `task test-link-speed` (`TestLinkSpeedSmoke`) with a 512 KiB loopback cap and a 1 MB/s floor.
 
 ## rgoid
 
@@ -253,7 +385,8 @@ Exit codes match Python `rnx` (241–249 for client failures, `-m` mirrors remot
 
 | Symptom                                                     | Fix                                                                                                                                                |
 | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `dial tcp 127.0.0.1:37429: connection refused`              | Start the daemon. Set `shared_instance_type = tcp`. Restart after config change. Use `-config` for that daemon's config dir.                       |
+| `dial tcp 127.0.0.1:37429: connection refused`              | Start the daemon. Match `shared_instance_type` (`tcp` vs `unix`). Restart after config change. Use `-config` for that daemon's config dir.         |
+| `dial unix @rns/...: connection refused`                    | Daemon is on TCP, or `instance_name` differs. Align `shared_instance_type` and `instance_name`.                                                    |
 | `rpc auth` failure                                          | Align `rpc_key`, or use the same `storage/transport_identity` when keys are derived.                                                               |
 | Empty or missing announce rates from Python                 | Field is present but may be `0` until traffic accumulates. Sorting and JSON keys still work.                                                       |
 | Top-level `rxb`/`txb` are `0` while interfaces show traffic | Python aggregate totals often omit some parent interfaces. Prefer per-interface counters.                                                          |
@@ -262,14 +395,16 @@ Exit codes match Python `rnx` (241–249 for client failures, `-m` mirrors remot
 
 ## Debugging
 
-| Tool                   | Role                                                                             |
-| ---------------------- | -------------------------------------------------------------------------------- |
-| `reticulum-go status`  | Interface stats over shared-instance RPC (`-json`, `-q`)                         |
-| `reticulum-go path -t` | Path table dump                                                                  |
-| `reticulum-go debug`   | Effective config path, log level, platform, RPC reachability (`-rates`, `-json`) |
-| `reticulum-go probe`   | Connectivity / RTT (`-json`)                                                     |
-| Control API            | HTTP `/v1/health`, `/v1/status`, `/v1/paths` when `enable_control_api = yes`     |
-| Daemon `-debug N`      | Override config loglevel for one run                                             |
+| Tool                      | Role                                                                                                                        |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `reticulum-go status`     | Interface stats over shared-instance RPC (`-json`, `-q`), including Go integrity counters when present                      |
+| `reticulum-go slow`       | Bottleneck and local health findings (`integrity_burst`, `auth_pressure`, `link_degraded`, …)                               |
+| `reticulum-go path -t`    | Path table dump                                                                                                             |
+| `reticulum-go debug`      | Effective config path, log level, platform, RPC reachability (`-rates`, `-json`)                                            |
+| `reticulum-go self-check` | Host OS preflight checklist (`--json`, `--quick`, `--full`, `--strict`)                                                     |
+| `reticulum-go probe`      | Connectivity / RTT (`-json`)                                                                                                |
+| Control API               | HTTP `/v1/health` (liveness), `/v1/status` (iface stats plus integrity fields), `/v1/paths` when `enable_control_api = yes` |
+| Daemon `-debug N`         | Override config loglevel for one run                                                                                        |
 
 TTY colors (status Up/Down, probe/path/cp/id outcomes, pageserver banner, daemon text log levels) honor `NO_COLOR` (off) and `FORCE_COLOR` / `CLICOLOR_FORCE` (on). JSON output and file logs stay plain.
 

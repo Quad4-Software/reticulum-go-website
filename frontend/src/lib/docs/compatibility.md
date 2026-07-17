@@ -10,23 +10,26 @@ The detailed matrix with config key tables lives in [COMPATIBILITY.md](https://g
 
 ## Component parity
 
-| Component      | Status   | Notes                                                                                  |
-| -------------- | -------- | -------------------------------------------------------------------------------------- |
-| Crypto         | Complete | Curve25519, AES-256-CBC, HMAC-SHA256, HKDF. Crossref verified                          |
-| Identity       | Complete | Optional RHB1 hardware descriptor. Python `from_file` is 64-byte software only         |
-| Destination    | Complete | SINGLE, GROUP, PLAIN, LINK                                                             |
-| Packet         | Complete | Header types 1 and 2, all packet types and contexts                                    |
-| Transport      | Complete | Path table, announces, relay, persistence, ingress control, random-blob path selection |
-| IFAC           | Complete | UDP, TCP, Auto. Live tests in `tests/interop/ifac_live_test.go`                        |
-| Link           | Complete | Both directions, RTT, request/response, channel, buffer, resources                     |
-| Resource       | Complete | Multi-part, hashmaps, RESOURCE_PRF, bzip2 bomb limits                                  |
-| Channel        | Complete | Simpler single-outlet model vs Python 1.3.0 ghost fix                                  |
-| Buffer         | Complete | Stream buffer over channel                                                             |
-| Interfaces     | Partial  | See below                                                                              |
-| Discovery      | Partial  | rnstransport listening works. Announcer and autoconnect not auto-started               |
-| Blackhole      | Partial  | Table and announce drop. Link teardown at LINKIDENTIFY not implemented                 |
-| Node lifecycle | Go-only  | `pkg/node` embedder API, no Python equivalent                                          |
-| librns C ABI   | Go-only  | `pkg/librns`, `include/rns.h`. See [librns](/docs/librns)                              |
+| Component               | Status       | Notes                                                                                               |
+| ----------------------- | ------------ | --------------------------------------------------------------------------------------------------- |
+| Crypto                  | Complete     | Curve25519, AES-256-CBC, HMAC-SHA256, HKDF. Crossref verified                                       |
+| Identity                | Complete     | Optional RHB1 hardware descriptor. Python `from_file` is 64-byte software only                      |
+| Destination             | Complete     | SINGLE, GROUP, PLAIN, LINK                                                                          |
+| Packet                  | Complete     | Header types 1 and 2, all packet types and contexts                                                 |
+| Transport               | Complete     | Path table, announces, relay, persistence, ingress control, random-blob path selection              |
+| IFAC                    | Complete     | UDP, TCP, Auto. Live tests in `tests/interop/ifac_live_test.go`                                     |
+| Link                    | Complete     | Both directions, RTT, request/response, channel, buffer, resources                                  |
+| Resource                | Complete     | Multi-part, hashmaps, RESOURCE_PRF, bzip2, split advertisements                                     |
+| Channel                 | Complete     | Ghost-envelope fix (send-before-emplace). Tests in `pkg/channel`                                    |
+| Buffer                  | Complete     | Stream buffer over channel                                                                          |
+| Interfaces              | Partial      | See below                                                                                           |
+| Discovery               | Partial      | rnstransport listening works. Announcer and autoconnect not auto-started                            |
+| Blackhole               | Partial      | Local table, announce drop, and LINKIDENTIFY teardown. No publish/federation or `/list` destination |
+| Node lifecycle          | Go-only      | `pkg/node` embedder API, no Python equivalent                                                       |
+| librns C ABI            | Go-only      | `pkg/librns`, `include/rns.h`. See [librns](/docs/librns)                                           |
+| Odin librns bindings    | Go-only host | `bindings/odin` (Linux). See [librns](/docs/librns#odin-bindings)                                   |
+| Dart librns FFI         | Go-only host | `bindings/dart`. Linux, Android, Windows. See [librns](/docs/librns#dart-ffi-bindings)              |
+| Dart Control API client | Go-only host | `bindings/dart`. See [Control API](/docs/control-api#dart-and-flutter)                              |
 
 ## Interfaces
 
@@ -37,11 +40,17 @@ The detailed matrix with config key tables lives in [COMPATIBILITY.md](https://g
 | AutoInterface                          | Yes (includes 1.3.5 roam listener swap)                                       |
 | I2PInterface                           | Yes                                                                           |
 | BackboneInterface                      | Yes                                                                           |
-| RNode, Serial, KISS, AX25KISS, Weave   | No                                                                            |
+| RNode, KISS, AX25KISS, Weave           | No                                                                            |
+| SerialInterface                        | Yes                                                                           |
 | PipeInterface                          | Yes                                                                           |
 | LocalInterface                         | Yes via `share_instance` and config `LocalInterface` / `LocalServerInterface` |
+| External plugins                       | Yes (Go-native factories, manifests, executables under `interfaces/`)         |
 | WebSocket                              | Go-only                                                                       |
 | QUIC                                   | Go-only (`QUICClientInterface` / `QUICServerInterface`)                       |
+| WebTransport                           | Go-only (`WebTransportClientInterface` / `WebTransportServerInterface`)       |
+| DNSRendezvous                          | Go-only (`DNSRendezvousInterface`)                                            |
+| VSOCK                                  | Go-only Linux (`VSOCKClientInterface` / `VSOCKServerInterface`)               |
+| HTTPS                                  | Go-only (`HTTPSClientInterface` / `HTTPSServerInterface`)                     |
 
 UDP requires explicit `target_host` or `target_address` (Python `forward_ip` policy).
 
@@ -51,75 +60,83 @@ Opt-in UDP reconnect when `max_reconnect_tries > 0` is a Go extension.
 
 Wire format is stable across 1.2.x to 1.3.x. Notable behavior differences:
 
-| Python change                                              | Version       | Go               |
-| ---------------------------------------------------------- | ------------- | ---------------- |
-| BZ2 bomb limits                                            | 1.1.9         | Covered          |
-| Path-request ingress/egress control                        | 1.2.5         | Covered          |
-| Path table random-blob selection                           | 1.2.x+        | Covered          |
-| Announce dedup when dest in path table                     | 1.3.4         | Covered          |
-| Blackhole link teardown at LINKIDENTIFY                    | 1.3.2         | **Gap**          |
-| AutoInterface roam listener replacement                    | 1.3.5         | Covered          |
-| Channel ghost envelopes                                    | 1.3.0         | Simpler Go model |
-| Shared-instance RPC msgpack                                | 1.3.4         | Covered          |
-| `MODE_INTERNAL` / `recursive_prs` / announce mode rules    | 1.3.6         | Covered          |
-| Ephemeral transport identity / `static_transport_identity` | 1.3.6         | Covered          |
-| `local_hops_delta` hop mangling                            | 1.3.6 / 1.3.7 | Covered          |
-| Reject unpack when hops `>= PATHFINDER_M`                  | 1.3.8         | Covered          |
-| Link `expected_hops` on both sides / LRPROOF hop gate      | 1.3.8         | Covered          |
+| Python change                                              | Version       | Go      |
+| ---------------------------------------------------------- | ------------- | ------- |
+| BZ2 bomb limits                                            | 1.1.9         | Covered |
+| Path-request ingress/egress control                        | 1.2.5         | Covered |
+| Path table random-blob selection                           | 1.2.x+        | Covered |
+| Announce dedup when dest in path table                     | 1.3.4         | Covered |
+| Blackhole link teardown at LINKIDENTIFY                    | 1.3.2         | Covered |
+| AutoInterface roam listener replacement                    | 1.3.5         | Covered |
+| Channel ghost envelopes                                    | 1.3.0         | Covered |
+| Shared-instance RPC msgpack                                | 1.3.4         | Covered |
+| `MODE_INTERNAL` / `recursive_prs` / announce mode rules    | 1.3.6         | Covered |
+| Ephemeral transport identity / `static_transport_identity` | 1.3.6         | Covered |
+| `local_hops_delta` hop mangling                            | 1.3.6 / 1.3.7 | Covered |
+| Reject unpack when hops `>= PATHFINDER_M`                  | 1.3.8         | Covered |
+| Link `expected_hops` on both sides / LRPROOF hop gate      | 1.3.8         | Covered |
 
 ## Known gaps
 
-| Gap                                  | Impact                                                                      |
-| ------------------------------------ | --------------------------------------------------------------------------- |
-| Blackhole at LINKIDENTIFY            | Blackholed peers may still complete link setup. Announces are still dropped |
-| Transport probes                     | `respond_to_probes` / `allow_probes` register probe destination             |
-| `local_hops_delta`                   | Outbound hop mangling applied                                               |
-| `publish_blackhole` and related keys | Not auto-published                                                          |
-| RNode and radio serial drivers       | Cannot speak to RNode hardware from this tree                               |
-| Python CLI utilities                 | Yes (core)                                                                  | `rgostatus`, `rgoid`, `rgoprobe` with Python format/RPC interop |
+| Gap                                     | Impact                                                                   |
+| --------------------------------------- | ------------------------------------------------------------------------ |
+| Discovery announcer / autoconnect       | Listen and validate work. No store, announce loop, or autoconnect        |
+| Blackhole federation                    | `publish_blackhole`, `blackhole_sources`, and updater not driven         |
+| Remote management destination           | No `rnstransport.remote.management` for remote `rnpath`/`rnstatus`       |
+| RNode and radio serial drivers          | RNode / KISS / AX25 / Weave not in this tree. SerialInterface is present |
+| Utilities `rnsh` `rnir` `rnpkg` `rngit` | Not ported                                                               |
 
 ## Go-only extensions
 
 These do not change the wire format:
 
-| Feature                        | Package / location                                     |
-| ------------------------------ | ------------------------------------------------------ |
-| Interface hot reload           | `pkg/node/reload.go`, SIGHUP                           |
-| `watch_interfaces` NIC polling | `pkg/node/netmon.go`                                   |
-| Node lifecycle API             | `OnNetworkAvailable`, `OnNetworkLost`, `RefreshPaths`  |
-| UDP reconnect (opt-in)         | `pkg/interfaces/reconnect.go`                          |
-| Backbone I/O multiplexing      | `pkg/backbone`                                         |
-| WebSocket interface            | `pkg/interfaces/websocket_*.go`                        |
-| QUIC interface                 | `pkg/interfaces/quic.go`, `quic_tls.go`                |
-| Control API                    | `pkg/controlapi`                                       |
-| librns C ABI                   | `pkg/librns`, `include/rns.h` ([librns](/docs/librns)) |
-| Runtime sandbox                | `pkg/sandbox`                                          |
-| RAM-only path tables           | `in_memory_path_table`, `in_memory_known_destinations` |
+| Feature                        | Package / location                                                  |
+| ------------------------------ | ------------------------------------------------------------------- |
+| Interface hot reload           | `pkg/node/reload.go`, SIGHUP                                        |
+| `watch_interfaces` NIC polling | `pkg/node/netmon.go`                                                |
+| Node lifecycle API             | `OnNetworkAvailable`, `OnNetworkLost`, `RefreshPaths`               |
+| UDP reconnect (opt-in)         | `pkg/interfaces/reconnect.go`                                       |
+| Backbone I/O multiplexing      | `pkg/backbone`                                                      |
+| WebSocket interface            | `pkg/interfaces/websocket_*.go`                                     |
+| QUIC interface                 | `pkg/interfaces/quic.go`, `quic_tls.go`                             |
+| Control API                    | `pkg/controlapi`                                                    |
+| librns C ABI                   | `pkg/librns`, `include/rns.h` ([librns](/docs/librns))              |
+| Odin librns bindings           | `bindings/odin` ([librns](/docs/librns#odin-bindings))              |
+| Dart librns FFI                | `bindings/dart` ([librns](/docs/librns#dart-ffi-bindings))          |
+| Dart Control API client        | `bindings/dart` ([Control API](/docs/control-api#dart-and-flutter)) |
+| Runtime sandbox                | `pkg/sandbox`                                                       |
+| Local mesh health counters     | `pkg/health`, status RPC fields, `reticulum-go slow` findings       |
+| RAM-only path tables           | `in_memory_path_table`, `in_memory_known_destinations`              |
+| Fully ephemeral storage        | `in_memory_storage`, `RETICULUM_IN_MEMORY_STORAGE`, soft caps       |
 
 ## Config differences
 
-| Topic              | Python                           | Reticulum-Go                                   |
-| ------------------ | -------------------------------- | ---------------------------------------------- |
-| Default config dir | `~/.reticulum`, `/etc/reticulum` | `~/.reticulum-go`                              |
-| Parser             | configobj                        | Hand-rolled in `pkg/reticulumconfig`           |
-| Unknown keys       | Errors                           | Ignored                                        |
-| Comments           | `#`                              | `#` and `;`                                    |
-| Identity storage   | Per-name blobs                   | Per-hash blobs (loads Python known dest files) |
-| Log destination    | Configurable                     | stderr only                                    |
+| Topic              | Python                           | Reticulum-Go                                                      |
+| ------------------ | -------------------------------- | ----------------------------------------------------------------- |
+| Default config dir | `~/.reticulum`, `/etc/reticulum` | `~/.reticulum-go`                                                 |
+| Parser             | configobj                        | Hand-rolled in `pkg/reticulumconfig`                              |
+| Unknown keys       | Errors                           | Ignored                                                           |
+| Comments           | `#`                              | `#` and `;`                                                       |
+| Identity storage   | Per-name blobs                   | Per-hash blobs (loads Python known dest files)                    |
+| Log destination    | stdout / file / callback         | `stderr`, `file`, `both`, `syslog`, `journald` (and combinations) |
 
 ## Utilities
 
-| Python                              | Reticulum-Go                                                            |
-| ----------------------------------- | ----------------------------------------------------------------------- |
-| rnsd                                | `reticulum-go` daemon                                                   |
-| rnstatus                            | `rgostatus` (shared-instance RPC, announce/PR rates, JSON)              |
-| rnid                                | `rgoid` (`.rid`/`.rsg`/`.rsm`/`.rfe` compatible)                        |
-| rnprobe                             | `rgoprobe`                                                              |
-| rnpath                              | `rgopath` (path table, drop, blackhole; remote rnstransport not ported) |
-| rncp                                | `rgocp` (send/listen/fetch on `rncp.receive`)                           |
-| rnir, rnodeconf, rnpkg, rngit, rnsh | Not ported (deferred post-1.0). `rnx` is `reticulum-go x`.              |
-| WASM                                | `reticulum-wasm` (Go-only)                                              |
-| librns                              | `librns.so` + `rns.h` (Go-only, Linux first)                            |
+| Python                              | Reticulum-Go                                                                    |
+| ----------------------------------- | ------------------------------------------------------------------------------- |
+| rnsd                                | `reticulum-go` daemon                                                           |
+| rnstatus                            | `rgostatus` (shared-instance RPC, announce/PR rates, JSON, Go integrity fields) |
+| (none)                              | `rgoslow` / `reticulum-go slow` (bottleneck and local health findings, Go-only) |
+| `Examples/Speedtest.py`             | `rgospeed` / `reticulum-go speedtest` (loopback link throughput smoke)          |
+| rnid                                | `rgoid` (`.rid`/`.rsg`/`.rsm`/`.rfe` compatible)                                |
+| rnprobe                             | `rgoprobe`                                                                      |
+| rnpath                              | `rgopath` (path table, drop, blackhole, remote rnstransport not ported)         |
+| rncp                                | `rgocp` (send/listen/fetch on `rncp.receive`)                                   |
+| rnir, rnodeconf, rnpkg, rngit, rnsh | Not ported (deferred post-1.0). `rnx` is `reticulum-go x`.                      |
+| WASM                                | `reticulum-wasm` (Go-only)                                                      |
+| librns                              | `librns.so` + `rns.h` (Go-only, Linux first)                                    |
+| Odin bindings                       | `bindings/odin` (links `librns.so`, [librns](/docs/librns#odin-bindings))       |
+| Dart client                         | `bindings/dart` (`rns_control` FFI and Control API)                             |
 
 Setup for Go tools against Python `rnsd` (TCP shared-instance RPC, `rpc_key`, `-config`) is documented in [CLI utilities](/docs/utilities).
 
@@ -140,7 +157,7 @@ RUN_LIVE_INTEROP=1 go test -v ./tests/interop/...
 
 Use separate config directories (`~/.reticulum-go` vs `~/.reticulum`). Point interfaces at the same peers with matching IFAC and ports. Shared instance ports must not conflict if both try to own the same interface.
 
-To let `rgostatus` query Python `rnsd`, set `shared_instance_type = tcp` and matching `instance_control_port` / `rpc_key` in the Python config, then restart `rnsd`. See [CLI utilities](/docs/utilities).
+To let `rgostatus` query Python `rnsd`, align `shared_instance_type` (`tcp` or `unix`), `instance_name` / `instance_control_port`, and `rpc_key`, then restart `rnsd`. Stock Linux Python defaults to Unix RPC while Go defaults to TCP. See [CLI utilities](/docs/utilities).
 
 ## Related documents
 

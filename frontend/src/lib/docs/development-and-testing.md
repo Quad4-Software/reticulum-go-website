@@ -4,7 +4,7 @@
 
 Requirements:
 
-- Go 1.26.4 or later
+- Go 1.26.5 or later
 - Make or Task
 - revive linter for `make lint`
 - Python 3 for crossref vector generation (optional)
@@ -52,7 +52,17 @@ Opens HTML coverage from `coverage.out`.
 
 ```bash
 make bench
+task test-bench-gate
 ```
+
+Loopback link throughput smoke (RNS Speedtest-style liveness floor):
+
+```bash
+task test-link-speed
+reticulum-go speedtest
+```
+
+Nightly `sim-heavy` also runs `test-link-speed`.
 
 ## Project layout for contributors
 
@@ -90,7 +100,7 @@ Files named `*_pbt_test.go` use `quad4/pbt` for generative testing (cryptography
 
 ### Fuzz tests
 
-Files named `*_fuzz_test.go` cover packet, link, ifac, blackhole, discovery, pipe HDLC framing (`pkg/interfaces/pipe_fuzz_test.go`), and librns (`pkg/librns`).
+Files named `*_fuzz_test.go` cover packet, link, ifac, blackhole, discovery, health counters (`pkg/health`), pipe HDLC framing (`pkg/interfaces/pipe_fuzz_test.go`), and librns (`pkg/librns`).
 
 ### Crossref tests
 
@@ -122,19 +132,56 @@ Enable:
 RUN_LIVE_INTEROP=1 go test -v ./tests/interop/...
 ```
 
-| Test file                      | Topic                            |
-| ------------------------------ | -------------------------------- |
-| `link_live_test.go`            | Link sessions                    |
-| `auto_live_test.go`            | AutoInterface                    |
-| `ifac_live_test.go`            | IFAC                             |
-| `transport_path_live_test.go`  | Path requests                    |
-| `transport_relay_live_test.go` | Transport relay                  |
-| `backbone_live_test.go`        | Backbone                         |
-| `quic_live_test.go`            | QUIC Go-Go echo (no Python peer) |
-| `pipe_live_test.go`            | PipeInterface with Python echo   |
-| `shared_rpc_live_test.go`      | Shared-instance RPC              |
-| `pageserver_live_test.go`      | Pageserver example               |
-| `nomadnet_crawl_live_test.go`  | Nomadnet crawl                   |
+Optional Python interpreter:
+
+```bash
+PYTHON_INTEROP=.venv/bin/python RUN_LIVE_INTEROP=1 go test -v ./tests/interop/...
+```
+
+#### Debug harness
+
+NomadNet relay, pageserver, and shared helpers use `tests/interop/harness/`.
+
+| Variable                | Behavior                                                      |
+| ----------------------- | ------------------------------------------------------------- |
+| `INTEROP_ARTIFACTS=1`   | Always keep artifact dirs (default: only when the test fails) |
+| `INTEROP_EVENTS=1`      | Force event logging (also on when artifacts are enabled)      |
+| `INTEROP_ARTIFACT_ROOT` | Parent directory for durable artifact folders                 |
+
+On failure (or with `INTEROP_ARTIFACTS=1`) the test logs the artifact path and the last events. Typical files:
+
+| File           | Contents                                                           |
+| -------------- | ------------------------------------------------------------------ |
+| `events.jsonl` | One JSON object per line (`ts`, `src`, `event`, `kind`, `detail`)  |
+| `stderr.txt`   | Captured Python stderr (human RNS logs plus `INTEROP_EVENT` lines) |
+| `env.json`     | Selected interop env keys                                          |
+
+Python peers emit `INTEROP_EVENT {...}` on stderr via `tests/interop/py/interop_events.py`. Stdout tokens such as `READY` and `REQUEST_OK` are unchanged.
+
+Example:
+
+```bash
+INTEROP_ARTIFACTS=1 INTEROP_ARTIFACT_ROOT=/tmp/rns-interop \
+  RUN_LIVE_INTEROP=1 go test -v ./tests/interop/ -run 'TestLiveNomadNetLinkThroughGoRelay|TestLiveInteropPythonPageServerLargePageRequest'
+```
+
+| Test file                      | Topic                                         |
+| ------------------------------ | --------------------------------------------- |
+| `link_live_test.go`            | Link sessions and resources                   |
+| `channel_buffer_live_test.go`  | Channel messages and buffer streams           |
+| `rncp_blackhole_live_test.go`  | rncp file transfer and blackhole LINKIDENTIFY |
+| `auto_live_test.go`            | AutoInterface                                 |
+| `ifac_live_test.go`            | IFAC                                          |
+| `transport_path_live_test.go`  | Path requests                                 |
+| `transport_relay_live_test.go` | Transport relay                               |
+| `backbone_live_test.go`        | Backbone                                      |
+| `quic_live_test.go`            | QUIC Go-Go echo (no Python peer)              |
+| `pipe_live_test.go`            | PipeInterface with Python echo                |
+| `shared_rpc_live_test.go`      | Shared-instance RPC                           |
+| `pageserver_live_test.go`      | Pageserver example                            |
+| `nomadnet_crawl_live_test.go`  | Nomadnet crawl                                |
+| `nomadnet_relay_live_test.go`  | NomadNet through Go mesh relay                |
+| `path_cp_live_test.go`         | path and rgocp utilities                      |
 
 ### Package-specific live tests
 
@@ -147,6 +194,45 @@ RUN_LIVE_INTEROP=1 go test -v ./tests/interop/...
 ### End-to-end daemon tests
 
 `cmd/reticulum-go/` contains `controlapi_e2e_test.go`, `reload_e2e_test.go`, and related tests.
+
+### Host self-check
+
+`reticulum-go self-check` is a host OS preflight. It validates that platform features work on the machine under test (crypto, identity file backend, sandbox, securemem, loopback interfaces, daemon with sandbox, shared-instance RPC, and on Unix a SIGHUP config/interface reload).
+
+```bash
+make test-self-check
+# or
+task test-self-check
+# or
+./bin/reticulum-go self-check --json --full
+```
+
+Flags:
+
+| Flag            | Behavior                                                             |
+| --------------- | -------------------------------------------------------------------- |
+| `--json`        | Machine-readable report                                              |
+| `--quick`       | Core and platform only (no loopback or daemon)                       |
+| `--full`        | Also probe QUIC, HTTPS, VSOCK, Pipe, and Serial                      |
+| `--interop`     | Optional external tools (crossref vectors, Python RNS, binding CLIs) |
+| `--strict`      | Treat warnings as failures                                           |
+| `--binary PATH` | Binary used for CLI and daemon checks                                |
+
+Environment:
+
+| Variable                         | Behavior                                               |
+| -------------------------------- | ------------------------------------------------------ |
+| `RETICULUM_SELF_CHECK=1`         | Used by CI wrappers that invoke the same checklist     |
+| `RETICULUM_SELF_CHECK_INTEROP=1` | Enables the interop tier                               |
+| `RETICULUM_TEST_KEYRING=1`       | Require Linux keyring round-trip (fail if unavailable) |
+
+Exit code is non-zero on any `fail` result. With `--strict`, warnings also fail.
+
+Daemon checks include Control API health with sandbox enabled, shared-instance `GetInterfaceStats` RPC, and (except Windows and FreeBSD CapEnter) SIGHUP reload of a UDP interface.
+
+CI runs self-check on Linux (amd64 and arm64), macOS, Windows, FreeBSD, and OpenBSD. Extra Linux arches (`386`, `arm` GOARM=6, `riscv64`, `ppc64le`, `ppc64`) run via `qemu-user-static` (`task test-self-check-386`, `test-self-check-arm`, `test-self-check-riscv64`, `test-self-check-ppc64le`, `test-self-check-ppc64`). Android emulator self-check is a separate workflow (`selfcheck-android.yml`) on schedule or `workflow_dispatch`.
+
+NetBSD is not in CI. Run `reticulum-go self-check` manually on that host.
 
 ## Vendoring
 
@@ -164,11 +250,12 @@ Day-to-day clones only need `vendor/` to build offline.
 
 GitHub Actions workflows in `.github/workflows/`:
 
-| Workflow     | Role                                     |
-| ------------ | ---------------------------------------- |
-| ci.yml       | Build, test, reproducibility             |
-| security.yml | Gosec, govulncheck, Trivy, SBOM dispatch |
-| publish.yml  | Tagged releases, cosign attestations     |
+| Workflow              | Role                                                                                                                                               |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ci.yml                | Build, test, reproducibility, OS self-check (Linux amd64/arm64 plus 386/arm/riscv64/ppc64le/ppc64 via qemu-user, macOS, Windows, FreeBSD, OpenBSD) |
+| selfcheck-android.yml | Android emulator self-check (nightly / manual)                                                                                                     |
+| security.yml          | Gosec, govulncheck, Trivy, SBOM dispatch                                                                                                           |
+| publish.yml           | Tagged releases, cosign attestations                                                                                                               |
 
 CI uses Go 1.26.5 via `actions/setup-go` in `.github/actions/setup-ci` with `GOTOOLCHAIN=local` and vendored modules.
 
@@ -201,6 +288,24 @@ make -C examples/librns-smoke
 ```
 
 Needs a C toolchain and CGO. Daemon builds stay `CGO_ENABLED=0`. See [librns](/docs/librns).
+
+## Odin bindings
+
+```bash
+task build-librns
+task test-odin
+```
+
+Requires the Odin compiler on `PATH` (CI installs a pinned monthly release via `scripts/ci/setup-odin.sh`, job `Odin bindings`). Package lives under `bindings/odin`. See [librns](/docs/librns#odin-bindings).
+
+## Dart bindings
+
+```bash
+task build-librns
+task test-dart
+```
+
+Requires the Dart SDK on `PATH` (CI pins `3.11.4`, job `Dart bindings`) and CGO for `librns.so` FFI smoke tests. Package lives under `bindings/dart`. See [librns Dart FFI](/docs/librns#dart-ffi-bindings) and [Control API](/docs/control-api#dart-and-flutter).
 
 ## Adding a change safely
 

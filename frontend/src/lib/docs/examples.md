@@ -1,51 +1,126 @@
 # Examples
 
-Sample programs under `examples/` demonstrate how to use Reticulum-Go as a library, beside the daemon, from C, or from the browser. They are starting points rather than production services.
+Sample programs under `examples/` show how to use Reticulum-Go as a library.
+They are starting points rather than production services.
 
-Pair this page with the [API reference](/docs/api-reference) for types and recipes.
+Pair this page with the [API reference](/docs/api-reference).
 
 ## Which Example to Open
 
-| Goal                           | Start Here                                                                               |
-| :----------------------------- | :--------------------------------------------------------------------------------------- |
-| Pages and files over Reticulum | `reticulum-go pageserver` or `examples/pageserver`                                       |
-| Browser WebSocket client       | `examples/wasm`                                                                          |
-| Python talking to the daemon   | `examples/control-client`                                                                |
-| C / FFI integration smoke test | `examples/librns-smoke`                                                                  |
-| Operator CLIs                  | `reticulum-go status \| id \| probe \| path \| cp` then [CLI Utilities](/docs/utilities) |
+| Goal                            | Start Here                                                                               |
+| :------------------------------ | :--------------------------------------------------------------------------------------- |
+| Smallest stack bring-up         | `examples/minimal`                                                                       |
+| Announce callbacks              | `examples/announce`                                                                      |
+| Encrypted link packets          | `examples/link`                                                                          |
+| Minimal resource send           | `examples/resources`                                                                     |
+| File list and download          | `examples/filetransfer`                                                                  |
+| Prove-all echo                  | `examples/echo`                                                                          |
+| Page request client             | `examples/page-downloader`                                                               |
+| Pages and files over Reticulum  | `reticulum-go pageserver` or `examples/pageserver`                                       |
+| Browser WebSocket client        | `examples/wasm`                                                                          |
+| Python talking to the daemon    | `examples/control-client`                                                                |
+| C / FFI smoke test              | `examples/librns-smoke`                                                                  |
+| Odin librns bindings            | `bindings/odin`                                                                          |
+| Dart librns FFI and Control API | `bindings/dart`                                                                          |
+| Operator CLIs                   | `reticulum-go status \| id \| probe \| path \| cp` then [CLI Utilities](/docs/utilities) |
+
+## minimal
+
+Path: `examples/minimal/`
+
+Starts transport, creates an identity and destination, and lets you announce.
+
+```bash
+cd examples/minimal
+go run .
+```
+
+## announce
+
+Path: `examples/announce/`
+
+Registers announce handlers and prints arriving announces with app_data.
+
+## link
+
+Path: `examples/link/`
+
+Client/server encrypted link. Server prints its destination hash. Client connects with `-destination` and exchanges text packets.
+
+```bash
+# terminal 1
+go run . -server -listen-port 4242
+
+# terminal 2
+go run . -destination <hash> -listen-port 4243 -target-port 4242
+```
+
+## resources
+
+Path: `examples/resources/`
+
+Minimal link resource transfer. Server accepts one resource and prints it. Client sends `-payload` over `SendResource`.
+
+```bash
+# terminal 1
+go run . -server -listen-port 4242
+
+# terminal 2
+go run . -destination <hash> -listen-port 4243 -target-port 4242 -payload "hello"
+```
+
+Payloads larger than about 1 MiB use split resource advertisements automatically.
+
+## filetransfer
+
+Path: `examples/filetransfer/`
+
+Serves a directory over a link and lets a client list and download files as resources.
+
+```bash
+go run . -server -serve ./test_serve -listen-port 4242
+```
+
+## echo
+
+Path: `examples/echo/`
+
+Destination with prove-all. Client sends a packet and waits for a proof.
+
+## page-downloader
+
+Path: `examples/page-downloader/`
+
+Requests `/page/` style content from a pageserver-compatible peer.
 
 ## pageserver
 
-Preferred: `reticulum-go pageserver` (built into the main binary). Sample pages, files, and a thin wrapper live under `examples/pageserver/`.
+Preferred: `reticulum-go pageserver` (built into the main binary). Sample pages and files live under `examples/pageserver/`.
 
-Serves content over Reticulum request handlers:
+Serves:
 
 - `/page/` for HTML pages
 - `/file/` for static files
 
-This is a useful Nomadnet style pattern. Live interoperability is tested via `tests/interop/pageserver_live_test.go` when `RUN_LIVE_INTEROP=1` is set.
+Live interoperability is tested via `tests/interop/pageserver_live_test.go` when `RUN_LIVE_INTEROP=1` is set.
 
 ## wasm
 
 Path: `examples/wasm/`
 
-Browser chat demo using `pkg/wasm` and Messenger helpers where configured.
-
-To build the WebAssembly target, run:
+Browser chat demo using `pkg/wasm`.
 
 ```bash
 task build-wasm
 ```
 
-See [Embedding and WebAssembly](/docs/embedding-and-wasm) for more details.
+See [Embedding and WebAssembly](/docs/embedding-and-wasm).
 
 ## Control API Client
 
 Path: `examples/control-client/`
 
-Python `client.py` for the localhost Control API. It handles sessions, announces, and WebSocket events with no Go in the application process.
-
-Daemon configuration required:
+Python `client.py` for the localhost Control API.
 
 ```ini
 enable_control_api = yes
@@ -58,9 +133,7 @@ See [Control API](/docs/control-api).
 
 Path: `examples/librns-smoke/`
 
-Minimal C program demonstrating integration against `librns.so` and `include/rns.h`.
-
-To build and run:
+Minimal C program against `librns.so` and `include/rns.h`.
 
 ```bash
 task build-librns
@@ -70,14 +143,54 @@ make -C examples/librns-smoke
 
 See [librns](/docs/librns).
 
+## Odin librns bindings
+
+Path: `bindings/odin/`
+
+Idiomatic Odin package over `librns.so`. Requires Odin on `PATH` and a built shared library.
+
+```bash
+task build-librns
+task test-odin
+```
+
+Import with a collection rooted at `bindings/odin`:
+
+```odin
+import rns "rns:rns"
+```
+
+Wrapped surface includes node lifecycle, identity, destination, path table, link send and request, and event poll. See [librns](/docs/librns#odin-bindings).
+
+## Dart bindings
+
+Path: `bindings/dart/`
+
+Package `rns_control` includes librns FFI (`ffi.dart`) and a Control API client.
+
+```bash
+task build-librns
+task test-dart
+task build-librns-targets -- linux android windows
+```
+
+```yaml
+dependencies:
+  rns_control:
+    path: /path/to/Reticulum-Go/bindings/dart
+```
+
+See [librns Dart FFI](/docs/librns#dart-ffi-bindings) and [Control API](/docs/control-api#dart-and-flutter).
+
 ## Module Layout
 
-`examples/wasm` and `examples/pageserver` keep their own `go.mod` and `vendor/` trees. You can build from those directories or via Task targets at the repository root.
+Most examples keep their own `go.mod` with a `replace` pointing at the repository root. `examples/wasm` and `examples/pageserver` also vendor dependencies.
 
 ## Related Documents
 
 - [API Reference](/docs/api-reference)
 - [Getting Started](/docs/getting-started)
+- [Links, channels, and resources](/docs/links-channels-and-resources)
 - [Embedding and WebAssembly](/docs/embedding-and-wasm)
 - [Control API](/docs/control-api)
 - [librns](/docs/librns)

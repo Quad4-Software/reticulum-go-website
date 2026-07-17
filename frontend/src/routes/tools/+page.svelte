@@ -33,11 +33,12 @@
 		},
 		{
 			id: 'rnode-flasher',
+			href: '/tools/rnode-flasher',
 			icon: Radio,
 			titleKey: 'tools.rnode_flasher.title',
 			descriptionKey: 'tools.rnode_flasher.description',
 			tags: ['rnode', 'flasher', 'firmware', 'lora', 'tiny-reticulum-go', 'serial'],
-			status: 'coming-soon'
+			status: 'alpha'
 		},
 		{
 			id: 'bot-builder',

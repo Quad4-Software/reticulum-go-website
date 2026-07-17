@@ -42,6 +42,13 @@ describe('reticulum guide wiring', () => {
 		expect(read('src/lib/components/tutorials/TutorialPlayer.svelte')).toContain('source.id');
 	});
 
+	it('uses an overlay chapter drawer on mobile', () => {
+		const sidebar = read('src/lib/components/tutorials/ChapterSidebar.svelte');
+		expect(sidebar).toContain('mobileOpen');
+		expect(sidebar).toContain('chapters_close');
+		expect(sidebar).toContain('fixed inset-0');
+	});
+
 	it('shows open-chapter on mobile and on desktop hover', () => {
 		const hub = read('src/routes/tools/reticulum-guide/+page.svelte');
 		expect(hub).toContain('opacity-100');

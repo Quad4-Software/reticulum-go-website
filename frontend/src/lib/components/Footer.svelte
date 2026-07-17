@@ -32,7 +32,9 @@
 	}
 </script>
 
-<footer class="mt-20 border-t border-zinc-200 dark:border-zinc-800 py-12 px-4">
+<footer
+	class="mt-12 border-t border-zinc-200 px-4 pb-[calc(3rem+env(safe-area-inset-bottom,0px))] pt-12 dark:border-zinc-800 sm:mt-20"
+>
 	<div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
 		<div class="space-y-4">
 			<div class="flex items-center gap-3">

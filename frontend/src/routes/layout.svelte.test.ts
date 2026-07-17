@@ -17,4 +17,16 @@ describe('root layout', () => {
 		expect(loadSource).toContain('waitLocale');
 		expect(loadSource).toContain('data.currentLocale');
 	});
+
+	it('uses dvh shell height to avoid mobile viewport chrome gaps', () => {
+		const layoutSource = readFileSync(path.join(layoutDir, '+layout.svelte'), 'utf8');
+		expect(layoutSource).toContain('min-h-dvh');
+		expect(layoutSource).not.toContain('overflow-x-clip');
+	});
+
+	it('hides site chrome in micron editor popout mode', () => {
+		const layoutSource = readFileSync(path.join(layoutDir, '+layout.svelte'), 'utf8');
+		expect(layoutSource).toContain("searchParams.get('popout') === '1'");
+		expect(layoutSource).toContain('isPopout');
+	});
 });

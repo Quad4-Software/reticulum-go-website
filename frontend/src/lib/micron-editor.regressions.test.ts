@@ -51,9 +51,39 @@ describe('micron editor tool', () => {
 		expect(editor).toContain('MICRON_SNIPPETS');
 		expect(editor).toContain('findMicronColors');
 		expect(editor).toContain('tabDownloadName');
-		expect(editor).toContain('colorSquareStyle');
+		expect(editor).toContain('findMicronColorAt');
+		expect(editor).toContain('colorPopoverStyle');
 		const parser = read('src/lib/micron-parser.ts');
 		expect(parser).not.toMatch(/from '\$app\/environment'/);
 		expect(parser).toContain('waitForMicronConvert');
+	});
+
+	it('keeps mobile workbench chrome compact and overflow-safe', () => {
+		const editor = read('src/lib/components/MicronEditor.svelte');
+		expect(editor).toContain('overflow-x-clip');
+		expect(editor).toContain('snippetsOpen');
+		expect(editor).toContain('h-[min(85dvh,52rem)]');
+		expect(editor).toContain('md:h-[calc(100dvh-11rem)]');
+		expect(editor).toContain('safe-area-inset-bottom');
+		expect(editor).toContain('popOutEditor');
+		expect(editor).toContain('popout');
+		expect(editor).not.toContain('tools.micron_editor.ready');
+	});
+
+	it('keeps source stacked above preview on mobile without a tab switcher', () => {
+		const editor = read('src/lib/components/MicronEditor.svelte');
+		expect(editor).toContain('grid-rows-2');
+		expect(editor).not.toContain('mobileTab');
+		expect(editor).not.toMatch(/hidden md:flex/);
+	});
+
+	it('shows a floating hover color picker without overlaying source text', () => {
+		const editor = read('src/lib/components/MicronEditor.svelte');
+		expect(editor).toContain('hoveredColor');
+		expect(editor).toContain('onSourceMouseMove');
+		expect(editor).toContain('colorPopoverStyle');
+		expect(editor).not.toContain('colorSquareStyle');
+		expect(editor).not.toContain('afterHexColumn');
+		expect(editor).toContain('wrap="off"');
 	});
 });

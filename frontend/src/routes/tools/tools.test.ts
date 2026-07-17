@@ -5,9 +5,10 @@ import { resolve } from 'node:path';
 const pageSource = readFileSync(resolve(import.meta.dirname, './+page.svelte'), 'utf8');
 
 describe('tools catalog', () => {
-	it('lists RNODE Flasher as coming soon with tiny-reticulum-go and RNode firmware notes', () => {
+	it('lists RNODE Flasher as alpha with tiny-reticulum-go and RNode firmware notes', () => {
 		expect(pageSource).toContain("id: 'rnode-flasher'");
-		expect(pageSource).toMatch(/id: 'rnode-flasher'[\s\S]*?status: 'coming-soon'/);
+		expect(pageSource).toMatch(/id: 'rnode-flasher'[\s\S]*?status: 'alpha'/);
+		expect(pageSource).toContain("href: '/tools/rnode-flasher'");
 		expect(pageSource).toContain('tools.rnode_flasher.title');
 		expect(pageSource).toContain('tiny-reticulum-go');
 	});
@@ -32,11 +33,6 @@ describe('tools catalog', () => {
 		expect(pageSource).toContain("href: '/tools/micron-editor'");
 		expect(pageSource).toMatch(/id: 'reticulum-guide'[\s\S]*?status: 'alpha'/);
 		expect(pageSource).toMatch(/id: 'micron-editor'[\s\S]*?status: 'alpha'/);
-
-		const flasherBlock = pageSource.match(
-			/\{\s*id: 'rnode-flasher'[\s\S]*?status: 'coming-soon'\s*\}/
-		)?.[0];
-		expect(flasherBlock).toBeTruthy();
-		expect(flasherBlock).not.toContain('href:');
+		expect(pageSource).toMatch(/id: 'rnode-flasher'[\s\S]*?status: 'alpha'/);
 	});
 });

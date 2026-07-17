@@ -2,12 +2,14 @@
 
 ## Integration paths
 
-| Path                                  | Use when                                                   |
-| ------------------------------------- | ---------------------------------------------------------- |
-| `pkg/node`                            | Go app, full transport and interfaces in-process           |
-| `pkg/librns` / [librns](/docs/librns) | Native host (C, C++, FFI) wants the same stack in-process  |
-| Control API                           | Separate language talking to a local `reticulum-go` daemon |
-| `pkg/wasm`                            | Browser client over WebSocket                              |
+| Path                                                                | Use when                                                                  |
+| ------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `pkg/node`                                                          | Go app, full transport and interfaces in-process                          |
+| `pkg/librns` / [librns](/docs/librns)                               | Native host (C, C++, FFI) wants the same stack in-process                 |
+| `bindings/odin` / [librns](/docs/librns#odin-bindings)              | Odin app linking `librns.so` in-process                                   |
+| `bindings/dart` / [librns Dart FFI](/docs/librns#dart-ffi-bindings) | Flutter or Dart app embedding `librns` on Linux, Android, Windows         |
+| Control API / [Dart client](/docs/control-api#dart-and-flutter)     | Separate language or Flutter app talking to a local `reticulum-go` daemon |
+| `pkg/wasm`                                                          | Browser client over WebSocket                                             |
 
 ## Embedding with pkg/node
 
@@ -45,9 +47,11 @@ n.Stop()
 - `PauseModeDisable` calls `Disable()` on interfaces (default)
 - `PauseModeStop` calls `Stop()` on interfaces
 
+It also cancels in-flight `WatchAndReconnect` loops so they do not keep calling `Reestablish` while the host is offline.
+
 ### Link auto-reconnect
 
-`LinkReconnectOptions` and `EnableLinkAutoReconnect` wire `link.WatchAndReconnect` for watched destinations.
+`LinkReconnectOptions` and `EnableLinkAutoReconnect` wire `link.WatchAndReconnect` for watched destinations. New reconnect attempts are skipped while globally paused. `OnNetworkAvailable` re-establishes registered closed links.
 
 ### Hot reload
 
@@ -128,7 +132,7 @@ Run `reticulum-go` with `enable_control_api = yes` and talk HTTP/WebSocket from 
 
 ## librns
 
-For in-process C / FFI embed, see [librns](/docs/librns). Build with `task build-librns`. Smoke: `examples/librns-smoke`.
+For in-process C / FFI embed, see [librns](/docs/librns). Build with `task build-librns`. Smoke: `examples/librns-smoke`. Odin: `bindings/odin` (`task test-odin`). Dart FFI: `bindings/dart` (`task test-dart`, `task build-librns-targets`).
 
 ## Sandbox note
 

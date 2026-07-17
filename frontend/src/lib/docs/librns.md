@@ -8,14 +8,16 @@ For Go apps, prefer `pkg/node` directly. For a separate daemon and JSON/WebSocke
 
 ## Artifacts
 
-| Artifact                | Role                                        |
-| ----------------------- | ------------------------------------------- |
-| `include/rns.h`         | Public C header                             |
-| `bin/librns.so`         | Shared library (Linux first)                |
-| `pkg/librns`            | Pure Go facade (tests and fuzz without CGO) |
-| `pkg/librns/capi`       | CGO `//export` shims                        |
-| `cmd/librns`            | `-buildmode=c-shared` entry                 |
-| `examples/librns-smoke` | Minimal C smoke program                     |
+| Artifact                | Role                                               |
+| ----------------------- | -------------------------------------------------- |
+| `include/rns.h`         | Public C header                                    |
+| `bin/librns.so`         | Shared library (Linux first)                       |
+| `pkg/librns`            | Pure Go facade (tests and fuzz without CGO)        |
+| `pkg/librns/capi`       | CGO `//export` shims                               |
+| `cmd/librns`            | `-buildmode=c-shared` entry                        |
+| `examples/librns-smoke` | Minimal C smoke program                            |
+| `bindings/odin`         | Idiomatic Odin bindings and tests over `librns.so` |
+| `bindings/dart`         | Dart FFI (`ffi.dart`) plus Control API client      |
 
 Daemon builds stay `CGO_ENABLED=0`. Only `build-librns` turns CGO on.
 
@@ -173,12 +175,85 @@ rns_node_destroy
 | Property                        | `testing/quick` drop-oldest and handle table                                    |
 | Fuzz                            | `FuzzHandleTable`, `FuzzEventQueue`, `FuzzConfigPathCreate`, `FuzzValidatePath` |
 | C smoke                         | `examples/librns-smoke`                                                         |
+| Odin bindings                   | `bindings/odin` (`task test-odin`)                                              |
 
 ```bash
 go test ./pkg/librns
 task build-librns
 make -C examples/librns-smoke && ./examples/librns-smoke/librns-smoke
+task test-odin
 ```
+
+## Odin bindings
+
+Path: `bindings/odin/`.
+
+Idiomatic wrappers over the same C ABI (`foreign import system:rns`). Package import uses a collection rooted at `bindings/odin`:
+
+```odin
+import rns "rns:rns"
+```
+
+### Coverage
+
+| Area               | Odin surface                                                                                                                     |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
+| Version and errors | `version`, `last_error`, `error_string`, `Error`                                                                                 |
+| Node lifecycle     | `node_create`, `node_start`, `node_stop`, `node_destroy`, `node_pause`, `node_resume`, `node_set_identity`, `node_refresh_paths` |
+| Identity           | `identity_generate`, `identity_load`, `identity_destroy`, `identity_hash`                                                        |
+| Destination        | `destination_create`, `destination_announce`, `destination_hash`, destroy, request handler register                              |
+| Path               | `path_request`, `path_table`                                                                                                     |
+| Link and requests  | `link_open`, `link_send`, `link_close`, `link_id`, `link_request`, `request_respond`                                             |
+| Events             | `event_poll`, `set_event_callback`, helpers for app data and hashes                                                              |
+| Raw ABI            | `foreign` `rns_*` procs in `bindings/odin/rns/foreign.odin`                                                                      |
+
+Linux only (matches `librns.so`). Requires Odin on `PATH` and a built shared library.
+
+### Build and test
+
+```bash
+task build-librns
+task test-odin
+# or
+make -C bindings/odin test
+make -C bindings/odin smoke
+```
+
+CI runs the same suite (`test-odin` job, pinned Odin `dev-2026-06`).
+
+Tests cover version and node lifecycle, identity and destination helpers, and a live UDP announce, link, and send round trip through `librns.so`.
+
+## Dart FFI bindings
+
+Path: `bindings/dart/` (import `package:rns_control/ffi.dart`).
+
+In-process `dart:ffi` wrappers over the same C ABI. First platforms: Linux desktop, Android (`arm64-v8a`, `armeabi-v7a`, `x86_64`), and Windows amd64.
+
+```dart
+import 'package:rns_control/ffi.dart';
+
+final rns = Rns();
+final node = rns.nodeCreate();
+rns.nodeStart(node);
+```
+
+### Artifacts
+
+| Platform | Output                         |
+| -------- | ------------------------------ |
+| Linux    | `bin/librns.so`                |
+| Android  | `bin/android/<abi>/librns.so`  |
+| Windows  | `bin/windows/amd64/librns.dll` |
+
+```bash
+task build-librns
+task build-librns-targets -- linux android windows
+task test-dart
+```
+
+Android builds need an NDK (`ANDROID_NDK_HOME`). Windows cross-builds need mingw-w64 or Zig (`scripts/cc-windows-zig.sh`). Flutter apps copy Android ABIs into `jniLibs` and ship `librns.dll` beside the Windows runner.
+
+For out-of-process Dart or Flutter without shipping native code, use the [Control API client](/docs/control-api#dart-and-flutter) in the same package.
 
 ## Related documents
 

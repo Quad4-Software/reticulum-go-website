@@ -1,5 +1,12 @@
 <script lang="ts">
-	import { Search as SearchIcon, Code, FileCode, BookOpen, ExternalLink } from 'lucide-svelte';
+	import {
+		Search as SearchIcon,
+		Code,
+		FileCode,
+		BookOpen,
+		ExternalLink,
+		Radio
+	} from 'lucide-svelte';
 	import { t } from 'svelte-i18n';
 
 	interface InteractiveItem {
@@ -38,6 +45,15 @@
 			icon: BookOpen,
 			tags: ['tutorial', 'reticulum', 'cryptography', 'transport', 'lxmf'],
 			status: 'stable'
+		},
+		{
+			title: 'RNode Flasher',
+			description:
+				'Flash and provision RNode firmware in the browser over Web Serial Bluetooth IP or the built-in simulator.',
+			href: '/tools/rnode-flasher',
+			icon: Radio,
+			tags: ['rnode', 'flasher', 'firmware', 'serial', 'tools'],
+			status: 'wip'
 		}
 	];
 

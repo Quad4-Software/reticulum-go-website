@@ -20,6 +20,7 @@
 
 	const canonicalUrl = $derived(getCanonicalUrl(page.url.pathname));
 	const hreflangLinks = $derived(getHreflangLinks(page.url.pathname));
+	const isPopout = $derived(page.url.searchParams.get('popout') === '1');
 
 	let clientDark = $state<boolean | null>(null);
 	const resolvedDark = $derived(clientDark ?? data.isDark);
@@ -46,12 +47,22 @@
 
 <div
 	class:dark={resolvedDark}
-	class="min-h-screen flex flex-col bg-white text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100 font-sans selection:bg-zinc-200 dark:selection:bg-zinc-800"
+	class="flex min-h-dvh flex-col bg-white text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100 font-sans selection:bg-zinc-200 dark:selection:bg-zinc-800 {isPopout
+		? 'h-dvh overflow-hidden'
+		: ''}"
 >
-	<Navbar currentPath={data.currentPath} currentTheme={data.currentTheme} />
-	<main class="flex-1 max-w-[2000px] mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
+	{#if !isPopout}
+		<Navbar currentPath={data.currentPath} currentTheme={data.currentTheme} />
+	{/if}
+	<main
+		class="min-w-0 flex-1 {isPopout
+			? 'flex h-full max-w-none flex-col overflow-hidden p-0'
+			: 'mx-auto w-full max-w-[2000px] px-4 py-8 sm:px-6 sm:py-12 lg:px-8'}"
+	>
 		{@render children()}
 	</main>
-	<Footer />
+	{#if !isPopout}
+		<Footer />
+	{/if}
 	<PwaClient />
 </div>

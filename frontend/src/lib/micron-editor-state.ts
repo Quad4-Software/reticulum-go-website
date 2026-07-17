@@ -15,7 +15,7 @@ Welcome to the \`*Micron\`* live editor. Markup is parsed in your browser by Mic
 \`a
 
 \`Faaa\`B333
-Section colors use foreground/background hex triplets. Click the color squares above the source to pick.
+Section colors use foreground/background hex triplets. Use the Colors strip to pick F/B colors.
 \`f\`b
 
 >>>Links and fields

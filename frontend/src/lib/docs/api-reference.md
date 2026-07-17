@@ -42,12 +42,16 @@ Need Reticulum in my app
          destination + link
 ```
 
-| Path          | Package / surface                | Use when                                    |
-| ------------- | -------------------------------- | ------------------------------------------- |
-| In-process Go | `pkg/node`                       | Default for Go services and tools           |
-| Daemon + JSON | [Control API](/docs/control-api) | Python, Rust, scripts, multi-language hosts |
-| In-process C  | [librns](/docs/librns)           | Native hosts that cannot embed Go source    |
-| Browser       | `pkg/wasm`                       | WebSocket gateway clients                   |
+| Path                          | Package / surface                                 | Use when                                                |
+| ----------------------------- | ------------------------------------------------- | ------------------------------------------------------- |
+| In-process Go                 | `pkg/node`                                        | Default for Go services and tools                       |
+| Daemon + JSON                 | [Control API](/docs/control-api)                  | Python, Rust, scripts, multi-language hosts             |
+| In-process C                  | [librns](/docs/librns)                            | Native hosts that cannot embed Go source                |
+| In-process Odin               | [librns](/docs/librns#odin-bindings)              | `bindings/odin` over `librns.so`                        |
+| Out-of-process Dart / Flutter | [Control API](/docs/control-api#dart-and-flutter) | `bindings/dart` (`rns_control`)                         |
+| In-process Dart / Flutter FFI | [librns Dart FFI](/docs/librns#dart-ffi-bindings) | `bindings/dart` (`ffi.dart`), Linux / Android / Windows |
+| Out-of-process any language   | [Control API](/docs/control-api)                  | HTTP and WebSocket                                      |
+| Browser                       | `pkg/wasm`                                        | WebSocket gateway clients                               |
 
 Most of this page describes the **`pkg/node` happy path**. Other paths expose the same concepts with different bindings.
 
@@ -218,24 +222,28 @@ Orchestrates transport, interfaces, shared instance, and lifecycle. Prefer this 
 
 ### Identity (`pkg/identity`)
 
-| Symbol                           | Role                                    |
-| -------------------------------- | --------------------------------------- |
-| `New() (*Identity, error)`       | Generate software identity (preferred)  |
-| `NewIdentity()`                  | Alternate generator                     |
-| `FromFile` / `ToFile`            | 64-byte `[X25519 priv][Ed25519 seed]`   |
-| `FromBytes` / `FromPublicKey`    | Load from bytes                         |
-| `LoadIdentityFile(path, signer)` | Software or RHB1 hardware-bound         |
-| `NewIdentityWithSigner(...)`     | External Ed25519 signer (HSM)           |
-| `Hash() []byte`                  | 16-byte truncated hash                  |
-| `GetPublicKey() []byte`          | 64-byte combined public key             |
-| `Sign` / `Verify`                | Ed25519                                 |
-| `Encrypt` / `Decrypt`            | Identity tokens with optional ratchets  |
-| `Recall(destHash)`               | Public identity from known destinations |
-| `Remember` / `ValidateAnnounce`  | Announce storage                        |
-| `LoadOrCreateTransportIdentity`  | Daemon transport identity               |
-| `RotateRatchet` / `GetRatchets`  | Forward secrecy material                |
+| Symbol                                                  | Role                                                                                           |
+| ------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `New() (*Identity, error)`                              | Generate software identity (preferred)                                                         |
+| `NewIdentity()`                                         | Alternate generator                                                                            |
+| `FromFile` / `ToFile`                                   | Persist via `identity_backend` (`file`, Secret Service, or Linux kernel keyring + RSSI marker) |
+| `FromBytes` / `FromPublicKey`                           | Load from bytes                                                                                |
+| `LoadIdentityFile(path, signer)`                        | Software or RHB1 hardware-bound (also resolves RSSI markers)                                   |
+| `NewIdentityWithSigner(...)`                            | External Ed25519 signer (HSM)                                                                  |
+| `SetIdentityBackend` / `ApplyIdentityBackendFromConfig` | Select `file` or `secretservice`                                                               |
+| `Close` / `Wipe`                                        | Zero locked private key buffers                                                                |
+| `Hash() []byte`                                         | 16-byte truncated hash                                                                         |
+| `GetPublicKey() []byte`                                 | 64-byte combined public key                                                                    |
+| `Sign` / `Verify`                                       | Ed25519                                                                                        |
+| `Encrypt` / `Decrypt`                                   | Identity tokens with optional ratchets                                                         |
+| `Recall(destHash)`                                      | Public identity from known destinations                                                        |
+| `Remember` / `ValidateAnnounce`                         | Announce storage                                                                               |
+| `LoadOrCreateTransportIdentity`                         | Daemon transport identity                                                                      |
+| `RotateRatchet` / `GetRatchets`                         | Forward secrecy material                                                                       |
 
 Constants: `KeySize` (bits), `TruncatedHashLength` (bits). Hex destination or identity hashes are **32 characters**.
+
+Private key material uses `pkg/securemem` (best-effort `mlock`, wipe on `Close`). See [Identity and destinations](/docs/identity-and-destinations).
 
 ### Destination (`pkg/destination`)
 
@@ -341,7 +349,7 @@ Avoid `transport.Destination` and `transport.Link` placeholder types. Use `desti
 | `LoadConfig(path)`                                     | Parse INI (unknown keys ignored)        |
 | `SaveConfig` / `DefaultConfig` / `CreateDefaultConfig` | Persist defaults                        |
 
-Important `ReticulumConfig` fields: `EnableTransport`, `ShareInstance`, `SharedInstanceType`, ports, `RPCKey`, `Interfaces`, `EnableControlAPI`, `InMemoryPathTable`, `WatchInterfaces`, `DiscoverInterfaces`, `BackboneIO`.
+Important `ReticulumConfig` fields: `EnableTransport`, `ShareInstance`, `SharedInstanceType`, ports, `RPCKey`, `Interfaces`, `EnableControlAPI`, `InMemoryPathTable`, `InMemoryStorage`, `WatchInterfaces`, `DiscoverInterfaces`, `BackboneIO`.
 
 Default config directory is **`~/.reticulum-go`**, not `~/.reticulum`.
 
@@ -392,14 +400,16 @@ Python RNS is largely single-threaded asyncio. Go is multi-threaded by default. 
 
 ## Other API surfaces
 
-| Surface                      | Document                                              |
-| ---------------------------- | ----------------------------------------------------- |
-| Localhost JSON and WebSocket | [Control API](/docs/control-api)                      |
-| C ABI (`include/rns.h`)      | [librns](/docs/librns)                                |
-| Browser JS bridge            | [Embedding and WebAssembly](/docs/embedding-and-wasm) |
-| CLI tools                    | [CLI utilities](/docs/utilities)                      |
-| Crypto details               | [Cryptography](/docs/cryptography)                    |
-| Interface types              | [Interfaces](/docs/interfaces)                        |
+| Surface                                    | Document                                                                                    |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------- |
+| Localhost JSON and WebSocket               | [Control API](/docs/control-api)                                                            |
+| C ABI (`include/rns.h`)                    | [librns](/docs/librns)                                                                      |
+| Odin bindings (`bindings/odin`)            | [librns](/docs/librns#odin-bindings)                                                        |
+| Dart FFI and Control API (`bindings/dart`) | [librns](/docs/librns#dart-ffi-bindings), [Control API](/docs/control-api#dart-and-flutter) |
+| Browser JS bridge                          | [Embedding and WebAssembly](/docs/embedding-and-wasm)                                       |
+| CLI tools                                  | [CLI utilities](/docs/utilities)                                                            |
+| Crypto details                             | [Cryptography](/docs/cryptography)                                                          |
+| Interface types                            | [Interfaces](/docs/interfaces)                                                              |
 
 ## Related documents
 

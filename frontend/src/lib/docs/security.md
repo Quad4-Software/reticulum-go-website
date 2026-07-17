@@ -28,24 +28,26 @@ The stack provides cryptographic authentication and encryption per the Reticulum
 
 ## Runtime sandbox
 
-The `reticulum-go` daemon calls `sandbox.Apply` from `pkg/sandbox` after config load, interface setup, and transport start. Privileged initialization completes first.
+The `reticulum-go` daemon calls `sandbox.Apply` from `pkg/sandbox` after config load, transport start, shared-instance attach, and Control API bind. Privileged initialization and listeners complete first so FreeBSD CapEnter and OpenBSD pledge do not block those sockets.
 
 Default: `enable_sandbox = yes` in `[reticulum]`. Set `enable_sandbox = no` to disable (not recommended for production).
 
-| OS           | Mechanism                              | Effect                                           |
-| ------------ | -------------------------------------- | ------------------------------------------------ |
-| Linux        | Landlock, PR_SET_NO_NEW_PRIVS, rlimits | Whitelists config and storage paths, limits caps |
-| OpenBSD      | unveil, pledge                         | Restricts visible paths and syscalls             |
-| FreeBSD      | cap_enter, rlimits                     | Capability mode after resource limits            |
-| Darwin       | rlimits                                | Memory, FD, core dump, stack, process limits     |
-| Windows      | Job object                             | Limits breakaway, processes, working set         |
-| Other / WASM | no-op                                  | Logs unsupported, continues                      |
+On Linux, `enable_seccomp` defaults to yes when the sandbox is enabled. Set `enable_seccomp = no` to skip the seccomp filter. Install failures soft-fail so older kernels and constrained environments keep running.
 
-Landlock requires Linux kernel 5.13 or newer. Older kernels skip Landlock gracefully where possible.
+| OS           | Mechanism                                           | Effect                                                                                                                                                         |
+| ------------ | --------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Linux        | Landlock, seccomp-bpf, PR_SET_NO_NEW_PRIVS, rlimits | Whitelists config and storage paths (including `$XDG_RUNTIME_DIR` for Secret Service), denies high-risk syscalls such as ptrace/mount/module load, limits caps |
+| OpenBSD      | unveil, pledge                                      | Restricts visible paths and syscalls                                                                                                                           |
+| FreeBSD      | cap_enter, rlimits                                  | Capability mode after resource limits                                                                                                                          |
+| Darwin       | rlimits                                             | Memory, FD, core dump, stack, process limits                                                                                                                   |
+| Windows      | Job object                                          | Limits breakaway, processes, working set                                                                                                                       |
+| Other / WASM | no-op                                               | Logs unsupported, continues                                                                                                                                    |
+
+Landlock requires Linux kernel 5.13 or newer. Older kernels skip Landlock gracefully where possible. Seccomp soft-fails on install error or `ENOSYS`.
 
 The WASM build (`reticulum-wasm`) does not use this sandbox. It relies on the browser or host runtime instead.
 
-Sandboxing is defense in depth. It does not fix weak passphrases, leaked identity files, or misconfigured interfaces.
+Sandboxing is defense in depth. It is not a substitute for a MicroVM or strong host isolation. It does not fix weak passphrases, leaked identity files, or misconfigured interfaces.
 
 ## Cryptography
 
@@ -63,7 +65,7 @@ Application code should use `pkg/cryptography` and `pkg/identity`. IFAC configur
 
 **Actions pinning.** GitHub-owned actions are pinned to full commit SHAs where this repository pins them.
 
-**Tree integrity.** Root file `reticulum-go.rsm` is an rnid signed message embedding SHA-256 hashes of tracked files (excluding `vendor/` trees). CI verifies signer `e46112d44649266d71fe2193e00a4710` and rechecks bytes at job start and end (`task tree-rsm-verify`).
+**Tree integrity.** Root file `reticulum-go.rsm` is an rnid signed message embedding SHA-256 hashes of tracked files (excluding `vendor/` trees). CI verifies signer `e46112d44649266d71fe2193e00a4710` and rechecks bytes at job start and end (`make tree-rsm-verify`).
 
 ## Releases
 
@@ -105,9 +107,32 @@ make check
 
 ## Logging and secrets
 
-- Logs go to stderr only. No log file destination key is honored.
+- Log destination supports `stderr`, `file`, `both`, `syslog`, `journald`, and combinations such as `syslog+stderr`. Set `logfile` when using a file path.
 - High debug levels may print packet hex. Use loglevel 4 or lower in production unless diagnosing an incident.
 - `rpc_key` protects the control API and shared-instance RPC. Generate with cryptographic random bytes. Do not commit keys to version control.
+- `identity_backend = secretservice` keeps identity private blobs in the desktop keyring (Secret Service) instead of plaintext files. Requires an unlocked session collection.
+- `identity_backend = keyring` stores the same blobs in the Linux kernel keyring (no D-Bus), suitable for systemd units. See [Identity and destinations](/docs/identity-and-destinations) for threat coverage.
+- Identity private keys are held in locked memory when the OS allows (`pkg/securemem`). This is defense in depth, not a substitute for disk encryption or HSM signing.
+
+## Local mesh health (observe only)
+
+Reticulum-Go keeps node-local integrity and link-health counters in `pkg/health`. They stay on this node. Nothing is flooded to the mesh or sent to a cloud collector.
+
+Counters increment at existing drop and fail sites (IFAC verify, link HMAC, unpack errors, announce signature rejects, link proof rejects, request timestamp skew, blackhole hits, link stale closes, resource stalls, NIC flaps). Accept and reject behavior is unchanged.
+
+Operators see the numbers through:
+
+| Surface                               | What you get                                                                                    |
+| ------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `reticulum-go status`                 | Per-interface integrity totals and fail rate when non-zero                                      |
+| `reticulum-go status -json`           | Same fields in JSON (`ifac_fail`, `hmac_fail`, `integrity_fail_rate`, `stale_closes`, …)        |
+| `reticulum-go slow`                   | Scored findings such as `integrity_burst`, `auth_pressure`, `link_degraded`, `ingress_pressure` |
+| Control API `GET /v1/status`          | Integrity fields on each interface object                                                       |
+| Shared-instance RPC `interface_stats` | Same msgpack keys (Go daemon only populates them)                                               |
+
+Scoring prefers fail ratios and bitrate-aware thresholds. High latency alone on a low-bitrate radio is not treated as critical. There is no auto blackhole or auto interface offline in this release. The operator decides whether to adjust IFAC keys, enable ingress control, blackhole an identity, or take an interface down.
+
+See [CLI utilities](/docs/utilities) for `status` and `slow`, and [Control API](/docs/control-api) for HTTP fields.
 
 ## Control API exposure
 
@@ -127,5 +152,6 @@ Link establishment also records `expected_hops` on both initiator and responder.
 
 - [Cryptography](/docs/cryptography)
 - [Configuration](/docs/configuration) for sandbox and control API keys
+- [CLI utilities](/docs/utilities) for status and slow health findings
 - [SECURITY.md](https://github.com/Quad4-Software/Reticulum-Go/blob/master/SECURITY.md) full policy text
 - [Compatibility](/docs/compatibility) for RNS 1.3.8 parity

@@ -37,4 +37,12 @@ describe('PWA production config', () => {
 		expect(source).toContain('client/**/*.{js,css,ico,png,svg,webp,webmanifest,wasm}');
 		expect(source).toContain('VITE_WASM_SRI');
 	});
+
+	it('cache-firsts bundled rnode firmware assets', () => {
+		const source = readFileSync(viteConfigPath, 'utf8');
+		expect(source).toContain('/rnode-firmware/');
+		expect(source).toContain("cacheName: 'rnode-firmware'");
+		expect(source).toContain("cacheName: 'rnode-firmware-catalog'");
+		expect(source).toContain("pathname === '/rnode-firmware/catalog.json'");
+	});
 });

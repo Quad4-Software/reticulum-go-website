@@ -134,12 +134,12 @@
 <svelte:window onkeydown={onKeydown} />
 
 <div
-	class="grid min-w-0 gap-6 md:grid-cols-[240px_minmax(0,1fr)] md:items-start lg:grid-cols-[260px_minmax(0,1fr)] lg:gap-8"
+	class="grid min-w-0 gap-4 md:grid-cols-[240px_minmax(0,1fr)] md:items-start md:gap-6 lg:grid-cols-[260px_minmax(0,1fr)] lg:gap-8"
 >
 	<ChapterSidebar {chapters} currentSlug={tutorial.slug} />
 
 	<article
-		class="min-w-0 space-y-6 pb-[calc(5.5rem+env(safe-area-inset-bottom))] md:space-y-8 md:pb-0"
+		class="min-w-0 space-y-5 pb-[calc(5.5rem+env(safe-area-inset-bottom))] md:space-y-8 md:pb-0"
 		ontouchstart={onTouchStart}
 		ontouchend={onTouchEnd}
 	>
@@ -215,10 +215,10 @@
 		{/if}
 
 		<div
-			class="fixed inset-x-0 bottom-0 z-20 border-t border-zinc-200 bg-white/95 px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/95 md:static md:inset-auto md:z-10 md:border-0 md:bg-transparent md:p-0 md:backdrop-blur-none"
+			class="fixed inset-x-0 bottom-0 z-30 border-t border-zinc-200 bg-white pb-[env(safe-area-inset-bottom,0px)] dark:border-zinc-800 dark:bg-zinc-950 md:static md:inset-auto md:z-10 md:border-0 md:bg-transparent md:pb-0"
 		>
 			<div
-				class="mx-auto flex max-w-5xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
+				class="mx-auto flex max-w-5xl min-w-0 flex-col gap-2 px-2 pt-2 pb-2 sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:px-3 sm:pt-3 md:p-0"
 			>
 				<div class="flex items-center justify-between gap-3 sm:justify-start">
 					<p class="text-sm font-medium text-zinc-500 dark:text-zinc-400">
@@ -231,13 +231,16 @@
 					</p>
 				</div>
 
-				<nav class="flex items-center justify-center gap-2" aria-label="Tutorial steps">
+				<nav
+					class="flex min-w-0 items-center gap-1.5 overflow-x-auto px-1 py-1 sm:justify-center sm:gap-2"
+					aria-label="Tutorial steps"
+				>
 					{#each tutorial.steps as step, index (step.id)}
 						<button
 							type="button"
 							aria-current={index === stepIndex ? 'step' : undefined}
 							aria-label={step.title}
-							class="h-2.5 w-2.5 rounded-full transition-all {index === stepIndex
+							class="h-2.5 w-2.5 shrink-0 rounded-full transition-all {index === stepIndex
 								? 'scale-110 bg-[#00ADD8]'
 								: 'bg-zinc-300 hover:bg-zinc-400 dark:bg-zinc-700 dark:hover:bg-zinc-500'}"
 							onclick={() => goToStep(index)}

@@ -1,9 +1,20 @@
 import { describe, it, expect } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+
+const root = resolve(import.meta.dirname, '../..');
+
+function read(rel: string) {
+	return readFileSync(resolve(root, rel), 'utf8');
+}
 
 describe('UI layout constraints', () => {
 	it('main content max-width prevents overflow', () => {
-		const layoutClasses = 'max-w-[2000px] mx-auto px-4';
-		expect(layoutClasses).toContain('max-w-');
+		const layout = read('src/routes/+layout.svelte');
+		expect(layout).toContain('max-w-[2000px]');
+		expect(layout).toContain('min-w-0');
+		const css = read('src/app.css');
+		expect(css).toContain('overflow-x: clip');
 	});
 
 	it('cards use overflow-safe min-w-0', () => {
@@ -21,5 +32,11 @@ describe('UI layout constraints', () => {
 			expect(light).toBeTruthy();
 			expect(dark).toMatch(/^dark:/);
 		});
+	});
+
+	it('root shell uses theme-matched backgrounds for light and dark', () => {
+		const layout = read('src/routes/+layout.svelte');
+		expect(layout).toContain('bg-white');
+		expect(layout).toContain('dark:bg-zinc-950');
 	});
 });

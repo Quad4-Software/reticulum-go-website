@@ -2,7 +2,7 @@
 
 ## Requirements
 
-- Go 1.26.4 or later
+- Go 1.26.5 or later
 - Make or Task (optional, for convenience targets)
 - A writable home directory for `~/.reticulum-go`
 
@@ -58,7 +58,7 @@ Or:
 go run ./cmd/reticulum-go
 ```
 
-On first start the daemon creates `~/.reticulum-go/` with a default config if none exists. Logs go to stderr by default. Set verbosity with `[logging] loglevel` (1 through 7). Optional `[logging] destination = file|both` and `logfile` write to disk. Daemon text logs, pageserver banner, and CLI tools color on TTY. Respect `NO_COLOR` and `FORCE_COLOR` / `CLICOLOR_FORCE`.
+On first start the daemon creates `~/.reticulum-go/` with a default config if none exists. Logs go to stderr by default. Set verbosity with `[logging] loglevel` (1 through 7). Set `[logging] destination = file|both` and optional `logfile` to write to disk (default `{config_dir}/logfile/reticulum.log`). Daemon text logs, pageserver banner, and CLI tools color on TTY. Respect `NO_COLOR` and `FORCE_COLOR` / `CLICOLOR_FORCE`.
 
 Daemon flags:
 
@@ -140,6 +140,27 @@ task test-wasm
 
 See [Embedding and WebAssembly](/docs/embedding-and-wasm).
 
+## librns and Odin bindings
+
+Build the shared library and optional Odin tests:
+
+```bash
+task build-librns
+make -C examples/librns-smoke && ./examples/librns-smoke/librns-smoke
+task test-odin
+```
+
+`task test-odin` needs the Odin compiler on `PATH`. See [librns](/docs/librns).
+
+## Dart bindings
+
+```bash
+task build-librns
+task test-dart
+```
+
+Needs the Dart SDK on `PATH`. FFI uses `librns` on Linux, Android, and Windows. See [librns](/docs/librns#dart-ffi-bindings) and [Control API](/docs/control-api#dart-and-flutter).
+
 ## Enable the control API
 
 Add to `[reticulum]`:
@@ -203,10 +224,14 @@ See [Security](/docs/security) for platform behavior.
 
 ## Next steps
 
-| Goal                                         | Document                                                                                                                |
-| -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| Configure interfaces and rates               | [Configuration](/docs/configuration), [Interfaces](/docs/interfaces)                                                    |
-| Status / identity / probe / path / copy CLIs | [CLI utilities](/docs/utilities)                                                                                        |
-| Write a Go app                               | [API reference](/docs/api-reference), [Examples](/docs/examples), [Embedding and WebAssembly](/docs/embedding-and-wasm) |
-| Use Python interop                           | [Compatibility](/docs/compatibility)                                                                                    |
-| Run examples                                 | [Examples](/docs/examples)                                                                                              |
+| Goal                                         | Document                                                                                                                         |
+| -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| Configure interfaces and rates               | [Configuration](/docs/configuration), [Interfaces](/docs/interfaces)                                                             |
+| Status / identity / probe / path / copy CLIs | [CLI utilities](/docs/utilities)                                                                                                 |
+| Write a Go app                               | [API reference](/docs/api-reference), [Examples](/docs/examples), [Embedding and WebAssembly](/docs/embedding-and-wasm)          |
+| Embed from C or Odin                         | [librns](/docs/librns), [Examples](/docs/examples)                                                                               |
+| Flutter / Dart                               | [librns Dart FFI](/docs/librns#dart-ffi-bindings), [Control API](/docs/control-api#dart-and-flutter), [Examples](/docs/examples) |
+| Talk to a running daemon                     | [Control API](/docs/control-api)                                                                                                 |
+| Run in Firecracker                           | [Firecracker microvm](/docs/microvm) (`make microvm-up`)                                                                         |
+| Use Python interop                           | [Compatibility](/docs/compatibility)                                                                                             |
+| Run examples                                 | [Examples](/docs/examples)                                                                                                       |

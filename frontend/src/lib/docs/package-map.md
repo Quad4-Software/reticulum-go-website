@@ -20,13 +20,23 @@ Wire packet serialization, header types 1 and 2, hashing, receipts.
 
 ### `pkg/identity`
 
-Key generation, recall, sign and verify, encrypt and decrypt, ratchets.
+Key generation, recall, sign and verify, encrypt and decrypt, ratchets, optional Secret Service persistence.
 
-| Item             | Detail                                                          |
-| ---------------- | --------------------------------------------------------------- |
-| Key types        | `Identity`                                                      |
-| Hardware signing | `NewIdentityWithSigner`, RHB1 descriptor in `hardware_bound.go` |
-| Main files       | `identity.go`, `identity_signer.go`, `known_persist.go`         |
+| Item             | Detail                                                                                 |
+| ---------------- | -------------------------------------------------------------------------------------- |
+| Key types        | `Identity`                                                                             |
+| Hardware signing | `NewIdentityWithSigner`, RHB1 descriptor in `hardware_bound.go`                        |
+| At-rest store    | `pkg/identity/store` (`file` or Freedesktop Secret Service), RSSI markers              |
+| Main files       | `identity.go`, `identity_signer.go`, `hardware_bound.go`, `known_persist.go`, `store/` |
+
+### `pkg/securemem`
+
+Best-effort locked buffers for long-term identity private keys (`mlock`, wipe on close).
+
+| Item       | Detail                               |
+| ---------- | ------------------------------------ |
+| Key types  | `Buf`                                |
+| Main files | `buf.go`, `wipe.go`, `alloc_unix.go` |
 
 ### `pkg/cryptography`
 
@@ -201,16 +211,28 @@ NomadNet-style page and file server used by `reticulum-go pageserver`.
 | Dynamic pages | `pkg/pageserver/dynamicpage`             |
 | Sample tree   | `examples/pageserver/`                   |
 
+### `pkg/health`
+
+Node-local mesh integrity and link-health counters. Used by drop-site instrumentation and ops surfaces. Counters never leave the node unless the operator exports them via status RPC or the control API.
+
+| Item       | Detail                                                                                              |
+| ---------- | --------------------------------------------------------------------------------------------------- |
+| Key types  | `Registry`, `Snapshot`, `Kind`                                                                      |
+| Entry      | `health.Inc`, `health.Default`                                                                      |
+| Main files | `registry.go`, `kind.go`, `window.go`                                                               |
+| Docs       | [Security](/docs/security#local-mesh-health-observe-only), [CLI utilities](/docs/utilities#rgoslow) |
+
 ### `pkg/rnsutil`
 
-Helpers and RPC client for CLI utilities (`reticulum-go status`, `id`, `probe`, …).
+Helpers and RPC client for CLI utilities (`reticulum-go status`, `slow`, `id`, `probe`, …).
 
-| Item     | Detail                                                |
-| -------- | ----------------------------------------------------- |
-| RPC      | `DialRPC`, `GetInterfaceStats`, path and link helpers |
-| Identity | `.rsg` / `.rsm` / `.rfe` create and verify            |
-| Probe    | `WaitPath`, `SendProbe`                               |
-| Docs     | [CLI utilities](/docs/utilities)                      |
+| Item        | Detail                                                |
+| ----------- | ----------------------------------------------------- |
+| RPC         | `DialRPC`, `GetInterfaceStats`, path and link helpers |
+| Identity    | `.rsg` / `.rsm` / `.rfe` create and verify            |
+| Probe       | `WaitPath`, `SendProbe`                               |
+| Slow report | `AnalyzeSlow`, integrity and bottleneck findings      |
+| Docs        | [CLI utilities](/docs/utilities)                      |
 
 ### `pkg/wasm`
 
@@ -241,9 +263,36 @@ C ABI facade for in-process embed. Pure Go core. CGO shims in `pkg/librns/capi`.
 | Header     | `include/rns.h`                                                   |
 | Shared lib | `task build-librns` produces `bin/librns.so`                      |
 | Smoke      | `examples/librns-smoke`                                           |
+| Odin       | `bindings/odin` (`task test-odin`)                                |
 | Main files | `node.go`, `identity.go`, `destination.go`, `link.go`, `queue.go` |
 
 See [librns](/docs/librns).
+
+### `bindings/odin`
+
+Idiomatic Odin package over `librns.so`. Not a Go import path. Use `-collection:rns=bindings/odin` and `import rns "rns:rns"`.
+
+| Item     | Detail                                           |
+| -------- | ------------------------------------------------ |
+| Package  | `bindings/odin/rns`                              |
+| Tests    | `bindings/odin/tests`                            |
+| Build    | `task test-odin` or `make -C bindings/odin test` |
+| Platform | Linux (links `system:rns`)                       |
+
+See [librns](/docs/librns#odin-bindings).
+
+### `bindings/dart`
+
+Dart package `rns_control` with librns FFI (`ffi.dart`) and a Control API client. Path dependency for Flutter apps.
+
+| Item      | Detail                                                                            |
+| --------- | --------------------------------------------------------------------------------- |
+| Package   | `bindings/dart` (`name: rns_control`)                                             |
+| FFI       | Linux, Android, Windows via `librns` (`package:rns_control/ffi.dart`)             |
+| Tests     | `dart test` / `task test-dart`                                                    |
+| Platforms | Flutter mobile and desktop (events need `dart:io`). FFI needs shipped native libs |
+
+See [Control API](/docs/control-api#dart-and-flutter).
 
 ## Discovery and policy
 
@@ -360,6 +409,9 @@ CLI dispatch lives in `pkg/cli`. Pageserver logic lives in `pkg/pageserver`.
 | ---------------------------- | -------------------------------------------------------------------- |
 | Embed full node              | `pkg/node`, `pkg/reticulumconfig`, `pkg/destination`, `pkg/identity` |
 | Embed from C / FFI           | `pkg/librns` (or link `librns.so` + `include/rns.h`)                 |
+| Embed from Odin              | `bindings/odin` (`import rns "rns:rns"`, link `librns.so`)           |
+| Flutter / Dart FFI           | `bindings/dart` (`package:rns_control/ffi.dart`)                     |
+| Flutter / Dart Control API   | `bindings/dart` (`package:rns_control`)                              |
 | Low-level transport only     | `pkg/transport`, `pkg/interfaces`, `pkg/packet`                      |
 | Crypto only                  | `pkg/cryptography`, `pkg/identity`                                   |
 | Browser                      | `pkg/wasm` (compiled), WebSocket interface                           |

@@ -38,6 +38,13 @@ export default ts.config(
 		}
 	},
 	{
+		files: ['**/*.{test,spec}.{js,ts,svelte}', 'vite.config.ts'],
+		rules: {
+			'security/detect-non-literal-fs-filename': 'off',
+			'security/detect-non-literal-regexp': 'off'
+		}
+	},
+	{
 		ignores: [
 			'build/',
 			'.svelte-kit/',

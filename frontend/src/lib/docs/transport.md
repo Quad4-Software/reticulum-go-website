@@ -41,6 +41,8 @@ By default the path table can persist to `storage/destination_table` as msgpack 
 
 Known destinations persist under `storage/known_destinations/`. Set `in_memory_known_destinations = yes` for RAM-only mode.
 
+Set `in_memory_storage = yes` for fully ephemeral stack state (paths, known destinations, transport identity, blackhole, and split-resource staging). Optional `soft_memory_limit` and `max_in_memory_*` keys bound RAM under that mode.
+
 ## Packet handling
 
 Inbound packets enter `HandlePacket` and branch on packet type:
@@ -78,7 +80,7 @@ Transport maintains a link table for active sessions. Link packets are routed to
 
 ## Blackhole interaction
 
-When `pkg/blackhole` has an entry for an identity hash, announces from that identity are dropped. Link teardown at LINKIDENTIFY for blackholed identities is not implemented (gap vs Python 1.3.2). See [Compatibility](/docs/compatibility).
+When `pkg/blackhole` has an entry for an identity hash, announces from that identity are dropped and links are torn down at LINKIDENTIFY. Blackhole federation (`publish_blackhole`, remote sources) is not implemented. See [Compatibility](/docs/compatibility).
 
 ## Transport identity
 

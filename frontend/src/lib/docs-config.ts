@@ -21,7 +21,8 @@ export const DOC_NAV: DocNavSection[] = [
 		items: [
 			{ title: 'Architecture', slug: 'architecture' },
 			{ title: 'Package map', slug: 'package-map' },
-			{ title: 'API reference', slug: 'api-reference' }
+			{ title: 'API reference', slug: 'api-reference' },
+			{ title: 'Firecracker microvm', slug: 'microvm' }
 		]
 	},
 	{

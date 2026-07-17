@@ -41,26 +41,35 @@ See [Architecture](/docs/architecture) for a fuller picture.
 
 Below is a summary of major features. For line-by-line parity with Python, see [Compatibility](/docs/compatibility) and [COMPATIBILITY.md](https://github.com/Quad4-Software/Reticulum-Go/blob/master/COMPATIBILITY.md).
 
-| Area                                     | Status          | Location                                                                   |
-| ---------------------------------------- | --------------- | -------------------------------------------------------------------------- |
-| Wire-compatible crypto and packets       | Complete        | `pkg/cryptography`, `pkg/packet`, `tests/crossref`                         |
-| Transport core (paths, announces, relay) | Complete        | `pkg/transport`                                                            |
-| Identity and destinations                | Complete        | `pkg/identity`, `pkg/destination`                                          |
-| Links, channel, buffer, resources        | Complete        | `pkg/link`, `pkg/channel`, `pkg/buffer`, `pkg/resource`                    |
-| IFAC                                     | Complete        | `pkg/ifac`                                                                 |
-| UDP, TCP, Auto, I2P, Backbone interfaces | Complete        | `pkg/interfaces`                                                           |
-| WebSocket interface                      | Go-only         | `pkg/interfaces/websocket_*.go`                                            |
-| QUIC interface                           | Go-only         | `pkg/interfaces/quic.go`, `quic_tls.go`                                    |
-| Daemon and config                        | Complete        | `cmd/reticulum-go`, `pkg/reticulumconfig`                                  |
-| Discovery (rnstransport)                 | Partial         | Listening works. Announcer and autoconnect loops are not auto-started      |
-| Blackhole                                | Partial         | Table and announce drop work. Link teardown at identify is not implemented |
-| RNode, KISS, Serial, Weave               | Not implemented | No driver in this tree                                                     |
-| PipeInterface, LocalInterface            | Implemented     | `pipe.go`, `local.go`, `sharedinstance`                                    |
-| Python CLI utilities                     | Yes (core)      | `reticulum-go status                                                       | id  | probe | path | cp`via`pkg/cli`/`pkg/rnsutil` |
-| Interface hot reload                     | Go-only         | `pkg/node/reload.go`, SIGHUP on Unix                                       |
-| Control API                              | Go-only         | `pkg/controlapi`                                                           |
-| librns C ABI                             | Go-only         | `pkg/librns`, `include/rns.h`, `task build-librns`                         |
-| Runtime sandbox                          | Go-only         | `pkg/sandbox`                                                              |
+| Area                                     | Status          | Location                                                                                            |
+| ---------------------------------------- | --------------- | --------------------------------------------------------------------------------------------------- |
+| Wire-compatible crypto and packets       | Complete        | `pkg/cryptography`, `pkg/packet`, `tests/crossref`                                                  |
+| Transport core (paths, announces, relay) | Complete        | `pkg/transport`                                                                                     |
+| Identity and destinations                | Complete        | `pkg/identity`, `pkg/destination`                                                                   |
+| Links, channel, buffer, resources        | Complete        | `pkg/link`, `pkg/channel`, `pkg/buffer`, `pkg/resource`                                             |
+| IFAC                                     | Complete        | `pkg/ifac`                                                                                          |
+| UDP, TCP, Auto, I2P, Backbone interfaces | Complete        | `pkg/interfaces`                                                                                    |
+| WebSocket interface                      | Go-only         | `pkg/interfaces/websocket_*.go`                                                                     |
+| QUIC interface                           | Go-only         | `pkg/interfaces/quic.go`, `quic_tls.go`                                                             |
+| WebTransport interface                   | Go-only         | `pkg/interfaces/webtransport.go`                                                                    |
+| DNS rendezvous                           | Go-only         | `pkg/interfaces/dns_rendezvous.go`                                                                  |
+| VSOCK interface                          | Go-only (Linux) | `pkg/interfaces/vsock.go`                                                                           |
+| HTTPS long-poll                          | Go-only         | `pkg/interfaces/https.go`                                                                           |
+| Daemon and config                        | Complete        | `cmd/reticulum-go`, `pkg/reticulumconfig`                                                           |
+| Discovery (rnstransport)                 | Partial         | Listening works. Announcer and autoconnect loops are not auto-started                               |
+| Blackhole                                | Partial         | Local drop and LINKIDENTIFY teardown. No publish/federation                                         |
+| SerialInterface                          | Complete        | HDLC serial with Go extensions. Live Python framing interop                                         |
+| RNode, KISS, Weave                       | Not implemented | No driver in this tree                                                                              |
+| PipeInterface, LocalInterface            | Implemented     | `pipe.go`, `local.go`, `sharedinstance`                                                             |
+| Python CLI utilities                     | Yes (core)      | `reticulum-go status                                                                                | id  | probe | path | cp`via`pkg/cli`/`pkg/rnsutil` |
+| Interface hot reload                     | Go-only         | `pkg/node/reload.go`, SIGHUP on Unix                                                                |
+| Control API                              | Go-only         | `pkg/controlapi`                                                                                    |
+| librns C ABI                             | Go-only         | `pkg/librns`, `include/rns.h`, `task build-librns`                                                  |
+| Odin librns bindings                     | Go-only host    | `bindings/odin` (Linux, links `librns.so`). See [librns](/docs/librns#odin-bindings)                |
+| Dart librns FFI                          | Go-only host    | `bindings/dart` (`ffi.dart`). Linux, Android, Windows. See [librns](/docs/librns#dart-ffi-bindings) |
+| Dart Control API client                  | Go-only host    | `bindings/dart` (`rns_control`). See [Control API](/docs/control-api#dart-and-flutter)              |
+| Runtime sandbox                          | Go-only         | `pkg/sandbox`                                                                                       |
+| Local mesh health                        | Go-only         | `pkg/health` counters, status RPC fields, `reticulum-go slow` findings                              |
 
 ## Repository layout
 
@@ -73,6 +82,9 @@ Reticulum-Go/
     rgo*/               Thin wrappers for legacy binary names
   include/
     rns.h               Public librns C header
+  bindings/
+    odin/               Odin bindings and tests for librns
+    dart/               Dart librns FFI and Control API client
   pkg/                  Public library packages (cli, pageserver, rnsutil, …)
   man/                  Man pages (sections 1 and 8)
   packaging/            nfpm deb/rpm config
@@ -95,18 +107,20 @@ Python Reticulum (`RNS`) is the reference implementation and defines the on-wire
 
 Configuration uses the same INI-style shape as Python (`[reticulum]`, `[logging]`, `[[Interface Name]]`). The default config directory is `~/.reticulum-go` instead of `~/.reticulum` so both stacks can coexist on one machine.
 
-Reticulum-Go adds features that Python does not ship today (control API, librns, sandbox, interface hot reload, NIC watching). Those extensions do not change the wire format unless explicitly documented as Go-only.
+Reticulum-Go adds features that Python does not ship today (control API, librns, Odin bindings, Dart FFI and Control API client, sandbox, interface hot reload, NIC watching, local mesh health counters). Those extensions do not change the wire format unless explicitly documented as Go-only.
 
 ## Who should read which document
 
-| Role                          | Start here                                                                                                                                                |
-| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Architect evaluating adoption | This page, then [Architecture](/docs/architecture) and [Compatibility](/docs/compatibility)                                                               |
-| Network operator              | [Getting started](/docs/getting-started), [Configuration](/docs/configuration), [Interfaces](/docs/interfaces), [CLI utilities](/docs/utilities)          |
-| Go application author         | [API reference](/docs/api-reference), [Package map](/docs/package-map), [Examples](/docs/examples), [Embedding and WebAssembly](/docs/embedding-and-wasm) |
-| Native / FFI embedder         | [librns](/docs/librns), [Compatibility](/docs/compatibility)                                                                                              |
-| Security reviewer             | [Cryptography](/docs/cryptography), [Security](/docs/security)                                                                                            |
-| Developer                     | [Development and testing](/docs/development-and-testing)                                                                                                  |
+| Role                              | Start here                                                                                                                                                |
+| --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Architect evaluating adoption     | This page, then [Architecture](/docs/architecture) and [Compatibility](/docs/compatibility)                                                               |
+| Network operator                  | [Getting started](/docs/getting-started), [Configuration](/docs/configuration), [Interfaces](/docs/interfaces), [CLI utilities](/docs/utilities)          |
+| Go application author             | [API reference](/docs/api-reference), [Package map](/docs/package-map), [Examples](/docs/examples), [Embedding and WebAssembly](/docs/embedding-and-wasm) |
+| Native / FFI embedder             | [librns](/docs/librns), [Compatibility](/docs/compatibility)                                                                                              |
+| Odin application author           | [librns](/docs/librns#odin-bindings), [Examples](/docs/examples)                                                                                          |
+| Flutter / Dart application author | [librns Dart FFI](/docs/librns#dart-ffi-bindings), [Control API](/docs/control-api#dart-and-flutter), [Examples](/docs/examples)                          |
+| Security reviewer                 | [Cryptography](/docs/cryptography), [Security](/docs/security)                                                                                            |
+| Developer                         | [Development and testing](/docs/development-and-testing)                                                                                                  |
 
 ## License and credit
 

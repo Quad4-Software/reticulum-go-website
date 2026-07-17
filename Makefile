@@ -6,7 +6,7 @@ SHELL := /bin/sh
 
 FRONTEND := frontend
 
-.PHONY: help install dev build frontend-build clean format lint check test bench bundle-budget lighthouse audit update update-latest outdated docker-build docker-run docs-zip docs-release docs-sync check-docs validate locale-template check-links update-micron-wasm
+.PHONY: help install dev build frontend-build clean format lint check test bench bundle-budget lighthouse audit update update-latest outdated docker-build docker-run docs-zip docs-release docs-sync check-docs validate locale-template check-links update-micron-wasm sync-rnode-firmware
 
 help: ## Show available targets
 	@echo 'Targets (run from repository root):'
@@ -97,3 +97,6 @@ locale-template: ## Copy English strings to a new locale file (use: make locale-
 
 update-micron-wasm: ## Fetch latest Micron-Parser-Go WASM and refresh SHA-384 SRI manifest
 	node scripts/update-micron-wasm.mjs
+
+sync-rnode-firmware: ## Sync RNode firmware catalog into frontend/static/rnode-firmware
+	node scripts/sync-rnode-firmware.mjs
