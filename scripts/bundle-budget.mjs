@@ -7,10 +7,13 @@
  *   FRONTEND_BUILD_DIR  default: <repo>/frontend/build
  *   BUNDLE_BUDGET_TOTAL_MB   default: 28
  *   BUNDLE_BUDGET_MAX_JS_MB    default: 12 (largest single .js asset)
+ *
+ * Bundled RNode firmware binaries under rnode-firmware/ are excluded from the
+ * total. They are intentional static assets, not SPA/WASM bundle growth.
  */
 
 import { readdirSync, statSync } from 'node:fs';
-import { join, dirname } from 'node:path';
+import { join, dirname, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -41,6 +44,12 @@ function walkFiles(dir, out) {
 	}
 }
 
+/** Firmware blobs shipped for the RNode flasher. Not part of the SPA budget. */
+function isExcludedFromTotal(filePath) {
+	const norm = filePath.split(sep).join('/');
+	return norm.includes('/rnode-firmware/') && norm.endsWith('.bin');
+}
+
 function main() {
 	const files = [];
 	try {
@@ -53,9 +62,14 @@ function main() {
 	walkFiles(BUILD_DIR, files);
 
 	let total = 0;
+	let excluded = 0;
 	let largestJs = { path: '', size: 0 };
 
 	for (const f of files) {
+		if (isExcludedFromTotal(f.path)) {
+			excluded += f.size;
+			continue;
+		}
 		total += f.size;
 		if (f.path.endsWith('.js') && !f.path.endsWith('.map') && f.size > largestJs.size) {
 			largestJs = { path: f.path, size: f.size };
@@ -64,7 +78,13 @@ function main() {
 
 	const totalMb = (total / (1024 * 1024)).toFixed(2);
 	const maxMb = (MAX_TOTAL_BYTES / (1024 * 1024)).toFixed(1);
+	const excludedMb = (excluded / (1024 * 1024)).toFixed(2);
 	console.log(`bundle-budget: total ${totalMb} MB (limit ${maxMb} MB)`);
+	if (excluded > 0) {
+		console.log(
+			`bundle-budget: excluded ${excludedMb} MB of rnode-firmware/*.bin (not counted)`
+		);
+	}
 	console.log(
 		`bundle-budget: largest .js ${(largestJs.size / (1024 * 1024)).toFixed(2)} MB — ${largestJs.path.replace(ROOT + '/', '')}`
 	);

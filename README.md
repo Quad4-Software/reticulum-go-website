@@ -133,7 +133,7 @@ The `/api/repo-info` handler is covered for Gitea `fetch` outcomes (network fail
 
 **Micro-benchmarks:** `make bench` (or `cd frontend && pnpm bench`) runs Vitest’s benchmark mode on `src/lib/hot-path.bench.ts` (pure helpers in `version.ts`, `seo.ts`, `site-config.ts`). CI runs this after unit tests. Benchmarks are experimental in Vitest; pin the Vitest version if you rely on them.
 
-**Bundle budget:** After a production build, `make bundle-budget` runs `scripts/bundle-budget.mjs` against `frontend/build/`. Defaults: total output under **28 MB** (`BUNDLE_BUDGET_TOTAL_MB`) and any single **.js** file under **12 MB** (`BUNDLE_BUDGET_MAX_JS_MB`), uncompressed. Raise these in CI only when intentional. The build job runs the budget check after `frontend-build`.
+**Bundle budget:** After a production build, `make bundle-budget` runs `scripts/bundle-budget.mjs` against `frontend/build/`. Defaults: total output under **28 MB** (`BUNDLE_BUDGET_TOTAL_MB`) and any single **.js** file under **12 MB** (`BUNDLE_BUDGET_MAX_JS_MB`), uncompressed. Bundled `rnode-firmware/**/*.bin` files are excluded from the total (intentional flash assets). Raise the limits in CI only when intentional. The build job runs the budget check after `frontend-build`.
 
 ### Translations (i18n)
 
