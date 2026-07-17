@@ -14,6 +14,7 @@
 		"source_code": "Source Code",
 		"loading": "Loading...",
 		"donate": "Donate",
+		"privacy": "Privacy",
 		"last_activity": "Last activity: {time} ago",
 		"rss_development": "RSS: Development",
 		"rss_releases": "RSS: Releases",
@@ -235,6 +236,38 @@
 		"monero": "Monero",
 		"copy_address": "Copy address",
 		"copied": "Copied!"
+	},
+	"privacy": {
+		"title": "Privacy Policy",
+		"subtitle": "We collect zero personal data about you.",
+		"meta_description": "Reticulum-Go privacy policy. We collect zero personal data. No analytics, trackers, ads, or accounts.",
+		"summary": "This site and its browser tools collect ZERO personal data about you. We do not sell, share, or store profiles of visitors.",
+		"no_analytics": {
+			"title": "No analytics or tracking",
+			"body": "We do not use analytics services, advertising pixels, fingerprinting scripts, or telemetry. Your visits are not scored, profiled, or reported to third parties by us."
+		},
+		"no_accounts": {
+			"title": "No accounts",
+			"body": "There is no sign-in, no user profiles, and no account database. You do not need an identity with us to use the site."
+		},
+		"local_processing": {
+			"title": "Local processing",
+			"body": "WASM demos, the RNode flasher, and similar tools run in your browser. Identities, messages, and flash sessions stay on your device unless you choose to send something yourself, such as an email to contact us."
+		},
+		"cookies": {
+			"title": "Preference cookies only",
+			"body": "We may store small preference cookies for theme and language so the site remembers your choices. These are not used for tracking or advertising."
+		},
+		"third_parties": {
+			"title": "Third-party links",
+			"body": "Links to GitHub, donation platforms, and other external sites are operated by those parties under their own policies. We do not sell or share personal data with them because we do not collect it."
+		},
+		"contact": {
+			"title": "Questions",
+			"body": "Questions via ",
+			"or": " or "
+		},
+		"updated": "Last updated: 17 July 2026"
 	},
 	"home": {
 		"title": "Reticulum-Go",

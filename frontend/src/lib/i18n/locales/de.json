@@ -14,6 +14,7 @@
 		"source_code": "Quellcode",
 		"loading": "Laden...",
 		"donate": "Spenden",
+		"privacy": "Datenschutz",
 		"last_activity": "Letzte Aktivität: vor {time}",
 		"rss_development": "RSS: Entwicklung",
 		"rss_releases": "RSS: Releases",
@@ -235,6 +236,38 @@
 		"monero": "Monero",
 		"copy_address": "Adresse kopieren",
 		"copied": "Kopiert!"
+	},
+	"privacy": {
+		"title": "Datenschutzrichtlinie",
+		"subtitle": "Wir erheben keine personenbezogenen Daten über Sie.",
+		"meta_description": "Datenschutzrichtlinie von Reticulum-Go. Wir erheben keine personenbezogenen Daten. Keine Analytics, Tracker, Werbung oder Konten.",
+		"summary": "Diese Website und ihre Browser-Tools erheben KEINE personenbezogenen Daten über Sie. Wir verkaufen, teilen oder speichern keine Besucherprofile.",
+		"no_analytics": {
+			"title": "Keine Analytics und kein Tracking",
+			"body": "Wir nutzen keine Analytics-Dienste, Werbe-Pixel, Fingerprinting-Skripte oder Telemetrie. Ihre Besuche werden von uns nicht bewertet, profiliert oder an Dritte gemeldet."
+		},
+		"no_accounts": {
+			"title": "Keine Konten",
+			"body": "Es gibt keine Anmeldung, keine Benutzerprofile und keine Kontodatenbank. Sie brauchen bei uns keine Identität, um die Website zu nutzen."
+		},
+		"local_processing": {
+			"title": "Lokale Verarbeitung",
+			"body": "WASM-Demos, der RNode-Flasher und ähnliche Tools laufen in Ihrem Browser. Identitäten, Nachrichten und Flash-Sitzungen bleiben auf Ihrem Gerät, es sei denn, Sie senden selbst etwas, etwa eine E-Mail an uns."
+		},
+		"cookies": {
+			"title": "Nur Einstellungs-Cookies",
+			"body": "Wir können kleine Einstellungs-Cookies für Theme und Sprache speichern, damit die Website Ihre Wahl merkt. Sie werden nicht für Tracking oder Werbung verwendet."
+		},
+		"third_parties": {
+			"title": "Links zu Dritten",
+			"body": "Links zu GitHub, Spendenplattformen und anderen externen Seiten unterliegen deren eigenen Richtlinien. Wir verkaufen oder teilen keine personenbezogenen Daten mit ihnen, weil wir keine erheben."
+		},
+		"contact": {
+			"title": "Fragen",
+			"body": "Fragen über ",
+			"or": " oder "
+		},
+		"updated": "Zuletzt aktualisiert: 17. Juli 2026"
 	},
 	"home": {
 		"title": "Reticulum-Go",

@@ -122,6 +122,20 @@ export function getDonateWebPageJsonLd(): string {
 	});
 }
 
+export function getPrivacyWebPageJsonLd(): string {
+	return buildJsonLd('WebPage', {
+		name: `Privacy Policy | ${SITE_NAME}`,
+		description:
+			'Reticulum-Go collects zero personal data. No analytics, trackers, ads, or accounts.',
+		url: `${SITE_URL}/privacy`,
+		isPartOf: {
+			'@type': 'WebSite',
+			name: SITE_NAME,
+			url: SITE_URL
+		}
+	});
+}
+
 export function getBreadcrumbJsonLd(items: { name: string; url: string }[]): string {
 	return buildJsonLd('BreadcrumbList', {
 		itemListElement: items.map((item, i) => ({

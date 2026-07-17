@@ -7,6 +7,7 @@ import {
 	getBreadcrumbJsonLd,
 	getCanonicalUrl,
 	getDonateWebPageJsonLd,
+	getPrivacyWebPageJsonLd,
 	getHreflangLinks,
 	getOrganizationJsonLd,
 	getSoftwareApplicationJsonLd,
@@ -78,6 +79,17 @@ describe('seo', () => {
 		expect(parsed.description).toMatch(/Half of donations|Mark Qvist/);
 		expect(parsed.about.name).toBe('Mark Qvist');
 		expect(parsed.about.url).toBe(RETICULUM_SITE);
+	});
+
+	it('privacy JSON-LD states zero data collection', () => {
+		const parsed = JSON.parse(getPrivacyWebPageJsonLd()) as {
+			url: string;
+			description: string;
+			name: string;
+		};
+		expect(parsed.url).toBe(`${SITE_URL}/privacy`);
+		expect(parsed.name).toMatch(/Privacy/i);
+		expect(parsed.description).toMatch(/zero personal data/i);
 	});
 
 	it('getBreadcrumbJsonLd encodes positions and URLs', () => {

@@ -153,6 +153,11 @@
 				</li>
 				<li><a href="/contact" class="hover:text-zinc-900 dark:hover:text-zinc-100">Contact</a></li>
 				<li>
+					<a href="/privacy" class="hover:text-zinc-900 dark:hover:text-zinc-100"
+						>{$t('common.privacy')}</a
+					>
+				</li>
+				<li>
 					<a
 						href="https://github.com/Quad4-Software/Reticulum-Go"
 						target="_blank"

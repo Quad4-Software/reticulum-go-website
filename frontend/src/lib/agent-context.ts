@@ -91,6 +91,7 @@ ${AGENT_MUST_NOT.map((line) => `- ${line}`).join('\n')}
 - [Security](${SITE_URL}/docs/security): Reporting (LXMF) and sandbox notes
 - [Reticulum Guide](${SITE_URL}/tools/reticulum-guide): Visual tutorials with Python and Go samples covering destinations, identities, announces, crypto, packets, links, messaging/LXMF, and interfaces
 - [Donate](${SITE_URL}/donate): Support. Half of donations go to Mark Qvist (reference creator)
+- [Privacy](${SITE_URL}/privacy): Zero personal data collection. No analytics or trackers
 - [Contact](${SITE_URL}/contact): LXMF and email
 - [Agent JSON](${SITE_URL}/api/agent): Machine-readable copy of this guidance
 - [Full agent brief](${SITE_URL}/llms-full.txt): Longer anti-hallucination brief
@@ -178,6 +179,7 @@ ${siteDocLinks()}
 - ${SITE_URL}/ren-browser
 - ${SITE_URL}/apps
 - ${SITE_URL}/donate
+- ${SITE_URL}/privacy
 - ${SITE_URL}/contact
 
 ## Repositories

@@ -9,6 +9,7 @@ export const SITEMAP_PATHS = [
 	'/ren-browser',
 	'/contact',
 	'/donate',
+	'/privacy',
 	'/interactive',
 	'/tools',
 	'/tools/reticulum-guide',

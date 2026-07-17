@@ -104,6 +104,7 @@ export function createTestFormatter() {
 			'tools.micron_editor.add_tab': 'Add tab',
 			'common.alpha': 'Alpha',
 			'common.donate': 'Donate',
+			'common.privacy': 'Privacy',
 			'common.contact': 'Contact',
 			'common.rss_development': 'RSS: Development',
 			'common.rss_releases': 'RSS: Releases',
