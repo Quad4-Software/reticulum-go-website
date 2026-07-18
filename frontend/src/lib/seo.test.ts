@@ -24,6 +24,12 @@ describe('seo', () => {
 		expect(out).toContain('{}');
 	});
 
+	it('jsonLdScript escapes angle brackets to block script breakout', () => {
+		const out = jsonLdScript('{"x":"</script><script>alert(1)</script>"}');
+		expect(out).toContain('\\u003c');
+		expect(out).not.toMatch(/<\/script><script>/i);
+	});
+
 	it('buildJsonLd includes schema.org context and type', () => {
 		const raw = buildJsonLd('Organization', { name: 'Test' });
 		const parsed = JSON.parse(raw) as Record<string, unknown>;

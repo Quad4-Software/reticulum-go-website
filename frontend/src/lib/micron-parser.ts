@@ -4,6 +4,7 @@
  * module graph that freezes a false browser flag.
  */
 import { fetchWasmWithSri } from './wasm-sri';
+import { sanitizeHtml } from './sanitize-html';
 
 export const MICRON_WASM_PATH = '/micron-parser-go.wasm';
 /** Must match the Micron-Parser-Go release web.zip wasm_exec (not reticulum's). */
@@ -118,7 +119,7 @@ export function convertMicron(markup: string, darkTheme = true, forceMonospace =
 	if (typeof window.micronConvert !== 'function') {
 		throw new Error('micronConvert is not available');
 	}
-	return window.micronConvert(markup, darkTheme, forceMonospace);
+	return sanitizeHtml(window.micronConvert(markup, darkTheme, forceMonospace));
 }
 
 /** Clears in-flight load so Retry can start a fresh attempt. */

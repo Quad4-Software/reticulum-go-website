@@ -46,6 +46,15 @@ describe('docs page chrome', () => {
 		expect(search).not.toContain('eager: true');
 		expect(search).toContain("import.meta.glob('../../lib/docs/**/*.{md,mdx}'");
 	});
+
+	it('sanitizes HTML before docs {@html} and Search indexing', () => {
+		const docsSync = read('src/lib/server/docs-sync.ts');
+		const search = read('src/lib/components/Search.svelte');
+		const markdown = read('src/lib/components/Markdown.svelte');
+		expect(docsSync).toContain('sanitizeHtml');
+		expect(search).toContain('sanitizeHtml');
+		expect(markdown).toContain('sanitizeHtml');
+	});
 });
 
 describe('home copy', () => {

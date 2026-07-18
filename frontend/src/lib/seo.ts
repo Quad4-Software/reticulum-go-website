@@ -1,8 +1,6 @@
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, LOCALES } from './site-config';
-import {
-	RETICULUM_GO_GITHUB,
-	RETICULUM_GO_SOURCE_ZIP_PATH
-} from './source-mirrors';
+import { RETICULUM_GO_GITHUB, RETICULUM_GO_SOURCE_ZIP_PATH } from './source-mirrors';
+import { escapeJsonForScript } from './sanitize-html';
 
 const JSON_LD_TYPE = 'application/ld+json';
 
@@ -12,7 +10,7 @@ export const QUAD4_SITE = 'https://quad4.io';
 export const APACHE_2_LICENSE = 'https://www.apache.org/licenses/LICENSE-2.0';
 
 export function jsonLdScript(json: string): string {
-	return `<script type="${JSON_LD_TYPE}">${json}</script>`;
+	return `<script type="${JSON_LD_TYPE}">${escapeJsonForScript(json)}</script>`;
 }
 
 export function buildJsonLd(

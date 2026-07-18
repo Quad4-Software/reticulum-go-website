@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { marked } from 'marked';
 import { RETICULUM_GO_GITHUB } from '$lib/source-mirrors';
+import { isSafeDocSlug, sanitizeHtml } from '$lib/sanitize-html';
 
 const REPO_OWNER = 'Quad4-Software';
 const REPO_NAME = 'Reticulum-Go';
@@ -78,6 +79,7 @@ export async function getDocsSyncMeta(): Promise<DocsSyncMeta | null> {
 }
 
 export async function getCachedDocMarkdown(slug: string): Promise<string | null> {
+	if (!isSafeDocSlug(slug)) return null;
 	const filename = `${slug}.md`;
 	const path = docPath(filename);
 	if (!(await pathExists(path))) return null;
@@ -89,7 +91,8 @@ export async function getCachedDocMarkdown(slug: string): Promise<string | null>
 }
 
 export async function renderDocMarkdown(markdown: string): Promise<string> {
-	return marked.parse(markdown, { async: false }) as string;
+	const raw = marked.parse(markdown, { async: false }) as string;
+	return sanitizeHtml(raw);
 }
 
 let refreshInFlight: Promise<DocsSyncMeta | null> | null = null;

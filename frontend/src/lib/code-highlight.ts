@@ -1,4 +1,5 @@
 import { createHighlighter, type Highlighter } from 'shiki';
+import { sanitizeHighlightHtml } from '$lib/sanitize-html';
 
 const LANGS = ['go', 'python', 'bash', 'plaintext', 'json', 'typescript', 'javascript'] as const;
 
@@ -40,7 +41,7 @@ function resolveLang(lang: string | undefined, highlighter: Highlighter): string
 export async function highlightCode(code: string, lang: string): Promise<string> {
 	const highlighter = await getHighlighter();
 	const language = resolveLang(lang, highlighter);
-	return highlighter.codeToHtml(code, {
+	const html = highlighter.codeToHtml(code, {
 		lang: language,
 		themes: {
 			light: 'github-light',
@@ -48,4 +49,5 @@ export async function highlightCode(code: string, lang: string): Promise<string>
 		},
 		defaultColor: false
 	});
+	return sanitizeHighlightHtml(html);
 }

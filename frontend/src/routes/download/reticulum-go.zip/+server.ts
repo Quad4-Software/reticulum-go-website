@@ -27,13 +27,14 @@ export const GET: RequestHandler = async ({ url }) => {
 	}
 
 	const { meta, stream } = opened;
+	const safeName = meta.filename.replace(/[^\w.\-]+/g, '_').slice(0, 128) || 'reticulum-go.zip';
 	return new Response(stream, {
 		headers: {
 			'Content-Type': 'application/zip',
 			'Content-Length': String(meta.bytes),
-			'Content-Disposition': `attachment; filename="${meta.filename}"`,
+			'Content-Disposition': `attachment; filename="${safeName}"`,
 			'Cache-Control': 'public, max-age=3600',
-			'X-Source-Tag': meta.tag,
+			'X-Source-Tag': meta.tag.replace(/[^\w.\-]+/g, '_').slice(0, 64),
 			'X-Source-Fetched-At': meta.fetchedAt
 		}
 	});

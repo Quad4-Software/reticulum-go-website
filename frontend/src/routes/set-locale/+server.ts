@@ -1,11 +1,7 @@
 import { redirect } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { isLocaleSupported } from '$lib/site-config';
-
-function safeRedirectTarget(value: string | null): string {
-	if (!value || !value.startsWith('/') || value.startsWith('//')) return '/';
-	return value;
-}
+import { safeRedirectTarget } from '$lib/sanitize-html';
 
 export const GET: RequestHandler = ({ url, cookies }) => {
 	const requestedLocale = url.searchParams.get('locale');

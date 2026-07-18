@@ -5,6 +5,7 @@
 	import { marked } from 'marked';
 	import { tick } from 'svelte';
 	import { goto } from '$app/navigation';
+	import { sanitizeHtml } from '$lib/sanitize-html';
 
 	interface DocItem {
 		slug: string;
@@ -63,7 +64,7 @@
 
 		const processedDocs = await Promise.all(
 			Object.entries(slugMap).map(async ([slug, data]) => {
-				const html = await marked.parse(data.content);
+				const html = sanitizeHtml(await marked.parse(data.content));
 				const tempDiv = document.createElement('div');
 				tempDiv.innerHTML = html;
 				const text = tempDiv.textContent || '';

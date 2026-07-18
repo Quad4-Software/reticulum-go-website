@@ -1,16 +1,12 @@
 import type { LayoutServerLoad } from './$types';
 import { locale, waitLocale } from 'svelte-i18n';
 import { DEFAULT_LOCALE, isLocaleSupported } from '$lib/site-config';
+import { safeRedirectTarget } from '$lib/sanitize-html';
 
 const SUPPORTED_THEMES = new Set(['light', 'dark', 'system']);
 
 function isSupportedTheme(value: string | null): value is 'light' | 'dark' | 'system' {
 	return value !== null && SUPPORTED_THEMES.has(value);
-}
-
-function safeRedirectTarget(value: string | null): string {
-	if (!value || !value.startsWith('/')) return '/';
-	return value;
 }
 
 export const load: LayoutServerLoad = async ({ url, cookies }) => {

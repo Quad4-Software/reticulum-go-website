@@ -49,6 +49,9 @@ export default defineConfig(({ command }) => {
 		resolve: {
 			conditions: isTest ? ['browser'] : []
 		},
+		ssr: {
+			noExternal: ['isomorphic-dompurify', 'dompurify']
+		},
 		define: {
 			'import.meta.env.VITE_WASM_SHA256': JSON.stringify(wasmSha256),
 			'import.meta.env.VITE_WASM_SRI': JSON.stringify(wasmSri)
