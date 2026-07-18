@@ -5,7 +5,9 @@ import Search from './Search.svelte';
 const goto = vi.fn();
 
 vi.mock('$app/navigation', () => ({
-	goto: (...args: unknown[]) => goto(...args)
+	goto: (...args: unknown[]) => goto(...args),
+	preloadCode: () => Promise.resolve(),
+	preloadData: () => Promise.resolve({ type: 'loaded', status: 200, data: {} })
 }));
 
 vi.mock('svelte-i18n', () => import('../../test/i18n-mocks').then((m) => m.getMockI18nStores()));

@@ -43,6 +43,8 @@
 			<a
 				href={`/set-theme?theme=${opt.value}&redirect=${encodeURIComponent(currentPath)}`}
 				data-sveltekit-reload
+				data-sveltekit-preload-data="false"
+				data-sveltekit-preload-code="false"
 				aria-current={activeTheme === opt.value ? 'true' : undefined}
 				onclick={(event) => {
 					event.preventDefault();

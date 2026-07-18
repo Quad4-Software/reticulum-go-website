@@ -15,6 +15,7 @@
 		getHreflangLinks,
 		jsonLdScript
 	} from '$lib/seo';
+	import { preloadPrimaryRoutes } from '$lib/preload';
 
 	let { children, data } = $props();
 
@@ -30,6 +31,7 @@
 
 	onMount(() => {
 		initTheme(data.currentTheme as Theme);
+		preloadPrimaryRoutes();
 		const unsub = isDarkStore.subscribe((dark) => {
 			clientDark = dark;
 			applyDarkClass(dark);

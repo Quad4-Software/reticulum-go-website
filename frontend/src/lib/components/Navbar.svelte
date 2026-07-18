@@ -124,6 +124,8 @@
 						{#each $locales as l (l)}
 							<a
 								href={`/set-locale?locale=${l}&redirect=${encodeURIComponent(currentPath)}`}
+								data-sveltekit-preload-data="false"
+								data-sveltekit-preload-code="false"
 								aria-current={$locale === l ? 'true' : undefined}
 								class="w-full flex items-center justify-between gap-3 px-4 py-2.5 text-left text-sm transition-colors {$locale ===
 								l

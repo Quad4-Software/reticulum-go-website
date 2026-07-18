@@ -6,6 +6,7 @@
 	import { tick } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { sanitizeHtml } from '$lib/sanitize-html';
+	import { schedulePreload } from '$lib/preload';
 
 	interface DocItem {
 		slug: string;
@@ -109,15 +110,20 @@
 			matches: r.matches
 		}));
 		selectedIndex = 0;
+		if (results[0]) schedulePreload(results[0].item.path);
 	}
 
 	function handleKeydown(e: KeyboardEvent) {
+		if (!results.length) {
+			if (e.key === 'Escape') isOpen = false;
+			return;
+		}
 		if (e.key === 'ArrowDown') {
 			e.preventDefault();
-			selectedIndex = (selectedIndex + 1) % results.length;
+			highlightResult((selectedIndex + 1) % results.length);
 		} else if (e.key === 'ArrowUp') {
 			e.preventDefault();
-			selectedIndex = (selectedIndex - 1 + results.length) % results.length;
+			highlightResult((selectedIndex - 1 + results.length) % results.length);
 		} else if (e.key === 'Enter') {
 			e.preventDefault();
 			if (results[selectedIndex]) {
@@ -147,6 +153,12 @@
 	function goToResult(item: DocItem) {
 		isOpen = false;
 		goto(item.path);
+	}
+
+	function highlightResult(index: number) {
+		selectedIndex = index;
+		const path = results[index]?.item.path;
+		if (path) schedulePreload(path);
 	}
 
 	function close() {
@@ -250,7 +262,8 @@
 									? 'bg-zinc-100 dark:bg-zinc-800'
 									: 'hover:bg-zinc-50 dark:hover:bg-zinc-800/50'}"
 								onclick={() => goToResult(item)}
-								onmouseenter={() => (selectedIndex = i)}
+								onmouseenter={() => highlightResult(i)}
+								onfocus={() => highlightResult(i)}
 							>
 								<div
 									class="flex items-center justify-center w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-800 shrink-0"
