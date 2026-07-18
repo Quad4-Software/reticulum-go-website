@@ -106,6 +106,7 @@ export function createTestFormatter() {
 			'common.donate': 'Donate',
 			'common.privacy': 'Privacy',
 			'common.contact': 'Contact',
+			'common.source_code': 'Source Code',
 			'common.rss_development': 'RSS: Development',
 			'common.rss_releases': 'RSS: Releases',
 			'common.rss_copied': 'Copied',

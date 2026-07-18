@@ -237,6 +237,40 @@
 		"copy_address": "Copia indirizzo",
 		"copied": "Copiato!"
 	},
+	"source": {
+		"title": "Codice sorgente",
+		"subtitle": "Scegli da dove ottenere Reticulum-Go.",
+		"intro": "Il repository ufficiale è su rngit su Reticulum. GitHub e Lavaforge sono mirror pubblici.",
+		"meta_description": "Ottieni il codice sorgente di Reticulum-Go da rngit ufficiale su Reticulum (git clone e pagina Micron NomadNet) o dai mirror GitHub e Lavaforge.",
+		"badge_official": "Ufficiale",
+		"badge_mirror": "Mirror",
+		"badge_ci_releases": "CI e Release",
+		"copied": "Copiato!",
+		"copied_toast": "Copiato negli appunti",
+		"copy_failed": "Copia non riuscita",
+		"copy_clone": "Copia comando clone",
+		"copy_path": "Copia percorso",
+		"open_link": "Apri",
+		"open_ren": "Apri Ren Browser",
+		"download_zip": "Scarica zip del codice sorgente",
+		"download_zip_tag": "Tag di release più recente: {tag}",
+		"download_zip_pending": "Preparazione dello zip. Se il download fallisce, riprova tra poco.",
+		"rngit": {
+			"title": "rngit",
+			"description": "Sorgente ufficiale su Reticulum. Clona con un client git compatibile RNS, oppure apri la pagina Micron in NomadNet e Ren Browser.",
+			"git_label": "Git su Reticulum",
+			"page_label": "Pagina NomadNet / Micron",
+			"page_blurb": "Lo stesso progetto come pagina Micron per NomadNet e altri client mesh."
+		},
+		"github": {
+			"title": "GitHub",
+			"description": "Mirror pubblico usato per CI e release, oltre a browser e flussi git convenzionali."
+		},
+		"lavaforge": {
+			"title": "Lavaforge",
+			"description": "Mirror pubblico su Lavaforge."
+		}
+	},
 	"privacy": {
 		"title": "Informativa sulla privacy",
 		"subtitle": "Non raccogliamo alcun dato personale su di te.",

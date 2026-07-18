@@ -56,9 +56,7 @@
 			</a>
 			<div class="relative group">
 				<a
-					href="https://github.com/Quad4-Software/Reticulum-Go"
-					target="_blank"
-					rel="noopener noreferrer"
+					href="/source"
 					class="px-8 py-4 border border-zinc-200 dark:border-zinc-800 font-bold rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-all active:scale-95 flex items-center gap-2"
 					onmouseenter={() => (showActivity = true)}
 					onmouseleave={() => (showActivity = false)}

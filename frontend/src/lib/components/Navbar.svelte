@@ -125,11 +125,9 @@
 				</details>
 				<ThemeToggle {currentPath} {currentTheme} />
 				<a
-					href="https://github.com/Quad4-Software/Reticulum-Go"
-					target="_blank"
-					rel="noopener noreferrer"
+					href="/source"
 					class="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors hidden sm:flex"
-					aria-label="Source Code"
+					aria-label={$t('common.source_code')}
 				>
 					<GitBranch class="w-5 h-5" />
 				</a>
@@ -212,14 +210,15 @@
 					>{$t('common.contact')}</a
 				>
 				<a
-					href="https://github.com/Quad4-Software/Reticulum-Go"
-					target="_blank"
-					rel="noopener noreferrer"
+					href="/source"
 					onclick={closeMenu}
-					class="sm:hidden flex items-center gap-2 py-2.5 px-3 rounded-lg text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900"
+					class="sm:hidden flex items-center gap-2 py-2.5 px-3 rounded-lg transition-colors {page.url
+						.pathname === '/source'
+						? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white'
+						: 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900'}"
 				>
 					<GitBranch class="w-5 h-5" />
-					<span>Source</span>
+					<span>{$t('common.source_code')}</span>
 				</a>
 			</div>
 		</div>

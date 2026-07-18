@@ -19,6 +19,11 @@ describe('agent context', () => {
 		expect(text).toContain('does not replace');
 		expect(text).toContain('/api/agent');
 		expect(text).toContain('/tools/reticulum-guide');
+		expect(text).toContain('/source');
+		expect(text).toContain('/download/reticulum-go.zip');
+		expect(text).toContain('DOCS_CACHE_DIR');
+		expect(text).toContain('rns://06a54b505bb67b25ef3f8097e8001edc/public/Reticulum-Go');
+		expect(text).toContain('lavaforge.org/Ivan/Reticulum-Go');
 		expect(text).not.toContain('\u2014');
 	});
 
@@ -30,6 +35,7 @@ describe('agent context', () => {
 		expect(text).toContain('RNode');
 		expect(text).toContain('not implemented');
 		expect(text).toContain('/docs/compatibility');
+		expect(text).toContain('/source');
 	});
 
 	it('exposes a versioned JSON payload for agents', () => {

@@ -21,6 +21,9 @@
 	const canonicalUrl = $derived(getCanonicalUrl(page.url.pathname));
 	const hreflangLinks = $derived(getHreflangLinks(page.url.pathname));
 	const isPopout = $derived(page.url.searchParams.get('popout') === '1');
+	const isSourcePage = $derived(
+		page.url.pathname === '/source' || page.url.pathname.startsWith('/source/')
+	);
 
 	let clientDark = $state<boolean | null>(null);
 	const resolvedDark = $derived(clientDark ?? data.isDark);
@@ -57,7 +60,9 @@
 	<main
 		class="min-w-0 flex-1 {isPopout
 			? 'flex h-full max-w-none flex-col overflow-hidden p-0'
-			: 'mx-auto w-full max-w-[2000px] px-4 py-8 sm:px-6 sm:py-12 lg:px-8'}"
+			: isSourcePage
+				? 'mx-auto w-full max-w-[2000px] px-4 pt-3 pb-8 sm:px-6 sm:pt-4 sm:pb-12 lg:px-8'
+				: 'mx-auto w-full max-w-[2000px] px-4 py-8 sm:px-6 sm:py-12 lg:px-8'}"
 	>
 		{@render children()}
 	</main>

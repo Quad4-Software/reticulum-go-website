@@ -76,7 +76,12 @@ export function getSoftwareApplicationJsonLd(): string {
 			price: '0',
 			priceCurrency: 'USD'
 		},
-		sameAs: [RETICULUM_GO_REPO, RETICULUM_SITE]
+		sameAs: [
+			RETICULUM_GO_REPO,
+			RETICULUM_SITE,
+			'https://lavaforge.org/Ivan/Reticulum-Go',
+			`${SITE_URL}/source`
+		]
 	});
 }
 
@@ -133,6 +138,31 @@ export function getPrivacyWebPageJsonLd(): string {
 			name: SITE_NAME,
 			url: SITE_URL
 		}
+	});
+}
+
+export function getSourceWebPageJsonLd(): string {
+	return buildJsonLd('WebPage', {
+		name: `Source Code | ${SITE_NAME}`,
+		description:
+			'Get Reticulum-Go source from official rngit over Reticulum (git clone and NomadNet Micron page), or GitHub and Lavaforge mirrors.',
+		url: `${SITE_URL}/source`,
+		isPartOf: {
+			'@type': 'WebSite',
+			name: SITE_NAME,
+			url: SITE_URL
+		},
+		about: {
+			'@type': 'SoftwareSourceCode',
+			name: SITE_NAME,
+			codeRepository: RETICULUM_GO_REPO,
+			url: `${SITE_URL}/source`
+		},
+		significantLink: [
+			RETICULUM_GO_REPO,
+			'https://lavaforge.org/Ivan/Reticulum-Go',
+			'rns://06a54b505bb67b25ef3f8097e8001edc/public/Reticulum-Go'
+		]
 	});
 }
 

@@ -237,6 +237,40 @@
 		"copy_address": "Копировать адрес",
 		"copied": "Скопировано!"
 	},
+	"source": {
+		"title": "Исходный код",
+		"subtitle": "Выберите, откуда получить Reticulum-Go.",
+		"intro": "Официальный репозиторий на rngit через Reticulum. GitHub и Lavaforge — публичные зеркала.",
+		"meta_description": "Исходный код Reticulum-Go с официального rngit через Reticulum (git clone и Micron-страница NomadNet) или зеркал GitHub и Lavaforge.",
+		"badge_official": "Официально",
+		"badge_mirror": "Зеркало",
+		"badge_ci_releases": "CI и релизы",
+		"copied": "Скопировано!",
+		"copied_toast": "Скопировано в буфер обмена",
+		"copy_failed": "Не удалось скопировать",
+		"copy_clone": "Копировать команду clone",
+		"copy_path": "Копировать путь",
+		"open_link": "Открыть",
+		"open_ren": "Открыть Ren Browser",
+		"download_zip": "Скачать zip исходников",
+		"download_zip_tag": "Последний тег релиза: {tag}",
+		"download_zip_pending": "ZIP готовится. Если загрузка не удалась, обновите страницу чуть позже.",
+		"rngit": {
+			"title": "rngit",
+			"description": "Официальный исходный код через Reticulum. Клонируйте RNS-совместимым git-клиентом или откройте Micron-страницу в NomadNet и Ren Browser.",
+			"git_label": "Git через Reticulum",
+			"page_label": "Страница NomadNet / Micron",
+			"page_blurb": "Тот же проект как Micron-страница для NomadNet и других mesh-клиентов."
+		},
+		"github": {
+			"title": "GitHub",
+			"description": "Публичное зеркало для CI и релизов, а также для браузеров и обычных git-сценариев."
+		},
+		"lavaforge": {
+			"title": "Lavaforge",
+			"description": "Публичное зеркало на Lavaforge."
+		}
+	},
 	"privacy": {
 		"title": "Политика конфиденциальности",
 		"subtitle": "Мы не собираем никаких персональных данных о вас.",

@@ -1,4 +1,5 @@
 import { error, redirect } from '@sveltejs/kit';
+import type { PageLoad } from './$types';
 import { browser } from '$app/environment';
 import { get } from 'svelte/store';
 import { locale } from 'svelte-i18n';
@@ -12,7 +13,7 @@ function extractTitleFromSlug(slug: string): string {
 		.join(' ');
 }
 
-export const load = async ({ params, depends }) => {
+export const load: PageLoad = async ({ params, data, depends }) => {
 	const { slug } = params;
 	depends('app:locale');
 
@@ -24,6 +25,18 @@ export const load = async ({ params, depends }) => {
 	};
 	if (legacyRedirects[cleanSlug]) {
 		throw redirect(301, `/docs/${legacyRedirects[cleanSlug]}`);
+	}
+
+	if (data.cachedHtml) {
+		const title = data.cachedTitle || extractTitleFromSlug(cleanSlug);
+		return {
+			content: null,
+			html: data.cachedHtml,
+			metadata: {
+				title,
+				description: `${title} - Reticulum-Go Documentation`
+			}
+		};
 	}
 
 	const modules = import.meta.glob('../../../lib/docs/**/*.{mdx,md}');
@@ -72,6 +85,7 @@ export const load = async ({ params, depends }) => {
 
 		return {
 			content: doc.default,
+			html: null as string | null,
 			metadata
 		};
 	} catch (e) {

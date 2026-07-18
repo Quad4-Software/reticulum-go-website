@@ -126,4 +126,20 @@ describe('setTheme', () => {
 		expect(document.documentElement.style.colorScheme).toBe('light');
 		expect(localStorage.getItem('theme')).toBe('light');
 	});
+
+	it('syncs theme cookie to the server via /set-theme', async () => {
+		const fetchMock = vi.fn().mockResolvedValue(
+			new Response(null, { status: 303, headers: { Location: '/' } })
+		);
+		vi.stubGlobal('fetch', fetchMock);
+		window.history.replaceState({}, '', '/docs?x=1');
+
+		const { setTheme } = await import('./theme');
+		setTheme('dark');
+
+		expect(fetchMock).toHaveBeenCalledWith(
+			'/set-theme?theme=dark&redirect=%2Fdocs%3Fx%3D1',
+			expect.objectContaining({ credentials: 'same-origin', redirect: 'manual' })
+		);
+	});
 });

@@ -38,7 +38,9 @@ EXPOSE 3000
 ENV PORT=3000 \
     HOST=0.0.0.0 \
     NODE_ENV=production \
-    PUBLIC_SHOW_COOLIFY=true
+    PUBLIC_SHOW_COOLIFY=true \
+    SOURCE_ZIP_CACHE_DIR=/tmp/reticulum-go-source-cache \
+    DOCS_CACHE_DIR=/tmp/reticulum-go-docs-cache
 
 USER node
 

@@ -57,6 +57,14 @@ Thumbs.db
 .eslintcache
 *.tsbuildinfo
 
+# Ephemeral Reticulum-Go source zip cache (fetched at runtime, never commit)
+reticulum-go-source-cache/
+**/reticulum-go-source-cache/
+
+# Ephemeral Reticulum-Go docs cache (fetched at runtime, never commit)
+reticulum-go-docs-cache/
+**/reticulum-go-docs-cache/
+
 # Task (go-task) local state
 .task/
 

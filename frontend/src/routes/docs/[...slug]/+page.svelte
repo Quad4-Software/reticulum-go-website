@@ -42,6 +42,7 @@
 
 	$effect(() => {
 		void data.content;
+		void data.html;
 		void $locale;
 
 		let alive = true;
@@ -125,7 +126,11 @@
 	</div>
 
 	<div class="prose prose-zinc dark:prose-invert max-w-none" bind:this={proseEl}>
-		{#if data.content}
+		{#if data.html}
+			{#key `${$locale}-${data.html}`}
+				{@html data.html}
+			{/key}
+		{:else if data.content}
 			{#key `${$locale}-${data.content}`}
 				<data.content />
 			{/key}

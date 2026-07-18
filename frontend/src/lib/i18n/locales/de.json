@@ -237,6 +237,40 @@
 		"copy_address": "Adresse kopieren",
 		"copied": "Kopiert!"
 	},
+	"source": {
+		"title": "Quellcode",
+		"subtitle": "Wählen Sie, wo Sie Reticulum-Go holen möchten.",
+		"intro": "Das offizielle Repository liegt auf rngit über Reticulum. GitHub und Lavaforge sind öffentliche Spiegel.",
+		"meta_description": "Reticulum-Go-Quellcode vom offiziellen rngit über Reticulum (Git-Clone und NomadNet-Micron-Seite) oder den Spiegeln GitHub und Lavaforge.",
+		"badge_official": "Offiziell",
+		"badge_mirror": "Spiegel",
+		"badge_ci_releases": "CI & Releases",
+		"copied": "Kopiert!",
+		"copied_toast": "In die Zwischenablage kopiert",
+		"copy_failed": "Kopieren fehlgeschlagen",
+		"copy_clone": "Clone-Befehl kopieren",
+		"copy_path": "Pfad kopieren",
+		"open_link": "Öffnen",
+		"open_ren": "Ren Browser öffnen",
+		"download_zip": "Quellcode-ZIP herunterladen",
+		"download_zip_tag": "Neuester Release-Tag: {tag}",
+		"download_zip_pending": "ZIP wird vorbereitet. Bei Fehlern kurz warten und erneut versuchen.",
+		"rngit": {
+			"title": "rngit",
+			"description": "Offizieller Quellcode über Reticulum. Klonen mit einem RNS-fähigen Git-Client oder Micron-Seite in NomadNet und Ren Browser öffnen.",
+			"git_label": "Git über Reticulum",
+			"page_label": "NomadNet / Micron-Seite",
+			"page_blurb": "Dasselbe Projekt als Micron-Seite für NomadNet und andere Mesh-Clients."
+		},
+		"github": {
+			"title": "GitHub",
+			"description": "Öffentlicher Spiegel für CI und Releases sowie Browser und klassische Git-Workflows."
+		},
+		"lavaforge": {
+			"title": "Lavaforge",
+			"description": "Öffentlicher Spiegel auf Lavaforge."
+		}
+	},
 	"privacy": {
 		"title": "Datenschutzrichtlinie",
 		"subtitle": "Wir erheben keine personenbezogenen Daten über Sie.",

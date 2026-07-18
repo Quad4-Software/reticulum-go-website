@@ -91,6 +91,7 @@ ${AGENT_MUST_NOT.map((line) => `- ${line}`).join('\n')}
 - [Security](${SITE_URL}/docs/security): Reporting (LXMF) and sandbox notes
 - [Reticulum Guide](${SITE_URL}/tools/reticulum-guide): Visual tutorials with Python and Go samples covering destinations, identities, announces, crypto, packets, links, messaging/LXMF, and interfaces
 - [Donate](${SITE_URL}/donate): Support. Half of donations go to Mark Qvist (reference creator)
+- [Source](${SITE_URL}/source): Official rngit, NomadNet page, GitHub and Lavaforge mirrors
 - [Privacy](${SITE_URL}/privacy): Zero personal data collection. No analytics or trackers
 - [Contact](${SITE_URL}/contact): LXMF and email
 - [Agent JSON](${SITE_URL}/api/agent): Machine-readable copy of this guidance
@@ -98,7 +99,12 @@ ${AGENT_MUST_NOT.map((line) => `- ${line}`).join('\n')}
 
 ## Source code
 
-- [Reticulum-Go](${RETICULUM_GO_REPO}): Go implementation repository
+- [Source hubs](${SITE_URL}/source): Official rngit over Reticulum (git clone + NomadNet Micron page), GitHub and Lavaforge mirrors
+- [Download source zip](${SITE_URL}/download/reticulum-go.zip): Latest GitHub release tag zip, cached by the site at startup (not committed to this repo)
+- Docs pages prefer English markdown refreshed from Reticulum-Go \`docs/en\` at server startup (cached under DOCS_CACHE_DIR)
+- [rngit (official)](rns://06a54b505bb67b25ef3f8097e8001edc/public/Reticulum-Go): \`git clone rns://06a54b505bb67b25ef3f8097e8001edc/public/Reticulum-Go\` and NomadNet page \`132f67e79d9b24aad014e93015fb858f:/page/index.mu\`
+- [GitHub mirror](${RETICULUM_GO_REPO}): Public GitHub mirror
+- [Lavaforge mirror](https://lavaforge.org/Ivan/Reticulum-Go): Public Lavaforge mirror
 - [This website](${WEBSITE_REPO}): Docs and WASM site source
 
 ## Optional
@@ -179,12 +185,15 @@ ${siteDocLinks()}
 - ${SITE_URL}/ren-browser
 - ${SITE_URL}/apps
 - ${SITE_URL}/donate
+- ${SITE_URL}/source
 - ${SITE_URL}/privacy
 - ${SITE_URL}/contact
 
 ## Repositories
 
-- ${RETICULUM_GO_REPO}
+- Official rngit: rns://06a54b505bb67b25ef3f8097e8001edc/public/Reticulum-Go (also NomadNet Micron page 132f67e79d9b24aad014e93015fb858f:/page/index.mu)
+- GitHub mirror: ${RETICULUM_GO_REPO}
+- Lavaforge mirror: https://lavaforge.org/Ivan/Reticulum-Go
 - ${WEBSITE_REPO}
 
 ## Endpoints for agents

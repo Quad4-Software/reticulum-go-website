@@ -158,11 +158,8 @@
 					>
 				</li>
 				<li>
-					<a
-						href="https://github.com/Quad4-Software/Reticulum-Go"
-						target="_blank"
-						rel="noopener noreferrer"
-						class="hover:text-zinc-900 dark:hover:text-zinc-100">Source Code</a
+					<a href="/source" class="hover:text-zinc-900 dark:hover:text-zinc-100"
+						>{$t('common.source_code')}</a
 					>
 				</li>
 			</ul>

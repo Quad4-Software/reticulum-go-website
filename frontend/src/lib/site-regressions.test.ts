@@ -29,6 +29,15 @@ describe('docs page chrome', () => {
 		expect(breadcrumbIndex).toBeGreaterThan(rowOpen);
 		expect(exportIndex).toBeGreaterThan(breadcrumbIndex);
 	});
+
+	it('prefers startup-cached HTML when present', () => {
+		const page = read('src/routes/docs/[...slug]/+page.svelte');
+		const load = read('src/routes/docs/[...slug]/+page.ts');
+		const server = read('src/routes/docs/[...slug]/+page.server.ts');
+		expect(server).toContain('getCachedDocMarkdown');
+		expect(load).toContain('data.cachedHtml');
+		expect(page).toContain('{@html data.html}');
+	});
 });
 
 describe('home copy', () => {

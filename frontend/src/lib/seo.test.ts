@@ -8,6 +8,7 @@ import {
 	getCanonicalUrl,
 	getDonateWebPageJsonLd,
 	getPrivacyWebPageJsonLd,
+	getSourceWebPageJsonLd,
 	getHreflangLinks,
 	getOrganizationJsonLd,
 	getSoftwareApplicationJsonLd,
@@ -49,7 +50,9 @@ describe('seo', () => {
 			getOrganizationJsonLd,
 			getSoftwareApplicationJsonLd,
 			getWebSiteJsonLd,
-			getDonateWebPageJsonLd
+			getDonateWebPageJsonLd,
+			getPrivacyWebPageJsonLd,
+			getSourceWebPageJsonLd
 		]) {
 			expect(() => JSON.parse(fn())).not.toThrow();
 		}
@@ -90,6 +93,23 @@ describe('seo', () => {
 		expect(parsed.url).toBe(`${SITE_URL}/privacy`);
 		expect(parsed.name).toMatch(/Privacy/i);
 		expect(parsed.description).toMatch(/zero personal data/i);
+	});
+
+	it('source JSON-LD lists mirrors and rngit', () => {
+		const parsed = JSON.parse(getSourceWebPageJsonLd()) as {
+			url: string;
+			description: string;
+			significantLink?: string[];
+		};
+		expect(parsed.url).toBe(`${SITE_URL}/source`);
+		expect(parsed.description).toMatch(/rngit|Reticulum/i);
+		expect(parsed.significantLink).toEqual(
+			expect.arrayContaining([
+				'https://github.com/Quad4-Software/Reticulum-Go',
+				'https://lavaforge.org/Ivan/Reticulum-Go',
+				'rns://06a54b505bb67b25ef3f8097e8001edc/public/Reticulum-Go'
+			])
+		);
 	});
 
 	it('getBreadcrumbJsonLd encodes positions and URLs', () => {
