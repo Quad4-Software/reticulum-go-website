@@ -6,10 +6,40 @@ import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { sveltekit } from '@sveltejs/kit/vite';
 import tailwindcss from '@tailwindcss/vite';
-import { defineConfig } from 'vite';
+import { defineConfig, type Plugin } from 'vite';
 import { SvelteKitPWA } from '@vite-pwa/sveltekit';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+/**
+ * Vite 8 + @sveltejs/kit 2.69 can load `*.server.*` / `$lib/server` during the
+ * client build because shared Kit path modules pollute the import map. Kit then
+ * throws "An impossible situation occurred" (fixed upstream in Kit 3 by allowing
+ * server-only modules with no real client entrypoint chain).
+ *
+ * Stub those modules in the client environment so the false positive cannot abort
+ * the build, without downgrading Vite.
+ */
+function stubServerOnlyOnClient(): Plugin {
+	const serverOnly =
+		/(?:^|[/\\])(?:hooks\.server\.[cm]?[jt]s$|.*\.server\.[cm]?[jt]s$)|[/\\]\$lib[/\\]server[/\\]|[/\\]src[/\\]lib[/\\]server[/\\]/;
+	return {
+		name: 'stub-server-only-on-client',
+		enforce: 'pre',
+		load: {
+			order: 'pre',
+			handler(id, options) {
+				if (process.env.TEST === 'true') return;
+				if (options?.ssr === true) return;
+				const consumer = this.environment?.config?.consumer;
+				if (consumer === 'server') return;
+				if (consumer !== 'client' && options?.ssr !== false) return;
+				if (!serverOnly.test(id)) return;
+				return 'export {};';
+			}
+		}
+	};
+}
 
 function readWasmSha256(): string {
 	const wasmPath = path.join(__dirname, 'static/reticulum-go.wasm');
@@ -50,7 +80,7 @@ export default defineConfig(({ command }) => {
 			conditions: isTest ? ['browser'] : []
 		},
 		ssr: {
-			noExternal: ['isomorphic-dompurify', 'dompurify']
+			noExternal: ['isomorphic-dompurify']
 		},
 		define: {
 			'import.meta.env.VITE_WASM_SHA256': JSON.stringify(wasmSha256),
@@ -95,6 +125,7 @@ export default defineConfig(({ command }) => {
 			setupFiles: ['./src/test/setup.ts']
 		},
 		plugins: [
+			stubServerOnlyOnClient(),
 			tailwindcss(),
 			sveltekit(),
 			...SvelteKitPWA({

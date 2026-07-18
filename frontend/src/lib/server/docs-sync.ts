@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { marked } from 'marked';
 import { RETICULUM_GO_GITHUB } from '$lib/source-mirrors';
-import { isSafeDocSlug, sanitizeHtml } from '$lib/sanitize-html';
+import { isSafeDocSlug, sanitizeHtml } from '$lib/server/sanitize-html';
 import { highlightMarkedCodeBlocks } from '$lib/code-highlight';
 
 const REPO_OWNER = 'Quad4-Software';

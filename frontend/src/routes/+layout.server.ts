@@ -1,7 +1,7 @@
 import type { LayoutServerLoad } from './$types';
 import { locale, waitLocale } from 'svelte-i18n';
 import { DEFAULT_LOCALE, isLocaleSupported } from '$lib/site-config';
-import { safeRedirectTarget } from '$lib/sanitize-html';
+import { safeRedirectTarget } from '$lib/security';
 
 const SUPPORTED_THEMES = new Set(['light', 'dark', 'system']);
 

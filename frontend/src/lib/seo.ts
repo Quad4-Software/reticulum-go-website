@@ -1,6 +1,6 @@
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, LOCALES } from './site-config';
 import { RETICULUM_GO_GITHUB, RETICULUM_GO_SOURCE_ZIP_PATH } from './source-mirrors';
-import { escapeJsonForScript } from './sanitize-html';
+import { escapeJsonForScript } from './security';
 
 const JSON_LD_TYPE = 'application/ld+json';
 

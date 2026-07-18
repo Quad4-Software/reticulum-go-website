@@ -1,4 +1,4 @@
-import DOMPurify from 'isomorphic-dompurify';
+import createDOMPurify from 'dompurify';
 
 /** DOMPurify options for markdown HTML (including Shiki code blocks). */
 const MARKUP_CONFIG = {
@@ -15,41 +15,40 @@ const HIGHLIGHT_CONFIG = {
 };
 
 /**
+ * Browser DOMPurify. On SSR without a window, applies a conservative strip
+ * so client-bundled code never pulls in isomorphic-dompurify/jsdom.
+ */
+function purifyBrowser() {
+	return createDOMPurify(window);
+}
+
+function stripDangerousFallback(dirty: string): string {
+	return dirty
+		.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '')
+		.replace(/<iframe\b[^>]*>[\s\S]*?<\/iframe>/gi, '')
+		.replace(/\son\w+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, '')
+		.replace(/javascript:/gi, '');
+}
+
+/**
  * Sanitize untrusted HTML before `{@html}`.
  * Strips scripts, event handlers, and javascript: URLs.
  */
 export function sanitizeHtml(dirty: string): string {
 	if (!dirty) return '';
-	return DOMPurify.sanitize(dirty, MARKUP_CONFIG);
+	if (typeof window === 'undefined') return stripDangerousFallback(dirty);
+	return purifyBrowser().sanitize(dirty, MARKUP_CONFIG);
 }
 
 /** Sanitize Shiki / highlight HTML while keeping theme classes and styles. */
 export function sanitizeHighlightHtml(dirty: string): string {
 	if (!dirty) return '';
-	return DOMPurify.sanitize(dirty, HIGHLIGHT_CONFIG);
+	if (typeof window === 'undefined') return stripDangerousFallback(dirty);
+	return purifyBrowser().sanitize(dirty, HIGHLIGHT_CONFIG);
 }
 
-/**
- * Escape JSON for embedding inside a `<script type="application/ld+json">` tag.
- * Prevents `</script>` breakout and HTML parsing surprises.
- */
-export function escapeJsonForScript(json: string): string {
-	return json
-		.replace(/</g, '\\u003c')
-		.replace(/>/g, '\\u003e')
-		.replace(/&/g, '\\u0026')
-		.replace(/\u2028/g, '\\u2028')
-		.replace(/\u2029/g, '\\u2029');
-}
-
-/** Same-origin relative path only. Rejects open redirects and protocol-relative URLs. */
-export function safeRedirectTarget(value: string | null | undefined): string {
-	if (!value || !value.startsWith('/') || value.startsWith('//')) return '/';
-	if (value.includes('\\') || value.includes('\0')) return '/';
-	return value;
-}
-
-/** Doc slug allowlist: lowercase kebab-case only (blocks path traversal). */
-export function isSafeDocSlug(slug: string): boolean {
-	return /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug);
-}
+export {
+	escapeJsonForScript,
+	safeRedirectTarget,
+	isSafeDocSlug
+} from './security';
