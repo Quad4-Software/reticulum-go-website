@@ -1,17 +1,17 @@
 import DOMPurify from 'isomorphic-dompurify';
 
-/** DOMPurify options for markdown and Micron HTML rendered into the page. */
+/** DOMPurify options for markdown HTML (including Shiki code blocks). */
 const MARKUP_CONFIG = {
 	USE_PROFILES: { html: true },
 	ALLOW_UNKNOWN_PROTOCOLS: false,
-	ADD_ATTR: ['target'] as string[]
+	ADD_ATTR: ['target', 'style', 'class', 'tabindex'] as string[]
 };
 
 /** Options for syntax-highlighted code blocks (class/style from Shiki). */
 const HIGHLIGHT_CONFIG = {
 	USE_PROFILES: { html: true },
 	ALLOW_UNKNOWN_PROTOCOLS: false,
-	ADD_ATTR: ['style', 'class'] as string[]
+	ADD_ATTR: ['style', 'class', 'tabindex'] as string[]
 };
 
 /**

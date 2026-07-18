@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os';
 import { marked } from 'marked';
 import { RETICULUM_GO_GITHUB } from '$lib/source-mirrors';
 import { isSafeDocSlug, sanitizeHtml } from '$lib/sanitize-html';
+import { highlightMarkedCodeBlocks } from '$lib/code-highlight';
 
 const REPO_OWNER = 'Quad4-Software';
 const REPO_NAME = 'Reticulum-Go';
@@ -92,7 +93,8 @@ export async function getCachedDocMarkdown(slug: string): Promise<string | null>
 
 export async function renderDocMarkdown(markdown: string): Promise<string> {
 	const raw = marked.parse(markdown, { async: false }) as string;
-	return sanitizeHtml(raw);
+	const highlighted = await highlightMarkedCodeBlocks(raw);
+	return sanitizeHtml(highlighted);
 }
 
 let refreshInFlight: Promise<DocsSyncMeta | null> | null = null;

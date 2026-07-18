@@ -39,6 +39,14 @@ describe('sanitizeHtml XSS hardening', () => {
 		expect(clean).toContain('href="/docs/overview"');
 	});
 
+	it('preserves Shiki theme CSS variables in docs markup sanitize', () => {
+		const dirty =
+			'<pre class="shiki" style="--shiki-light:#111;--shiki-dark:#eee"><code><span style="--shiki-light:#D73A49">x</span></code></pre>';
+		const clean = sanitizeHtml(dirty);
+		expect(clean).toContain('--shiki-light');
+		expect(clean).toContain('class="shiki"');
+	});
+
 	it('sanitizes marked output that embeds raw HTML', async () => {
 		const md = '# Title\n\n<script>alert(1)</script>\n\n<img src=x onerror=alert(1)>\n';
 		const dirty = (await marked.parse(md)) as string;
@@ -110,5 +118,12 @@ describe('renderDocMarkdown', () => {
 		expect(html.toLowerCase()).not.toContain('<script');
 		expect(html.toLowerCase()).not.toContain('javascript:');
 		expect(html).toContain('Hi');
+	});
+
+	it('highlights fenced code blocks with Shiki', async () => {
+		const html = await renderDocMarkdown('# Sample\n\n```go\npackage main\n```\n');
+		expect(html).toContain('shiki');
+		expect(html).toContain('--shiki-light');
+		expect(html).toContain('package');
 	});
 });
