@@ -3,6 +3,7 @@
 	import { t } from 'svelte-i18n';
 	import { GitBranch, Lock, Mountain, Code2, Network, ShieldCheck, Boxes } from 'lucide-svelte';
 	import { getRepoUpdatedAt, calculateTimeAgo } from '$lib/version';
+	import SupportedPlatforms from '$lib/components/SupportedPlatforms.svelte';
 
 	let repoUpdatedAt = $state<string | null>(null);
 	let timeAgo = $derived.by(() => calculateTimeAgo(repoUpdatedAt));
@@ -80,11 +81,13 @@
 
 	<section class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-16 md:mb-24">
 		{#each features as feature (feature.key)}
-			<div class="p-8 rounded-2xl border border-zinc-200 dark:border-zinc-800 space-y-4">
+			<div
+				class="group p-8 rounded-2xl border border-zinc-200 dark:border-zinc-800 space-y-4 transition-colors"
+			>
 				<div
-					class="w-12 h-12 rounded-xl bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center"
+					class="w-12 h-12 rounded-xl bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center transition-colors group-hover:bg-[#00ADD8]"
 				>
-					<feature.Icon class="w-6 h-6" />
+					<feature.Icon class="w-6 h-6 transition-colors group-hover:text-white" />
 				</div>
 				<h3 class="text-xl font-bold">{$t(`home.features.${feature.key}.title`)}</h3>
 				<p class="text-zinc-500 dark:text-zinc-400">
@@ -92,6 +95,10 @@
 				</p>
 			</div>
 		{/each}
+	</section>
+
+	<section class="mb-16 md:mb-24">
+		<SupportedPlatforms />
 	</section>
 
 	<section class="max-w-3xl mx-auto text-center space-y-4 px-2 mb-16 md:mb-24">

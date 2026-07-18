@@ -35,11 +35,14 @@ describe('rnode flasher regressions', () => {
 			expect(src).not.toMatch(/<svg[\s>]/);
 			if (file.endsWith('SupportedBrowsers.svelte')) {
 				expect(src).toContain('/browser-icons/');
-				expect(src).toContain('group-hover:opacity-100');
+				expect(src).toContain('IconCascade');
 			} else {
 				expect(src).toMatch(/lucide-svelte/);
 			}
 		}
+		const cascade = readFileSync(resolve(root, 'lib/components/IconCascade.svelte'), 'utf8');
+		expect(cascade).toContain('group-hover:opacity-100');
+		expect(cascade).not.toMatch(/<svg[\s>]/);
 	});
 
 	it('vendors chromium browser favicons for the support strip', () => {

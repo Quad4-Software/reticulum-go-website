@@ -309,6 +309,32 @@
 			"title": "Браузер для сети Reticulum",
 			"description": "Ren Browser - современный NomadNet-совместимый клиент на Reticulum-Go. Рендеринг Micron-страниц, управление личностями и исследование mesh с рабочего стола или мобильного устройства.",
 			"cta": "Открыть Ren Browser"
+		},
+		"platforms": {
+			"title": "Поддерживаемые платформы",
+			"list": "Windows · macOS / iOS · Android · Debian · Ubuntu · Fedora · openSUSE · Arch · Gentoo · NixOS · Alpine · FreeBSD · OpenBSD · NetBSD · Haiku · Raspberry Pi · PowerPC · Flatpak · Docker · Firecracker · WASM",
+			"arches": "32-бит · 64-бит",
+			"windows": "Windows 7-11",
+			"apple": "macOS / iOS",
+			"android": "Android",
+			"debian": "Debian",
+			"ubuntu": "Ubuntu",
+			"fedora": "Fedora",
+			"opensuse": "openSUSE",
+			"arch": "Arch Linux",
+			"gentoo": "Gentoo",
+			"nixos": "NixOS",
+			"alpine": "Alpine Linux",
+			"freebsd": "FreeBSD",
+			"openbsd": "OpenBSD",
+			"netbsd": "NetBSD",
+			"haiku": "Haiku",
+			"raspberry_pi": "Raspberry Pi",
+			"powerpc": "PowerPC",
+			"flatpak": "Flatpak",
+			"docker": "Docker",
+			"firecracker": "Firecracker microVM",
+			"wasm": "WebAssembly"
 		}
 	},
 	"ren_browser": {

@@ -61,6 +61,7 @@
 					t === 'dark' ||
 					((t === 'system' || !t) && window.matchMedia('(prefers-color-scheme: dark)').matches);
 				document.documentElement.classList.toggle('dark', dark);
+				document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
 				if (t === 'light' || t === 'dark' || t === 'system') {
 					try {
 						localStorage.setItem('theme', t);

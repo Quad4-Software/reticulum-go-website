@@ -83,11 +83,16 @@ describe('setTheme', () => {
 		mockLocalStorage();
 		document.cookie = 'theme=; Max-Age=0; path=/';
 		document.documentElement.classList.remove('dark');
+		vi.stubGlobal(
+			'fetch',
+			vi.fn().mockResolvedValue(new Response(null, { status: 303, headers: { Location: '/' } }))
+		);
 	});
 
 	afterEach(() => {
 		document.cookie = 'theme=; Max-Age=0; path=/';
 		document.documentElement.classList.remove('dark');
+		vi.unstubAllGlobals();
 	});
 
 	it('applies dark class, localStorage, and cookie immediately', async () => {
@@ -118,6 +123,7 @@ describe('setTheme', () => {
 		const { setTheme } = await import('./theme');
 		setTheme('light');
 		expect(document.documentElement.classList.contains('dark')).toBe(false);
+		expect(document.documentElement.style.colorScheme).toBe('light');
 		expect(localStorage.getItem('theme')).toBe('light');
 	});
 });

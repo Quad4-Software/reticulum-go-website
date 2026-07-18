@@ -31,7 +31,7 @@ describe('GET /set-theme', () => {
 		expect(cookiesSet).toHaveBeenCalledWith(
 			'theme',
 			'dark',
-			expect.objectContaining({ path: '/', sameSite: 'lax' })
+			expect.objectContaining({ path: '/', sameSite: 'lax', httpOnly: false })
 		);
 	});
 

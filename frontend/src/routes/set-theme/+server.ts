@@ -16,7 +16,8 @@ export const GET: RequestHandler = ({ url, cookies }) => {
 		cookies.set('theme', requestedTheme, {
 			path: '/',
 			maxAge: 60 * 60 * 24 * 365,
-			sameSite: 'lax'
+			sameSite: 'lax',
+			httpOnly: false
 		});
 	}
 

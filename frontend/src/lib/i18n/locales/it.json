@@ -309,6 +309,32 @@
 			"title": "Naviga la rete Reticulum",
 			"description": "Ren Browser è un client moderno compatibile NomadNet costruito con Reticulum-Go. Renderizza pagine Micron, gestisci identità ed esplora la mesh da desktop o mobile.",
 			"cta": "Esplora Ren Browser"
+		},
+		"platforms": {
+			"title": "Piattaforme supportate",
+			"list": "Windows · macOS / iOS · Android · Debian · Ubuntu · Fedora · openSUSE · Arch · Gentoo · NixOS · Alpine · FreeBSD · OpenBSD · NetBSD · Haiku · Raspberry Pi · PowerPC · Flatpak · Docker · Firecracker · WASM",
+			"arches": "32 bit · 64 bit",
+			"windows": "Windows 7-11",
+			"apple": "macOS / iOS",
+			"android": "Android",
+			"debian": "Debian",
+			"ubuntu": "Ubuntu",
+			"fedora": "Fedora",
+			"opensuse": "openSUSE",
+			"arch": "Arch Linux",
+			"gentoo": "Gentoo",
+			"nixos": "NixOS",
+			"alpine": "Alpine Linux",
+			"freebsd": "FreeBSD",
+			"openbsd": "OpenBSD",
+			"netbsd": "NetBSD",
+			"haiku": "Haiku",
+			"raspberry_pi": "Raspberry Pi",
+			"powerpc": "PowerPC",
+			"flatpak": "Flatpak",
+			"docker": "Docker",
+			"firecracker": "Firecracker microVM",
+			"wasm": "WebAssembly"
 		}
 	},
 	"ren_browser": {

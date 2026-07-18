@@ -55,6 +55,16 @@ export function setTheme(t: Theme) {
 	}
 	persistThemeCookie(t);
 	applyDarkClass(get(isDark));
+	syncThemeCookieWithServer(t);
+}
+
+function syncThemeCookieWithServer(t: Theme) {
+	if (typeof window === 'undefined' || typeof fetch !== 'function') return;
+	const redirect = encodeURIComponent(`${window.location.pathname}${window.location.search}`);
+	void fetch(`/set-theme?theme=${encodeURIComponent(t)}&redirect=${redirect}`, {
+		credentials: 'same-origin',
+		redirect: 'manual'
+	}).catch(() => {});
 }
 
 export function syncThemeFromServer(serverTheme: Theme) {
@@ -90,4 +100,5 @@ export function initTheme(preferred?: Theme) {
 export function applyDarkClass(dark: boolean) {
 	if (typeof document === 'undefined') return;
 	document.documentElement.classList.toggle('dark', dark);
+	document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
 }

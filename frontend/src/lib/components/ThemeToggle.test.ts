@@ -44,6 +44,10 @@ describe('ThemeToggle', () => {
 		mockLocalStorage();
 		document.cookie = 'theme=; Max-Age=0; path=/';
 		document.documentElement.classList.remove('dark');
+		vi.stubGlobal(
+			'fetch',
+			vi.fn().mockResolvedValue(new Response(null, { status: 303, headers: { Location: '/' } }))
+		);
 	});
 
 	it('renders no-js theme selector', () => {
