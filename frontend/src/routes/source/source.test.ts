@@ -29,7 +29,7 @@ describe('source page', () => {
 		expect(page).toContain('RETICULUM_GO_SOURCE_ZIP_PATH');
 		expect(page).toContain('source.download_zip');
 		expect(page).toContain('showDot={false}');
-		expect(page).toContain('pt-0 pb-12');
+		expect(page).toContain('pt-0 pb-4');
 		expect(page).toContain('source.badge_ci_releases');
 		expect(page).toContain('onclick={() => copyText(');
 	});

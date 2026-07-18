@@ -1,23 +1,46 @@
+export type RepoInfo = {
+	latest_tag: string | null;
+	updated_at: string | null;
+};
+
+let repoInfoPromise: Promise<RepoInfo> | null = null;
+
+/** Single shared fetch for /api/repo-info (tag + updated_at). */
+export function getRepoInfo(): Promise<RepoInfo> {
+	if (!repoInfoPromise) {
+		repoInfoPromise = (async (): Promise<RepoInfo> => {
+			try {
+				const response = await fetch('/api/repo-info');
+				if (!response.ok) {
+					return { latest_tag: null, updated_at: null };
+				}
+				const data = (await response.json()) as {
+					latest_tag?: string | null;
+					updated_at?: string | null;
+				};
+				return {
+					latest_tag: data.latest_tag || null,
+					updated_at: data.updated_at || null
+				};
+			} catch {
+				return { latest_tag: null, updated_at: null };
+			}
+		})();
+	}
+	return repoInfoPromise;
+}
+
+/** Clears the in-flight/cached promise (tests only). */
+export function resetRepoInfoCache(): void {
+	repoInfoPromise = null;
+}
+
 export async function getLatestTag() {
-	try {
-		const response = await fetch('/api/repo-info');
-		if (response.ok) {
-			const data = await response.json();
-			return data.latest_tag || null;
-		}
-	} catch {}
-	return null;
+	return (await getRepoInfo()).latest_tag;
 }
 
 export async function getRepoUpdatedAt() {
-	try {
-		const response = await fetch('/api/repo-info');
-		if (response.ok) {
-			const data = await response.json();
-			return data.updated_at || null;
-		}
-	} catch {}
-	return null;
+	return (await getRepoInfo()).updated_at;
 }
 
 export function calculateTimeAgo(updatedAt: string | null) {

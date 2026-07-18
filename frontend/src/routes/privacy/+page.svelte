@@ -18,7 +18,7 @@
 	{@html jsonLdScript(getPrivacyWebPageJsonLd())}
 </svelte:head>
 
-<div class="max-w-3xl mx-auto space-y-12 py-12">
+<div class="max-w-3xl mx-auto space-y-12">
 	<div class="text-center space-y-4">
 		<h1 class="text-4xl font-bold">{$t('privacy.title')}</h1>
 		<p class="text-xl text-zinc-600 dark:text-zinc-400">

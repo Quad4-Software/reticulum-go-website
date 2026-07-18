@@ -235,7 +235,8 @@
 		"kofi": "Ko-fi",
 		"monero": "Monero",
 		"copy_address": "Копировать адрес",
-		"copied": "Скопировано!"
+		"copied": "Скопировано!",
+		"copy_failed": "Не удалось скопировать адрес"
 	},
 	"source": {
 		"title": "Исходный код",
@@ -270,6 +271,20 @@
 			"title": "Lavaforge",
 			"description": "Публичное зеркало на Lavaforge."
 		}
+	},
+	"contact": {
+		"title": "Контакты",
+		"subtitle": "Вопросы или хотите помочь? Свяжитесь с командой Reticulum-Go.",
+		"meta_description": "Свяжитесь с командой Reticulum-Go через LXMF или email.",
+		"dev_heading": "Связаться с основным разработчиком",
+		"lxmf_label": "LXMF (Reticulum)",
+		"email_label": "Email",
+		"copy_lxmf": "Копировать LXMF-адрес",
+		"copied_toast": "Скопировано в буфер обмена",
+		"copy_failed": "Не удалось скопировать",
+		"quad4_heading": "Quad4 Software",
+		"quad4_body": "Общие вопросы о Quad4 Software или деловых партнёрствах.",
+		"visit_quad4": "Открыть quad4.io"
 	},
 	"privacy": {
 		"title": "Политика конфиденциальности",
@@ -410,7 +425,7 @@
 			},
 			"i18n": {
 				"title": "Локализованный интерфейс",
-				"description": "Интерфейс на английском, немецком, испанском и русском."
+				"description": "Интерфейс на английском, немецком, итальянском и русском."
 			}
 		},
 		"gallery_title": "Скриншоты",

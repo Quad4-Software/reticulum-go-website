@@ -1,5 +1,6 @@
 import { SITE_URL, SITE_DESCRIPTION } from '$lib/site-config';
 import { DOC_SLUGS } from '$lib/docs-config';
+import { RETICULUM_GO_GITHUB as RETICULUM_GO_REPO } from '$lib/source-mirrors';
 
 export const RETICULUM_HOME = 'https://reticulum.network/';
 export const RETICULUM_ZEN = 'https://reticulum.network/zenofreticulum.html';
@@ -10,7 +11,7 @@ export const RETICULUM_REFERENCE = 'https://reticulum.network/manual/reference.h
 export const RETICULUM_LICENSE = 'https://reticulum.network/manual/license.html';
 export const RETICULUM_CRYPTO = 'https://reticulum.network/crypto.html';
 export const RETICULUM_HARDWARE = 'https://reticulum.network/manual/hardware.html';
-export const RETICULUM_GO_REPO = 'https://github.com/Quad4-Software/Reticulum-Go';
+export { RETICULUM_GO_REPO };
 export const WEBSITE_REPO = 'https://github.com/Quad4-Software/reticulum-go-website';
 
 /**

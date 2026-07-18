@@ -1,6 +1,5 @@
 import { browser } from '$app/environment';
 import { saveDoc, getDoc, getAllDocsForLang, hasAnyDocs } from './db';
-import JSZip from 'jszip';
 
 const rawModules = import.meta.glob('./docs/**/*.{md,mdx}', { query: '?raw', import: 'default' });
 
@@ -125,6 +124,7 @@ export async function downloadAllDocs(lang: string): Promise<void> {
 	const allDocs = await getAllDocsForLang(lang);
 	if (allDocs.length === 0) return;
 
+	const { default: JSZip } = await import('jszip');
 	const zip = new JSZip();
 	for (const doc of allDocs) {
 		zip.file(`${doc.slug}.${lang}.md`, doc.content);

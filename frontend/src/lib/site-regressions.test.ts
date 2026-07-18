@@ -38,6 +38,14 @@ describe('docs page chrome', () => {
 		expect(load).toContain('data.cachedHtml');
 		expect(page).toContain('{@html data.html}');
 	});
+
+	it('avoids nested main landmarks and eager docs search', () => {
+		const docsLayout = read('src/routes/docs/+layout.svelte');
+		const search = read('src/lib/components/Search.svelte');
+		expect(docsLayout).not.toMatch(/<main\b/);
+		expect(search).not.toContain('eager: true');
+		expect(search).toContain("import.meta.glob('../../lib/docs/**/*.{md,mdx}'");
+	});
 });
 
 describe('home copy', () => {

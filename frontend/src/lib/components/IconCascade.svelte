@@ -55,6 +55,8 @@
 							alt=""
 							width={dims.px}
 							height={dims.px}
+							loading="lazy"
+							decoding="async"
 							class="{dims.img} object-contain"
 							title={$t(item.nameKey)}
 						/>

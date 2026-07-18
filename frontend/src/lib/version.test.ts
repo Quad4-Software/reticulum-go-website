@@ -1,6 +1,12 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
-import { getLatestTag, getRepoUpdatedAt, calculateTimeAgo } from './version';
+import {
+	getLatestTag,
+	getRepoUpdatedAt,
+	getRepoInfo,
+	calculateTimeAgo,
+	resetRepoInfoCache
+} from './version';
 
 describe('version', () => {
 	describe('calculateTimeAgo', () => {
@@ -56,33 +62,45 @@ describe('version', () => {
 		});
 	});
 
-	describe('getLatestTag', () => {
+	describe('repo info fetch', () => {
 		beforeEach(() => {
+			resetRepoInfoCache();
 			vi.stubGlobal('fetch', vi.fn());
 		});
 
 		afterEach(() => {
+			resetRepoInfoCache();
 			vi.unstubAllGlobals();
 		});
 
-		it('returns latest_tag from API when ok', async () => {
-			(globalThis.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
+		it('shares one /api/repo-info request across helpers', async () => {
+			const fetchMock = globalThis.fetch as ReturnType<typeof vi.fn>;
+			fetchMock.mockResolvedValue({
 				ok: true,
-				json: async () => ({ latest_tag: 'v1.2.3' })
+				json: async () => ({ latest_tag: 'v1.2.3', updated_at: '2024-01-15T12:00:00Z' })
 			});
+
 			expect(await getLatestTag()).toBe('v1.2.3');
+			expect(await getRepoUpdatedAt()).toBe('2024-01-15T12:00:00Z');
+			expect(await getRepoInfo()).toEqual({
+				latest_tag: 'v1.2.3',
+				updated_at: '2024-01-15T12:00:00Z'
+			});
+			expect(fetchMock).toHaveBeenCalledTimes(1);
 		});
 
-		it('returns null when response not ok', async () => {
+		it('returns nulls when response not ok', async () => {
 			(globalThis.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
 				ok: false
 			});
 			expect(await getLatestTag()).toBeNull();
+			expect(await getRepoUpdatedAt()).toBeNull();
 		});
 
-		it('returns null when fetch throws', async () => {
+		it('returns nulls when fetch throws', async () => {
 			(globalThis.fetch as ReturnType<typeof vi.fn>).mockRejectedValue(new Error('network'));
 			expect(await getLatestTag()).toBeNull();
+			expect(await getRepoUpdatedAt()).toBeNull();
 		});
 
 		it('returns null when latest_tag missing', async () => {
@@ -91,36 +109,6 @@ describe('version', () => {
 				json: async () => ({})
 			});
 			expect(await getLatestTag()).toBeNull();
-		});
-	});
-
-	describe('getRepoUpdatedAt', () => {
-		beforeEach(() => {
-			vi.stubGlobal('fetch', vi.fn());
-		});
-
-		afterEach(() => {
-			vi.unstubAllGlobals();
-		});
-
-		it('returns updated_at from API when ok', async () => {
-			(globalThis.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
-				ok: true,
-				json: async () => ({ updated_at: '2024-01-15T12:00:00Z' })
-			});
-			expect(await getRepoUpdatedAt()).toBe('2024-01-15T12:00:00Z');
-		});
-
-		it('returns null when response not ok', async () => {
-			(globalThis.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
-				ok: false
-			});
-			expect(await getRepoUpdatedAt()).toBeNull();
-		});
-
-		it('returns null when fetch throws', async () => {
-			(globalThis.fetch as ReturnType<typeof vi.fn>).mockRejectedValue(new Error('network'));
-			expect(await getRepoUpdatedAt()).toBeNull();
 		});
 	});
 });

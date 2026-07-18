@@ -14,7 +14,7 @@
 
 {#if visible && message}
 	<div
-		class="toast-pop fixed bottom-5 right-4 z-[100] flex max-w-[min(22rem,calc(100vw-2rem))] items-start gap-3 rounded-2xl border border-white/50 bg-white/75 px-4 py-3.5 text-sm font-semibold leading-snug text-zinc-800 shadow-2xl shadow-black/10 ring-1 ring-black/[0.06] backdrop-blur-xl dark:border-zinc-500/35 dark:bg-zinc-950/78 dark:text-zinc-100 dark:shadow-black/40 dark:ring-white/[0.08] sm:bottom-6 sm:right-6"
+		class="toast-pop fixed bottom-[max(1.25rem,env(safe-area-inset-bottom))] right-4 z-[100] flex max-w-[min(22rem,calc(100vw-2rem))] items-start gap-3 rounded-2xl border border-white/50 bg-white/75 px-4 py-3.5 text-sm font-semibold leading-snug text-zinc-800 shadow-2xl shadow-black/10 ring-1 ring-black/[0.06] backdrop-blur-xl dark:border-zinc-500/35 dark:bg-zinc-950/78 dark:text-zinc-100 dark:shadow-black/40 dark:ring-white/[0.08] sm:right-6"
 		role="status"
 	>
 		{#if showDot}

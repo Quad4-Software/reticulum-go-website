@@ -40,4 +40,21 @@ describe('Navbar', () => {
 		expect(btn.getAttribute('aria-expanded')).toBe('true');
 		expect(screen.getAllByRole('button', { name: 'Close menu' }).length).toBe(2);
 	});
+
+	it('marks the current route with aria-current', () => {
+		render(Navbar, { props: { currentPath: '/docs', currentTheme: 'system' } });
+		const docsLinks = screen.getAllByRole('link', { name: 'Docs' });
+		expect(docsLinks.some((link) => link.getAttribute('aria-current') === 'page')).toBe(true);
+	});
+
+	it('closes the mobile menu on Escape', async () => {
+		render(Navbar, { props: { currentPath: '/', currentTheme: 'system' } });
+		const btn = screen.getByRole('button', { name: 'Open menu' });
+		await fireEvent.click(btn);
+		expect(btn.getAttribute('aria-expanded')).toBe('true');
+		await fireEvent.keyDown(window, { key: 'Escape' });
+		expect(screen.getByRole('button', { name: 'Open menu' }).getAttribute('aria-expanded')).toBe(
+			'false'
+		);
+	});
 });

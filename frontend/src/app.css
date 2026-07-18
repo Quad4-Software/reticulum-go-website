@@ -271,6 +271,12 @@
 	}
 }
 
+@media (prefers-reduced-motion: reduce) {
+	.toast-pop {
+		animation: none;
+	}
+}
+
 @layer components {
 	.toast-pop {
 		animation: toast-pop-in 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;

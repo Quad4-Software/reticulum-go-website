@@ -7,7 +7,6 @@
 
 	let repoUpdatedAt = $state<string | null>(null);
 	let timeAgo = $derived.by(() => calculateTimeAgo(repoUpdatedAt));
-	let showActivity = $state(false);
 
 	const features = [
 		{ key: 'encrypted', Icon: Lock },
@@ -32,7 +31,7 @@
 </svelte:head>
 
 <div>
-	<section class="text-center space-y-8 pt-12 pb-8">
+	<section class="text-center space-y-8 pt-4 pb-8 sm:pt-6">
 		<h1
 			class="text-5xl md:text-7xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-zinc-900 via-zinc-700 to-zinc-500 dark:from-white dark:via-zinc-300 dark:to-zinc-500"
 		>
@@ -43,37 +42,33 @@
 		>
 			{$t('home.subtitle')}
 		</p>
-		<div class="flex flex-wrap justify-center gap-4">
-			<a
-				href="/ren-browser"
-				class="relative px-8 py-4 bg-[#00ADD8] text-white font-bold rounded-xl shadow-md hover:shadow-[#00ADD8]/10 transition-all active:scale-95"
-			>
-				{$t('home.try_ren_browser')}
-				<span
-					class="absolute -top-2 -right-2 px-1.5 py-0.5 text-[10px] font-semibold rounded bg-orange-500 text-white uppercase"
-					>{$t('ren_browser.badge')}</span
+		<div class="flex flex-col items-center gap-3">
+			<div class="flex flex-wrap justify-center gap-4">
+				<a
+					href="/ren-browser"
+					class="relative px-8 py-4 bg-[#00ADD8] text-white font-bold rounded-xl shadow-md hover:shadow-[#00ADD8]/10 transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00ADD8] focus-visible:ring-offset-2"
 				>
-			</a>
-			<div class="relative group">
+					{$t('home.try_ren_browser')}
+					<span
+						class="absolute -top-2 -right-2 px-1.5 py-0.5 text-[10px] font-semibold rounded bg-orange-500 text-white uppercase"
+						>{$t('ren_browser.badge')}</span
+					>
+				</a>
 				<a
 					href="/source"
-					class="px-8 py-4 border border-zinc-200 dark:border-zinc-800 font-bold rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-all active:scale-95 flex items-center gap-2"
-					onmouseenter={() => (showActivity = true)}
-					onmouseleave={() => (showActivity = false)}
+					class="px-8 py-4 border border-zinc-200 dark:border-zinc-800 font-bold rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-all active:scale-95 flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00ADD8] focus-visible:ring-offset-2"
 				>
 					<GitBranch class="w-5 h-5" />
 					{$t('home.view_source')}
 				</a>
-				{#if showActivity && timeAgo}
-					<div
-						class="absolute top-full left-0 right-0 mt-2 text-xs text-zinc-500 dark:text-zinc-400 animate-in fade-in slide-in-from-top-1 duration-200"
-					>
-						{$t('common.last_activity', {
-							values: { time: `${timeAgo.value} ${$t(timeAgo.unit)}` }
-						})}
-					</div>
-				{/if}
 			</div>
+			{#if timeAgo}
+				<p class="text-xs text-zinc-500 dark:text-zinc-400">
+					{$t('common.last_activity', {
+						values: { time: `${timeAgo.value} ${$t(timeAgo.unit)}` }
+					})}
+				</p>
+			{/if}
 		</div>
 	</section>
 

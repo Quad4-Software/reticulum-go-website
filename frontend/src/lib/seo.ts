@@ -1,9 +1,13 @@
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, LOCALES } from './site-config';
+import {
+	RETICULUM_GO_GITHUB,
+	RETICULUM_GO_SOURCE_ZIP_PATH
+} from './source-mirrors';
 
 const JSON_LD_TYPE = 'application/ld+json';
 
 export const RETICULUM_SITE = 'https://reticulum.network';
-export const RETICULUM_GO_REPO = 'https://github.com/Quad4-Software/Reticulum-Go';
+export const RETICULUM_GO_REPO = RETICULUM_GO_GITHUB;
 export const QUAD4_SITE = 'https://quad4.io';
 export const APACHE_2_LICENSE = 'https://www.apache.org/licenses/LICENSE-2.0';
 
@@ -55,7 +59,7 @@ export function getSoftwareApplicationJsonLd(): string {
 		operatingSystem: 'Web, Linux, macOS, Windows, BSD',
 		license: APACHE_2_LICENSE,
 		codeRepository: RETICULUM_GO_REPO,
-		downloadUrl: RETICULUM_GO_REPO,
+		downloadUrl: `${SITE_URL}${RETICULUM_GO_SOURCE_ZIP_PATH}`,
 		isBasedOn: {
 			'@type': 'SoftwareApplication',
 			name: 'Reticulum',

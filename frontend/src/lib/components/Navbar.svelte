@@ -18,11 +18,29 @@
 		menuOpen = !menuOpen;
 	}
 
+	function onWindowKeydown(event: KeyboardEvent) {
+		if (menuOpen && event.key === 'Escape') {
+			event.preventDefault();
+			closeMenu();
+		}
+	}
+
+	function navClass(active: boolean, mobile = false) {
+		if (mobile) {
+			return active
+				? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white'
+				: 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900';
+		}
+		return active ? 'text-zinc-900 dark:text-white' : '';
+	}
+
 	$effect(() => {
 		void page.url.pathname;
 		menuOpen = false;
 	});
 </script>
+
+<svelte:window onkeydown={onWindowKeydown} />
 
 <nav
 	class="sticky top-0 z-50 w-full border-b border-zinc-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md relative"
@@ -31,7 +49,7 @@
 		<div class="flex justify-between h-16 items-center gap-2 min-w-0">
 			<a
 				href="/"
-				class="flex items-center gap-2 sm:gap-3 hover:opacity-80 transition-opacity min-w-0 shrink"
+				class="flex items-center gap-2 sm:gap-3 hover:opacity-80 transition-opacity min-w-0 shrink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00ADD8] rounded-lg"
 			>
 				<Logo />
 				<span class="text-lg sm:text-xl font-bold tracking-tight truncate">{$t('home.title')}</span>
@@ -42,48 +60,45 @@
 			>
 				<a
 					href="/"
-					class="hover:text-zinc-900 dark:hover:text-white transition-colors {page.url.pathname ===
-					'/'
-						? 'text-zinc-900 dark:text-white'
-						: ''}">{$t('common.home')}</a
+					aria-current={page.url.pathname === '/' ? 'page' : undefined}
+					class="hover:text-zinc-900 dark:hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00ADD8] rounded {navClass(
+						page.url.pathname === '/'
+					)}">{$t('common.home')}</a
 				>
 				<a
 					href="/docs"
-					class="hover:text-zinc-900 dark:hover:text-white transition-colors {page.url.pathname.startsWith(
-						'/docs'
-					)
-						? 'text-zinc-900 dark:text-white'
-						: ''}">{$t('common.docs')}</a
+					aria-current={page.url.pathname.startsWith('/docs') ? 'page' : undefined}
+					class="hover:text-zinc-900 dark:hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00ADD8] rounded {navClass(
+						page.url.pathname.startsWith('/docs')
+					)}">{$t('common.docs')}</a
 				>
 				<a
 					href="/tools"
-					class="hover:text-zinc-900 dark:hover:text-white transition-colors {page.url.pathname.startsWith(
-						'/tools'
-					)
-						? 'text-zinc-900 dark:text-white'
-						: ''}">{$t('common.tools')}</a
+					aria-current={page.url.pathname.startsWith('/tools') ? 'page' : undefined}
+					class="hover:text-zinc-900 dark:hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00ADD8] rounded {navClass(
+						page.url.pathname.startsWith('/tools')
+					)}">{$t('common.tools')}</a
 				>
 				<a
 					href="/apps"
-					class="hover:text-zinc-900 dark:hover:text-white transition-colors {page.url.pathname.startsWith(
-						'/apps'
-					)
-						? 'text-zinc-900 dark:text-white'
-						: ''}">{$t('common.apps')}</a
+					aria-current={page.url.pathname.startsWith('/apps') ? 'page' : undefined}
+					class="hover:text-zinc-900 dark:hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00ADD8] rounded {navClass(
+						page.url.pathname.startsWith('/apps')
+					)}">{$t('common.apps')}</a
 				>
 				<a
 					href="/donate"
-					class="hover:text-zinc-900 dark:hover:text-white transition-colors {page.url.pathname ===
-					'/donate'
-						? 'text-zinc-900 dark:text-white'
-						: ''}">{$t('common.donate')}</a
+					aria-current={page.url.pathname === '/donate' ? 'page' : undefined}
+					class="hover:text-zinc-900 dark:hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00ADD8] rounded {navClass(
+						page.url.pathname === '/donate'
+					)}">{$t('common.donate')}</a
 				>
 				<a
 					href="/contact"
-					class="hover:text-zinc-900 dark:hover:text-white transition-colors {page.url.pathname ===
-					'/contact'
-						? 'text-zinc-900 dark:text-white'
-						: ''}">{$t('common.contact')}</a
+					aria-current={page.url.pathname === '/contact' ? 'page' : undefined}
+					class="hover:text-zinc-900 dark:hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00ADD8] rounded {navClass(
+						page.url.pathname === '/contact'
+					)}">{$t('common.contact')}</a
 				>
 			</div>
 
@@ -164,58 +179,65 @@
 				<a
 					href="/"
 					onclick={closeMenu}
-					class="py-2.5 px-3 rounded-lg transition-colors {page.url.pathname === '/'
-						? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white'
-						: 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900'}"
-					>{$t('common.home')}</a
+					aria-current={page.url.pathname === '/' ? 'page' : undefined}
+					class="py-2.5 px-3 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00ADD8] {navClass(
+						page.url.pathname === '/',
+						true
+					)}">{$t('common.home')}</a
 				>
 				<a
 					href="/docs"
 					onclick={closeMenu}
-					class="py-2.5 px-3 rounded-lg transition-colors {page.url.pathname.startsWith('/docs')
-						? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white'
-						: 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900'}"
-					>{$t('common.docs')}</a
+					aria-current={page.url.pathname.startsWith('/docs') ? 'page' : undefined}
+					class="py-2.5 px-3 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00ADD8] {navClass(
+						page.url.pathname.startsWith('/docs'),
+						true
+					)}">{$t('common.docs')}</a
 				>
 				<a
 					href="/tools"
 					onclick={closeMenu}
-					class="py-2.5 px-3 rounded-lg transition-colors {page.url.pathname.startsWith('/tools')
-						? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white'
-						: 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900'}"
-					>{$t('common.tools')}</a
+					aria-current={page.url.pathname.startsWith('/tools') ? 'page' : undefined}
+					class="py-2.5 px-3 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00ADD8] {navClass(
+						page.url.pathname.startsWith('/tools'),
+						true
+					)}">{$t('common.tools')}</a
 				>
 				<a
 					href="/apps"
 					onclick={closeMenu}
-					class="py-2.5 px-3 rounded-lg transition-colors {page.url.pathname.startsWith('/apps')
-						? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white'
-						: 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900'}"
-					>{$t('common.apps')}</a
+					aria-current={page.url.pathname.startsWith('/apps') ? 'page' : undefined}
+					class="py-2.5 px-3 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00ADD8] {navClass(
+						page.url.pathname.startsWith('/apps'),
+						true
+					)}">{$t('common.apps')}</a
 				>
 				<a
 					href="/donate"
 					onclick={closeMenu}
-					class="py-2.5 px-3 rounded-lg transition-colors {page.url.pathname === '/donate'
-						? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white'
-						: 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900'}"
-					>{$t('common.donate')}</a
+					aria-current={page.url.pathname === '/donate' ? 'page' : undefined}
+					class="py-2.5 px-3 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00ADD8] {navClass(
+						page.url.pathname === '/donate',
+						true
+					)}">{$t('common.donate')}</a
 				>
 				<a
 					href="/contact"
 					onclick={closeMenu}
-					class="py-2.5 px-3 rounded-lg transition-colors {page.url.pathname === '/contact'
-						? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white'
-						: 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900'}"
-					>{$t('common.contact')}</a
+					aria-current={page.url.pathname === '/contact' ? 'page' : undefined}
+					class="py-2.5 px-3 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00ADD8] {navClass(
+						page.url.pathname === '/contact',
+						true
+					)}">{$t('common.contact')}</a
 				>
 				<a
 					href="/source"
 					onclick={closeMenu}
-					class="sm:hidden flex items-center gap-2 py-2.5 px-3 rounded-lg transition-colors {page.url
-						.pathname === '/source'
-						? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white'
-						: 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900'}"
+					aria-current={page.url.pathname === '/source' ? 'page' : undefined}
+					class="sm:hidden flex items-center gap-2 py-2.5 px-3 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00ADD8] {navClass(
+						page.url.pathname === '/source',
+						true
+					)}"
 				>
 					<GitBranch class="w-5 h-5" />
 					<span>{$t('common.source_code')}</span>

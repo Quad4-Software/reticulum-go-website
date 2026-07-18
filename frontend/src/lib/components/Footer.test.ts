@@ -7,6 +7,10 @@ vi.mock('$env/dynamic/public', () => ({
 }));
 
 vi.mock('$lib/version', () => ({
+	getRepoInfo: vi.fn().mockResolvedValue({
+		latest_tag: 'v9.9.9',
+		updated_at: '2024-01-01T00:00:00Z'
+	}),
 	getLatestTag: vi.fn().mockResolvedValue('v9.9.9'),
 	getRepoUpdatedAt: vi.fn().mockResolvedValue('2024-01-01T00:00:00Z'),
 	calculateTimeAgo: vi.fn(() => ({ value: 2, unit: 'time.days' }))

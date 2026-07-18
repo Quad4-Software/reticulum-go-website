@@ -29,4 +29,11 @@ describe('root layout', () => {
 		expect(layoutSource).toContain("searchParams.get('popout') === '1'");
 		expect(layoutSource).toContain('isPopout');
 	});
+
+	it('provides a skip link to main content', () => {
+		const layoutSource = readFileSync(path.join(layoutDir, '+layout.svelte'), 'utf8');
+		expect(layoutSource).toContain('href="#main-content"');
+		expect(layoutSource).toContain('id="main-content"');
+		expect(layoutSource).toContain('Skip to content');
+	});
 });

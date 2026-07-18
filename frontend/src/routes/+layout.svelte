@@ -55,9 +55,16 @@
 		: ''}"
 >
 	{#if !isPopout}
+		<a
+			href="#main-content"
+			class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-zinc-900 focus:shadow-lg focus:ring-2 focus:ring-[#00ADD8] dark:focus:bg-zinc-900 dark:focus:text-zinc-100"
+		>
+			Skip to content
+		</a>
 		<Navbar currentPath={data.currentPath} currentTheme={data.currentTheme} />
 	{/if}
 	<main
+		id="main-content"
 		class="min-w-0 flex-1 {isPopout
 			? 'flex h-full max-w-none flex-col overflow-hidden p-0'
 			: isSourcePage

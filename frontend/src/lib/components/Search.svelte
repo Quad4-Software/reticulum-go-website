@@ -24,37 +24,42 @@
 	let selectedIndex = $state(0);
 	let isLoading = $state(false);
 	let fuse: Fuse<DocItem> | null = null;
+	let indexedLocale: string | null = null;
 	let searchInput: HTMLInputElement | undefined = $state();
 
 	const modules = import.meta.glob('../../lib/docs/**/*.{md,mdx}', {
 		query: '?raw',
-		import: 'default',
-		eager: true
+		import: 'default'
 	});
 
 	async function buildIndex() {
-		isLoading = true;
 		const currentLocale = $locale || 'en';
+		if (fuse && indexedLocale === currentLocale) return;
+
+		isLoading = true;
 
 		const slugMap: Record<string, { path: string; content: string; locale: string }> = {};
 
-		Object.entries(modules).forEach(([path, content]) => {
-			const filename = path.split('/').pop() || '';
-			const parts = filename.split('.');
-			const slug = parts[0];
+		await Promise.all(
+			Object.entries(modules).map(async ([path, loader]) => {
+				const filename = path.split('/').pop() || '';
+				const parts = filename.split('.');
+				const slug = parts[0];
 
-			let docLocale = 'en';
-			if (parts.length >= 3) {
-				docLocale = parts[1];
-			}
-
-			if (docLocale === currentLocale || (currentLocale !== 'en' && docLocale === 'en')) {
-				const existing = slugMap[slug];
-				if (!existing || (existing.locale !== currentLocale && docLocale === currentLocale)) {
-					slugMap[slug] = { path, content: content as string, locale: docLocale };
+				let docLocale = 'en';
+				if (parts.length >= 3) {
+					docLocale = parts[1];
 				}
-			}
-		});
+
+				if (docLocale === currentLocale || (currentLocale !== 'en' && docLocale === 'en')) {
+					const existing = slugMap[slug];
+					if (!existing || (existing.locale !== currentLocale && docLocale === currentLocale)) {
+						const content = (await loader()) as string;
+						slugMap[slug] = { path, content, locale: docLocale };
+					}
+				}
+			})
+		);
 
 		const processedDocs = await Promise.all(
 			Object.entries(slugMap).map(async ([slug, data]) => {
@@ -84,8 +89,9 @@
 			threshold: 0.3,
 			ignoreLocation: true
 		});
-
+		indexedLocale = currentLocale;
 		isLoading = false;
+		if (query) handleSearch();
 	}
 
 	$effect(() => {
@@ -171,8 +177,9 @@
 <svelte:window onkeydown={onWindowKeydown} />
 
 <button
+	type="button"
 	onclick={() => (isOpen = true)}
-	class="w-full flex items-center gap-2 px-3 py-2 text-sm text-zinc-500 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors text-left"
+	class="w-full flex items-center gap-2 px-3 py-2 text-sm text-zinc-500 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00ADD8]"
 >
 	<SearchIcon class="w-4 h-4" />
 	<span class="flex-1">Search docs...</span>

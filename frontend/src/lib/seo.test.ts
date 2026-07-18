@@ -61,11 +61,13 @@ describe('seo', () => {
 	it('software JSON-LD credits Mark Qvist and reticulum.network', () => {
 		const parsed = JSON.parse(getSoftwareApplicationJsonLd()) as {
 			description: string;
+			downloadUrl: string;
 			isBasedOn: { url: string; author: { name: string } };
 			sameAs: string[];
 			license: string;
 		};
 		expect(parsed.description).toBe(SITE_DESCRIPTION);
+		expect(parsed.downloadUrl).toBe(`${SITE_URL}/download/reticulum-go.zip`);
 		expect(parsed.isBasedOn.url).toBe(RETICULUM_SITE);
 		expect(parsed.isBasedOn.author.name).toBe('Mark Qvist');
 		expect(parsed.sameAs).toContain(RETICULUM_SITE);

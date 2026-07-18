@@ -43,7 +43,7 @@ export const load: PageLoad = async ({ params, data, depends }) => {
 
 	const currentLocale = (browser ? localStorage.getItem('locale') : null) || get(locale) || 'en';
 
-	if (browser && navigator.onLine) {
+	if (browser && navigator.onLine && !data.cachedHtml) {
 		syncDoc(cleanSlug, currentLocale).catch(console.error);
 	}
 

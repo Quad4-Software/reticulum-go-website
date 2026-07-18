@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { t } from 'svelte-i18n';
+	import Toast from '$lib/components/Toast.svelte';
 	import { jsonLdScript, getDonateWebPageJsonLd, RETICULUM_SITE } from '$lib/seo';
 
 	const BMC = 'https://buymeacoffee.com/quad4';
@@ -10,16 +11,30 @@
 		'8AfDSLVeTSt1oku5ifK4jkbJ94fp5kW6y5RWxuP1FYmyZmLHYRVSrPXJJaX7mK1n7MQUzwYE15uVdQVeAuWWnR5pDkN52xU';
 
 	let copiedMonero = $state(false);
+	let toastMessage = $state('');
+	let toastVisible = $state(false);
+	let toastTimer: ReturnType<typeof setTimeout> | null = null;
+
+	function showToast(message: string) {
+		toastMessage = message;
+		toastVisible = true;
+		if (toastTimer) clearTimeout(toastTimer);
+		toastTimer = setTimeout(() => {
+			toastVisible = false;
+			toastTimer = null;
+		}, 2500);
+	}
 
 	async function copyMonero() {
 		try {
 			await navigator.clipboard.writeText(MONERO_ADDRESS);
 			copiedMonero = true;
+			showToast($t('donate.copied'));
 			setTimeout(() => {
 				copiedMonero = false;
 			}, 2000);
-		} catch (err) {
-			console.error('Failed to copy Monero address:', err);
+		} catch {
+			showToast($t('donate.copy_failed'));
 		}
 	}
 </script>
@@ -38,7 +53,7 @@
 	{@html jsonLdScript(getDonateWebPageJsonLd())}
 </svelte:head>
 
-<div class="max-w-3xl mx-auto space-y-12 py-12">
+<div class="max-w-3xl mx-auto space-y-12">
 	<div class="text-center space-y-4">
 		<h1 class="text-4xl font-bold">{$t('donate.title')}</h1>
 		<p class="text-xl text-zinc-600 dark:text-zinc-400">
@@ -122,3 +137,12 @@
 		</div>
 	</div>
 </div>
+
+<Toast
+	message={toastMessage}
+	visible={toastVisible}
+	showDot={false}
+	ondismiss={() => {
+		toastVisible = false;
+	}}
+/>

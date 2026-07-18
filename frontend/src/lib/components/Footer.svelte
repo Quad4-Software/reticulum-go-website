@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { getLatestTag, getRepoUpdatedAt, calculateTimeAgo } from '$lib/version';
+	import { getRepoInfo, calculateTimeAgo } from '$lib/version';
 	import { t } from 'svelte-i18n';
 	import { Rss } from 'lucide-svelte';
 	import { env } from '$env/dynamic/public';
@@ -14,9 +14,9 @@
 	let timeAgo = $derived.by(() => calculateTimeAgo(repoUpdatedAt));
 
 	onMount(async () => {
-		const [tag, updatedAt] = await Promise.all([getLatestTag(), getRepoUpdatedAt()]);
-		latestTag = tag;
-		repoUpdatedAt = updatedAt;
+		const info = await getRepoInfo();
+		latestTag = info.latest_tag;
+		repoUpdatedAt = info.updated_at;
 	});
 
 	async function copyRssLink(url: string, type: 'development' | 'releases') {
@@ -196,7 +196,7 @@
 					rel="noopener noreferrer"
 					class="hover:opacity-80 transition-opacity"
 				>
-					<img src="/coolify.svg" alt="Coolify" class="w-4 h-4" />
+					<img src="/coolify.svg" alt="Coolify" width="16" height="16" loading="lazy" decoding="async" class="w-4 h-4" />
 				</a>
 			</div>
 		{/if}

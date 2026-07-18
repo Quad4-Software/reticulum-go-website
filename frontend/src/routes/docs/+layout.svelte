@@ -21,7 +21,7 @@
 	import { t, locale } from 'svelte-i18n';
 	import Search from '$lib/components/Search.svelte';
 	import { DOC_NAV } from '$lib/docs-config';
-	import { downloadAllDocs, syncAllDocs, syncEverything } from '$lib/docs-service';
+	import { downloadAllDocs, syncEverything } from '$lib/docs-service';
 	import { onMount } from 'svelte';
 
 	const DOC_ICONS: Record<string, typeof BookOpen> = {
@@ -51,7 +51,6 @@
 	onMount(() => {
 		if (navigator.onLine) {
 			syncEverything().catch(console.error);
-			syncAllDocs($locale || 'en').catch(console.error);
 		}
 	});
 
@@ -113,6 +112,7 @@
 			{@const Icon = DOC_ICONS[doc.slug] ?? FileText}
 			<a
 				href="/docs/{doc.slug}"
+				aria-current={isActive(doc.slug) ? 'page' : undefined}
 				class="group flex items-center justify-between px-3 py-2 rounded-lg transition-colors {isActive(
 					doc.slug
 				)
@@ -133,6 +133,7 @@
 
 	<div class="pt-4 mt-4 border-t border-zinc-200 dark:border-zinc-800">
 		<button
+			type="button"
 			onclick={() => downloadAllDocs($locale || 'en')}
 			class="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900 hover:text-zinc-900 dark:hover:text-zinc-100 rounded-lg transition-colors"
 		>
@@ -153,6 +154,7 @@
 			class="flex w-full items-center justify-between gap-3 rounded-lg border border-zinc-200 px-3 py-2 dark:border-zinc-800"
 			aria-haspopup="dialog"
 			aria-expanded={mobileMenuOpen}
+			aria-controls="docs-mobile-menu"
 			onclick={openMobileMenu}
 		>
 			<span class="flex min-w-0 items-center gap-2">
@@ -178,6 +180,7 @@
 
 	{#if mobileMenuOpen}
 		<div
+			id="docs-mobile-menu"
 			class="fixed inset-0 z-50 md:hidden"
 			role="dialog"
 			aria-modal="true"
@@ -216,7 +219,7 @@
 		</div>
 	{/if}
 
-	<main class="flex-1 min-w-0">
+	<div class="flex-1 min-w-0">
 		{@render children()}
-	</main>
+	</div>
 </div>

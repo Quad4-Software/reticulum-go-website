@@ -68,7 +68,7 @@
 	{@html jsonLdScript(breadcrumbLd)}
 </svelte:head>
 
-<div class="max-w-3xl mx-auto space-y-10 pt-0 pb-12">
+<div class="max-w-3xl mx-auto space-y-10 pt-0 pb-4">
 	<div class="text-center space-y-4">
 		<h1 class="text-4xl font-bold tracking-tight">{$t('source.title')}</h1>
 		<p class="text-xl text-zinc-600 dark:text-zinc-400 leading-relaxed">
