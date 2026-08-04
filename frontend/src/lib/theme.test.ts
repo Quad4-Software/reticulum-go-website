@@ -128,9 +128,9 @@ describe('setTheme', () => {
 	});
 
 	it('syncs theme cookie to the server via /set-theme', async () => {
-		const fetchMock = vi.fn().mockResolvedValue(
-			new Response(null, { status: 303, headers: { Location: '/' } })
-		);
+		const fetchMock = vi
+			.fn()
+			.mockResolvedValue(new Response(null, { status: 303, headers: { Location: '/' } }));
 		vi.stubGlobal('fetch', fetchMock);
 		window.history.replaceState({}, '', '/docs?x=1');
 

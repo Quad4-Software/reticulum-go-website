@@ -47,8 +47,4 @@ export function sanitizeHighlightHtml(dirty: string): string {
 	return purifyBrowser().sanitize(dirty, HIGHLIGHT_CONFIG);
 }
 
-export {
-	escapeJsonForScript,
-	safeRedirectTarget,
-	isSafeDocSlug
-} from './security';
+export { escapeJsonForScript, safeRedirectTarget, isSafeDocSlug } from './security';

@@ -196,7 +196,15 @@
 					rel="noopener noreferrer"
 					class="hover:opacity-80 transition-opacity"
 				>
-					<img src="/coolify.svg" alt="Coolify" width="16" height="16" loading="lazy" decoding="async" class="w-4 h-4" />
+					<img
+						src="/coolify.svg"
+						alt="Coolify"
+						width="16"
+						height="16"
+						loading="lazy"
+						decoding="async"
+						class="w-4 h-4"
+					/>
 				</a>
 			</div>
 		{/if}

@@ -21,8 +21,7 @@ describe('code-highlight', () => {
 	});
 
 	it('highlights marked pre/code blocks for runtime docs', async () => {
-		const markedHtml =
-			'<p>Intro</p>\n<pre><code class="language-go">package main\n</code></pre>\n';
+		const markedHtml = '<p>Intro</p>\n<pre><code class="language-go">package main\n</code></pre>\n';
 		const html = await highlightMarkedCodeBlocks(markedHtml);
 		expect(html).toContain('shiki');
 		expect(html).toContain('--shiki-light');

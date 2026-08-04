@@ -33,7 +33,9 @@ describe('sanitizeHtml XSS hardening', () => {
 	});
 
 	it('keeps safe markdown HTML', () => {
-		const clean = sanitizeHtml('<p>Hello <strong>world</strong></p><a href="/docs/overview">Docs</a>');
+		const clean = sanitizeHtml(
+			'<p>Hello <strong>world</strong></p><a href="/docs/overview">Docs</a>'
+		);
 		expect(clean).toContain('<p>');
 		expect(clean).toContain('<strong>');
 		expect(clean).toContain('href="/docs/overview"');

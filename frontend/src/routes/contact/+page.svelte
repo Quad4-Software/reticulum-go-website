@@ -70,10 +70,14 @@
 						class="group flex w-full items-center gap-2 rounded-lg border border-zinc-200 bg-white px-3 py-2.5 text-left transition hover:border-[#00ADD8]/50 dark:border-zinc-700 dark:bg-zinc-950 dark:hover:border-[#00ADD8]/40"
 						aria-label={$t('contact.copy_lxmf')}
 					>
-						<code class="min-w-0 flex-1 break-all font-mono text-sm text-zinc-800 dark:text-zinc-200"
+						<code
+							class="min-w-0 flex-1 break-all font-mono text-sm text-zinc-800 dark:text-zinc-200"
 							>{LXMF}</code
 						>
-						<span class="text-zinc-400 opacity-0 transition group-hover:opacity-100" aria-hidden="true">
+						<span
+							class="text-zinc-400 opacity-0 transition group-hover:opacity-100"
+							aria-hidden="true"
+						>
 							{#if copiedKey === 'lxmf'}
 								<Check class="h-4 w-4 text-[#00ADD8]" />
 							{:else}

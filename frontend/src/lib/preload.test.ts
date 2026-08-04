@@ -1,11 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-const preloadCode = vi.fn(() => Promise.resolve());
-const preloadData = vi.fn(() => Promise.resolve({ type: 'loaded', status: 200, data: {} }));
+const preloadCode = vi.fn<(pathname: string) => Promise<void>>(() => Promise.resolve());
+const preloadData = vi.fn<
+	(href: string) => Promise<{ type: string; status: number; data: Record<string, never> }>
+>(() => Promise.resolve({ type: 'loaded', status: 200, data: {} }));
 
 vi.mock('$app/navigation', () => ({
-	preloadCode: (...args: unknown[]) => preloadCode(...args),
-	preloadData: (...args: unknown[]) => preloadData(...args)
+	preloadCode,
+	preloadData
 }));
 
 describe('schedulePreload', () => {
