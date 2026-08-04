@@ -1,19 +1,19 @@
 # Overview
 
-## What is Reticulum-Go
+## Stack summary
 
-Reticulum-Go is a Go implementation of the [Reticulum Network Stack](https://reticulum.network/). Reticulum is a cryptographic mesh networking protocol designed for resilient communication over heterogeneous links. It can run over UDP, TCP, radio hardware, I2P, and other transports without assuming a single global internet path.
+Reticulum-Go implements the [Reticulum Network Stack](https://reticulum.network/) in Go. Reticulum is a cryptographic mesh overlay: named destinations, encrypted links, and multi-hop paths over UDP, TCP, radio hardware, I2P, and other interfaces without requiring one global IP route.
 
-Reticulum-Go targets full wire compatibility with the official Python reference implementation (RNS 1.3.8) while using Go concurrency and static compilation for deployment on servers, desktops, embedded targets, and WebAssembly runtimes.
+Reticulum-Go targets wire compatibility with Python RNS 1.3.8. Builds use Go concurrency and static compilation (`CGO_ENABLED=0` by default) on servers, desktops, embedded targets, and WebAssembly runtimes.
 
-The primary deliverables are:
+Deliverables:
 
 - A daemon binary (`reticulum-go`) comparable to Python `rnsd`
 - A library surface under `pkg/` for embedding Reticulum in Go applications
 - A WebAssembly build (`reticulum-wasm`) for browser clients
 - A localhost control API for applications written in other languages
 
-## Design goals
+## Protocol and build constraints
 
 **Protocol interoperability.** Peers running Python Reticulum and Reticulum-Go must exchange packets, establish links, and verify cryptography without translation gateways.
 
@@ -27,7 +27,7 @@ The primary deliverables are:
 
 Reticulum is not a replacement for IP routing. It is an overlay that gives applications named destinations, encrypted links, and multi-hop paths across whatever physical interfaces you configure.
 
-At a high level:
+Packet path:
 
 ```
 Application  -->  Destination / Link  -->  Transport  -->  Interface  -->  Physical network
@@ -35,11 +35,11 @@ Application  -->  Destination / Link  -->  Transport  -->  Interface  -->  Physi
 
 An application registers interest in a destination hash. Transport learns routes from signed announces and forwards packets hop by hop. Interfaces move bytes on the wire and may apply an Interface Access Code (IFAC) so only authorized peers can join a logical network segment.
 
-See [Architecture](/docs/architecture) for a fuller picture.
+See [Architecture](/docs/architecture) for layers, persistence, and deployment patterns.
 
 ## Feature status
 
-Below is a summary of major features. For line-by-line parity with Python, see [Compatibility](/docs/compatibility) and [COMPATIBILITY.md](https://github.com/Quad4-Software/Reticulum-Go/blob/master/COMPATIBILITY.md).
+Line-by-line Python parity is in [Compatibility](/docs/compatibility) and [COMPATIBILITY.md](https://github.com/Quad4-Software/Reticulum-Go/blob/master/COMPATIBILITY.md).
 
 | Area                                     | Status          | Location                                                                                            |
 | ---------------------------------------- | --------------- | --------------------------------------------------------------------------------------------------- |
@@ -61,7 +61,7 @@ Below is a summary of major features. For line-by-line parity with Python, see [
 | SerialInterface                          | Complete        | HDLC serial with Go extensions. Live Python framing interop                                         |
 | RNode, KISS, Weave                       | Not implemented | No driver in this tree                                                                              |
 | PipeInterface, LocalInterface            | Implemented     | `pipe.go`, `local.go`, `sharedinstance`                                                             |
-| Python CLI utilities                     | Yes (core)      | `reticulum-go status                                                                                | id  | probe | path | cp`via`pkg/cli`/`pkg/rnsutil` |
+| Python CLI utilities                     | Yes (core)      | `reticulum-go status`, `id`, `probe`, `path`, `cp` via `pkg/cli` / `pkg/rnsutil`                    |
 | Interface hot reload                     | Go-only         | `pkg/node/reload.go`, SIGHUP on Unix                                                                |
 | Control API                              | Go-only         | `pkg/controlapi`                                                                                    |
 | librns C ABI                             | Go-only         | `pkg/librns`, `include/rns.h`, `task build-librns`                                                  |
@@ -109,11 +109,11 @@ Configuration uses the same INI-style shape as Python (`[reticulum]`, `[logging]
 
 Reticulum-Go adds features that Python does not ship today (control API, librns, Odin bindings, Dart FFI and Control API client, sandbox, interface hot reload, NIC watching, local mesh health counters). Those extensions do not change the wire format unless explicitly documented as Go-only.
 
-## Who should read which document
+## Documentation by role
 
 | Role                              | Start here                                                                                                                                                |
 | --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Architect evaluating adoption     | This page, then [Architecture](/docs/architecture) and [Compatibility](/docs/compatibility)                                                               |
+| Architect evaluating adoption     | [Overview](/docs/overview), [Architecture](/docs/architecture), [Compatibility](/docs/compatibility)                                                      |
 | Network operator                  | [Getting started](/docs/getting-started), [Configuration](/docs/configuration), [Interfaces](/docs/interfaces), [CLI utilities](/docs/utilities)          |
 | Go application author             | [API reference](/docs/api-reference), [Package map](/docs/package-map), [Examples](/docs/examples), [Embedding and WebAssembly](/docs/embedding-and-wasm) |
 | Native / FFI embedder             | [librns](/docs/librns), [Compatibility](/docs/compatibility)                                                                                              |

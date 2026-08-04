@@ -1,10 +1,8 @@
 # Package map
 
-## Overview
-
 Public API lives under `pkg/`. The daemon and tests import these packages. `internal/` holds daemon-specific wiring that is not a stable import path for external modules.
 
-This page maps each package to its responsibility and primary entry points. For recipes, Python migration, and concurrency rules, see [API reference](/docs/api-reference).
+Each package below lists its responsibility and primary entry points. Recipes, Python migration, and concurrency rules are in [API reference](/docs/api-reference).
 
 ## Core protocol stack
 

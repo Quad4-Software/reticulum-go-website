@@ -1,6 +1,6 @@
 # API reference
 
-This is the application-facing API guide for Reticulum-Go. It is not a dump of every exported symbol. It is organized the way you build programs: choose an integration path, follow a recipe, then look up types and methods.
+Application-facing API for Reticulum-Go: pick an integration path, follow a recipe, then look up types and methods. Not a complete exported-symbol list.
 
 Wire behavior matches the [Python RNS API reference](https://reticulum.network/manual/reference.html). Package layout, concurrency rules, and embedder lifecycle are Go-specific and documented here because the Python manual does not cover them.
 
@@ -8,7 +8,7 @@ For generated signatures, use `go doc` on the import path or browse the module o
 
 ## How this differs from the Python reference
 
-| Python RNS manual                                             | This document                          |
+| Python RNS manual                                             | API reference                          |
 | ------------------------------------------------------------- | -------------------------------------- |
 | Class catalog (`RNS.Reticulum`, `Identity`, `Destination`, …) | Task-first recipes, then API tables    |
 | One process model (`RNS.Reticulum(...)`)                      | Four integration paths with trade-offs |
@@ -16,7 +16,7 @@ For generated signatures, use `go doc` on the import path or browse the module o
 | No C / WASM / control-plane docs in the same place            | Links to Control API, librns, WASM     |
 | Examples live elsewhere                                       | Recipes point at `examples/`           |
 
-## Choose an integration path
+## Integration paths
 
 ```text
 Need Reticulum in my app
@@ -53,9 +53,9 @@ Need Reticulum in my app
 | Out-of-process any language   | [Control API](/docs/control-api)                  | HTTP and WebSocket                                      |
 | Browser                       | `pkg/wasm`                                        | WebSocket gateway clients                               |
 
-Most of this page describes the **`pkg/node` happy path**. Other paths expose the same concepts with different bindings.
+Most of this page covers the in-process `pkg/node` path. Other paths expose the same concepts with different bindings.
 
-## Mental model
+## Call order
 
 1. **Config** loads interfaces and storage paths (`pkg/reticulumconfig`, `pkg/common`).
 2. **Node** starts transport, interfaces, and optional shared instance (`pkg/node`).

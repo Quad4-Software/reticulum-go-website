@@ -5,6 +5,7 @@
  * - No orphan English doc pages outside the nav
  * - Internal /docs/ links resolve to known slugs
  * - No unreplaced sibling .md links left from upstream sync
+ * - Prose lint (no AI slop patterns from project writing rules)
  *
  * Usage: node scripts/check-docs.mjs  (from repository root)
  */
@@ -82,7 +83,43 @@ function checkDocLinks(navSlugs) {
 		}
 
 		for (const match of content.matchAll(rawMdLinkRe)) {
-			errors.push(`${slug}: unreplaced markdown link (${match[1]}.md) — run make docs-sync`);
+			errors.push(`${slug}: unreplaced markdown link (${match[1]}.md) - run make docs-sync`);
+		}
+	}
+
+	return errors;
+}
+
+function checkDocProse() {
+	const proseRules = [
+		{ re: /\u2014|\u2013/, label: 'emdash or en-dash (use hyphen, comma, or restructure)' },
+		{ re: /\bat a high level\b/i, label: 'filler phrase "at a high level"' },
+		{ re: /\bWhether you're\b/i, label: 'banned opener "Whether you\'re"' },
+		{ re: /\bfuller picture\b/i, label: 'vague phrase "fuller picture"' },
+		{
+			re: /\b(leverage|utilize|facilitate|delve|streamline|underscore|foster|bolster|endeavour|ascertain|elucidate)\b/i,
+			label: 'banned AI verb'
+		},
+		{
+			re: /\b(Furthermore|Moreover|Notwithstanding|At its core|In essence)\b/,
+			label: 'banned AI transition phrase'
+		},
+		{
+			re: /\b(extremely|dramatically|exceptionally|significantly|incredibly|remarkably)\b/i,
+			label: 'banned intensifier'
+		},
+		{ re: /^## Purpose of this document\b/m, label: 'meta heading "Purpose of this document"' },
+		{ re: /^## Purpose\b/m, label: 'meta heading "Purpose"' }
+	];
+	const errors = [];
+
+	for (const slug of readdirSync(DOCS_DIR)) {
+		if (!slug.endsWith('.md') || /\.[a-z]{2}\.md$/.test(slug)) continue;
+		const content = readFileSync(join(DOCS_DIR, slug), 'utf8');
+		for (const { re, label } of proseRules) {
+			if (re.test(content)) {
+				errors.push(`${slug}: ${label}`);
+			}
 		}
 	}
 
@@ -101,7 +138,11 @@ function main() {
 
 	const navSlugs = readNavSlugs();
 	const fileSlugs = readEnglishDocSlugs();
-	const errors = [...checkNavAndFiles(navSlugs, fileSlugs), ...checkDocLinks(navSlugs)];
+	const errors = [
+		...checkNavAndFiles(navSlugs, fileSlugs),
+		...checkDocLinks(navSlugs),
+		...checkDocProse()
+	];
 
 	if (errors.length > 0) {
 		console.error(`check-docs: ${errors.length} problem(s):`);

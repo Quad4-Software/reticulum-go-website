@@ -1,8 +1,6 @@
 # Cryptography
 
-## Purpose
-
-This document is the canonical cryptography reference for Reticulum-Go. It supports security reviews and correct use of APIs. For vulnerability reporting and CI practices see [Security](/docs/security).
+Canonical cryptography reference for Reticulum-Go. Vulnerability reporting and CI paths are in [Security](/docs/security).
 
 Implementation code:
 
@@ -13,7 +11,7 @@ Implementation code:
 
 On-wire layouts match the Python reference. Changing algorithms or sizes without coordinated protocol updates breaks interoperability.
 
-## Design goals
+## Protocol constraints
 
 **Interoperability.** Peers on Python Reticulum must verify signatures, decrypt identity payloads when keys match, and complete link handshakes with Reticulum-Go nodes.
 

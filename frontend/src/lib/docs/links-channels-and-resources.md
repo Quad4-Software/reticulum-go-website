@@ -1,15 +1,6 @@
 # Links, channels, and resources
 
-## Overview
-
-Above raw destination packets, Reticulum provides encrypted links for session-oriented communication. On a link you can use:
-
-- Request and response paths
-- Reliable channel messages
-- Stream buffers (bzip2 compressed)
-- Multi-part resource (file) transfers
-
-Packages: `pkg/link`, `pkg/channel`, `pkg/buffer`, `pkg/resource`.
+Encrypted links, channel messages, stream buffers, and multi-part resource transfers live in `pkg/link`, `pkg/channel`, `pkg/buffer`, and `pkg/resource`.
 
 ## Links
 
@@ -100,7 +91,7 @@ Python utility `rncp` is ported as `rgocp` ([CLI utilities](/docs/utilities)). T
 
 See `examples/resources` for a minimal send/receive demo and `examples/filetransfer` for a directory browser.
 
-Transfer flow at a high level:
+Transfer flow:
 
 ```
 Sender                           Receiver

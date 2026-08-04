@@ -222,7 +222,7 @@ See [Security](/docs/security) for platform behavior.
 
 **Permission errors on Linux sandbox.** Landlock requires kernel 5.13+. The config directory and storage paths must live under whitelisted locations. See [Security](/docs/security).
 
-## Next steps
+## Further reading by goal
 
 | Goal                                         | Document                                                                                                                         |
 | -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |

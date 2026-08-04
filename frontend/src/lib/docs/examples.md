@@ -1,11 +1,10 @@
 # Examples
 
-Sample programs under `examples/` show how to use Reticulum-Go as a library.
-They are starting points rather than production services.
+Sample programs under `examples/` show Reticulum-Go as a library. They are minimal demos, not production services.
 
-Pair this page with the [API reference](/docs/api-reference).
+See [API reference](/docs/api-reference) for integration paths and recipes.
 
-## Which Example to Open
+## Example index
 
 | Goal                            | Start Here                                                                               |
 | :------------------------------ | :--------------------------------------------------------------------------------------- |

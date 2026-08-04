@@ -1,8 +1,6 @@
 # Security
 
-## Purpose
-
-This page summarizes security practices for Reticulum-Go. The repository root [SECURITY.md](https://github.com/Quad4-Software/Reticulum-Go/blob/master/SECURITY.md) remains the authoritative source for reporting contacts and detailed CI paths. [Cryptography](/docs/cryptography) covers algorithms and key handling.
+Security practices for Reticulum-Go. Reporting contacts and CI paths are authoritative in repository [SECURITY.md](https://github.com/Quad4-Software/Reticulum-Go/blob/master/SECURITY.md). Algorithms and key handling are in [Cryptography](/docs/cryptography).
 
 ## Reporting vulnerabilities
 
@@ -15,7 +13,7 @@ Report security issues privately before public disclosure.
 
 Include enough detail to reproduce the issue: component, expected behavior, actual behavior, and environment.
 
-## Threat model (practical summary)
+## Threat model
 
 Reticulum-Go assumes:
 

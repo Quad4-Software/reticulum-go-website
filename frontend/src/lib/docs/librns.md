@@ -1,10 +1,8 @@
 # librns C ABI
 
-## Purpose
+`librns` embeds Reticulum in-process for native hosts (C, C++, and similar FFI). Thin facade over `pkg/node`, destination, and link. Same wire stack as the daemon. Not a Python API and not a full Control API mirror.
 
-`librns` embeds Reticulum in-process for native hosts (C, C++, and similar FFI). It is a thin facade over `pkg/node`, destination, and link. Same wire stack as the daemon. Not a Python API and not a full Control API mirror.
-
-For Go apps, prefer `pkg/node` directly. For a separate daemon and JSON/WebSocket, use the [Control API](/docs/control-api).
+Go apps should use `pkg/node` directly. A separate daemon with JSON/WebSocket uses the [Control API](/docs/control-api).
 
 ## Artifacts
 

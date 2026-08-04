@@ -1,6 +1,6 @@
-# Reticulum-Go Website
+# Reticulum-Go website
 
-The official website for the Reticulum-Go project, with documentation and a WebAssembly-based example.
+Documentation, WASM examples, and tools for [Reticulum-Go](https://github.com/Quad4-Software/Reticulum-Go).
 
 ## Self-host the website
 
