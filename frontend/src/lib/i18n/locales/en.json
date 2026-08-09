@@ -36,7 +36,7 @@
 	},
 	"interactive": {
 		"title": "Interactive Examples",
-		"description": "Explore hands-on tutorials, demonstrations, and interactive examples of Reticulum-Go in action.",
+		"description": "WASM demos and browser tools that run Reticulum-Go in your browser.",
 		"search_placeholder": "Search examples..."
 	},
 	"apps": {
@@ -84,62 +84,6 @@
 			"no_colors": "No F/B colors in this page",
 			"next_steps": "Next steps",
 			"add_tab": "Add tab"
-		},
-		"reticulum_guide": {
-			"title": "Reticulum Guide",
-			"description": "Visual tutorials on destinations, identities, announces, cryptography, packets, links, messaging, and interfaces, grounded in the official Reticulum manual.",
-			"page_title": "Reticulum Guide",
-			"page_blurb": "Interactive explainers that keep the Zen of Reticulum in mind: sovereign networks, destinations not addresses, encryption by default.",
-			"back": "All tools",
-			"back_guide": "All guide chapters",
-			"next_chapter": "Next chapter",
-			"search_placeholder": "Search chapters...",
-			"sources": "Sources",
-			"zen": "Keeping the zen",
-			"step_of": "Step {current} of {total}",
-			"previous": "Previous",
-			"next": "Next",
-			"open_chapter": "Open chapter",
-			"chapters": "Chapters",
-			"chapters_toggle": "Toggle chapter list",
-			"chapters_close": "Close chapter list",
-			"python": "Python",
-			"go": "Go",
-			"try_it": "Try it",
-			"code_sample": "Code sample language",
-			"encrypted": "Encrypted",
-			"multi_hop": "Multi-hop",
-			"local_only": "Local only",
-			"accepted": "Accepted",
-			"rejected": "Rejected",
-			"interactive_title": "Try it yourself",
-			"copy": "Copy",
-			"copied": "Copied",
-			"nav_hint": "Swipe or use arrow keys",
-			"in_go": "Available in Go",
-			"python_ref": "Python reference",
-			"path_title": "Recommended path",
-			"path_blurb": "Work through chapters in order. Each builds on the last.",
-			"steps_count": "{count} steps",
-			"all_chapters": "All chapters",
-			"plain": "Plain",
-			"reset": "Reset",
-			"step_once": "Step",
-			"hops_label": "Hops: {hops}",
-			"status_moving": "Moving",
-			"status_delivered": "Delivered",
-			"status_dropped": "Dropped",
-			"status_local_only": "Local only",
-			"pathfinder_note": "PATHFINDER_M is {m}. Hop bytes at or above this value are rejected at unpack.",
-			"can_send_data": "Can send data",
-			"yes": "yes",
-			"no": "no",
-			"alpha_warning": "This guide is alpha. Steps, interactives, and wording may change and may not always be accurate. Prefer the official Reticulum manual and project docs when you need a definitive reference.",
-			"header_type_1": "Header type 1",
-			"header_type_2": "Header type 2",
-			"bytes_label": "{bytes} bytes",
-			"blackhole_on": "Blackhole on",
-			"blackhole_off": "Blackhole off"
 		},
 		"rnode_flasher": {
 			"title": "RNODE Flasher",
@@ -227,8 +171,8 @@
 		"title": "Donate",
 		"subtitle": "Support the development and maintenance of Reticulum-Go.",
 		"intro": "Choose a platform below or send Monero directly.",
-		"meta_description": "Support Reticulum-Go development. 50% of donations go to Mark Qvist, creator of the Reticulum reference implementation at reticulum.network.",
-		"markqvist_share": "50% of donations go to Mark Qvist, creator of the Reticulum reference implementation.",
+		"meta_description": "Support Reticulum-Go development. 75% of donations go to Mark Qvist, creator of the Reticulum reference implementation at reticulum.network.",
+		"markqvist_share": "75% of donations go to Mark Qvist, creator of the Reticulum reference implementation.",
 		"markqvist_link": "reticulum.network",
 		"buymeacoffee": "Buy Me a Coffee",
 		"liberapay": "Liberapay",
@@ -320,30 +264,30 @@
 	},
 	"home": {
 		"title": "Reticulum-Go",
-		"subtitle": "The resilient, sovereign networking stack for everyone. Now implemented in Go for high performance and portability.",
+		"subtitle": "Go port of the Reticulum networking stack. Wire-compatible with Python RNS.",
 		"try_ren_browser": "Try Ren Browser!",
 		"try_wasm": "Try WASM Demo",
 		"view_source": "View Source Code",
 		"features": {
 			"encrypted": {
 				"title": "Encrypted by Default",
-				"description": "Reticulum uses strong, modern cryptography end to end. On-wire layouts match the Python reference so peers stay compatible."
+				"description": "Multi-hop traffic is encrypted on the wire. Packet layouts match Python RNS so peers stay compatible."
 			},
-			"resilient": {
-				"title": "Resilient & Sovereign",
-				"description": "No central authorities, no servers to shut down. Build your own infrastructure over any medium - radio, fiber, satellite, landlines, or the internet."
+			"legacy": {
+				"title": "Legacy Systems Support",
+				"description": "Still builds for old CPUs, 32-bit Linux, and embedded boards that most modern languages have dropped."
 			},
 			"go": {
 				"title": "Go Implementation",
-				"description": "Built with Go for portability, auditability, and concurrency. Run it from embedded devices to cloud servers."
+				"description": "Single binary, static linking, and goroutines for concurrency. Runs on embedded boards and servers."
 			},
 			"interop": {
-				"title": "Full RNS Interoperability",
-				"description": "Wire-compatible with the official Python Reticulum (RNS). Packets, links, and cryptography work peer-to-peer."
+				"title": "Python RNS Compatible",
+				"description": "Packets, links, and cryptography interoperate with the official Python Reticulum (RNS) implementation."
 			},
 			"sandbox": {
-				"title": "Secure by Design",
-				"description": "The native daemon enables an OS sandbox by default. The WASM build runs inside the browser sandbox of the host runtime."
+				"title": "Native System Sandboxing",
+				"description": "The native daemon applies OS sandboxing after startup. WASM builds use the browser sandbox."
 			},
 			"modular": {
 				"title": "Modular & Embeddable",
@@ -351,13 +295,13 @@
 			}
 		},
 		"coexistence": {
-			"title": "Expanding Reticulum's Reach",
-			"description": "Reticulum-Go was built to work with the Python reference implementation by Mark Qvist, not to replace it. The goal is to help the network and expand where Reticulum can run, while Python RNS remains the reference that defines the protocol."
+			"title": "Alongside Python RNS",
+			"description": "Reticulum-Go works with Mark Qvist's Python reference implementation. It does not replace it. Python RNS still defines the protocol. This project extends where Reticulum can run."
 		},
 		"ren_promo": {
 			"title": "Browse the Reticulum Network",
-			"description": "Ren Browser is a modern NomadNet-compatible client built with Reticulum-Go. Render Micron pages, manage identities, and explore the mesh from desktop or mobile.",
-			"cta": "Explore Ren Browser"
+			"description": "Ren Browser is a NomadNet-compatible client built with Reticulum-Go. Render Micron pages, manage identities, and browse mesh content on desktop or mobile.",
+			"cta": "Ren Browser"
 		},
 		"platforms": {
 			"title": "Supported platforms",
@@ -388,7 +332,7 @@
 	},
 	"ren_browser": {
 		"title": "Ren Browser",
-		"subtitle": "A modern browser for the Reticulum Network, built with Reticulum-Go.",
+		"subtitle": "NomadNet-compatible browser for the Reticulum Network, built with Reticulum-Go.",
 		"badge": "New",
 		"download": "Download",
 		"view_source": "View Source",
@@ -401,7 +345,7 @@
 			},
 			"identities": {
 				"title": "Multiple Identities",
-				"description": "Create, import, export, and switch between Reticulum identities with ease."
+				"description": "Create, import, export, and switch between Reticulum identities."
 			},
 			"interfaces": {
 				"title": "Interface Control",
@@ -420,7 +364,7 @@
 				"description": "JS and WASM plugins with a permissions model to extend the browser."
 			},
 			"platforms": {
-				"title": "Runs Anywhere",
+				"title": "Desktop and Mobile",
 				"description": "Linux, Windows, macOS, Android, plus Docker and headless server builds."
 			},
 			"i18n": {

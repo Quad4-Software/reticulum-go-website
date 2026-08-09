@@ -46,8 +46,7 @@
 				<span class="font-bold text-lg">Reticulum-Go</span>
 			</div>
 			<p class="text-sm text-zinc-500 dark:text-zinc-400">
-				A Go implementation of the Reticulum Network Stack. Building the future of resilient,
-				sovereign communications.
+				Go port of the Reticulum Network Stack. Wire-compatible with Python RNS.
 			</p>
 			<div class="flex flex-col gap-1">
 				<div class="flex items-center gap-3">

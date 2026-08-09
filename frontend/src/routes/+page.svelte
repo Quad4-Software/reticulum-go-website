@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { t } from 'svelte-i18n';
-	import { GitBranch, Lock, Mountain, Code2, Network, ShieldCheck, Boxes } from 'lucide-svelte';
+	import { GitBranch, Lock, Archive, Code2, Network, ShieldCheck, Boxes } from 'lucide-svelte';
 	import { getRepoUpdatedAt, calculateTimeAgo } from '$lib/version';
 	import SupportedPlatforms from '$lib/components/SupportedPlatforms.svelte';
 
@@ -10,7 +10,7 @@
 
 	const features = [
 		{ key: 'encrypted', Icon: Lock },
-		{ key: 'resilient', Icon: Mountain },
+		{ key: 'legacy', Icon: Archive },
 		{ key: 'go', Icon: Code2 },
 		{ key: 'interop', Icon: Network },
 		{ key: 'sandbox', Icon: ShieldCheck },
@@ -23,10 +23,10 @@
 </script>
 
 <svelte:head>
-	<title>{$t('home.title')} | Resilient, Sovereign Networking</title>
+	<title>{$t('home.title')} | Go Port of Reticulum</title>
 	<meta
 		name="description"
-		content="Reticulum-Go is a Go implementation of the Reticulum Network Stack. Build resilient, encrypted, and decentralised communication networks."
+		content="Wire-compatible Go port of the Reticulum Network Stack. Run encrypted mesh networking in the browser and on servers, alongside Python RNS by Mark Qvist."
 	/>
 </svelte:head>
 

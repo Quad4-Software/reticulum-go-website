@@ -1,12 +1,5 @@
 <script lang="ts">
-	import {
-		Search as SearchIcon,
-		Code,
-		FileCode,
-		BookOpen,
-		ExternalLink,
-		Radio
-	} from 'lucide-svelte';
+	import { Search as SearchIcon, Code, FileCode, ExternalLink, Radio } from 'lucide-svelte';
 	import { t } from 'svelte-i18n';
 
 	interface InteractiveItem {
@@ -22,7 +15,7 @@
 		{
 			title: 'WASM Chat Example',
 			description:
-				'Interactive chat demonstration using Reticulum-Go compiled to WebAssembly. Connect to the network, discover peers, and send messages directly from your browser.',
+				'Chat demo using Reticulum-Go compiled to WebAssembly. Connect, discover peers, and send messages from the browser.',
 			href: '/wasm-example',
 			icon: Code,
 			tags: ['wasm', 'chat', 'demo', 'interactive'],
@@ -31,19 +24,10 @@
 		{
 			title: 'Micron Editor',
 			description:
-				'Live Micron markup editor with smooth WASM preview via Micron-Parser-Go. Works offline after the first visit through the site PWA.',
+				'Micron markup editor with WASM preview via Micron-Parser-Go. Cached offline by the site PWA after the first visit.',
 			href: '/tools/micron-editor',
 			icon: FileCode,
 			tags: ['micron', 'wasm', 'editor', 'tools'],
-			status: 'stable'
-		},
-		{
-			title: 'Reticulum Guide',
-			description:
-				'Visual tutorials on destinations, announces, cryptography, packets, links, messaging, and interfaces, grounded in the official Reticulum manual.',
-			href: '/tools/reticulum-guide',
-			icon: BookOpen,
-			tags: ['tutorial', 'reticulum', 'cryptography', 'transport', 'lxmf'],
 			status: 'stable'
 		},
 		{
@@ -74,7 +58,7 @@
 	<title>Interactive Examples | Reticulum-Go</title>
 	<meta
 		name="description"
-		content="Interactive examples, tutorials, and demonstrations of Reticulum-Go in action."
+		content="WASM demos and browser tools that run Reticulum-Go in your browser."
 	/>
 </svelte:head>
 

@@ -114,7 +114,7 @@ export function getDonateWebPageJsonLd(): string {
 	return buildJsonLd('WebPage', {
 		name: `Donate | ${SITE_NAME}`,
 		description:
-			'Support Reticulum-Go. Half of donations go to Mark Qvist, creator of the Reticulum reference implementation.',
+			'Support Reticulum-Go. 75% of donations go to Mark Qvist, creator of the Reticulum reference implementation.',
 		url: `${SITE_URL}/donate`,
 		isPartOf: {
 			'@type': 'WebSite',

@@ -85,13 +85,14 @@
 			status: 'coming-soon'
 		},
 		{
-			name: 'TUI',
+			name: 'Ren TUI',
 			description:
-				'A TUI for navigating the Reticulum network. Connect, communicate, and explore the mesh network from your terminal with a modern TUI experience.',
+				'Odin terminal client for LXMF and NomadNet over Reticulum-Go librns. Conversations, micron pages, and network tabs without curses.',
 			icon: Terminal,
-			tags: ['tui', 'terminal', 'mesh', 'network'],
-			platforms: ['Linux', 'macOS', 'Windows', 'BSD'],
-			status: 'coming-soon'
+			tags: ['tui', 'terminal', 'odin', 'lxmf', 'nomadnet', 'ren-tui', 'librns'],
+			platforms: ['Linux', 'macOS', 'Windows'],
+			status: 'available',
+			link: 'https://github.com/Quad4-Software/Ren-TUI'
 		},
 		{
 			name: 'LXMFy-Go',

@@ -85,62 +85,6 @@
 			"next_steps": "Prossimi passi",
 			"add_tab": "Aggiungi scheda"
 		},
-		"reticulum_guide": {
-			"title": "Reticulum Guide",
-			"description": "Tutorial visivi su destinations, identities, announces, crittografia, links, interfaces e pacchetti multi-hop, basati sul manuale ufficiale Reticulum.",
-			"page_title": "Reticulum Guide",
-			"page_blurb": "Spiegazioni interattive che tengono conto dello Zen di Reticulum: reti sovrane, destinations non indirizzi, crittografia predefinita.",
-			"back": "Tutti gli strumenti",
-			"back_guide": "Tutti i capitoli della guida",
-			"search_placeholder": "Cerca capitoli...",
-			"sources": "Fonti",
-			"zen": "Mantenere lo zen",
-			"step_of": "Passo {current} di {total}",
-			"previous": "Precedente",
-			"next": "Successivo",
-			"open_chapter": "Apri capitolo",
-			"chapters": "Capitoli",
-			"chapters_toggle": "Attiva o disattiva elenco capitoli",
-			"chapters_close": "Chiudi elenco capitoli",
-			"python": "Python",
-			"go": "Go",
-			"try_it": "Provalo tu stesso",
-			"code_sample": "Lingua dell'esempio di codice",
-			"encrypted": "Crittografato",
-			"multi_hop": "Multi-hop",
-			"local_only": "Solo locale",
-			"accepted": "Accettato",
-			"rejected": "Rifiutato",
-			"interactive_title": "Provalo tu stesso",
-			"copy": "Copia",
-			"copied": "Copiato",
-			"nav_hint": "Scorri o usa le frecce",
-			"in_go": "Disponibile in Go",
-			"python_ref": "Riferimento Python",
-			"path_title": "Percorso consigliato",
-			"path_blurb": "Segui i capitoli in ordine. Ognuno si basa sul precedente.",
-			"steps_count": "{count} passi",
-			"all_chapters": "Tutti i capitoli",
-			"plain": "Plain",
-			"reset": "Reimposta",
-			"step_once": "Avanza",
-			"hops_label": "Hop: {hops}",
-			"status_moving": "In movimento",
-			"status_delivered": "Consegnato",
-			"status_dropped": "Scartato",
-			"status_local_only": "Solo locale",
-			"pathfinder_note": "PATHFINDER_M è {m}. Gli hop a questo valore o superiori vengono rifiutati in unpack.",
-			"can_send_data": "Può inviare dati",
-			"yes": "sì",
-			"no": "no",
-			"next_chapter": "Capitolo successivo",
-			"alpha_warning": "Questa guida è in alpha. Passi, interattivi e testi possono cambiare e non essere sempre accurati. Per un riferimento definitivo preferisci il manuale ufficiale di Reticulum e la documentazione del progetto.",
-			"header_type_1": "Header tipo 1",
-			"header_type_2": "Header tipo 2",
-			"bytes_label": "{bytes} byte",
-			"blackhole_on": "Blackhole attivo",
-			"blackhole_off": "Blackhole disattivo"
-		},
 		"rnode_flasher": {
 			"title": "RNODE Flasher",
 			"description": "Flash e provisioning del firmware RNode dal browser. Supporto Official microReticulum upload e catalogo Tiny-Reticulum-Go.",
@@ -227,8 +171,8 @@
 		"title": "Dona",
 		"subtitle": "Supporta lo sviluppo e la manutenzione di Reticulum-Go.",
 		"intro": "Scegli una piattaforma qui sotto o invia Monero direttamente.",
-		"meta_description": "Supporta lo sviluppo di Reticulum-Go. Il 50% delle donazioni va a Mark Qvist, creatore dell'implementazione di riferimento di Reticulum su reticulum.network.",
-		"markqvist_share": "Il 50% delle donazioni va a Mark Qvist, creatore dell'implementazione di riferimento di Reticulum.",
+		"meta_description": "Supporta lo sviluppo di Reticulum-Go. Il 75% delle donazioni va a Mark Qvist, creatore dell'implementazione di riferimento di Reticulum su reticulum.network.",
+		"markqvist_share": "Il 75% delle donazioni va a Mark Qvist, creatore dell'implementazione di riferimento di Reticulum.",
 		"markqvist_link": "reticulum.network",
 		"buymeacoffee": "Buy Me a Coffee",
 		"liberapay": "Liberapay",
@@ -329,9 +273,9 @@
 				"title": "Criptato di Default",
 				"description": "Reticulum usa crittografia moderna e robusta end-to-end. I layout on-wire corrispondono al riferimento Python così i peer restano compatibili."
 			},
-			"resilient": {
-				"title": "Resiliente e Sovrano",
-				"description": "Nessuna autorità centrale, nessun server da spegnere. Costruisci la tua infrastruttura su qualsiasi mezzo: radio, fibra, satellite, linee telefoniche fisse o internet."
+			"legacy": {
+				"title": "Supporto sistemi legacy",
+				"description": "Compila ancora per CPU vecchie, Linux a 32 bit e board embedded che la maggior parte dei linguaggi moderni ha abbandonato."
 			},
 			"go": {
 				"title": "Implementazione Go",
@@ -342,8 +286,8 @@
 				"description": "Compatibile a livello di wire con il Reticulum Python ufficiale (RNS). Pacchetti, link e crittografia funzionano peer-to-peer."
 			},
 			"sandbox": {
-				"title": "Progettato per la sicurezza",
-				"description": "Il demone nativo abilita di default una sandbox OS. La build WASM gira nella sandbox del browser del runtime host."
+				"title": "Sandboxing di sistema nativo",
+				"description": "Il demone nativo applica la sandbox OS dopo l'avvio. Le build WASM usano la sandbox del browser."
 			},
 			"modular": {
 				"title": "Modulare e incorporabile",

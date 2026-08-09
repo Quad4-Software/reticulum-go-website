@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Search as SearchIcon, FileCode, BookOpen, Radio, Bot, ArrowRight } from 'lucide-svelte';
+	import { Search as SearchIcon, FileCode, Radio, Bot, ArrowRight } from 'lucide-svelte';
 	import { t } from 'svelte-i18n';
 
 	interface ToolItem {
@@ -13,15 +13,6 @@
 	}
 
 	const tools: ToolItem[] = [
-		{
-			id: 'reticulum-guide',
-			href: '/tools/reticulum-guide',
-			icon: BookOpen,
-			titleKey: 'tools.reticulum_guide.title',
-			descriptionKey: 'tools.reticulum_guide.description',
-			tags: ['reticulum', 'tutorial', 'guide', 'networking'],
-			status: 'alpha'
-		},
 		{
 			id: 'micron-editor',
 			href: '/tools/micron-editor',

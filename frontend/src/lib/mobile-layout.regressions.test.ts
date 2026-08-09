@@ -58,29 +58,6 @@ describe('docs mobile navigation', () => {
 	});
 });
 
-describe('reticulum guide mobile navigation', () => {
-	it('opens chapters in an overlay drawer on small screens', () => {
-		const sidebar = read('src/lib/components/tutorials/ChapterSidebar.svelte');
-		expect(sidebar).toContain('mobileOpen');
-		expect(sidebar).toContain('chapters_close');
-		expect(sidebar).toContain('md:hidden');
-		expect(sidebar).toContain('fixed inset-0');
-		expect(sidebar).toContain("document.body.style.overflow = 'hidden'");
-		expect(sidebar).toContain('Escape');
-	});
-
-	it('keeps step dots scrollable and bottom chrome safe-area aware', () => {
-		const player = read('src/lib/components/tutorials/TutorialPlayer.svelte');
-		expect(player).toContain('overflow-x-auto');
-		expect(player).toContain('pb-[env(safe-area-inset-bottom,0px)]');
-		expect(player).toContain('fixed inset-x-0 bottom-0');
-		expect(player).toContain('min-w-0');
-		expect(player).toContain('shrink-0');
-		expect(player).not.toContain('backdrop-blur');
-		expect(player).not.toContain('bg-white/95');
-	});
-});
-
 describe('micron editor mobile workbench', () => {
 	it('uses compact chrome, safe-area fullscreen, and overflow-safe panes', () => {
 		const editor = read('src/lib/components/MicronEditor.svelte');

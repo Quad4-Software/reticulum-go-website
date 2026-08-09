@@ -85,62 +85,6 @@
 			"next_steps": "Дальше",
 			"add_tab": "Добавить вкладку"
 		},
-		"reticulum_guide": {
-			"title": "Reticulum Guide",
-			"description": "Визуальные туториалы о destinations, identities, announces, криптографии, links, interfaces и multi-hop пакетах, на основе официального руководства Reticulum.",
-			"page_title": "Reticulum Guide",
-			"page_blurb": "Интерактивные объяснения с учётом Zen of Reticulum: суверенные сети, destinations вместо адресов, шифрование по умолчанию.",
-			"back": "Все инструменты",
-			"back_guide": "Все главы гайда",
-			"search_placeholder": "Поиск глав...",
-			"sources": "Источники",
-			"zen": "Сохраняя zen",
-			"step_of": "Шаг {current} из {total}",
-			"previous": "Назад",
-			"next": "Далее",
-			"open_chapter": "Открыть главу",
-			"chapters": "Главы",
-			"chapters_toggle": "Показать или скрыть список глав",
-			"chapters_close": "Закрыть список глав",
-			"python": "Python",
-			"go": "Go",
-			"try_it": "Попробуйте сами",
-			"code_sample": "Язык примера кода",
-			"encrypted": "Зашифровано",
-			"multi_hop": "Multi-hop",
-			"local_only": "Только локально",
-			"accepted": "Принято",
-			"rejected": "Отклонено",
-			"interactive_title": "Попробуйте сами",
-			"copy": "Копировать",
-			"copied": "Скопировано",
-			"nav_hint": "Свайп или стрелки",
-			"in_go": "Доступно в Go",
-			"python_ref": "Справка Python",
-			"path_title": "Рекомендуемый путь",
-			"path_blurb": "Проходите главы по порядку. Каждая опирается на предыдущую.",
-			"steps_count": "{count} шагов",
-			"all_chapters": "Все главы",
-			"plain": "Plain",
-			"reset": "Сбросить",
-			"step_once": "Шаг",
-			"hops_label": "Хопы: {hops}",
-			"status_moving": "В пути",
-			"status_delivered": "Доставлено",
-			"status_dropped": "Отброшено",
-			"status_local_only": "Только локально",
-			"pathfinder_note": "PATHFINDER_M равен {m}. Байты hop от этого значения отклоняются при распаковке.",
-			"can_send_data": "Можно отправлять данные",
-			"yes": "да",
-			"no": "нет",
-			"next_chapter": "Следующая глава",
-			"alpha_warning": "Это руководство в статусе alpha. Шаги, интерактивы и формулировки могут меняться и не всегда быть точными. Для окончательной справки опирайтесь на официальное руководство Reticulum и документацию проекта.",
-			"header_type_1": "Заголовок типа 1",
-			"header_type_2": "Заголовок типа 2",
-			"bytes_label": "{bytes} байт",
-			"blackhole_on": "Blackhole включён",
-			"blackhole_off": "Blackhole выключен"
-		},
 		"rnode_flasher": {
 			"title": "RNODE Flasher",
 			"description": "Прошивка и подготовка RNode из браузера. Official microReticulum загрузка и слот Tiny-Reticulum-Go.",
@@ -227,8 +171,8 @@
 		"title": "Пожертвовать",
 		"subtitle": "Поддержите разработку и сопровождение Reticulum-Go.",
 		"intro": "Выберите платформу ниже или отправьте Monero напрямую.",
-		"meta_description": "Поддержите разработку Reticulum-Go. 50% пожертвований идут Mark Qvist, создателю эталонной реализации Reticulum на reticulum.network.",
-		"markqvist_share": "50% пожертвований идут Mark Qvist, создателю эталонной реализации Reticulum.",
+		"meta_description": "Поддержите разработку Reticulum-Go. 75% пожертвований идут Mark Qvist, создателю эталонной реализации Reticulum на reticulum.network.",
+		"markqvist_share": "75% пожертвований идут Mark Qvist, создателю эталонной реализации Reticulum.",
 		"markqvist_link": "reticulum.network",
 		"buymeacoffee": "Buy Me a Coffee",
 		"liberapay": "Liberapay",
@@ -329,9 +273,9 @@
 				"title": "Шифрование по умолчанию",
 				"description": "Reticulum использует сильную современную криптографию сквозным образом. Форматы на проводе совпадают с Python-референсом, чтобы пиры оставались совместимы."
 			},
-			"resilient": {
-				"title": "Устойчивость и суверенитет",
-				"description": "Никаких центральных органов власти, никаких серверов для отключения. Создайте свою собственную инфраструктуру через любую среду - радио, оптоволокно, спутник, наземные линии или интернет."
+			"legacy": {
+				"title": "Поддержка устаревших систем",
+				"description": "По-прежнему собирается для старых CPU, 32-битного Linux и встраиваемых плат, от которых отказалось большинство современных языков."
 			},
 			"go": {
 				"title": "Реализация на Go",
@@ -342,8 +286,8 @@
 				"description": "Совместим на уровне провода с официальным Python Reticulum (RNS). Пакеты, каналы и криптография работают peer-to-peer."
 			},
 			"sandbox": {
-				"title": "Безопасность по замыслу",
-				"description": "Нативный демон по умолчанию включает OS-песочницу. WASM-сборка работает в песочнице браузера среды выполнения."
+				"title": "Нативная системная песочница",
+				"description": "Нативный демон применяет OS-песочницу после запуска. WASM-сборки используют песочницу браузера."
 			},
 			"modular": {
 				"title": "Модульность и встраиваемость",

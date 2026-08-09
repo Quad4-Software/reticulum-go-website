@@ -90,8 +90,7 @@ ${AGENT_MUST_NOT.map((line) => `- ${line}`).join('\n')}
 - [Cryptography](${SITE_URL}/docs/cryptography): Go crypto inventory matching the reference
 - [Transport](${SITE_URL}/docs/transport): Paths, hops, PATHFINDER_M notes
 - [Security](${SITE_URL}/docs/security): Reporting (LXMF) and sandbox notes
-- [Reticulum Guide](${SITE_URL}/tools/reticulum-guide): Visual tutorials with Python and Go samples covering destinations, identities, announces, crypto, packets, links, messaging/LXMF, and interfaces
-- [Donate](${SITE_URL}/donate): Support. Half of donations go to Mark Qvist (reference creator)
+- [Donate](${SITE_URL}/donate): Support. 75% of donations go to Mark Qvist (reference creator)
 - [Source](${SITE_URL}/source): Official rngit, NomadNet page, GitHub and Lavaforge mirrors
 - [Privacy](${SITE_URL}/privacy): Zero personal data collection. No analytics or trackers
 - [Contact](${SITE_URL}/contact): LXMF and email
@@ -180,7 +179,6 @@ ${siteDocLinks()}
 ## Product surfaces on this site
 
 - ${SITE_URL}/
-- ${SITE_URL}/tools/reticulum-guide
 - ${SITE_URL}/tools/micron-editor
 - ${SITE_URL}/wasm-example
 - ${SITE_URL}/ren-browser

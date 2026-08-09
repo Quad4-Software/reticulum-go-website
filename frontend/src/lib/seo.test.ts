@@ -87,7 +87,7 @@ describe('seo', () => {
 			about: { name: string; url: string };
 		};
 		expect(parsed.url).toBe(`${SITE_URL}/donate`);
-		expect(parsed.description).toMatch(/Half of donations|Mark Qvist/);
+		expect(parsed.description).toMatch(/75% of donations|Mark Qvist/);
 		expect(parsed.about.name).toBe('Mark Qvist');
 		expect(parsed.about.url).toBe(RETICULUM_SITE);
 	});

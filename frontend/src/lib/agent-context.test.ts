@@ -18,7 +18,6 @@ describe('agent context', () => {
 		expect(text).toContain(RETICULUM_WHATIS);
 		expect(text).toContain('does not replace');
 		expect(text).toContain('/api/agent');
-		expect(text).toContain('/tools/reticulum-guide');
 		expect(text).toContain('/source');
 		expect(text).toContain('/download/reticulum-go.zip');
 		expect(text).toContain('DOCS_CACHE_DIR');

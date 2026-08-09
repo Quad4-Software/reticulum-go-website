@@ -68,9 +68,9 @@ describe('home copy', () => {
 
 		expect(en.home.features.interop.description).not.toMatch(/translation gateways/i);
 		expect(en.home.features.modular.description).not.toMatch(/Layered packages/i);
-		expect(en.home.coexistence.title).toBe("Expanding Reticulum's Reach");
+		expect(en.home.coexistence.title).toBe('Alongside Python RNS');
 		expect(en.home.coexistence.description).toMatch(/Mark Qvist/);
-		expect(en.home.coexistence.description).toMatch(/not to replace it/);
+		expect(en.home.coexistence.description).toMatch(/does not replace it/);
 	});
 
 	it('keeps locale feature keys aligned', () => {
@@ -81,7 +81,7 @@ describe('home copy', () => {
 					coexistence: { title: string; description: string };
 				};
 			};
-			for (const key of ['encrypted', 'resilient', 'go', 'interop', 'sandbox', 'modular']) {
+			for (const key of ['encrypted', 'legacy', 'go', 'interop', 'sandbox', 'modular']) {
 				expect(data.home.features[key]?.title).toBeTruthy();
 				expect(data.home.features[key]?.description).toBeTruthy();
 			}

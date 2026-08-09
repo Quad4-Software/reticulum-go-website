@@ -1,7 +1,7 @@
 export const SITE_URL = 'https://reticulum-go.quad4.io';
 export const SITE_NAME = 'Reticulum-Go';
 export const SITE_DESCRIPTION =
-	'Wire-compatible Go implementation of the Reticulum Network Stack. Build resilient, encrypted mesh networks in the browser and beyond, alongside the Python reference by Mark Qvist.';
+	'Wire-compatible Go port of the Reticulum Network Stack. Run encrypted mesh networking in the browser and on servers, alongside Python RNS by Mark Qvist.';
 export const LOCALES = ['en', 'de', 'ru', 'it'] as const;
 export const DEFAULT_LOCALE = 'en';
 
