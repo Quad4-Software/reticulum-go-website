@@ -1,6 +1,11 @@
+import { formatDownloadSize, isDownloadableAssetName } from '$lib/download-utils';
+
+export { formatDownloadSize };
+
 export const REN_BROWSER_REPO = 'https://github.com/Quad4-Software/Ren-Browser';
 export const REN_BROWSER_DOCKER =
 	'https://github.com/Quad4-Software/Ren-Browser/pkgs/container/renbrowser';
+export const REN_BROWSER_DOCS = `${REN_BROWSER_REPO}/tree/master/docs/en`;
 
 export type RenBrowserAsset = {
 	name: string;
@@ -74,7 +79,10 @@ export const DOWNLOAD_SLOTS: readonly DownloadSlot[] = [
 		titleKey: 'ren_browser.downloads.slots.windows_xp.title',
 		hintKey: 'ren_browser.downloads.slots.windows_xp.hint',
 		primary: 'renbrowser-windows-386-winxp.exe',
-		alternates: ['renbrowser-windows-amd64-winxp.exe', 'renbrowser-windows-amd64-winxp-installer.exe'],
+		alternates: [
+			'renbrowser-windows-amd64-winxp.exe',
+			'renbrowser-windows-amd64-winxp-installer.exe'
+		],
 		visibility: 'when_available'
 	},
 	{
@@ -205,19 +213,10 @@ const SLOT_ASSET_PREFIX: Record<DownloadSlotId, RegExp> = {
 	server: /^renbrowser-server-(?!linux-riscv64)/
 };
 
-function assetsForPrefix(
-	assets: readonly RenBrowserAsset[],
-	prefix: RegExp
-): RenBrowserAsset[] {
-	return assets.filter((asset) => prefix.test(asset.name)).sort((a, b) => a.name.localeCompare(b.name));
-}
-
-export function formatDownloadSize(bytes: number): string {
-	if (bytes <= 0) return '0 B';
-	const units = ['B', 'KB', 'MB', 'GB'] as const;
-	const index = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1);
-	const value = bytes / 1024 ** index;
-	return `${value >= 10 || index === 0 ? value.toFixed(0) : value.toFixed(1)} ${units[index]}`;
+function assetsForPrefix(assets: readonly RenBrowserAsset[], prefix: RegExp): RenBrowserAsset[] {
+	return assets
+		.filter((asset) => prefix.test(asset.name))
+		.sort((a, b) => a.name.localeCompare(b.name));
 }
 
 export function findAsset(
@@ -259,14 +258,14 @@ export function slotsForRelease(
 export function findExtraWasmAssets(release: RenBrowserRelease | null): RenBrowserAsset[] {
 	if (!release) return [];
 	return release.assets
-		.filter((asset) => EXTRA_WASM_PREFIX.test(asset.name))
+		.filter((asset) => EXTRA_WASM_PREFIX.test(asset.name) && isDownloadableAssetName(asset.name))
 		.sort((a, b) => a.name.localeCompare(b.name));
 }
 
 export function findSbomAssets(release: RenBrowserRelease | null): RenBrowserAsset[] {
 	if (!release) return [];
 	return release.assets
-		.filter((asset) => asset.name.startsWith(SBOM_PREFIX))
+		.filter((asset) => asset.name.startsWith(SBOM_PREFIX) && isDownloadableAssetName(asset.name))
 		.sort((a, b) => a.name.localeCompare(b.name));
 }
 

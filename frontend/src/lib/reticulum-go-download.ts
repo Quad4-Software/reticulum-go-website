@@ -1,3 +1,7 @@
+import { formatDownloadSize, isDownloadableAssetName } from '$lib/download-utils';
+
+export { formatDownloadSize, isDownloadableAssetName };
+
 export const RETICULUM_GO_RELEASES_REPO = 'https://github.com/Quad4-Software/Reticulum-Go';
 
 export type RgAsset = {
@@ -196,19 +200,9 @@ const RG_SLOT_PREFIX: Record<RgDownloadSlotId, RegExp> = {
 };
 
 function assetsForPrefix(assets: readonly RgAsset[], prefix: RegExp): RgAsset[] {
-	return assets.filter((asset) => prefix.test(asset.name)).sort((a, b) => a.name.localeCompare(b.name));
-}
-
-export function formatDownloadSize(bytes: number): string {
-	if (bytes <= 0) return '0 B';
-	const units = ['B', 'KB', 'MB', 'GB'] as const;
-	const index = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1);
-	const value = bytes / 1024 ** index;
-	return `${value >= 10 || index === 0 ? value.toFixed(0) : value.toFixed(1)} ${units[index]}`;
-}
-
-export function isDownloadableAssetName(name: string): boolean {
-	return !name.endsWith('.cosign.bundle');
+	return assets
+		.filter((asset) => prefix.test(asset.name))
+		.sort((a, b) => a.name.localeCompare(b.name));
 }
 
 export function findAsset(assets: readonly RgAsset[], name: string): RgAsset | undefined {

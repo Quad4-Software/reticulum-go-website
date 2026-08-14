@@ -17,6 +17,11 @@
 		Layout,
 		ChevronRight
 	} from 'lucide-svelte';
+	import {
+		REN_BROWSER_DOCKER,
+		REN_BROWSER_DOCS,
+		REN_BROWSER_REPO
+	} from '$lib/ren-browser-download';
 
 	const features = [
 		{ key: 'nomadnet', icon: Globe },
@@ -70,7 +75,7 @@
 					{$t('ren_browser.download')}
 				</a>
 				<a
-					href="https://github.com/Quad4-Software/Ren-Browser"
+					href={REN_BROWSER_REPO}
 					target="_blank"
 					rel="noopener noreferrer"
 					class="px-8 py-4 border border-zinc-200 dark:border-zinc-800 font-bold rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-all active:scale-95 inline-flex items-center gap-2"
@@ -213,7 +218,7 @@
 				</p>
 				<div class="pt-2">
 					<a
-						href="https://github.com/Quad4-Software/Ren-Browser/pkgs/container/renbrowser"
+						href={REN_BROWSER_DOCKER}
 						target="_blank"
 						rel="noopener noreferrer"
 						class="inline-flex items-center gap-2 text-sm font-bold text-[#00ADD8] hover:underline"
@@ -234,7 +239,7 @@
 				{$t('ren_browser.download')}
 			</a>
 			<a
-				href="https://github.com/Quad4-Software/Ren-Browser/tree/master/docs/en"
+				href={REN_BROWSER_DOCS}
 				target="_blank"
 				rel="noopener noreferrer"
 				class="px-6 py-3 border border-zinc-200 dark:border-zinc-800 font-bold rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors inline-flex items-center gap-2"
