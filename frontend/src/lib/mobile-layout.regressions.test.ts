@@ -54,7 +54,7 @@ describe('docs mobile navigation', () => {
 
 	it('lists every synced english doc slug including microvm', () => {
 		expect(DOC_SLUGS).toContain('microvm');
-		expect(DOC_SLUGS.length).toBe(20);
+		expect(DOC_SLUGS.length).toBe(22);
 	});
 });
 

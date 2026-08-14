@@ -3,6 +3,8 @@
 	import IconCascade from '$lib/components/IconCascade.svelte';
 
 	const platforms = [
+		{ id: 'windowsxp', src: '/platform-icons/windowsxp.svg', nameKey: 'home.platforms.windowsxp' },
+		{ id: 'windows7', src: '/platform-icons/windows7.svg', nameKey: 'home.platforms.windows7' },
 		{ id: 'windows', src: '/platform-icons/windows.svg', nameKey: 'home.platforms.windows' },
 		{ id: 'apple', src: '/platform-icons/apple.svg', nameKey: 'home.platforms.apple' },
 		{ id: 'android', src: '/platform-icons/android.svg', nameKey: 'home.platforms.android' },

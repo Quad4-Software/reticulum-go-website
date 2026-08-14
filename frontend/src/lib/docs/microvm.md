@@ -5,9 +5,9 @@ Run `reticulum-go` inside an Amazon Firecracker microVM. The default path is aim
 ## Requirements
 
 - Linux with `/dev/kvm` readable
-- `firecracker` on `PATH`
+- firecracker on `PATH`
 - Go toolchain (to build the guest rootfs and host bridge binary)
-- Optional: `pasta` only when using `NET=1` rootless TAP (often broken when nested)
+- Optional: pasta only when using `NET=1` rootless TAP (often broken when nested)
 
 ## Quick start
 
@@ -44,7 +44,7 @@ Edit `microvm/host-bridge.config` and uncomment or add an interface under `[inte
   max_reconnect_tries = -1
 ```
 
-TCP hubs use `TCPClientInterface` with `target_host` / `target_port`. Then restart:
+TCP hubs use TCPClientInterface with target_host / target_port. Then restart:
 
 ```bash
 make microvm-stop
@@ -55,17 +55,17 @@ The host process owns clearnet. The guest joins the mesh through the `Microvm Gu
 
 ## Layout
 
-| Path                             | Role                                         |
-| -------------------------------- | -------------------------------------------- |
-| `microvm/up.sh`                  | One-shot prepare + start                     |
-| `microvm/fetch-kernel.sh`        | Download `out/vmlinux`                       |
-| `microvm/build-rootfs.sh`        | Build `out/rootfs.ext4`                      |
-| `microvm/run.sh`                 | Start Firecracker                            |
-| `microvm/run-host-bridge.sh`     | Host reticulum + vsock pipe                  |
-| `microvm/stop.sh`                | Stop guest, pasta, and host bridge           |
+| Path | Role |
+|------|------|
+| `microvm/up.sh` | One-shot prepare + start |
+| `microvm/fetch-kernel.sh` | Download `out/vmlinux` |
+| `microvm/build-rootfs.sh` | Build `out/rootfs.ext4` |
+| `microvm/run.sh` | Start Firecracker |
+| `microvm/run-host-bridge.sh` | Host reticulum + vsock pipe |
+| `microvm/stop.sh` | Stop guest, pasta, and host bridge |
 | `microvm/guest/reticulum.config` | Guest config (VSOCK hub, persistent storage) |
-| `microvm/host-bridge.config`     | Host config (vsock pipe + your hubs)         |
-| `microvm/out/`                   | Kernel, rootfs, sockets, logs (gitignored)   |
+| `microvm/host-bridge.config` | Host config (vsock pipe + your hubs) |
+| `microvm/out/` | Kernel, rootfs, sockets, logs (gitignored) |
 
 ## Networking modes
 
@@ -75,7 +75,7 @@ The host process owns clearnet. The guest joins the mesh through the `Microvm Gu
 NET=0 ./microvm/up.sh
 ```
 
-Guest listens on AF_VSOCK. Host uses `PipeInterface` + `vsock-connect.sh` to speak Firecracker UDS `CONNECT`. No guest TAP.
+Guest listens on AF_VSOCK. Host uses PipeInterface + `vsock-connect.sh` to speak Firecracker UDS `CONNECT`. No guest TAP.
 
 ### Guest-only
 
@@ -87,7 +87,7 @@ Guest listens on AF_VSOCK. Host uses `PipeInterface` + `vsock-connect.sh` to spe
 
 ### Rootless TAP (`NET=1`)
 
-Uses `pasta` to create a TAP and NAT. Useful on bare metal. Nested Firecracker often fails with tap write errors. Prefer the host bridge there.
+Uses pasta to create a TAP and NAT. Useful on bare metal. Nested Firecracker often fails with tap write errors. Prefer the host bridge there.
 
 ```bash
 NET=1 ./microvm/up.sh --guest-only
@@ -109,13 +109,13 @@ Guest storage lives on the rootfs under `/etc/reticulum/storage` (next to the gu
 
 ## Makefile and Task
 
-| Make                   | Task                   | Action                                                                    |
-| ---------------------- | ---------------------- | ------------------------------------------------------------------------- |
-| `make microvm-up`      | `task microvm:up`      | Fetch kernel if needed, build rootfs if needed, start guest + host bridge |
-| `make microvm-stop`    | `task microvm:stop`    | Stop guest and host bridge                                                |
-| `make microvm-kernel`  | `task microvm:kernel`  | Fetch kernel only                                                         |
-| `make microvm-rootfs`  | `task microvm:rootfs`  | Build rootfs only                                                         |
-| `make microvm-rebuild` | `task microvm:rebuild` | Force kernel+rootfs rebuild then up                                       |
+| Make | Task | Action |
+|------|------|--------|
+| `make microvm-up` | `task microvm:up` | Fetch kernel if needed, build rootfs if needed, start guest + host bridge |
+| `make microvm-stop` | `task microvm:stop` | Stop guest and host bridge |
+| `make microvm-kernel` | `task microvm:kernel` | Fetch kernel only |
+| `make microvm-rootfs` | `task microvm:rootfs` | Build rootfs only |
+| `make microvm-rebuild` | `task microvm:rebuild` | Force kernel+rootfs rebuild then up |
 
 ## Logs
 

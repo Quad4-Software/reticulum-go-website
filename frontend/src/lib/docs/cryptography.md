@@ -1,6 +1,8 @@
 # Cryptography
 
-Canonical cryptography reference for Reticulum-Go. Vulnerability reporting and CI paths are in [Security](/docs/security).
+## Overview
+
+This document is the canonical cryptography reference for Reticulum-Go. It supports security reviews and correct use of APIs. For vulnerability reporting and CI practices see [Security](/docs/security).
 
 Implementation code:
 
@@ -11,7 +13,7 @@ Implementation code:
 
 On-wire layouts match the Python reference. Changing algorithms or sizes without coordinated protocol updates breaks interoperability.
 
-## Protocol constraints
+## Design goals
 
 **Interoperability.** Peers on Python Reticulum must verify signatures, decrypt identity payloads when keys match, and complete link handshakes with Reticulum-Go nodes.
 
@@ -21,15 +23,15 @@ On-wire layouts match the Python reference. Changing algorithms or sizes without
 
 ## Primitive inventory
 
-| Primitive    | Role                                                     | Implementation                                          |
-| ------------ | -------------------------------------------------------- | ------------------------------------------------------- |
-| X25519       | Static identity DH, ephemeral ECDH, ratchets, IFAC input | `golang.org/x/crypto/curve25519` via `pkg/cryptography` |
-| Ed25519      | Identity signatures, IFAC inner identity                 | `crypto/ed25519` via `pkg/cryptography`                 |
-| SHA-256      | Hashes, destination construction, digests                | `crypto/sha256`                                         |
-| HKDF-SHA256  | Identity encrypt keys, IFAC derivation                   | `golang.org/x/crypto/hkdf`                              |
-| AES-256-CBC  | Identity tokens, link traffic where reference uses CBC   | `crypto/aes`, PKCS#7 in `pkg/cryptography`              |
-| HMAC-SHA256  | Identity ciphertext authentication                       | `crypto/hmac`                                           |
-| Random bytes | Key generation, IVs                                      | `crypto/rand`                                           |
+| Primitive | Role | Implementation |
+|-----------|------|----------------|
+| X25519 | Static identity DH, ephemeral ECDH, ratchets, IFAC input | `golang.org/x/crypto/curve25519` via `pkg/cryptography` |
+| Ed25519 | Identity signatures, IFAC inner identity | `crypto/ed25519` via `pkg/cryptography` |
+| SHA-256 | Hashes, destination construction, digests | `crypto/sha256` |
+| HKDF-SHA256 | Identity encrypt keys, IFAC derivation | `golang.org/x/crypto/hkdf` |
+| AES-256-CBC | Identity tokens, link traffic where reference uses CBC | `crypto/aes`, PKCS#7 in `pkg/cryptography` |
+| HMAC-SHA256 | Identity ciphertext authentication | `crypto/hmac` |
+| Random bytes | Key generation, IVs | `crypto/rand` |
 
 Pinned extended module: `golang.org/x/crypto` (version in `go.mod`, currently v0.52.0).
 
@@ -66,7 +68,7 @@ When encrypting to another identity public X25519 key:
 
 1. Generate ephemeral X25519 keypair
 2. ECDH with peer public encryption key (or optional ratchet public key)
-3. HKDF-SHA256 expands shared secret to 64 bytes: HMAC key (32) then AES key (32). Salt and info follow identity hash and protocol context (`DeriveIdentityKeyMaterial` in `pkg/cryptography`)
+3. HKDF-SHA256 expands shared secret to 64 bytes: HMAC key (32) then AES key (32). Salt and info follow identity hash and protocol context (DeriveIdentityKeyMaterial in `pkg/cryptography`)
 4. AES-256-CBC encrypt with PKCS#7 padding
 5. HMAC-SHA256 over ciphertext
 6. Wire token includes ephemeral public key, ciphertext, and MAC
@@ -79,7 +81,7 @@ Algorithm: Ed25519.
 
 Used for announce signatures, proofs, and related auth paths.
 
-Hardware signing via `Ed25519Signer` and `NewEd25519SignerFromCryptoSigner`. The announced Ed25519 public key must still match the 64-byte public blob.
+Hardware signing via Ed25519Signer and NewEd25519SignerFromCryptoSigner. The announced Ed25519 public key must still match the 64-byte public blob.
 
 ## Destination hashes
 
@@ -97,18 +99,29 @@ Interface Access Code is an optional outer authentication layer on interface fra
 
 Derivation:
 
-- Fixed HKDF salt in `pkg/ifac` (`SaltHex`)
-- Operator `network_name` and `passphrase`
+- Fixed HKDF salt in `pkg/ifac` (SaltHex)
+- Operator network_name and passphrase
 - Inner Reticulum identity signs a truncated tail of the frame
 
 Policy:
 
 - Configured IFAC masks outbound frames and verifies inbound frames
-- Wrong or missing IFAC is dropped (`ApplyIFACOutbound` / `ApplyIFACInbound` in `pkg/common`)
+- Wrong or missing IFAC is dropped (ApplyIFACOutbound / ApplyIFACInbound in `pkg/common`)
 
 ## Ratchets
 
-Optional X25519 ratchet private keys (256 bits) for forward secrecy on identity-encrypted traffic. Persisted per identity hash under `storage/ratchets/` with expiry per package constants.
+Optional X25519 keys (256 bits) for forward secrecy on SINGLE identity-encrypted traffic. Off until the destination enables them. Python RNS is the same: `enable_ratchets` and `enforce_ratchets` are both opt-in.
+
+Local private keys:
+
+- `EnableRatchets(path)` loads or creates a signed msgpack list at that path
+- `EnableRatchetsInMemory` keeps the list in RAM and writes nothing
+
+Announces carry the current 32-byte public key when enabled. Peers persist that public key under `storage/ratchets/{destination_hash}` as `{ratchet, received}` (Python layout) unless in-memory or shared-instance mode is on. `Destination.Encrypt` for SINGLE destinations uses `Identity.GetRatchet(destHash)` when a non-expired key exists. `EnforceRatchets` rejects identity-key ciphertext. Links do not use this mechanism.
+
+## GROUP Token keys
+
+GROUP destinations share a symmetric Token key (`CreateKeys` / `LoadPrivateKey`). Default key is 64 bytes (32 HMAC + 32 AES-256), matching Python `Token.generate_key()`. Ciphertext is `IV (16) || AES-CBC || HMAC-SHA256 (32)`. GROUP packets do not use identity encryption or ratchets. They cannot be announced and are not forwarded beyond one hop.
 
 ## Pluggable CryptoProvider
 
@@ -117,27 +130,27 @@ Optional X25519 ratchet private keys (256 bits) for forward secrecy on identity-
 ## Operational handling
 
 - Store identity files on encrypted disks with restrictive permissions
-- Optional `identity_backend = secretservice` or `keyring` stores private blobs outside plaintext files
+- Optional `identity_backend = secretservice` or keyring stores private blobs outside plaintext files
 - Backup of the 64-byte software file or RHB1 plus signing capability equals full impersonation capability
 - Verbose debug logging may hex-dump sensitive metadata. Lower loglevel in production
 
 ## Verification
 
-| Method                | Location                                                                                                                      |
-| --------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| Automated cross tests | `tests/crossref`, package tests under `pkg/`                                                                                  |
-| Live interop          | `tests/interop`                                                                                                               |
-| External spec         | [Reticulum manual](https://reticulum.network/manual/reference.html), [crypto overview](https://reticulum.network/crypto.html) |
+| Method | Location |
+|--------|----------|
+| Automated cross tests | `tests/crossref`, package tests under `pkg/` |
+| Live interop | `tests/interop` |
+| External spec | [Reticulum manual](https://reticulum.network/manual/reference.html), [crypto overview](https://reticulum.network/crypto.html) |
 
 Parity claims are listed in [Compatibility](/docs/compatibility).
 
 ## Protocol constants
 
-| Item                 | Value                                   |
-| -------------------- | --------------------------------------- |
-| Curve                | Curve25519 (X25519 + Ed25519)           |
-| KEYSIZE              | 512 bits (256 encryption + 256 signing) |
-| TRUNCATED_HASHLENGTH | 128 bits                                |
-| RATCHETSIZE          | 256 bits                                |
-| RATCHET_EXPIRY       | 2 592 000 seconds (30 days)             |
-| Default MTU          | 500 bytes (`pkg/packet.MTU`)            |
+| Item | Value |
+|------|-------|
+| Curve | Curve25519 (X25519 + Ed25519) |
+| KEYSIZE | 512 bits (256 encryption + 256 signing) |
+| TRUNCATED_HASHLENGTH | 128 bits |
+| RATCHETSIZE | 256 bits |
+| RATCHET_EXPIRY | 2 592 000 seconds (30 days) |
+| Default MTU | 500 bytes (`pkg/packet.MTU`) |

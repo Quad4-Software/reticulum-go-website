@@ -2,18 +2,20 @@
 
 ## Integration paths
 
-| Path                                                                | Use when                                                                  |
-| ------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| `pkg/node`                                                          | Go app, full transport and interfaces in-process                          |
-| `pkg/librns` / [librns](/docs/librns)                               | Native host (C, C++, FFI) wants the same stack in-process                 |
-| `bindings/odin` / [librns](/docs/librns#odin-bindings)              | Odin app linking `librns.so` in-process                                   |
-| `bindings/dart` / [librns Dart FFI](/docs/librns#dart-ffi-bindings) | Flutter or Dart app embedding `librns` on Linux, Android, Windows         |
-| Control API / [Dart client](/docs/control-api#dart-and-flutter)     | Separate language or Flutter app talking to a local `reticulum-go` daemon |
-| `pkg/wasm`                                                          | Browser client over WebSocket                                             |
+| Path | Use when |
+|------|----------|
+| `pkg/node` | Go app, full transport and interfaces in-process |
+| `pkg/librns` / [librns](/docs/librns) | Native host (C, C++, FFI) wants the same stack in-process |
+| `bindings/odin` / [librns](/docs/librns#odin-bindings) | Odin app linking `librns.so` in-process |
+| `bindings/zig` / [librns](/docs/librns#zig-bindings) | Zig app linking `librns.so` in-process |
+| `bindings/cpp` / [librns](/docs/librns#c-bindings) | C++17 app linking `librns.so` in-process |
+| `bindings/dart` / [librns Dart FFI](/docs/librns#dart-ffi-bindings) | Flutter or Dart app embedding librns on Linux, Android, Windows |
+| Control API / [Dart client](/docs/control-api#dart-and-flutter) | Separate language or Flutter app talking to a local `reticulum-go` daemon |
+| `pkg/wasm` | Browser client over WebSocket |
 
 ## Embedding with pkg/node
 
-`Node` orchestrates transport, interfaces, shared instance, discovery, and lifecycle hooks. Full recipes and type tables are in [API reference](/docs/api-reference).
+Node orchestrates transport, interfaces, shared instance, discovery, and lifecycle hooks. Full recipes and type tables are in [API reference](/docs/api-reference).
 
 ### Minimal sequence
 
@@ -30,32 +32,32 @@ n.Stop()
 
 ### Lifecycle hooks
 
-| Method                    | When to use                                               |
-| ------------------------- | --------------------------------------------------------- |
-| `OnNetworkAvailable`      | NIC came up, Wi-Fi reassociated, or manual resume         |
-| `OnNetworkLost`           | NIC down or airplane mode                                 |
-| `RefreshPaths`            | Stale paths, force path requests for watched destinations |
-| `ReloadInterfaces`        | Config file interface blocks changed                      |
-| `StartInterfaceDiscovery` | rnstransport discovery when `discover_interfaces = yes`   |
+| Method | When to use |
+|--------|-------------|
+| OnNetworkAvailable | NIC came up, Wi-Fi reassociated, or manual resume |
+| OnNetworkLost | NIC down or airplane mode |
+| RefreshPaths | Stale paths, force path requests for watched destinations |
+| ReloadInterfaces | Config file interface blocks changed |
+| StartInterfaceDiscovery | rnstransport discovery when `discover_interfaces = yes` or any interface has `discoverable = yes` (also starts InterfaceAnnouncer) |
 
 `watch_interfaces = yes` in config enables NIC polling via `netmon.go` on Linux, Android, Windows, macOS, and BSD. WASM builds use a stub.
 
 ### Pause modes
 
-`OnNetworkLost` respects `PauseMode`:
+OnNetworkLost respects PauseMode:
 
-- `PauseModeDisable` calls `Disable()` on interfaces (default)
-- `PauseModeStop` calls `Stop()` on interfaces
+- PauseModeDisable calls `Disable()` on interfaces (default)
+- PauseModeStop calls `Stop()` on interfaces
 
-It also cancels in-flight `WatchAndReconnect` loops so they do not keep calling `Reestablish` while the host is offline.
+It also cancels in-flight WatchAndReconnect loops so they do not keep calling Reestablish while the host is offline.
 
 ### Link auto-reconnect
 
-`LinkReconnectOptions` and `EnableLinkAutoReconnect` wire `link.WatchAndReconnect` for watched destinations. New reconnect attempts are skipped while globally paused. `OnNetworkAvailable` re-establishes registered closed links.
+LinkReconnectOptions and EnableLinkAutoReconnect wire `link.WatchAndReconnect` for watched destinations. New reconnect attempts are skipped while globally paused. OnNetworkAvailable re-establishes registered closed links.
 
 ### Hot reload
 
-Call `ReloadInterfaces` with updated config or send `SIGHUP` to the daemon on Unix. See [Interfaces](/docs/interfaces).
+Call ReloadInterfaces with updated config or send `SIGHUP` to the daemon on Unix. See [Interfaces](/docs/interfaces).
 
 ### Shared instance
 
@@ -63,7 +65,7 @@ When `share_instance = yes`, `sharedinstance.Attach` runs during `Start()`. If a
 
 ## Direct transport use
 
-Advanced embedders can use `transport.NewTransport` and `interfaces.NewFromConfigWithContext` without `Node`. You must register interfaces, handle shared instance, and wire lifecycle yourself. `Node` is the supported path for most applications.
+Advanced embedders can use `transport.NewTransport` and `interfaces.NewFromConfigWithContext` without Node. You must register interfaces, handle shared instance, and wire lifecycle yourself. Node is the supported path for most applications.
 
 ## WebAssembly build
 
@@ -78,31 +80,31 @@ task test-wasm
 
 ### JavaScript API
 
-`pkg/wasm.RegisterJSFunctions` exposes a `reticulum` global:
+`pkg/wasm.RegisterJSFunctions` exposes a reticulum global:
 
-| Function                   | Role                              |
-| -------------------------- | --------------------------------- |
-| `init`                     | Initialize transport and identity |
-| `getIdentity`              | Read local identity               |
-| `getDestination`           | Read destination handle           |
-| `connect`                  | Connect WebSocket interface       |
-| `disconnect`               | Close WebSocket                   |
-| `isConnected`              | Connection state                  |
-| `announce`                 | Send announce                     |
-| `sendData` / `sendMessage` | Send data packet                  |
-| `requestPath`              | Request path to destination       |
-| `setPacketCallback`        | JS callback for packets           |
-| `setAnnounceCallback`      | JS callback for announces         |
-| `getStats`                 | Traffic counters                  |
-| `onNetworkAvailable`       | Resume after browser online       |
-| `onNetworkLost`            | Pause on offline                  |
-| `setWatchedDestinations`   | Watch list for paths              |
+| Function | Role |
+|----------|------|
+| init | Initialize transport and identity |
+| getIdentity | Read local identity |
+| getDestination | Read destination handle |
+| connect | Connect WebSocket interface |
+| disconnect | Close WebSocket |
+| isConnected | Connection state |
+| announce | Send announce |
+| sendData / sendMessage | Send data packet |
+| requestPath | Request path to destination |
+| setPacketCallback | JS callback for packets |
+| setAnnounceCallback | JS callback for announces |
+| getStats | Traffic counters |
+| onNetworkAvailable | Resume after browser online |
+| onNetworkLost | Pause on offline |
+| setWatchedDestinations | Watch list for paths |
 
 On load, the module calls the JavaScript function `reticulumReady()` if defined.
 
 ### WebSocket interface
 
-WASM uses `WebSocketInterface` to tunnel Reticulum frames to a gateway process or service that owns real UDP/TCP/Auto interfaces. The browser does not open raw UDP multicast.
+WASM uses WebSocketInterface to tunnel Reticulum frames to a gateway process or service that owns real UDP/TCP/Auto interfaces. The browser does not open raw UDP multicast.
 
 Architecture:
 
@@ -120,11 +122,11 @@ Reticulum network
 
 ### Network lifecycle in the browser
 
-Listen for `online` and `offline` events and call `reticulum.onNetworkAvailable()` or `reticulum.onNetworkLost()` so transport pauses cleanly.
+Listen for online and offline events and call `reticulum.onNetworkAvailable()` or `reticulum.onNetworkLost()` so transport pauses cleanly.
 
 ## TinyGo and embedded
 
-The README references a `tinygo` branch for very constrained devices. That branch targets TinyGo 0.41.0 or newer and is separate from the main module build.
+The README references a tinygo branch for very constrained devices. That branch targets TinyGo 0.41.0 or newer and is separate from the main module build.
 
 ## Control API
 
@@ -132,7 +134,7 @@ Run `reticulum-go` with `enable_control_api = yes` and talk HTTP/WebSocket from 
 
 ## librns
 
-For in-process C / FFI embed, see [librns](/docs/librns). Build with `task build-librns`. Smoke: `examples/librns-smoke`. Odin: `bindings/odin` (`task test-odin`). Dart FFI: `bindings/dart` (`task test-dart`, `task build-librns-targets`).
+For in-process C / FFI embed, see [librns](/docs/librns). Build with `task build-librns`. Smoke: `bindings/c/examples/smoke`. Odin: `bindings/odin` (`task test-odin`). Zig: `bindings/zig` (`task test-zig`). C++: `bindings/cpp` (`task test-cpp`). Dart FFI: `bindings/dart` (`task test-dart`, `task build-librns-targets`).
 
 ## Sandbox note
 

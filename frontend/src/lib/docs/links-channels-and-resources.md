@@ -1,6 +1,15 @@
 # Links, channels, and resources
 
-Encrypted links, channel messages, stream buffers, and multi-part resource transfers live in `pkg/link`, `pkg/channel`, `pkg/buffer`, and `pkg/resource`.
+## Overview
+
+Above raw destination packets, Reticulum provides encrypted links for session-oriented communication. On a link you can use:
+
+- Request and response paths
+- Reliable channel messages
+- Stream buffers (bzip2 compressed)
+- Multi-part resource (file) transfers
+
+Packages: `pkg/link`, `pkg/channel`, `pkg/buffer`, `pkg/resource`.
 
 ## Links
 
@@ -8,7 +17,7 @@ A link is a bidirectional encrypted session between two destinations.
 
 ### Establishing links
 
-**Outbound.** Application opens a link to a destination hash that is already known from an announce or path table. The initiator stores `expected_hops` from the path table (`PATHFINDER_M` when unknown). Link-request proofs are accepted only when the proof hop count matches, or when hops were unknown at creation (RNS 1.3.8).
+**Outbound.** Application opens a link to a destination hash that is already known from an announce or path table. The initiator stores expected_hops from the path table (`PATHFINDER_M` when unknown). Link-request proofs are accepted only when the proof hop count matches, or when hops were unknown at creation (RNS 1.3.8).
 
 **Inbound.** Peer sends a link request. Transport dispatches to:
 
@@ -16,9 +25,9 @@ A link is a bidirectional encrypted session between two destinations.
 link.HandleIncomingLinkRequest(...)
 ```
 
-The responder records `expected_hops` from the RTT packet hop field when the link becomes active.
+The responder records expected_hops from the RTT packet hop field when the link becomes active.
 
-There is no separate `Transport.CreateIncomingLink` helper. Incoming link requests use `HandleIncomingLinkRequest` directly.
+There is no separate `Transport.CreateIncomingLink` helper. Incoming link requests use HandleIncomingLinkRequest directly.
 
 ### Link lifecycle
 
@@ -28,13 +37,13 @@ LINKREQUEST -> LINKIDENTIFY -> LINKREADY -> data / channel / resource
                   +-> teardown -> LINKCLOSE
 ```
 
-Links track RTT, keepalive, and proof exchange per protocol rules. `Link.Reestablish` and `WatchAndReconnect` support automatic recovery when `Node.EnableLinkAutoReconnect` or equivalent options are set.
+Links track RTT, keepalive, and proof exchange per protocol rules. `Link.Reestablish` and WatchAndReconnect support automatic recovery when `Node.EnableLinkAutoReconnect` or equivalent options are set.
 
 ### Request and response
 
 Register a request path on the link or destination. Handlers receive payload bytes and return a response. Timeouts apply if the handler blocks too long.
 
-The control API bridges requests to WebSocket `requestIncomingEvent` and `requestRespondCommand`.
+The control API bridges requests to WebSocket requestIncomingEvent and requestRespondCommand.
 
 ### Path recovery
 
@@ -44,19 +53,19 @@ The control API bridges requests to WebSocket `requestIncomingEvent` and `reques
 
 `pkg/channel` provides reliable ordered message delivery inside a link.
 
-| Concept       | Description                       |
-| ------------- | --------------------------------- |
-| `Channel`     | Session over an established link  |
-| `Envelope`    | Wire wrapper for channel messages |
-| `MessageBase` | Base type for message payloads    |
+| Concept | Description |
+|---------|-------------|
+| Channel | Session over an established link |
+| Envelope | Wire wrapper for channel messages |
+| MessageBase | Base type for message payloads |
 
-Python 1.3.0 fixed ghost envelopes on failing outlets. Go matches that behavior: sequence allocation and tx-ring emplace happen only after a successful outlet send, with rewind on failure. Channel accepts both transport wrapper ACTIVE status and real link ACTIVE (`0x02`).
+Python 1.3.0 fixed ghost envelopes on failing outlets. Go matches that behavior: sequence allocation and tx-ring emplace happen only after a successful outlet send, with rewind on failure. Inbound envelopes use an RX ring so handlers run in sequence order with duplicates dropped, matching Python Channel._receive. Send refuses a full TX window and packed envelopes larger than the outlet MDU, matching Python Channel.send. Channel accepts both transport wrapper ACTIVE status and real link ACTIVE (`0x02`).
 
 Typical pattern:
 
 1. Establish link
 2. Create channel on link
-3. Send and receive `Envelope` messages
+3. Send and receive Envelope messages
 
 ## Buffer
 
@@ -81,13 +90,13 @@ Decompression limits protect against malicious compressed payloads. Same limits 
 
 Features:
 
-- Advertisement phase (`Advertisement`)
+- Advertisement phase (Advertisement)
 - Hash map of parts
 - RESOURCE_PRF proof flow
 - bzip2 compression optional (`bzip2_compress.go`)
-- Split advertisements when the payload exceeds `MaxEfficientSize` (~1 MiB), matching Python segment chaining
+- Split advertisements when the payload exceeds MaxEfficientSize (~1 MiB), matching Python segment chaining
 
-Python utility `rncp` is ported as `rgocp` ([CLI utilities](/docs/utilities)). The primitives remain available in this package for Go applications.
+Python utility rncp is ported as rgocp ([CLI utilities](/docs/utilities)). The primitives remain available in this package for Go applications.
 
 See `examples/resources` for a minimal send/receive demo and `examples/filetransfer` for a directory browser.
 
@@ -106,7 +115,7 @@ Sender                           Receiver
 
 ## Interaction with transport
 
-Link packets use `PacketTypeLink`. Data packets for link payloads use contexts handled in `Transport.handleTransportPacket` and `forwardLinkData`.
+Link packets use PacketTypeLink. Data packets for link payloads use contexts handled in `Transport.handleTransportPacket` and forwardLinkData.
 
 The transport link table tracks which local link object owns each session hash.
 
@@ -116,12 +125,12 @@ Python 1.3.2 tears down links at LINKIDENTIFY when the remote identity is blackh
 
 ## Testing
 
-| Area              | Location                                                 |
-| ----------------- | -------------------------------------------------------- |
-| Wire parity       | `tests/crossref` (links, channel, buffer, resource)      |
-| Live link interop | `tests/interop/link_live_test.go`                        |
-| Property tests    | `pkg/buffer/*_pbt_test.go`, `pkg/resource/*_pbt_test.go` |
-| Fuzz              | `pkg/link/*_fuzz_test.go`                                |
+| Area | Location |
+|------|----------|
+| Wire parity | `tests/crossref` (links, channel, buffer, resource) |
+| Live link interop | `tests/interop/link_live_test.go` |
+| Property tests | `pkg/buffer/*_pbt_test.go`, `pkg/resource/*_pbt_test.go` |
+| Fuzz | `pkg/link/*_fuzz_test.go` |
 
 ## Application guidance
 
@@ -140,4 +149,4 @@ Python 1.3.2 tears down links at LINKIDENTIFY when the remote identity is blackh
 - [Transport](/docs/transport)
 - [Control API](/docs/control-api) for link commands over WebSocket
 - [Examples](/docs/examples) for file transfer and link demos
-- [CLI utilities](/docs/utilities) for `rgocp`
+- [CLI utilities](/docs/utilities) for rgocp

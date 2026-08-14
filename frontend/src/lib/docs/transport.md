@@ -4,10 +4,9 @@
 
 `pkg/transport` is the routing engine. It learns paths from signed announces, forwards packets across interfaces, maintains link table state, and delivers data packets to registered destinations.
 
-Transport sits between interfaces and application destinations. Every enabled interface registers with `Transport.RegisterInterface`, which sets a callback from inbound frames to `HandlePacket`.
+Transport sits between interfaces and application destinations. Every enabled interface registers with `Transport.RegisterInterface`, which sets a callback from inbound frames to HandlePacket.
 
-Inbound packets are unpacked in `pkg/packet`. Hop counts `>= PATHFINDER_M` (128) are rejected at unpack time (RNS 1.3.8). Transport also drops announces and relayed packets that would exceed `MaxHops` after increment.
-
+Inbound packets are unpacked in `pkg/packet`. Hop counts `>= PATHFINDER_M` (128) are rejected at unpack time (RNS 1.3.8). Transport also drops announces and relayed packets that would exceed MaxHops after increment.
 ## Path table
 
 The path table maps a 16-byte destination hash to:
@@ -29,9 +28,9 @@ When multiple paths exist, transport uses random-blob selection aligned with Pyt
 
 ### Path requests
 
-Applications call `RequestPath` on transport or use destination helpers. Ingress and egress controls (`pkg/rate`, `pkg/transport/ingress.go`) limit announce and path-request rates per interface configuration.
+Applications call RequestPath on transport or use destination helpers. Ingress and egress controls (`pkg/rate`, `pkg/transport/ingress.go`) limit announce and path-request rates per interface configuration.
 
-Unknown-path discovery (rebroadcasting a path request when no path is known) runs only when the receiving interface is in a discover mode (`access_point`, `gateway`, `roaming`, `internal`) or has `recursive_prs = yes` (RNS 1.3.6+).
+Unknown-path discovery (rebroadcasting a path request when no path is known) runs only when the receiving interface is in a discover mode (access_point, gateway, roaming, internal) or has `recursive_prs = yes` (RNS 1.3.6+).
 
 Announce rebroadcast also applies interface mode filters (AP block, roaming/boundary/internal next-hop rules). See [Interfaces](/docs/interfaces).
 
@@ -41,11 +40,11 @@ By default the path table can persist to `storage/destination_table` as msgpack 
 
 Known destinations persist under `storage/known_destinations/`. Set `in_memory_known_destinations = yes` for RAM-only mode.
 
-Set `in_memory_storage = yes` for fully ephemeral stack state (paths, known destinations, transport identity, blackhole, and split-resource staging). Optional `soft_memory_limit` and `max_in_memory_*` keys bound RAM under that mode.
+Set `in_memory_storage = yes` for fully ephemeral stack state (paths, known destinations, transport identity, blackhole, and split-resource staging). Soft caps (`max_in_memory_paths`, `max_in_memory_known_destinations`, `max_packet_hashlist`, `soft_memory_limit`) bound RAM for path and known-dest tables and the packet hash filter even when storage is disk-backed.
 
 ## Packet handling
 
-Inbound packets enter `HandlePacket` and branch on packet type:
+Inbound packets enter HandlePacket and branch on packet type:
 
 ```
 HandlePacket
@@ -80,7 +79,7 @@ Transport maintains a link table for active sessions. Link packets are routed to
 
 ## Blackhole interaction
 
-When `pkg/blackhole` has an entry for an identity hash, announces from that identity are dropped and links are torn down at LINKIDENTIFY. Blackhole federation (`publish_blackhole`, remote sources) is not implemented. See [Compatibility](/docs/compatibility).
+When `pkg/blackhole` has an entry for an identity hash, announces from that identity are dropped and links are torn down at LINKIDENTIFY. Blackhole federation (publish_blackhole, remote sources) is not implemented. See [Compatibility](/docs/compatibility).
 
 ## Transport identity
 
@@ -99,7 +98,7 @@ tr.RegisterInterface(name, iface)
 iface.Start()
 ```
 
-`RegisterInterface` binds the interface packet callback to `HandlePacket`.
+RegisterInterface binds the interface packet callback to HandlePacket.
 
 Outbound send path:
 
@@ -107,29 +106,33 @@ Outbound send path:
 err := tr.SendPacket(pkt)
 ```
 
-`SendPacket` looks up the path, may rewrap for relay, serializes, and calls `Interface.Send` on the chosen interface.
+SendPacket looks up the path, may rewrap for relay, serializes, and calls `Interface.Send` on the chosen interface.
 
 ## Rate limiting and ingress control
 
-Per-interface `ingress_control` and `announce_rate_*` settings map to token buckets in `pkg/rate`. This mirrors Python 1.2.5 path-request and announce controls.
+Per-interface ingress_control and `announce_rate_*` settings map to token buckets in `pkg/rate`. This mirrors Python 1.2.5 path-request and announce controls.
 
 ## Probes
 
-Set `respond_to_probes = yes` (or `allow_probes`) to register `rnstransport.probe` with prove-all so `reticulum-go probe` can measure RTT against this node.
+Set `respond_to_probes = yes` (or allow_probes) to register `rnstransport.probe` with prove-all so `reticulum-go probe` can measure RTT against this node.
+
+## Remote management
+
+Set `enable_remote_management = yes` and `remote_management_allowed` to a comma-separated list of identity hashes. The daemon registers `rnstransport.remote.management` with `/path` (table, rates) and `/status` handlers, announced on the same interval as other management destinations. Python rnpath/rnstatus and Go rgopath/rgostatus both use that dest. Shared-instance clients do not host it. Remote drop and blackhole mutate are not implemented.
 
 ## Debugging
 
-Raise `loglevel` in config. Transport logs at debug levels 5 and above include path updates and forwarding decisions via `pkg/debug`.
+Raise loglevel in config. Transport logs at debug levels 5 and above include path updates and forwarding decisions via `pkg/debug`.
 
 ## Testing
 
-| Test area      | Location                                                            |
-| -------------- | ------------------------------------------------------------------- |
-| Wire parity    | `tests/crossref` (path requests, announces, relay)                  |
-| Live relay     | `tests/interop/transport_relay_live_test.go` (`RUN_LIVE_INTEROP=1`) |
-| Live paths     | `tests/interop/transport_path_live_test.go`                         |
-| Property tests | `pkg/transport/*_pbt_test.go`                                       |
-| Race tests     | `pkg/transport/*_race_test.go`                                      |
+| Test area | Location |
+|-----------|----------|
+| Wire parity | `tests/crossref` (path requests, announces, relay) |
+| Live relay | `tests/interop/transport_relay_live_test.go` (`RUN_LIVE_INTEROP=1`) |
+| Live paths | `tests/interop/transport_path_live_test.go` |
+| Property tests | `pkg/transport/*_pbt_test.go` |
+| Race tests | `pkg/transport/*_race_test.go` |
 
 ## Related documents
 

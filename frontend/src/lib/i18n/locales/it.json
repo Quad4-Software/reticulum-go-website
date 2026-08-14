@@ -305,9 +305,11 @@
 		},
 		"platforms": {
 			"title": "Piattaforme supportate",
-			"list": "Windows · macOS / iOS · Android · Debian · Ubuntu · Fedora · openSUSE · Arch · Gentoo · NixOS · Alpine · FreeBSD · OpenBSD · NetBSD · Haiku · Raspberry Pi · PowerPC · Flatpak · Docker · Firecracker · WASM",
+			"list": "Windows XP · Windows 7 · Windows · macOS / iOS · Android · Debian · Ubuntu · Fedora · openSUSE · Arch · Gentoo · NixOS · Alpine · FreeBSD · OpenBSD · NetBSD · Haiku · Raspberry Pi · PowerPC · Flatpak · Docker · Firecracker · WASM",
 			"arches": "32 bit · 64 bit",
-			"windows": "Windows 7-11",
+			"windowsxp": "Windows XP",
+			"windows7": "Windows 7",
+			"windows": "Windows 8-11",
 			"apple": "macOS / iOS",
 			"android": "Android",
 			"debian": "Debian",

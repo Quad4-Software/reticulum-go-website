@@ -1,19 +1,19 @@
 # Overview
 
-## Stack summary
+## What is Reticulum-Go
 
-Reticulum-Go implements the [Reticulum Network Stack](https://reticulum.network/) in Go. Reticulum is a cryptographic mesh overlay: named destinations, encrypted links, and multi-hop paths over UDP, TCP, radio hardware, I2P, and other interfaces without requiring one global IP route.
+Reticulum-Go is a Go implementation of the [Reticulum Network Stack](https://reticulum.network/). Reticulum is a cryptographic mesh networking protocol designed for resilient communication over heterogeneous links. It can run over UDP, TCP, radio hardware, I2P, and other transports without assuming a single global internet path.
 
-Reticulum-Go targets wire compatibility with Python RNS 1.3.8. Builds use Go concurrency and static compilation (`CGO_ENABLED=0` by default) on servers, desktops, embedded targets, and WebAssembly runtimes.
+Reticulum-Go targets full wire compatibility with the official Python reference implementation (RNS 1.4.2) while using Go concurrency and static compilation for deployment on servers, desktops, embedded targets, and WebAssembly runtimes.
 
-Deliverables:
+The primary deliverables are:
 
-- A daemon binary (`reticulum-go`) comparable to Python `rnsd`
+- A daemon binary (`reticulum-go`) comparable to Python rnsd
 - A library surface under `pkg/` for embedding Reticulum in Go applications
 - A WebAssembly build (`reticulum-wasm`) for browser clients
 - A localhost control API for applications written in other languages
 
-## Protocol and build constraints
+## Design goals
 
 **Protocol interoperability.** Peers running Python Reticulum and Reticulum-Go must exchange packets, establish links, and verify cryptography without translation gateways.
 
@@ -27,7 +27,7 @@ Deliverables:
 
 Reticulum is not a replacement for IP routing. It is an overlay that gives applications named destinations, encrypted links, and multi-hop paths across whatever physical interfaces you configure.
 
-Packet path:
+In short:
 
 ```
 Application  -->  Destination / Link  -->  Transport  -->  Interface  -->  Physical network
@@ -35,41 +35,46 @@ Application  -->  Destination / Link  -->  Transport  -->  Interface  -->  Physi
 
 An application registers interest in a destination hash. Transport learns routes from signed announces and forwards packets hop by hop. Interfaces move bytes on the wire and may apply an Interface Access Code (IFAC) so only authorized peers can join a logical network segment.
 
-See [Architecture](/docs/architecture) for layers, persistence, and deployment patterns.
+See [Architecture](/docs/architecture) for package layout and control flow.
 
 ## Feature status
 
-Line-by-line Python parity is in [Compatibility](/docs/compatibility) and [COMPATIBILITY.md](https://github.com/Quad4-Software/Reticulum-Go/blob/master/COMPATIBILITY.md).
+Below is a summary of major features. For line-by-line parity with Python, see [Compatibility](/docs/compatibility) and [COMPATIBILITY.md](https://github.com/Quad4-Software/Reticulum-Go/blob/master/COMPATIBILITY.md).
 
-| Area                                     | Status          | Location                                                                                            |
-| ---------------------------------------- | --------------- | --------------------------------------------------------------------------------------------------- |
-| Wire-compatible crypto and packets       | Complete        | `pkg/cryptography`, `pkg/packet`, `tests/crossref`                                                  |
-| Transport core (paths, announces, relay) | Complete        | `pkg/transport`                                                                                     |
-| Identity and destinations                | Complete        | `pkg/identity`, `pkg/destination`                                                                   |
-| Links, channel, buffer, resources        | Complete        | `pkg/link`, `pkg/channel`, `pkg/buffer`, `pkg/resource`                                             |
-| IFAC                                     | Complete        | `pkg/ifac`                                                                                          |
-| UDP, TCP, Auto, I2P, Backbone interfaces | Complete        | `pkg/interfaces`                                                                                    |
-| WebSocket interface                      | Go-only         | `pkg/interfaces/websocket_*.go`                                                                     |
-| QUIC interface                           | Go-only         | `pkg/interfaces/quic.go`, `quic_tls.go`                                                             |
-| WebTransport interface                   | Go-only         | `pkg/interfaces/webtransport.go`                                                                    |
-| DNS rendezvous                           | Go-only         | `pkg/interfaces/dns_rendezvous.go`                                                                  |
-| VSOCK interface                          | Go-only (Linux) | `pkg/interfaces/vsock.go`                                                                           |
-| HTTPS long-poll                          | Go-only         | `pkg/interfaces/https.go`                                                                           |
-| Daemon and config                        | Complete        | `cmd/reticulum-go`, `pkg/reticulumconfig`                                                           |
-| Discovery (rnstransport)                 | Partial         | Listening works. Announcer and autoconnect loops are not auto-started                               |
-| Blackhole                                | Partial         | Local drop and LINKIDENTIFY teardown. No publish/federation                                         |
-| SerialInterface                          | Complete        | HDLC serial with Go extensions. Live Python framing interop                                         |
-| RNode, KISS, Weave                       | Not implemented | No driver in this tree                                                                              |
-| PipeInterface, LocalInterface            | Implemented     | `pipe.go`, `local.go`, `sharedinstance`                                                             |
-| Python CLI utilities                     | Yes (core)      | `reticulum-go status`, `id`, `probe`, `path`, `cp` via `pkg/cli` / `pkg/rnsutil`                    |
-| Interface hot reload                     | Go-only         | `pkg/node/reload.go`, SIGHUP on Unix                                                                |
-| Control API                              | Go-only         | `pkg/controlapi`                                                                                    |
-| librns C ABI                             | Go-only         | `pkg/librns`, `include/rns.h`, `task build-librns`                                                  |
-| Odin librns bindings                     | Go-only host    | `bindings/odin` (Linux, links `librns.so`). See [librns](/docs/librns#odin-bindings)                |
-| Dart librns FFI                          | Go-only host    | `bindings/dart` (`ffi.dart`). Linux, Android, Windows. See [librns](/docs/librns#dart-ffi-bindings) |
-| Dart Control API client                  | Go-only host    | `bindings/dart` (`rns_control`). See [Control API](/docs/control-api#dart-and-flutter)              |
-| Runtime sandbox                          | Go-only         | `pkg/sandbox`                                                                                       |
-| Local mesh health                        | Go-only         | `pkg/health` counters, status RPC fields, `reticulum-go slow` findings                              |
+| Area | Status | Location |
+|------|--------|----------|
+| Wire-compatible crypto and packets | Complete | `pkg/cryptography`, `pkg/packet`, `tests/crossref` |
+| Transport core (paths, announces, relay) | Complete | `pkg/transport` |
+| Identity and destinations | Complete | `pkg/identity`, `pkg/destination` |
+| Links, channel, buffer, resources | Complete | `pkg/link`, `pkg/channel`, `pkg/buffer`, `pkg/resource` |
+| IFAC | Complete | `pkg/ifac` |
+| UDP, TCP, Auto, I2P, Backbone interfaces | Complete | `pkg/interfaces` |
+| WebSocket interface | Go-only | `pkg/interfaces/websocket_*.go` |
+| QUIC interface | Go-only | `pkg/interfaces/quic.go`, `quic_tls.go` |
+| WebTransport interface | Go-only | `pkg/interfaces/webtransport.go` |
+| DNS rendezvous | Go-only | `pkg/interfaces/dns_rendezvous.go` |
+| VSOCK interface | Go-only (Linux) | `pkg/interfaces/vsock.go` |
+| HTTPS long-poll | Go-only | `pkg/interfaces/https.go` |
+| Daemon and config | Complete | `cmd/reticulum-go`, `pkg/reticulumconfig` |
+| Discovery (rnstransport) | Partial | Listening works. Announcer and autoconnect loops are not auto-started |
+| Blackhole | Partial | Local drop and LINKIDENTIFY teardown. No publish/federation |
+| SerialInterface | Complete | HDLC serial with Go extensions. Live framing interop |
+| Modem73Interface | Complete | KISS + JSON control to modem73. Live: `tests/interop/modem73_live_test.go` |
+| SDRInterface | Complete | Lab/testing IQ burst modem (pkg/sdr). Live: RUN_LIVE_SDR=1 |
+| RNode, KISS, Weave | Not implemented | No driver in this tree |
+| PipeInterface, LocalInterface | Implemented | `pipe.go`, `local.go`, sharedinstance |
+| Python CLI utilities | Yes (core) | `reticulum-go status|id|probe|path|cp` via `pkg/cli` / `pkg/rnsutil` |
+| Interface hot reload | Go-only | `pkg/node/reload.go`, SIGHUP on Unix |
+| Control API | Go-only | `pkg/controlapi` |
+| librns C ABI | Go-only | `pkg/librns`, `include/rns.h`, `task build-librns` |
+| Odin librns bindings | Go-only host | `bindings/odin` (Linux, links `librns.so`). See [librns](/docs/librns#odin-bindings) |
+| Zig librns bindings | Go-only host | `bindings/zig` (Linux, links `librns.so`). See [librns](/docs/librns#zig-bindings) |
+| C++ librns bindings | Go-only host | `bindings/cpp` (Linux, C++17, links `librns.so`). See [librns](/docs/librns#c-bindings) |
+| Dart librns FFI | Go-only host | `bindings/dart` (`ffi.dart`). Linux, Android, Windows. See [librns](/docs/librns#dart-ffi-bindings) |
+| Dart Control API client | Go-only host | `bindings/dart` (rns_control). See [Control API](/docs/control-api#dart-and-flutter) |
+| Runtime sandbox | Go-only | `pkg/sandbox` |
+| Local mesh health | Go-only | `pkg/health` counters, status RPC fields, `reticulum-go slow` findings |
+| DoS protection | Go-only | `pkg/protect`, config `dos_protection` (default auto). See [Security](/docs/security#dos-protection-local-idsips) |
 
 ## Repository layout
 
@@ -84,10 +89,12 @@ Reticulum-Go/
     rns.h               Public librns C header
   bindings/
     odin/               Odin bindings and tests for librns
+    zig/                Zig bindings and tests for librns
+    cpp/                C++17 bindings and tests for librns
     dart/               Dart librns FFI and Control API client
   pkg/                  Public library packages (cli, pageserver, rnsutil, …)
   man/                  Man pages (sections 1 and 8)
-  packaging/            nfpm deb/rpm config
+  packaging/            nfpm deb/rpm/arch packages plus init units
   internal/             Daemon-only helpers (config re-export, storage)
   examples/             Sample applications (includes librns-smoke)
   tests/
@@ -109,18 +116,18 @@ Configuration uses the same INI-style shape as Python (`[reticulum]`, `[logging]
 
 Reticulum-Go adds features that Python does not ship today (control API, librns, Odin bindings, Dart FFI and Control API client, sandbox, interface hot reload, NIC watching, local mesh health counters). Those extensions do not change the wire format unless explicitly documented as Go-only.
 
-## Documentation by role
+## Who should read which document
 
-| Role                              | Start here                                                                                                                                                |
-| --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Architect evaluating adoption     | [Overview](/docs/overview), [Architecture](/docs/architecture), [Compatibility](/docs/compatibility)                                                      |
-| Network operator                  | [Getting started](/docs/getting-started), [Configuration](/docs/configuration), [Interfaces](/docs/interfaces), [CLI utilities](/docs/utilities)          |
-| Go application author             | [API reference](/docs/api-reference), [Package map](/docs/package-map), [Examples](/docs/examples), [Embedding and WebAssembly](/docs/embedding-and-wasm) |
-| Native / FFI embedder             | [librns](/docs/librns), [Compatibility](/docs/compatibility)                                                                                              |
-| Odin application author           | [librns](/docs/librns#odin-bindings), [Examples](/docs/examples)                                                                                          |
-| Flutter / Dart application author | [librns Dart FFI](/docs/librns#dart-ffi-bindings), [Control API](/docs/control-api#dart-and-flutter), [Examples](/docs/examples)                          |
-| Security reviewer                 | [Cryptography](/docs/cryptography), [Security](/docs/security)                                                                                            |
-| Developer                         | [Development and testing](/docs/development-and-testing)                                                                                                  |
+| Role | Start here |
+|------|------------|
+| Architect evaluating adoption | This page, then [Architecture](/docs/architecture) and [Compatibility](/docs/compatibility) |
+| Network operator | [Getting started](/docs/getting-started), [Configuration](/docs/configuration), [Interfaces](/docs/interfaces), [CLI utilities](/docs/utilities), [Packet debug](/docs/packet-debug) |
+| Go application author | [API reference](/docs/api-reference), [Package map](/docs/package-map), [Examples](/docs/examples), [Embedding and WebAssembly](/docs/embedding-and-wasm) |
+| Native / FFI embedder | [librns](/docs/librns), [Compatibility](/docs/compatibility) |
+| Odin application author | [librns](/docs/librns#odin-bindings), [Examples](/docs/examples) |
+| Flutter / Dart application author | [librns Dart FFI](/docs/librns#dart-ffi-bindings), [Control API](/docs/control-api#dart-and-flutter), [Examples](/docs/examples) |
+| Security reviewer | [Cryptography](/docs/cryptography), [Security](/docs/security) |
+| Developer | [Development and testing](/docs/development-and-testing) |
 
 ## License and credit
 

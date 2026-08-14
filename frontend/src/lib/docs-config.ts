@@ -31,7 +31,8 @@ export const DOC_NAV: DocNavSection[] = [
 			{ title: 'Configuration', slug: 'configuration' },
 			{ title: 'Interfaces', slug: 'interfaces' },
 			{ title: 'Transport', slug: 'transport' },
-			{ title: 'CLI utilities', slug: 'utilities' }
+			{ title: 'CLI utilities', slug: 'utilities' },
+			{ title: 'Packet debug', slug: 'packet-debug' }
 		]
 	},
 	{
@@ -55,7 +56,8 @@ export const DOC_NAV: DocNavSection[] = [
 		items: [
 			{ title: 'Compatibility', slug: 'compatibility' },
 			{ title: 'Security', slug: 'security' },
-			{ title: 'Development and testing', slug: 'development-and-testing' }
+			{ title: 'Development and testing', slug: 'development-and-testing' },
+			{ title: 'Interop timeline', slug: 'interop-timeline' }
 		]
 	}
 ];
