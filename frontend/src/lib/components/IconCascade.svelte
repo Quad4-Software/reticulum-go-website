@@ -4,6 +4,12 @@
 		src: string;
 		/** i18n message id, resolved with $t() */
 		nameKey: string;
+		/** corner soon badge on the circle */
+		soon?: boolean;
+		/** i18n key for the soon badge (defaults to home.platforms.soon_badge) */
+		soonKey?: string;
+		/** themed circle backdrop for logos that need contrast (e.g. black wordmarks) */
+		circleBg?: 'bliss' | 'aero';
 	};
 </script>
 
@@ -27,10 +33,30 @@
 	} = $props();
 
 	const sizes = {
-		sm: { circle: 'h-7 w-7', img: 'h-4 w-4', px: 16 },
-		md: { circle: 'h-8 w-8', img: 'h-5 w-5', px: 20 },
-		lg: { circle: 'h-10 w-10', img: 'h-6 w-6', px: 24 }
+		sm: {
+			circle: 'h-7 w-7',
+			img: 'h-4 w-4',
+			px: 16,
+			soon: 'text-[4px]',
+			soonRibbon: 'right-[-44%] top-[14%] w-[98%] py-px'
+		},
+		md: {
+			circle: 'h-8 w-8',
+			img: 'h-5 w-5',
+			px: 20,
+			soon: 'text-[4.5px]',
+			soonRibbon: 'right-[-40%] top-[11%] w-[92%] py-px'
+		},
+		lg: {
+			circle: 'h-10 w-10',
+			img: 'h-6 w-6',
+			px: 24,
+			soon: 'text-[5px]',
+			soonRibbon: 'right-[-36%] top-[9%] w-[86%] py-[1.5px]'
+		}
 	} as const;
+
+	const defaultSoonKey = 'home.platforms.soon_badge';
 
 	let dims = $derived(sizes[size]);
 	let listLabelKey = $derived(ariaLabelKey ?? labelKey);
@@ -48,8 +74,35 @@
 			>
 				<span class="group relative inline-flex">
 					<span
-						class="inline-flex {dims.circle} items-center justify-center rounded-full bg-zinc-100/90 p-1.5 shadow-sm ring-2 ring-white transition-transform group-hover:z-20 group-hover:-translate-y-0.5 group-hover:scale-110 dark:bg-zinc-800 dark:ring-zinc-950"
+						class="relative inline-flex {dims.circle} items-center justify-center overflow-hidden rounded-full p-1.5 shadow-sm ring-2 ring-white transition-transform group-hover:z-20 group-hover:-translate-y-0.5 group-hover:scale-110 dark:ring-zinc-950 {item.circleBg
+							? ''
+							: 'bg-zinc-100/90 dark:bg-zinc-800'}"
 					>
+						{#if item.circleBg === 'bliss'}
+							<span class="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+								<span
+									class="absolute -inset-[18%] scale-[1.35] bg-[linear-gradient(180deg,#7eb8e8_0%,#8ec8f4_34%,#79c956_34%,#3d8f32_100%)] blur-[1.5px] opacity-95"
+								></span>
+								<span
+									class="absolute inset-0 bg-[linear-gradient(180deg,rgba(126,184,232,0.35)_0%,rgba(126,184,232,0.2)_34%,rgba(61,143,50,0.15)_100%)]"
+								></span>
+							</span>
+						{:else if item.circleBg === 'aero'}
+							<span class="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+								<span
+									class="absolute inset-0 bg-[linear-gradient(180deg,#8ed4f8_0%,#5aace8_38%,#3b7fc4_72%,#245a9e_100%)]"
+								></span>
+								<span
+									class="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.62)_0%,rgba(255,255,255,0.18)_32%,rgba(255,255,255,0)_52%)]"
+								></span>
+								<span
+									class="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.28)_0%,transparent_42%,rgba(15,50,95,0.22)_100%)]"
+								></span>
+								<span
+									class="absolute left-[12%] top-[8%] h-[28%] w-[55%] rounded-full bg-white/45 blur-[2px]"
+								></span>
+							</span>
+						{/if}
 						<img
 							src={item.src}
 							alt=""
@@ -57,9 +110,21 @@
 							height={dims.px}
 							loading="lazy"
 							decoding="async"
-							class="{dims.img} object-contain"
+							class="relative z-[1] {dims.img} object-contain"
 							title={$t(item.nameKey)}
 						/>
+						{#if item.soon}
+							<span
+								class="pointer-events-none absolute inset-0 z-[2] overflow-hidden rounded-full"
+								aria-hidden="true"
+							>
+								<span
+									class="absolute {dims.soonRibbon} rotate-45 bg-amber-500 text-center {dims.soon} font-bold uppercase leading-none tracking-wide text-white"
+								>
+									{$t(item.soonKey ?? defaultSoonKey)}
+								</span>
+							</span>
+						{/if}
 					</span>
 					<span
 						class="pointer-events-none absolute -bottom-7 left-1/2 z-30 -translate-x-1/2 whitespace-nowrap rounded bg-zinc-900 px-1.5 py-0.5 text-[10px] font-medium text-white opacity-0 transition-opacity group-hover:opacity-100 dark:bg-zinc-100 dark:text-zinc-900"

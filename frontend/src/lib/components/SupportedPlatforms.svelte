@@ -3,9 +3,20 @@
 	import IconCascade from '$lib/components/IconCascade.svelte';
 
 	const platforms = [
-		{ id: 'windowsxp', src: '/platform-icons/windowsxp.svg', nameKey: 'home.platforms.windowsxp' },
-		{ id: 'windows7', src: '/platform-icons/windows7.svg', nameKey: 'home.platforms.windows7' },
-		{ id: 'windows', src: '/platform-icons/windows.svg', nameKey: 'home.platforms.windows' },
+		{
+			id: 'windowsxp',
+			src: '/platform-icons/windowsxp.svg',
+			nameKey: 'home.platforms.windowsxp',
+			circleBg: 'bliss'
+		},
+		{
+			id: 'windows7',
+			src: '/platform-icons/windows7.svg',
+			nameKey: 'home.platforms.windows7',
+			circleBg: 'aero'
+		},
+		{ id: 'windows10', src: '/platform-icons/windows10.svg', nameKey: 'home.platforms.windows10' },
+		{ id: 'windows11', src: '/platform-icons/windows11.svg', nameKey: 'home.platforms.windows11' },
 		{ id: 'apple', src: '/platform-icons/apple.svg', nameKey: 'home.platforms.apple' },
 		{ id: 'android', src: '/platform-icons/android.svg', nameKey: 'home.platforms.android' },
 		{ id: 'debian', src: '/platform-icons/debian.svg', nameKey: 'home.platforms.debian' },
@@ -19,13 +30,19 @@
 		{ id: 'freebsd', src: '/platform-icons/freebsd.svg', nameKey: 'home.platforms.freebsd' },
 		{ id: 'openbsd', src: '/platform-icons/openbsd.svg', nameKey: 'home.platforms.openbsd' },
 		{ id: 'netbsd', src: '/platform-icons/netbsd.svg', nameKey: 'home.platforms.netbsd' },
-		{ id: 'haiku', src: '/platform-icons/haiku.svg', nameKey: 'home.platforms.haiku' },
+		{ id: 'haiku', src: '/platform-icons/haiku.svg', nameKey: 'home.platforms.haiku', soon: true },
 		{
 			id: 'raspberrypi',
 			src: '/platform-icons/raspberrypi.svg',
 			nameKey: 'home.platforms.raspberry_pi'
 		},
 		{ id: 'powerpc', src: '/platform-icons/powerpc.svg', nameKey: 'home.platforms.powerpc' },
+		{ id: 'riscv', src: '/platform-icons/riscv.svg', nameKey: 'home.platforms.riscv' },
+		{
+			id: 'embedded',
+			src: '/platform-icons/embedded.svg',
+			nameKey: 'home.platforms.embedded'
+		},
 		{ id: 'flatpak', src: '/platform-icons/flatpak.svg', nameKey: 'home.platforms.flatpak' },
 		{ id: 'docker', src: '/platform-icons/docker.svg', nameKey: 'home.platforms.docker' },
 		{
@@ -50,6 +67,11 @@
 		class="mt-6 md:mt-8 text-center text-sm tracking-wide text-zinc-500 dark:text-zinc-400 max-w-4xl mx-auto leading-relaxed"
 	>
 		{$t('home.platforms.list')}
+	</p>
+	<p
+		class="mt-3 text-center text-xs leading-relaxed text-zinc-400 dark:text-zinc-500 max-w-3xl mx-auto"
+	>
+		{$t('home.platforms.note')}
 	</p>
 	<p
 		class="absolute bottom-3 right-4 md:bottom-4 md:right-5 text-[11px] text-zinc-400 dark:text-zinc-500"

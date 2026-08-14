@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img" aria-label="Embedded microcontroller">
+	<rect x="7" y="7" width="10" height="10" rx="1.5" fill="#00ADD8" />
+	<path
+		fill="#00ADD8"
+		d="M10 1h1v4h-1zm3 0h1v4h-1zM10 19h1v4h-1zm3 0h1v4h-1zM1 10h4v1H1zm0 3h4v1H1zM19 10h4v1h-4zm0 3h4v1h-4z"
+	/>
+</svg>
