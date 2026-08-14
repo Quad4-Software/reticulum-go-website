@@ -4,9 +4,9 @@
 		src: string;
 		/** i18n message id, resolved with $t() */
 		nameKey: string;
-		/** corner soon badge on the circle */
+		/** centered soon overlay on the circle */
 		soon?: boolean;
-		/** i18n key for the soon badge (defaults to home.platforms.soon_badge) */
+		/** i18n key for the soon overlay (defaults to home.platforms.soon_badge) */
 		soonKey?: string;
 		/** themed circle backdrop for logos that need contrast (e.g. black wordmarks) */
 		circleBg?: 'bliss' | 'aero';
@@ -33,27 +33,9 @@
 	} = $props();
 
 	const sizes = {
-		sm: {
-			circle: 'h-7 w-7',
-			img: 'h-4 w-4',
-			px: 16,
-			soon: 'text-[4px]',
-			soonRibbon: 'right-[-44%] top-[14%] w-[98%] py-px'
-		},
-		md: {
-			circle: 'h-8 w-8',
-			img: 'h-5 w-5',
-			px: 20,
-			soon: 'text-[4.5px]',
-			soonRibbon: 'right-[-40%] top-[11%] w-[92%] py-px'
-		},
-		lg: {
-			circle: 'h-10 w-10',
-			img: 'h-6 w-6',
-			px: 24,
-			soon: 'text-[5px]',
-			soonRibbon: 'right-[-36%] top-[9%] w-[86%] py-[1.5px]'
-		}
+		sm: { circle: 'h-7 w-7', img: 'h-4 w-4', px: 16 },
+		md: { circle: 'h-8 w-8', img: 'h-5 w-5', px: 20 },
+		lg: { circle: 'h-10 w-10', img: 'h-6 w-6', px: 24 }
 	} as const;
 
 	const defaultSoonKey = 'home.platforms.soon_badge';
@@ -110,20 +92,15 @@
 							height={dims.px}
 							loading="lazy"
 							decoding="async"
-							class="relative z-[1] {dims.img} object-contain"
+							class="relative z-[1] {dims.img} object-contain {item.soon
+								? 'scale-110 blur-[2.5px] opacity-50'
+								: ''}"
 							title={$t(item.nameKey)}
 						/>
 						{#if item.soon}
-							<span
-								class="pointer-events-none absolute inset-0 z-[2] overflow-hidden rounded-full"
-								aria-hidden="true"
+							<span class="soon-overlay" aria-hidden="true"
+								>{$t(item.soonKey ?? defaultSoonKey)}</span
 							>
-								<span
-									class="absolute {dims.soonRibbon} rotate-45 bg-amber-500 text-center {dims.soon} font-bold uppercase leading-none tracking-wide text-white"
-								>
-									{$t(item.soonKey ?? defaultSoonKey)}
-								</span>
-							</span>
 						{/if}
 					</span>
 					<span
@@ -137,3 +114,25 @@
 		{/each}
 	</ul>
 </div>
+
+<style>
+	.soon-overlay {
+		position: absolute;
+		inset: 0;
+		z-index: 2;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		pointer-events: none;
+		border-radius: 9999px;
+		background: rgb(9 9 11 / 0.28);
+		font-size: 8px;
+		font-weight: 800;
+		letter-spacing: 0.04em;
+		line-height: 1;
+		text-transform: uppercase;
+		white-space: nowrap;
+		color: #fff;
+		text-shadow: 0 1px 2px rgb(0 0 0 / 0.7);
+	}
+</style>

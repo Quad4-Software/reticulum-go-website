@@ -266,6 +266,7 @@
 		"title": "Reticulum-Go",
 		"subtitle": "Go port of the Reticulum networking stack. Wire-compatible with Python RNS.",
 		"try_ren_browser": "Try Ren Browser!",
+		"download": "Download",
 		"try_wasm": "Try WASM Demo",
 		"view_source": "View Source Code",
 		"features": {
@@ -337,6 +338,97 @@
 			"wasm": "WebAssembly"
 		}
 	},
+	"reticulum_download": {
+		"title": "Download Reticulum-Go",
+		"subtitle": "Pick a pre-built binary for your system. Binaries download from GitHub.",
+		"privacy_note": "Platform suggestions use your browser only on this device. Nothing is sent to our servers.",
+		"back": "Back to home",
+		"back_home": "Home",
+		"recommended": "Recommended for your system",
+		"download": "Download",
+		"download_primary": "Download for your system",
+		"latest_title": "Latest release",
+		"latest_description": "Current stable: {tag}. Pick the binary for your OS below.",
+		"unavailable": "Release metadata is temporarily unavailable. Try GitHub Releases directly.",
+		"version_line": "{tag} · released {date}",
+		"alternate_formats": "Other builds",
+		"not_available": "Not available",
+		"examples_title": "Examples and WASM modules",
+		"examples_description": "Example page server binaries and standalone WASM modules from the same release.",
+		"source_title": "Source code",
+		"source_description": "Clone from GitHub or download a zip snapshot of the latest release tag from this site.",
+		"source_zip": "Download source zip",
+		"source_page": "Source mirrors and clone URLs",
+		"nightly_title": "Nightly pre-release",
+		"nightly_badge": "Pre-release",
+		"nightly_description": "Automated builds from main ({tag}). They can break. Use the latest stable release unless you are testing.",
+		"nightly_empty": "No nightly pre-release is published right now.",
+		"nightly_none": "No nightly pre-release builds are available yet.",
+		"release_notes": "Release notes on GitHub",
+		"view_source": "View on GitHub",
+		"docs": "Documentation",
+		"wasm_demo": "WASM demo",
+		"sbom_title": "Software bill of materials",
+		"footer_note": "Binaries are served from GitHub. This page caches release metadata to avoid API rate limits.",
+		"slots": {
+			"windows_amd64": {
+				"title": "Windows x64",
+				"hint": "Windows 10+ amd64 · .exe"
+			},
+			"windows_arm64": {
+				"title": "Windows ARM64",
+				"hint": "Windows on ARM64 · .exe"
+			},
+			"windows_386": {
+				"title": "Windows 32-bit",
+				"hint": "32-bit Windows · .exe"
+			},
+			"windows_7": {
+				"title": "Windows 7",
+				"hint": "Legacy Windows 7/8/8.1 builds · amd64 and ARM64"
+			},
+			"windows_xp": {
+				"title": "Windows XP",
+				"hint": "Windows XP and Server 2003 · 32-bit and amd64"
+			},
+			"linux_amd64": {
+				"title": "Linux x64",
+				"hint": "Static linux/amd64 binary"
+			},
+			"linux_arm64": {
+				"title": "Linux ARM64",
+				"hint": "Static linux/arm64 binary"
+			},
+			"linux_arm": {
+				"title": "Linux ARMv6/v7",
+				"hint": "Static linux/arm binary for 32-bit ARM boards"
+			},
+			"linux_386": {
+				"title": "Linux 32-bit",
+				"hint": "Static linux/386 binary"
+			},
+			"linux_riscv64": {
+				"title": "Linux RISC-V",
+				"hint": "Static linux/riscv64 binary"
+			},
+			"macos_arm": {
+				"title": "macOS Apple Silicon",
+				"hint": "darwin/arm64 binary"
+			},
+			"macos_intel": {
+				"title": "macOS Intel",
+				"hint": "darwin/amd64 binary"
+			},
+			"freebsd": {
+				"title": "FreeBSD",
+				"hint": "amd64, 386, arm64, arm, and riscv64 binaries"
+			},
+			"wasm": {
+				"title": "WebAssembly",
+				"hint": "JS WASM module and example WASM builds"
+			}
+		}
+	},
 	"ren_browser": {
 		"title": "Ren Browser",
 		"subtitle": "NomadNet-compatible browser for the Reticulum Network, built with Reticulum-Go.",
@@ -398,6 +490,84 @@
 		"releases": "GitHub Releases",
 		"docker": "Docker image",
 		"docs": "Documentation",
-		"note": "Active development. Expect rough edges until v1.0."
+		"note": "Active development. Expect rough edges until v1.0.",
+		"download_page": "Download page",
+		"downloads": {
+			"title": "Download Ren Browser",
+			"subtitle": "Pick a build for your system. Installers download from GitHub.",
+			"privacy_note": "Platform suggestions use your browser only on this device. Nothing is sent to our servers.",
+			"back": "Back to overview",
+			"back_overview": "Ren Browser overview",
+			"recommended": "Recommended for your system",
+			"download": "Download",
+			"download_primary": "Download for your system",
+			"latest_title": "Latest release",
+			"latest_description": "Current stable: {tag}. Pick the asset for your OS below.",
+			"unavailable": "Release metadata is temporarily unavailable. Try GitHub Releases directly.",
+			"version_line": "{tag} · released {date}",
+			"alternate_formats": "Other formats",
+			"not_available": "Not available",
+			"server_pick": "Choose a headless server binary below.",
+			"nightly_title": "Nightly pre-release",
+			"nightly_badge": "Pre-release",
+			"nightly_description": "Automated builds from main ({tag}). They can break. Use the latest stable release unless you are testing.",
+			"nightly_empty": "No nightly pre-release is published right now.",
+			"nightly_none": "No nightly pre-release builds are available for any platform yet.",
+			"release_notes": "Release notes on GitHub",
+			"footer_note": "Installers are served from GitHub. This page caches release metadata to avoid API rate limits.",
+			"extras_title": "WASM modules",
+			"extras_description": "Standalone Micron translator WASM modules from the same release.",
+			"sbom_title": "Software bill of materials",
+			"slots": {
+				"windows": {
+					"title": "Windows",
+					"hint": "Windows 10+ x64 · installer, portable .exe, or MSIX"
+				},
+				"windows_7": {
+					"title": "Windows 7",
+					"hint": "Windows 7/8/8.1 desktop builds when published"
+				},
+				"windows_xp": {
+					"title": "Windows XP",
+					"hint": "Windows XP and Server 2003 desktop builds when published"
+				},
+				"windows_386": {
+					"title": "Windows 32-bit",
+					"hint": "32-bit Windows installer or portable .exe"
+				},
+			"linux_amd64": {
+				"title": "Linux x64",
+				"hint": "AppImage, .deb, .rpm, Flatpak, Arch package, portable binary"
+			},
+				"linux_386": {
+					"title": "Linux 32-bit",
+					"hint": "AppImage, .deb, .rpm, Flatpak, Arch package, or portable binary"
+				},
+				"linux_riscv64": {
+					"title": "Linux RISC-V",
+					"hint": "Desktop packages or headless server binary for linux/riscv64"
+				},
+				"linux_arm64": {
+					"title": "Linux ARM64",
+					"hint": "AppImage, .deb, .rpm, Arch package, or raw binary"
+				},
+				"macos": {
+					"title": "macOS",
+					"hint": "Universal app zip · Intel and Apple Silicon"
+				},
+				"android": {
+					"title": "Android",
+					"hint": "Universal APK"
+				},
+				"ios": {
+					"title": "iOS",
+					"hint": "IPA for sideloading or enterprise install"
+				},
+				"server": {
+					"title": "Headless server",
+					"hint": "Linux, Windows, and BSD server binaries without the desktop UI"
+				}
+			}
+		}
 	}
 }

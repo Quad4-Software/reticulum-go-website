@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { t } from 'svelte-i18n';
-	import { GitBranch, Lock, Archive, Code2, Network, ShieldCheck, Boxes } from 'lucide-svelte';
+	import { GitBranch, Lock, Archive, Code2, Network, ShieldCheck, Boxes, Download } from 'lucide-svelte';
 	import { getRepoUpdatedAt, calculateTimeAgo } from '$lib/version';
 	import SupportedPlatforms from '$lib/components/SupportedPlatforms.svelte';
 
@@ -53,6 +53,13 @@
 						class="absolute -top-2 -right-2 px-1.5 py-0.5 text-[10px] font-semibold rounded bg-orange-500 text-white uppercase"
 						>{$t('ren_browser.badge')}</span
 					>
+				</a>
+				<a
+					href="/download"
+					class="px-8 py-4 bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 font-bold rounded-xl shadow-md hover:opacity-90 transition-all active:scale-95 inline-flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00ADD8] focus-visible:ring-offset-2"
+				>
+					<Download class="w-5 h-5" />
+					{$t('home.download')}
 				</a>
 				<a
 					href="/source"

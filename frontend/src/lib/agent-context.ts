@@ -182,9 +182,11 @@ ${siteDocLinks()}
 - ${SITE_URL}/tools/micron-editor
 - ${SITE_URL}/wasm-example
 - ${SITE_URL}/ren-browser
+- ${SITE_URL}/ren-browser/download
 - ${SITE_URL}/apps
 - ${SITE_URL}/donate
 - ${SITE_URL}/source
+- ${SITE_URL}/download
 - ${SITE_URL}/privacy
 - ${SITE_URL}/contact
 

@@ -63,9 +63,7 @@
 			</p>
 			<div class="flex flex-wrap justify-center gap-4">
 				<a
-					href="https://github.com/Quad4-Software/Ren-Browser/releases/latest"
-					target="_blank"
-					rel="noopener noreferrer"
+					href="/ren-browser/download"
 					class="px-8 py-4 bg-[#00ADD8] text-white font-bold rounded-xl shadow-md hover:shadow-[#00ADD8]/10 transition-all active:scale-95 inline-flex items-center gap-2"
 				>
 					<Download class="w-5 h-5" />
@@ -194,12 +192,10 @@
 				</p>
 				<div class="pt-2">
 					<a
-						href="https://github.com/Quad4-Software/Ren-Browser/releases/latest"
-						target="_blank"
-						rel="noopener noreferrer"
+						href="/ren-browser/download"
 						class="inline-flex items-center gap-2 text-sm font-bold text-[#00ADD8] hover:underline"
 					>
-						{$t('ren_browser.releases')}
+						{$t('ren_browser.download_page')}
 						<ChevronRight class="w-4 h-4" />
 					</a>
 				</div>
@@ -231,9 +227,7 @@
 
 		<div class="flex flex-wrap justify-center gap-4 pt-4">
 			<a
-				href="https://github.com/Quad4-Software/Ren-Browser/releases/latest"
-				target="_blank"
-				rel="noopener noreferrer"
+				href="/ren-browser/download"
 				class="px-6 py-3 bg-[#00ADD8] text-white font-bold rounded-xl hover:bg-[#00ADD8]/90 transition-colors inline-flex items-center gap-2"
 			>
 				<Download class="w-4 h-4" />

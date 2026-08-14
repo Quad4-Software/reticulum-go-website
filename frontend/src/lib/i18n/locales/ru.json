@@ -266,6 +266,7 @@
 		"title": "Reticulum-Go",
 		"subtitle": "Устойчивый, суверенный сетевой стек для всех. Теперь реализован на Go для высокой производительности и переносимости.",
 		"try_ren_browser": "Попробуйте Ren Browser!",
+		"download": "Скачать",
 		"try_wasm": "Попробовать WASM демо",
 		"view_source": "Посмотреть исходный код",
 		"features": {
@@ -337,6 +338,97 @@
 			"wasm": "WebAssembly"
 		}
 	},
+	"reticulum_download": {
+		"title": "Скачать Reticulum-Go",
+		"subtitle": "Выберите готовый бинарник для вашей системы. Бинарники загружаются с GitHub.",
+		"privacy_note": "Подбор платформы использует только ваш браузер на этом устройстве. Ничего не отправляется на наши серверы.",
+		"back": "На главную",
+		"back_home": "Главная",
+		"recommended": "Рекомендуется для вашей системы",
+		"download": "Скачать",
+		"download_primary": "Скачать для вашей системы",
+		"latest_title": "Последний релиз",
+		"latest_description": "Текущий стабильный: {tag}. Выберите бинарник для вашей ОС ниже.",
+		"unavailable": "Метаданные релиза временно недоступны. Попробуйте GitHub Releases напрямую.",
+		"version_line": "{tag} · выпущен {date}",
+		"alternate_formats": "Другие сборки",
+		"not_available": "Недоступно",
+		"examples_title": "Примеры и WASM-модули",
+		"examples_description": "Примеры page server и отдельные WASM-модули из того же релиза.",
+		"source_title": "Исходный код",
+		"source_description": "Клонируйте с GitHub или скачайте zip-снимок последнего тега релиза с этого сайта.",
+		"source_zip": "Скачать zip с исходниками",
+		"source_page": "Зеркала и URL для clone",
+		"nightly_title": "Nightly pre-release",
+		"nightly_badge": "Pre-release",
+		"nightly_description": "Автосборки из main ({tag}). Могут ломаться. Используйте стабильный релиз, если не тестируете.",
+		"nightly_empty": "Сейчас nightly pre-release не опубликован.",
+		"nightly_none": "Nightly pre-release сборки пока недоступны.",
+		"release_notes": "Заметки о релизе на GitHub",
+		"view_source": "Открыть на GitHub",
+		"docs": "Документация",
+		"wasm_demo": "WASM-демо",
+		"sbom_title": "Software bill of materials",
+		"footer_note": "Бинарники раздаются с GitHub. Эта страница кеширует метаданные, чтобы не упираться в лимиты API.",
+		"slots": {
+			"windows_amd64": {
+				"title": "Windows x64",
+				"hint": "Windows 10+ amd64 · .exe"
+			},
+			"windows_arm64": {
+				"title": "Windows ARM64",
+				"hint": "Windows на ARM64 · .exe"
+			},
+			"windows_386": {
+				"title": "Windows 32-bit",
+				"hint": "32-разрядный Windows · .exe"
+			},
+			"windows_7": {
+				"title": "Windows 7",
+				"hint": "Сборки для Windows 7/8/8.1 · amd64 и ARM64"
+			},
+			"windows_xp": {
+				"title": "Windows XP",
+				"hint": "Windows XP и Server 2003 · 32-bit и amd64"
+			},
+			"linux_amd64": {
+				"title": "Linux x64",
+				"hint": "Статический бинарник linux/amd64"
+			},
+			"linux_arm64": {
+				"title": "Linux ARM64",
+				"hint": "Статический бинарник linux/arm64"
+			},
+			"linux_arm": {
+				"title": "Linux ARMv6/v7",
+				"hint": "Статический бинарник linux/arm для 32-битных ARM-плат"
+			},
+			"linux_386": {
+				"title": "Linux 32-bit",
+				"hint": "Статический бинарник linux/386"
+			},
+			"linux_riscv64": {
+				"title": "Linux RISC-V",
+				"hint": "Статический бинарник linux/riscv64"
+			},
+			"macos_arm": {
+				"title": "macOS Apple Silicon",
+				"hint": "Бинарник darwin/arm64"
+			},
+			"macos_intel": {
+				"title": "macOS Intel",
+				"hint": "Бинарник darwin/amd64"
+			},
+			"freebsd": {
+				"title": "FreeBSD",
+				"hint": "Бинарники amd64, 386, arm64, arm и riscv64"
+			},
+			"wasm": {
+				"title": "WebAssembly",
+				"hint": "JS WASM-модуль и примеры WASM-сборок"
+			}
+		}
+	},
 	"ren_browser": {
 		"title": "Ren Browser",
 		"subtitle": "Современный браузер для сети Reticulum на базе Reticulum-Go.",
@@ -398,6 +490,84 @@
 		"releases": "Релизы GitHub",
 		"docker": "Образ Docker",
 		"docs": "Документация",
-		"note": "Активная разработка. До v1.0 возможны шероховатости."
+		"note": "Активная разработка. До v1.0 возможны шероховатости.",
+		"download_page": "Страница загрузки",
+		"downloads": {
+			"title": "Скачать Ren Browser",
+			"subtitle": "Выберите сборку для вашей системы. Установщики загружаются с GitHub.",
+			"privacy_note": "Подбор платформы использует только ваш браузер на этом устройстве. Ничего не отправляется на наши серверы.",
+			"back": "Назад к обзору",
+			"back_overview": "Обзор Ren Browser",
+			"recommended": "Рекомендуется для вашей системы",
+			"download": "Скачать",
+			"download_primary": "Скачать для вашей системы",
+			"latest_title": "Последний релиз",
+			"latest_description": "Текущий стабильный: {tag}. Выберите файл для вашей ОС ниже.",
+			"unavailable": "Метаданные релиза временно недоступны. Попробуйте GitHub Releases напрямую.",
+			"version_line": "{tag} · выпущен {date}",
+			"alternate_formats": "Другие форматы",
+			"not_available": "Недоступно",
+			"server_pick": "Выберите headless-сервер ниже.",
+			"nightly_title": "Nightly pre-release",
+			"nightly_badge": "Pre-release",
+			"nightly_description": "Автосборки из main ({tag}). Могут ломаться. Используйте стабильный релиз, если не тестируете.",
+			"nightly_empty": "Сейчас nightly pre-release не опубликован.",
+			"nightly_none": "Nightly pre-release сборки пока недоступны ни для одной платформы.",
+			"release_notes": "Заметки о релизе на GitHub",
+			"footer_note": "Установщики раздаются с GitHub. Эта страница кеширует метаданные, чтобы не упираться в лимиты API.",
+			"extras_title": "WASM-модули",
+			"extras_description": "Отдельные WASM-модули переводчика Micron из того же релиза.",
+			"sbom_title": "Software bill of materials",
+			"slots": {
+				"windows": {
+					"title": "Windows",
+					"hint": "Windows 10+ x64 · установщик, portable .exe или MSIX"
+				},
+				"windows_7": {
+					"title": "Windows 7",
+					"hint": "Десктопные сборки для Windows 7/8/8.1, когда опубликованы"
+				},
+				"windows_xp": {
+					"title": "Windows XP",
+					"hint": "Десктопные сборки для Windows XP и Server 2003, когда опубликованы"
+				},
+				"windows_386": {
+					"title": "Windows 32-bit",
+					"hint": "32-разрядный установщик или portable .exe"
+				},
+				"linux_amd64": {
+					"title": "Linux x64",
+					"hint": "AppImage, .deb, .rpm, Flatpak, пакет Arch или raw binary"
+				},
+				"linux_386": {
+					"title": "Linux 32-bit",
+					"hint": "AppImage, .deb, .rpm, Flatpak, пакет Arch или portable binary"
+				},
+				"linux_riscv64": {
+					"title": "Linux RISC-V",
+					"hint": "Десктопные пакеты или headless-сервер для linux/riscv64"
+				},
+				"linux_arm64": {
+					"title": "Linux ARM64",
+					"hint": "AppImage, .deb, .rpm, пакет Arch или raw binary"
+				},
+				"macos": {
+					"title": "macOS",
+					"hint": "Универсальный app zip · Intel и Apple Silicon"
+				},
+				"android": {
+					"title": "Android",
+					"hint": "Универсальный APK"
+				},
+				"ios": {
+					"title": "iOS",
+					"hint": "IPA для sideload или enterprise-установки"
+				},
+				"server": {
+					"title": "Headless-сервер",
+					"hint": "Серверные бинарники Linux, Windows и BSD без desktop UI"
+				}
+			}
+		}
 	}
 }

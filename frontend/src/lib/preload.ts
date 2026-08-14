@@ -39,7 +39,9 @@ export const PRIMARY_PRELOAD_PATHS = [
 	'/donate',
 	'/contact',
 	'/source',
-	'/ren-browser'
+	'/download',
+	'/ren-browser',
+	'/ren-browser/download'
 ] as const;
 
 /** Warm primary routes when the browser is idle. */
