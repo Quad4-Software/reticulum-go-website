@@ -29,6 +29,7 @@ describe('agent endpoint wiring', () => {
 		const robots = readFileSync(resolve(root, 'static/robots.txt'), 'utf8');
 		expect(robots).toContain('/llms.txt');
 		expect(robots).toContain('/api/agent');
+		expect(robots).toContain('/mirrors/reticulum');
 	});
 
 	it('response helpers set markdown and json content types', async () => {

@@ -16,6 +16,7 @@ describe('agent context', () => {
 		expect(text).toContain(RETICULUM_ZEN);
 		expect(text).toContain(RETICULUM_MANUAL);
 		expect(text).toContain(RETICULUM_WHATIS);
+		expect(text).toContain('/mirrors/reticulum');
 		expect(text).toContain('does not replace');
 		expect(text).toContain('/api/agent');
 		expect(text).toContain('/source');

@@ -47,6 +47,7 @@ describe('startup caches', () => {
 		const hooks = read('src/hooks.server.ts');
 		expect(hooks).toContain('ensureSourceZip');
 		expect(hooks).toContain('ensureDocsSynced');
+		expect(hooks).toContain('ensureReticulumSiteMirror');
 		expect(hooks).toContain('export const init');
 	});
 
@@ -54,6 +55,7 @@ describe('startup caches', () => {
 		const docker = readFileSync(resolve(root, '../Dockerfile'), 'utf8');
 		expect(docker).toContain('SOURCE_ZIP_CACHE_DIR=/tmp/reticulum-go-source-cache');
 		expect(docker).toContain('DOCS_CACHE_DIR=/tmp/reticulum-go-docs-cache');
+		expect(docker).toContain('RETICULUM_SITE_MIRROR_CACHE_DIR=/tmp/reticulum-site-mirror-cache');
 	});
 });
 

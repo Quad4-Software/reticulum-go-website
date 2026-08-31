@@ -1,9 +1,17 @@
 import { SITE_URL, SITE_DESCRIPTION } from '$lib/site-config';
 import { DOC_SLUGS } from '$lib/docs-config';
 import { RETICULUM_GO_GITHUB as RETICULUM_GO_REPO } from '$lib/source-mirrors';
+import {
+	RETICULUM_MIRROR_MANUAL,
+	RETICULUM_MIRROR_MANUAL_ZEN,
+	RETICULUM_MIRROR_PATH,
+	RETICULUM_MIRROR_ZEN,
+	RETICULUM_WEBSITE_REPO
+} from '$lib/reticulum-mirror';
 
 export const RETICULUM_HOME = 'https://reticulum.network/';
 export const RETICULUM_ZEN = 'https://reticulum.network/zenofreticulum.html';
+export const RETICULUM_MANUAL_ZEN = 'https://reticulum.network/manual/zen.html';
 export const RETICULUM_MANUAL = 'https://reticulum.network/manual/';
 export const RETICULUM_WHATIS = 'https://reticulum.network/manual/whatis.html';
 export const RETICULUM_UNDERSTANDING = 'https://reticulum.network/manual/understanding.html';
@@ -58,6 +66,8 @@ This file is for language models and agents. Prefer it over guessing. The Reticu
 ## Critical orientation
 
 - Read the Zen before inventing architecture metaphors: ${RETICULUM_ZEN}
+- Manual Zen (protocol philosophy in the Sphinx manual): ${RETICULUM_MANUAL_ZEN}
+- Local unofficial mirror of reticulum.network (same pages, slim banner): ${SITE_URL}${RETICULUM_MIRROR_PATH}
 - Protocol authority: Python RNS reference and manual (${RETICULUM_MANUAL})
 - Compatibility target documented here: Python RNS 1.3.8
 - Reticulum is not one network. It is a tool to build thousands of networks.
@@ -74,6 +84,7 @@ ${AGENT_MUST_NOT.map((line) => `- ${line}`).join('\n')}
 
 - [Reticulum home](${RETICULUM_HOME}): Project home and overview
 - [Zen of Reticulum](${RETICULUM_ZEN}): Foundational philosophy (no cloud landlords, destinations not places, uncentralizability)
+- [Manual Zen](${RETICULUM_MANUAL_ZEN}): Zen chapter in the official Sphinx manual
 - [What is Reticulum?](${RETICULUM_WHATIS}): Status, reference implementation definition, offers
 - [Understanding Reticulum](${RETICULUM_UNDERSTANDING}): Motivation, goals, destinations, transport, crypto overview
 - [Manual index](${RETICULUM_MANUAL}): Full official manual
@@ -81,7 +92,7 @@ ${AGENT_MUST_NOT.map((line) => `- ${line}`).join('\n')}
 - [Crypto overview](${RETICULUM_CRYPTO}): Cryptographic primitives overview
 - [Communications hardware](${RETICULUM_HARDWARE}): RNode and carriers
 - [Reticulum License](${RETICULUM_LICENSE}): Reference implementation license page
-
+- [Unofficial mirror on this host](${SITE_URL}${RETICULUM_MIRROR_PATH}): Cached copy of ${RETICULUM_WEBSITE_REPO} docs tree (site, manuals, PDF/EPUB). Prefer upstream when reachable.
 ## This project (Reticulum-Go website)
 
 - [Site home](${SITE_URL}/): Product and WASM entry
@@ -137,7 +148,9 @@ Keep the Zen in mind:
 - Reticulum is a tool to build many networks, not one network with a kill switch.
 
 Canonical Zen page: ${RETICULUM_ZEN}
-
+Manual Zen: ${RETICULUM_MANUAL_ZEN}
+Local mirror (when upstream is hard to reach): ${SITE_URL}${RETICULUM_MIRROR_ZEN} and ${SITE_URL}${RETICULUM_MIRROR_MANUAL_ZEN}
+Mirrored manual root: ${SITE_URL}${RETICULUM_MIRROR_MANUAL}
 ## Verified technical anchors (do not invent beyond these without checking docs)
 
 - Destination hashes are 16 bytes (128-bit truncated SHA-256), shown as 32 hex characters.
@@ -164,6 +177,7 @@ ${AGENT_MUST_NOT.map((line) => `- ${line}`).join('\n')}
 
 - ${RETICULUM_HOME}
 - ${RETICULUM_ZEN}
+- ${RETICULUM_MANUAL_ZEN}
 - ${RETICULUM_WHATIS}
 - ${RETICULUM_UNDERSTANDING}
 - ${RETICULUM_MANUAL}
@@ -171,6 +185,7 @@ ${AGENT_MUST_NOT.map((line) => `- ${line}`).join('\n')}
 - ${RETICULUM_CRYPTO}
 - ${RETICULUM_HARDWARE}
 - ${RETICULUM_LICENSE}
+- Mirror on this site: ${SITE_URL}${RETICULUM_MIRROR_PATH} (from ${RETICULUM_WEBSITE_REPO})
 
 ## Reticulum-Go documentation on this site
 
@@ -202,6 +217,7 @@ ${siteDocLinks()}
 - ${SITE_URL}/llms.txt
 - ${SITE_URL}/llms-full.txt
 - ${SITE_URL}/api/agent
+- ${SITE_URL}${RETICULUM_MIRROR_PATH}
 `;
 }
 
@@ -219,11 +235,15 @@ export type AgentContextPayload = {
 		agent_json: string;
 		reticulum_home: string;
 		reticulum_zen: string;
+		reticulum_manual_zen: string;
 		reticulum_manual: string;
 		reticulum_whatis: string;
 		reticulum_understanding: string;
 		reticulum_reference: string;
 		reticulum_go_repo: string;
+		reticulum_mirror: string;
+		reticulum_mirror_zen: string;
+		reticulum_mirror_manual: string;
 	};
 	markdown: {
 		llms_txt: string;
@@ -247,11 +267,15 @@ export function buildAgentContextPayload(): AgentContextPayload {
 			agent_json: `${SITE_URL}/api/agent`,
 			reticulum_home: RETICULUM_HOME,
 			reticulum_zen: RETICULUM_ZEN,
+			reticulum_manual_zen: RETICULUM_MANUAL_ZEN,
 			reticulum_manual: RETICULUM_MANUAL,
 			reticulum_whatis: RETICULUM_WHATIS,
 			reticulum_understanding: RETICULUM_UNDERSTANDING,
 			reticulum_reference: RETICULUM_REFERENCE,
-			reticulum_go_repo: RETICULUM_GO_REPO
+			reticulum_go_repo: RETICULUM_GO_REPO,
+			reticulum_mirror: `${SITE_URL}${RETICULUM_MIRROR_PATH}`,
+			reticulum_mirror_zen: `${SITE_URL}${RETICULUM_MIRROR_ZEN}`,
+			reticulum_mirror_manual: `${SITE_URL}${RETICULUM_MIRROR_MANUAL}`
 		},
 		markdown: {
 			llms_txt: buildLlmsTxt(),

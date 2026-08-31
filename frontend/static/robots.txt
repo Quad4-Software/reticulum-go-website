@@ -8,3 +8,5 @@ Sitemap: https://reticulum-go.quad4.io/sitemap.xml
 # https://reticulum-go.quad4.io/llms.txt
 # https://reticulum-go.quad4.io/llms-full.txt
 # https://reticulum-go.quad4.io/api/agent
+# Unofficial reticulum.network mirror (site + manuals)
+# https://reticulum-go.quad4.io/mirrors/reticulum

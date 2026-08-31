@@ -36,6 +36,8 @@ const config = {
 				const ignorable = (r) =>
 					r === '/docs' ||
 					r.startsWith('/docs/') ||
+					r === '/mirrors/reticulum' ||
+					r.startsWith('/mirrors/reticulum/') ||
 					r === '/sitemap.xml' ||
 					r === '/llms.txt' ||
 					r === '/llms-full.txt' ||

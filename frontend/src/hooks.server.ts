@@ -1,6 +1,7 @@
 import type { Handle, ServerInit } from '@sveltejs/kit';
 import { ensureSourceZip } from '$lib/server/source-zip';
 import { ensureDocsSynced } from '$lib/server/docs-sync';
+import { ensureReticulumSiteMirror } from '$lib/server/reticulum-site-mirror';
 
 export const init: ServerInit = async () => {
 	ensureSourceZip().catch((err) => {
@@ -8,6 +9,9 @@ export const init: ServerInit = async () => {
 	});
 	ensureDocsSynced().catch((err) => {
 		console.error('[docs-sync] startup fetch failed', err);
+	});
+	ensureReticulumSiteMirror().catch((err) => {
+		console.error('[reticulum-mirror] startup fetch failed', err);
 	});
 };
 
