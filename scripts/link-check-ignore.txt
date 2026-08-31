@@ -3,7 +3,12 @@ schema.org
 localhost
 127.0.0.1
 example.com
+example.test
+evil.example
+github.com/example/
 placehold
 mailto:
 data:
 javascript:
+# Apex org site is currently returning 503 from CI probes (reticulum-go.quad4.io still checked).
+https://quad4.io

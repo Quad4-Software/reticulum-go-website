@@ -18,8 +18,8 @@ frontend/coverage/
 frontend/test-results/
 frontend/.lighthouseci/
 
-# Packaged docs (make docs-zip)
-releases/
+# Packaged docs (make docs-zip) at repo root only
+/releases/
 
 # Local SBOM output (CI uploads from workspace)
 sbom/
