@@ -5,7 +5,7 @@ describe('security headers handle', () => {
 	it('redirects /mirror/reticulum to /mirrors/reticulum', async () => {
 		const resolve = vi.fn(async () => new Response('ok', { status: 200 }));
 		const root = await handle({
-			event: { url: new URL('https://reticulum-go.quad4.io/mirror/reticulum') } as never,
+			event: { url: new URL('http://localhost/mirror/reticulum') } as never,
 			resolve
 		});
 		expect(root.status).toBe(301);
@@ -13,7 +13,7 @@ describe('security headers handle', () => {
 
 		const nested = await handle({
 			event: {
-				url: new URL('https://reticulum-go.quad4.io/mirror/reticulum/manual/zen.html?q=1')
+				url: new URL('http://localhost/mirror/reticulum/manual/zen.html?q=1')
 			} as never,
 			resolve
 		});
