@@ -52,39 +52,25 @@ describe('detectClientPlatform', () => {
 			)
 		).toBe('windows');
 		expect(
-			detectClientPlatform(
-				'Mozilla/5.0 (Windows NT 5.1; rv:52.0) Gecko/20100101 Firefox/52.0'
-			)
+			detectClientPlatform('Mozilla/5.0 (Windows NT 5.1; rv:52.0) Gecko/20100101 Firefox/52.0')
 		).toBe('windows_386');
 		expect(
-			detectClientPlatform(
-				'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/120.0.0.0'
-			)
+			detectClientPlatform('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/120.0.0.0')
 		).toBe('linux_amd64');
 		expect(
-			detectClientPlatform(
-				'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 Chrome/120.0.0.0'
-			)
+			detectClientPlatform('Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 Chrome/120.0.0.0')
 		).toBe('linux_386');
 		expect(
-			detectClientPlatform(
-				'Mozilla/5.0 (X11; Linux riscv64) AppleWebKit/537.36 Chrome/120.0.0.0'
-			)
+			detectClientPlatform('Mozilla/5.0 (X11; Linux riscv64) AppleWebKit/537.36 Chrome/120.0.0.0')
 		).toBe('linux_riscv64');
 		expect(
-			detectClientPlatform(
-				'Mozilla/5.0 (X11; Linux aarch64) AppleWebKit/537.36 Chrome/120.0.0.0'
-			)
+			detectClientPlatform('Mozilla/5.0 (X11; Linux aarch64) AppleWebKit/537.36 Chrome/120.0.0.0')
 		).toBe('linux_arm64');
 		expect(
-			detectClientPlatform(
-				'Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) AppleWebKit/605.1.15'
-			)
+			detectClientPlatform('Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) AppleWebKit/605.1.15')
 		).toBe('macos');
 		expect(
-			detectClientPlatform(
-				'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 Mobile'
-			)
+			detectClientPlatform('Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 Mobile')
 		).toBe('android');
 		expect(detectClientPlatform('Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)')).toBe(
 			'ios'

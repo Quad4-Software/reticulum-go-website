@@ -535,10 +535,10 @@
 					"title": "Windows 32-bit",
 					"hint": "32-bit Windows installer or portable .exe"
 				},
-			"linux_amd64": {
-				"title": "Linux x64",
-				"hint": "AppImage, .deb, .rpm, Flatpak, Arch package, portable binary"
-			},
+				"linux_amd64": {
+					"title": "Linux x64",
+					"hint": "AppImage, .deb, .rpm, Flatpak, Arch package, portable binary"
+				},
 				"linux_386": {
 					"title": "Linux 32-bit",
 					"hint": "AppImage, .deb, .rpm, Flatpak, Arch package, or portable binary"

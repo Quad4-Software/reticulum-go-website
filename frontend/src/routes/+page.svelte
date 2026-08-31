@@ -1,7 +1,16 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { t } from 'svelte-i18n';
-	import { GitBranch, Lock, Archive, Code2, Network, ShieldCheck, Boxes, Download } from 'lucide-svelte';
+	import {
+		GitBranch,
+		Lock,
+		Archive,
+		Code2,
+		Network,
+		ShieldCheck,
+		Boxes,
+		Download
+	} from 'lucide-svelte';
 	import { getRepoUpdatedAt, calculateTimeAgo } from '$lib/version';
 	import SupportedPlatforms from '$lib/components/SupportedPlatforms.svelte';
 

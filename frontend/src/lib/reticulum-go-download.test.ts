@@ -48,9 +48,9 @@ describe('detectClientPlatform', () => {
 	it('detects stack targets from user agents', () => {
 		expect(detectClientPlatform('Mozilla/5.0 (Windows NT 10.0; Win64; x64)')).toBe('windows_amd64');
 		expect(detectClientPlatform('Mozilla/5.0 (Windows NT 10.0; ARM64)')).toBe('windows_arm64');
-		expect(detectClientPlatform('Mozilla/5.0 (Windows NT 5.1; rv:52.0) Gecko/20100101 Firefox/52.0')).toBe(
-			'windows_386'
-		);
+		expect(
+			detectClientPlatform('Mozilla/5.0 (Windows NT 5.1; rv:52.0) Gecko/20100101 Firefox/52.0')
+		).toBe('windows_386');
 		expect(detectClientPlatform('Mozilla/5.0 (X11; Linux x86_64)')).toBe('linux_amd64');
 		expect(detectClientPlatform('Mozilla/5.0 (X11; Linux i686)')).toBe('linux_386');
 		expect(detectClientPlatform('Mozilla/5.0 (X11; Linux riscv64)')).toBe('linux_riscv64');
