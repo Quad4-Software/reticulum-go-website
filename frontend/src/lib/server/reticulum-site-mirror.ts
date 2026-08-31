@@ -271,9 +271,33 @@ export function resolveMirrorFilePath(requestPath: string): string | null {
 	return full;
 }
 
+export function mirrorBaseHref(requestPath: string): string {
+	const trimmed = requestPath.replace(/^\/+/, '').replace(/\\/g, '/');
+	if (!trimmed || trimmed.endsWith('/')) {
+		return `${RETICULUM_MIRROR_PATH}/`;
+	}
+	const slash = trimmed.lastIndexOf('/');
+	if (slash === -1) {
+		return `${RETICULUM_MIRROR_PATH}/`;
+	}
+	return `${RETICULUM_MIRROR_PATH}/${trimmed.slice(0, slash + 1)}`;
+}
+
 export function mirrorBannerHtml(canonicalPath: string): string {
 	const canonical = `${RETICULUM_UPSTREAM}${canonicalPath.startsWith('/') ? '' : '/'}${canonicalPath || '/'}`;
 	return `<aside id="rgo-mirror-banner" role="note" style="position:sticky;top:0;z-index:9999;margin:0;padding:0.35rem 0.75rem;font:13px/1.35 system-ui,sans-serif;background:#161f27;color:#dbdbdb;border-bottom:1px solid #2a3644;text-align:center">Unofficial mirror of <a href="${canonical}" style="color:#41adff">reticulum.network</a> · Source <a href="${RETICULUM_WEBSITE_REPO}" style="color:#41adff">markqvist/reticulum_website</a> · Served at ${RETICULUM_MIRROR_PATH} by Reticulum-Go</aside>`;
+}
+
+export function injectMirrorBase(html: string, requestPath: string): string {
+	const base = mirrorBaseHref(requestPath);
+	const tag = `<base href="${base}">`;
+	if (/<base\s[^>]*href=/i.test(html)) {
+		return html.replace(/<base\s[^>]*>/i, tag);
+	}
+	if (/<head[^>]*>/i.test(html)) {
+		return html.replace(/<head([^>]*)>/i, `<head$1>${tag}`);
+	}
+	return tag + html;
 }
 
 export function injectMirrorBanner(html: string, requestPath: string): string {
@@ -282,6 +306,10 @@ export function injectMirrorBanner(html: string, requestPath: string): string {
 		return html.replace(/<body([^>]*)>/i, `<body$1>${banner}`);
 	}
 	return banner + html;
+}
+
+export function prepareMirrorHtml(html: string, requestPath: string): string {
+	return injectMirrorBanner(injectMirrorBase(html, requestPath), requestPath);
 }
 
 export async function openMirrorAsset(requestPath: string): Promise<{

@@ -2,9 +2,10 @@ import { error, type RequestHandler } from '@sveltejs/kit';
 import {
 	ensureReticulumSiteMirror,
 	getReticulumSiteMirrorMeta,
-	injectMirrorBanner,
-	openMirrorAsset
+	openMirrorAsset,
+	prepareMirrorHtml
 } from '$lib/server/reticulum-site-mirror';
+import { RETICULUM_MIRROR_PATH } from '$lib/reticulum-mirror';
 
 export function reticulumMirrorGet(requestPath: string): RequestHandler {
 	return async ({ url }) => {
@@ -27,13 +28,24 @@ export function reticulumMirrorGet(requestPath: string): RequestHandler {
 			});
 		}
 
+		if (
+			!requestPath &&
+			url.pathname === RETICULUM_MIRROR_PATH &&
+			!url.pathname.endsWith('/')
+		) {
+			return new Response(null, {
+				status: 301,
+				headers: { Location: `${url.pathname}/${url.search}` }
+			});
+		}
+
 		const asset = await openMirrorAsset(requestPath);
 		if (!asset) {
 			error(404, 'Mirror page not found');
 		}
 
 		if (asset.isHtml) {
-			const html = injectMirrorBanner(asset.bytes.toString('utf8'), requestPath || '/');
+			const html = prepareMirrorHtml(asset.bytes.toString('utf8'), requestPath || '/');
 			return new Response(html, {
 				headers: {
 					'Content-Type': asset.contentType,

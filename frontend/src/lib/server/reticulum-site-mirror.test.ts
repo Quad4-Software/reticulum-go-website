@@ -41,9 +41,31 @@ describe('reticulum site mirror', () => {
 		expect(resolveMirrorFilePath('manual/../../secret')).toBeNull();
 	});
 
+	it('injects base href so relative css and assets resolve under the mirror mount', async () => {
+		const { injectMirrorBase, mirrorBaseHref, prepareMirrorHtml } = await import(
+			'./reticulum-site-mirror'
+		);
+		expect(mirrorBaseHref('')).toBe('/mirrors/reticulum/');
+		expect(mirrorBaseHref('zenofreticulum.html')).toBe('/mirrors/reticulum/');
+		expect(mirrorBaseHref('manual/zen.html')).toBe('/mirrors/reticulum/manual/');
+
+		const out = injectMirrorBase(
+			'<html><head><link rel="stylesheet" href="css/water.css"></head><body></body></html>',
+			''
+		);
+		expect(out).toContain('<base href="/mirrors/reticulum/">');
+
+		const full = prepareMirrorHtml(
+			'<html><head></head><body><h1>Hi</h1></body></html>',
+			'manual/zen.html'
+		);
+		expect(full).toContain('<base href="/mirrors/reticulum/manual/">');
+		expect(full).toContain('rgo-mirror-banner');
+	});
+
 	it('injects a slim mirror banner after body', async () => {
-		const { injectMirrorBanner } = await import('./reticulum-site-mirror');
-		const out = injectMirrorBanner('<html><body><h1>Hi</h1></body></html>', 'zen.html');
+		const { prepareMirrorHtml } = await import('./reticulum-site-mirror');
+		const out = prepareMirrorHtml('<html><body><h1>Hi</h1></body></html>', 'zen.html');
 		expect(out).toContain('id="rgo-mirror-banner"');
 		expect(out).toContain('Unofficial mirror');
 		expect(out).toContain('https://reticulum.network/zen.html');
