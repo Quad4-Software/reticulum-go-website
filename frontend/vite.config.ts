@@ -225,7 +225,7 @@ export default defineConfig(({ command }) => {
 				kit: {
 					adapterFallback: 'index.html',
 					spa: {
-						fallbackRevision: () => Date.now().toString()
+						fallbackRevision: async () => Date.now().toString()
 					},
 					includeVersionFile: false
 				}
