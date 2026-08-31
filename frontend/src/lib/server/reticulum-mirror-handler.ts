@@ -43,7 +43,7 @@ export function reticulumMirrorGet(requestPath: string): RequestHandler {
 			});
 		}
 
-		return new Response(asset.bytes, {
+		return new Response(Uint8Array.from(asset.bytes), {
 			headers: {
 				'Content-Type': asset.contentType,
 				'Cache-Control': 'public, max-age=86400',

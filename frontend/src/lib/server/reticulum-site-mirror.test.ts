@@ -72,7 +72,7 @@ describe('reticulum site mirror', () => {
 					return new Response(JSON.stringify({ sha: 'deadbeefcafebabe' }), { status: 200 });
 				}
 				if (url.includes('/zipball/')) {
-					return new Response(zipBytes, { status: 200 });
+					return new Response(Uint8Array.from(zipBytes), { status: 200 });
 				}
 				return new Response('not found', { status: 404 });
 			})
