@@ -45,7 +45,7 @@ Makefile and Taskfile both set `GOFLAGS=-mod=vendor`, `GOPROXY=off`, and `GOSUMD
 | `make test-services`                                                |                             | `scripts/ci/test-services-docker.sh`                                                                                    |
 | `make test-install-script`                                          |                             | `scripts/ci/test-install.sh`                                                                                            |
 | `make test-self-check`                                              |                             | `scripts/ci/run-self-check.sh`                                                                                          |
-| `make test-self-check-{386,arm,riscv64,ppc64le,ppc64}`              |                             | qemu-user self-check (`qemu-user-static`)                                                                               |
+| `make test-self-check-{'{'}386,arm,riscv64,ppc64le,ppc64{'}'}`              |                             | qemu-user self-check (`qemu-user-static`)                                                                               |
 | `make coverage`                                                     |                             | coverage profile and HTML report                                                                                        |
 | `make bench`                                                        | `task bench`                | `go test -run=^$ -bench=. -benchmem ./...`                                                                              |
 | `make fmt`                                                          | `task fmt`                  | `go fmt ./...`                                                                                                          |
@@ -352,7 +352,7 @@ On failure (or with INTEROP_ARTIFACTS=1) the test logs the artifact path and the
 | stderr.txt   | Captured Python stderr (human RNS logs plus INTEROP_EVENT lines) |
 | env.json     | Selected interop env keys                                        |
 
-Python peers emit INTEROP_EVENT {...} on stderr via tests/interop/py/interop_events.py. Stdout tokens such as READY and REQUEST_OK are unchanged.
+Python peers emit INTEROP_EVENT {'{'}...{'}'} on stderr via tests/interop/py/interop_events.py. Stdout tokens such as READY and REQUEST_OK are unchanged.
 
 Example:
 
@@ -622,7 +622,7 @@ task build-librns
 task test-c
 ```
 
-Builds and runs bindings/c/examples (smoke plus page-fetch/pageserver compile). Binding CI jobs also run make -C bindings/<lang> examples.
+Builds and runs bindings/c/examples (smoke plus page-fetch/pageserver compile). Binding CI jobs also run make -C bindings/&lt;lang&gt; examples.
 
 ## Adding a change safely
 

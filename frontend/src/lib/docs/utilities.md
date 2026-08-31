@@ -67,8 +67,8 @@ RPC is fully supported on **both** transports:
 
 | shared_instance_type | Listen / dial address                                                       |
 | -------------------- | --------------------------------------------------------------------------- |
-| tcp                  | 127.0.0.1:<instance_control_port> (default 37429)                           |
-| unix                 | Abstract socket @rns/<instance_name>/rpc (Linux)                            |
+| tcp                  | 127.0.0.1:&lt;instance_control_port&gt; (default 37429)                           |
+| unix                 | Abstract socket @rns/&lt;instance_name&gt;/rpc (Linux)                            |
 | unset                | Platform default: **unix** on Linux, **tcp** elsewhere (matches Python RNS) |
 
 Go implements both server and client for TCP and Unix. When the type is unset, utilities try the platform default first, then the other transport, so stock Linux Python rnsd works without forcing TCP.
@@ -221,7 +221,7 @@ Link throughput test modeled on Python Examples/Speedtest.py.
 | Loopback smoke (default / CI) | reticulum-go speedtest or -loopback       |
 | Server (oneshot)              | reticulum-go speedtest -l                 |
 | Daemon (VPS / docker)         | reticulum-go speedtest -daemon            |
-| Client (cross-host)           | reticulum-go speedtest <server_dest_hash> |
+| Client (cross-host)           | reticulum-go speedtest &lt;server_dest_hash&gt; |
 
 Destination is speedtest.server. Server and client must use the same -bytes size. After the transfer the server sends a SPEEDOK ack with the confirmed RX count. Networked clients pace sends (100 µs per packet by default) so UDP sockets are not overrun; loopback does not pace.
 
@@ -242,7 +242,7 @@ Use a real config with UDP/TCP (or a shared path). share_instance is forced off 
 | -bytes n       | Plaintext bytes to transfer (default 2 MiB)                 |
 | -min-bps n     | Fail below this rate (0 disables; loopback defaults to 1e6) |
 | -timeout sec   | Overall timeout (default 60)                                |
-| -announce sec  | Listen announce interval (0 once, <0 never)                 |
+| -announce sec  | Listen announce interval (0 once, &lt;0 never)                 |
 | -json          | Emit JSON after each speedtest_result line                  |
 | -q             | Quieter debug                                               |
 
@@ -376,7 +376,7 @@ rgocp -f -F <remote_path> [flags] <hash>    # fetch
 | -save dir      | Save directory for received files               |
 | -overwrite     | Overwrite on receive                            |
 | -no-compress   | Disable auto compression                        |
-| -announce sec  | Announce interval (0 once, <0 never)            |
+| -announce sec  | Announce interval (0 once, &lt;0 never)            |
 | -w sec         | Path/link timeout (0 = adaptive, default)       |
 | -s             | Silent progress                                 |
 | -p             | Print identity and destination hash             |

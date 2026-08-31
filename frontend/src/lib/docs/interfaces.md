@@ -161,11 +161,11 @@ Configuration:
 
 ## External interface plugins
 
-Python loads .py modules from {config_dir}/interfaces/. Reticulum-Go keeps the same discovery path but uses process isolation and in-process factories instead of executing Python:
+Python loads .py modules from {'{'}config_dir{'}'}/interfaces/. Reticulum-Go keeps the same discovery path but uses process isolation and in-process factories instead of executing Python:
 
 1. interfaces.RegisterExternalFactory(typeName, factory) for embedders
-2. {config_dir}/interfaces/{Type}.json (or .manifest) with driver and command (pipe)
-3. Executable {config_dir}/interfaces/{Type} used as a PipeInterface command
+2. {'{'}config_dir{'}'}/interfaces/{'{'}Type{'}'}.json (or .manifest) with driver and command (pipe)
+3. Executable {'{'}config_dir{'}'}/interfaces/{'{'}Type{'}'} used as a PipeInterface command
 
 Example manifest:
 
@@ -183,7 +183,7 @@ enabled = yes
 
 ## LocalInterface
 
-Local shared-instance access uses HDLC over TCP (127.0.0.1:port) or abstract Unix (@rns/<name>).
+Local shared-instance access uses HDLC over TCP (127.0.0.1:port) or abstract Unix (@rns/&lt;name&gt;).
 
 Two configuration paths:
 
@@ -201,7 +201,7 @@ Requirements:
 - Explicit target_address or target_host (same policy as Python forward_ip)
 - Open binds do not adopt the source address of the first inbound packet
 
-Optional reconnect when max_reconnect_tries > 0 is a Go extension. Python does not reconnect UDP by default.
+Optional reconnect when max_reconnect_tries &gt; 0 is a Go extension. Python does not reconnect UDP by default.
 
 ## TCP client and server
 
@@ -376,7 +376,7 @@ context_id / cid is the peer CID (1 is Local on Linux). Not available on non-Lin
 Go-only TLS long-poll packet underlay for restrictive networks where only HTTPS egress works. Not WebTransport or HTTP/3.
 
 - Default path /rns
-- Client POST {path}/send and long-poll GET {path}/poll
+- Client POST {'{'}path{'}'}/send and long-poll GET {'{'}path{'}'}/poll
 - Peer id header X-RNS-Peer
 - Same TLS options as QUIC (cert_file, key_file, peer_key, sni)
 - long_poll_sec default 25
@@ -421,7 +421,7 @@ Details: [Cryptography](/docs/cryptography#ifac).
 | TCP / backbone / QUIC / WebTransport / HTTPS / VSOCK client | Yes for TCP/backbone, 5 s wait | Yes via reconnect.go                                          |
 | Serial                                                      | Yes, 5 s wait                  | Yes with max_reconnect_tries                                  |
 | I2P                                                         | Yes, 15 s wait                 | Yes in i2p.go                                                 |
-| UDP / DNS rendezvous                                        | No                             | UDP when max_reconnect_tries > 0. DNS re-resolves on interval |
+| UDP / DNS rendezvous                                        | No                             | UDP when max_reconnect_tries &gt; 0. DNS re-resolves on interval |
 | Default max tries                                           | Unlimited (None)               | Unlimited (-1 or omitted)                                     |
 | After exhaustion                                            | Teardown                       | Teardown (Stop)                                               |
 

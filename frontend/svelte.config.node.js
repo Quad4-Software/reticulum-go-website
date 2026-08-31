@@ -12,6 +12,7 @@ const config = {
 		vitePreprocess(),
 		mdsvex({
 			extensions: ['.mdx', '.md'],
+			smartypants: false,
 			highlight: { highlighter: highlight },
 			rehypePlugins: [rehypeSlug, [rehypeAutolinkHeadings, { behavior: 'wrap' }]]
 		})

@@ -224,8 +224,10 @@ export default defineConfig(({ command }) => {
 				},
 				kit: {
 					adapterFallback: 'index.html',
-					spa: true,
-					includeVersionFile: true
+					spa: {
+						fallbackRevision: () => Date.now().toString()
+					},
+					includeVersionFile: false
 				}
 			})
 		],

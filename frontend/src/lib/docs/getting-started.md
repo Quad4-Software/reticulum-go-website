@@ -82,7 +82,7 @@ task run
 go run ./cmd/reticulum-go
 ```
 
-On first start the daemon creates ~/.reticulum-go/ with a default config if none exists. Logs go to stderr by default. Set verbosity with [logging] loglevel (0 silent through 7 packets, default 4 info). Set [logging] destination = file|both and optional logfile to write to disk (default {config_dir}/logfile/reticulum.log). Daemon text logs, pageserver banner, and CLI tools color on TTY. Respect NO_COLOR and FORCE_COLOR / CLICOLOR_FORCE.
+On first start the daemon creates ~/.reticulum-go/ with a default config if none exists. Logs go to stderr by default. Set verbosity with [logging] loglevel (0 silent through 7 packets, default 4 info). Set [logging] destination = file|both and optional logfile to write to disk (default {'{'}config_dir{'}'}/logfile/reticulum.log). Daemon text logs, pageserver banner, and CLI tools color on TTY. Respect NO_COLOR and FORCE_COLOR / CLICOLOR_FORCE.
 
 Daemon flags:
 
@@ -226,7 +226,7 @@ control_api_host = 127.0.0.1
 control_api_port = 37430
 ```
 
-Generate a random 32-byte key and encode as hex. Clients send Authorization: Bearer <rpc_key>. See [Control API](/docs/control-api).
+Generate a random 32-byte key and encode as hex. Clients send Authorization: Bearer &lt;rpc_key&gt;. See [Control API](/docs/control-api).
 
 ## CLI utilities (status, identity, probe, path, copy, pageserver)
 

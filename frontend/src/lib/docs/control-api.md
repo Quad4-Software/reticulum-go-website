@@ -65,13 +65,13 @@ Requests without a valid bearer token are rejected.
 | GET    | /v1/status                                           | Interface statistics, including Go local integrity counters when present             |
 | GET    | /v1/paths                                            | Path table snapshot                                                                  |
 | POST   | /v1/sessions                                         | Create session (identity)                                                            |
-| DELETE | /v1/sessions/{id}                                    | Tear down session                                                                    |
-| POST   | /v1/sessions/{id}/destinations                       | Register destination                                                                 |
-| POST   | /v1/sessions/{id}/destinations/{hash}/announce       | Send announce                                                                        |
-| POST   | /v1/sessions/{id}/destinations/{hash}/requests       | Bridge request path to WebSocket                                                     |
-| DELETE | /v1/sessions/{id}/destinations/{hash}/requests?path= | Deregister request path                                                              |
-| POST   | /v1/sessions/{id}/path/request                       | Request path to destination. Response includes wait_s. Repeats inside 20s return 429 |
-| GET    | /v1/sessions/{id}/events                             | WebSocket event stream                                                               |
+| DELETE | /v1/sessions/{'{'}id{'}'}                                    | Tear down session                                                                    |
+| POST   | /v1/sessions/{'{'}id{'}'}/destinations                       | Register destination                                                                 |
+| POST   | /v1/sessions/{'{'}id{'}'}/destinations/{'{'}hash{'}'}/announce       | Send announce                                                                        |
+| POST   | /v1/sessions/{'{'}id{'}'}/destinations/{'{'}hash{'}'}/requests       | Bridge request path to WebSocket                                                     |
+| DELETE | /v1/sessions/{'{'}id{'}'}/destinations/{'{'}hash{'}'}/requests?path= | Deregister request path                                                              |
+| POST   | /v1/sessions/{'{'}id{'}'}/path/request                       | Request path to destination. Response includes wait_s. Repeats inside 20s return 429 |
+| GET    | /v1/sessions/{'{'}id{'}'}/events                             | WebSocket event stream                                                               |
 
 Lifecycle routes (Go node integration):
 
@@ -184,7 +184,7 @@ Use link.identify after the link is active. The peer receives link.remote_identi
 
 ## Requests via API
 
-Register a request path with POST .../destinations/{hash}/requests. Incoming requests appear as request.incoming. Respond with request.respond before the handler timeout.
+Register a request path with POST .../destinations/{'{'}hash{'}'}/requests. Incoming requests appear as request.incoming. Respond with request.respond before the handler timeout.
 
 Outbound: after link.established, send link.request. Completion arrives as request.response or request.failed.
 

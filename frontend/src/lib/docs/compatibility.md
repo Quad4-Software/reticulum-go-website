@@ -23,7 +23,7 @@ The detailed matrix with config key tables lives in [COMPATIBILITY.md](https://g
 | Channel                 | Complete     | Ghost-envelope fix, RX sequence ring, TX window and MDU gates. Tests in pkg/channel                                                 |
 | Buffer                  | Complete     | Stream buffer over channel                                                                                                          |
 | Interfaces              | Partial      | See below                                                                                                                           |
-| Discovery               | Complete     | Wire, listen, announcer, LXStamper, autoconnect for Backbone, TCP, and I2P when autoconnect_discovered_interfaces > 0               |
+| Discovery               | Complete     | Wire, listen, announcer, LXStamper, autoconnect for Backbone, TCP, and I2P when autoconnect_discovered_interfaces &gt; 0               |
 | Blackhole               | Complete     | Local table, announce drop, LINKIDENTIFY teardown, publish /list, sources updater                                                   |
 | Node lifecycle          | Go-only      | pkg/node embedder API, no Python equivalent                                                                                         |
 | librns C ABI            | Go-only      | pkg/librns, include/rns.h. See [librns](/docs/librns)                                                                               |
@@ -56,7 +56,7 @@ The detailed matrix with config key tables lives in [COMPATIBILITY.md](https://g
 
 UDP requires explicit target_host or target_address (Python forward_ip policy).
 
-Opt-in UDP reconnect when max_reconnect_tries > 0 is a Go extension.
+Opt-in UDP reconnect when max_reconnect_tries &gt; 0 is a Go extension.
 
 ## Python 1.2.x to 1.4.2 changes
 

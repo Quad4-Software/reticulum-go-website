@@ -195,8 +195,8 @@ microvm/ packages a static guest rootfs and a host vsock bridge for nested or is
 | Path table                             | storage/destination_table                                 | Optional RAM-only mode                                 |
 | Known destinations                     | storage/known_destinations                                | Writes and loads Python-compatible keys                |
 | Identities                             | storage/identities/                                       | Per-hash blobs                                         |
-| Known-peer ratchet public keys         | storage/ratchets/{destination_hash}                       | Python-compatible {ratchet, received}                  |
-| Local destination ratchet private keys | Path from EnableRatchets (pageserver: {destination_hash}) | Signed msgpack list, or RAM via EnableRatchetsInMemory |
+| Known-peer ratchet public keys         | storage/ratchets/{'{'}destination_hash{'}'}                       | Python-compatible {'{'}ratchet, received{'}'}                  |
+| Local destination ratchet private keys | Path from EnableRatchets (pageserver: {'{'}destination_hash{'}'}) | Signed msgpack list, or RAM via EnableRatchetsInMemory |
 | Blackhole table                        | storage/blackhole                                         | msgpack                                                |
 | Transport identity                     | storage/transport_identity                                | Used when transport enabled                            |
 

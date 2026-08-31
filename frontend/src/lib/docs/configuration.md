@@ -32,7 +32,7 @@ Override with --config on the daemon command line.
 
 Python uses ~/.reticulum or /etc/reticulum by default. Reticulum-Go uses a separate directory so both stacks can run on one host.
 
-storage/ratchets/ holds known-peer public keys named by destination hash (Python {ratchet, received} msgpack) and destination-private signed lists at the path EnableRatchets was given. Pageserver names that file by destination hash, same as Python LXMF. EnableRatchetsInMemory and in_memory_storage keep ratchet material in RAM.
+storage/ratchets/ holds known-peer public keys named by destination hash (Python {'{'}ratchet, received{'}'} msgpack) and destination-private signed lists at the path EnableRatchets was given. Pageserver names that file by destination hash, same as Python LXMF. EnableRatchetsInMemory and in_memory_storage keep ratchet material in RAM.
 
 ## File format
 
@@ -81,7 +81,7 @@ storage/ratchets/ holds known-peer public keys named by destination hash (Python
 | max_packet_handlers               | 512                          | HandlePacket worker count and queue depth. Overflow sheds under dos_protection                                                                         |
 | node_profile                      | default                      | Go-only overlay: default, core_router, or embedded. Fills unset knobs only. Explicit keys always win                                                   |
 | discover_interfaces               | no                           | Start rnstransport interface discovery listener                                                                                                        |
-| autoconnect_discovered_interfaces | 0                            | Max concurrent autoconnect peers from discovery (>0 enables)                                                                                           |
+| autoconnect_discovered_interfaces | 0                            | Max concurrent autoconnect peers from discovery (&gt;0 enables)                                                                                           |
 | autoconnect_interface_gravity     | (unset)                      | Gravity applied to autoconnected interfaces                                                                                                            |
 | autoconnect_interface_mode        | (unset)                      | Mode override for autoconnected interfaces                                                                                                             |
 | autoconnect_announces_to_internal | (unset)                      | announces_to_internal on autoconnect peers                                                                                                             |
@@ -127,7 +127,7 @@ Example (opt-in):
   dos_protection = auto
 ```
 
-Learning state is written as msgpack to {config_dir}/storage/dos_protect.mpack (atomic replace). Restarts restore armed baselines when the interface fingerprint still matches.
+Learning state is written as msgpack to {'{'}config_dir{'}'}/storage/dos_protect.mpack (atomic replace). Restarts restore armed baselines when the interface fingerprint still matches.
 
 Optional limits (zero or unset keeps built-in defaults):
 
@@ -182,7 +182,7 @@ local_hops_delta applies a random hop field (2-7) on locally originated hop-0 pa
 | ----------- | ------------------------------------------------------------------------------------- |
 | loglevel    | Yes (0 silent, 1 critical, 2 error, 3 warning, 4 info, 5 verbose, 6 trace, 7 packets) |
 | destination | Yes (stderr, file, both, syslog, journald, and combinations such as syslog+stderr)    |
-| logfile     | Yes (default {config_dir}/logfile/reticulum.log)                                      |
+| logfile     | Yes (default {'{'}config_dir{'}'}/logfile/reticulum.log)                                      |
 | format      | Yes (text or json)                                                                    |
 
 Default loglevel is 4 (info). That prints start/stop, interface up/down, and link established/closed. It does not print per-packet forwarding.
@@ -250,7 +250,7 @@ Each block defines one interface. Common keys:
 | long_poll_sec                    | HTTPS                                                        | Long-poll timeout seconds (default 25)                                                                          |
 | outgoing / selected_outgoing     | All                                                          | Transmit permit (default yes). When no, interface is receive-only                                               |
 
-Unknown type values load Go-native plugins from {config_dir}/interfaces/ (JSON manifest or executable pipe driver), or from interfaces.RegisterExternalFactory.
+Unknown type values load Go-native plugins from {'{'}config_dir{'}'}/interfaces/ (JSON manifest or executable pipe driver), or from interfaces.RegisterExternalFactory.
 
 ## Interface types
 
@@ -343,7 +343,7 @@ Reticulum writes HDLC-framed packets to the subprocess stdin and reads frames fr
 
 ## Example: shared-instance RPC for Go CLI tools
 
-On Linux, unset shared_instance_type uses abstract Unix sockets (@rns/<instance_name>/rpc), matching stock Python rnsd. Go utilities try that default first, then fall back to TCP when the type is unset.
+On Linux, unset shared_instance_type uses abstract Unix sockets (@rns/&lt;instance_name&gt;/rpc), matching stock Python rnsd. Go utilities try that default first, then fall back to TCP when the type is unset.
 
 ```bash
 make build

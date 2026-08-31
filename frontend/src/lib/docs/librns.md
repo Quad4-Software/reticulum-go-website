@@ -168,7 +168,7 @@ Authoritative names live in include/rns.h. Summary below.
 | Function                 | Notes                                                                                                  |
 | ------------------------ | ------------------------------------------------------------------------------------------------------ |
 | rns_path_request         | Requires started node and 16-byte dest hash                                                            |
-| rns_path_table           | Snapshot into caller array. max_hops < 0 means no filter                                               |
+| rns_path_table           | Snapshot into caller array. max_hops &lt; 0 means no filter                                               |
 | rns_link_open            | Outbound link. Waits a bitrate-sized path window, then handshake. Identity must be known from announce |
 | rns_link_send            | On established link                                                                                    |
 | rns_link_send_resource   | Transfer bytes as a link resource (optional rncp name)                                                 |
@@ -229,7 +229,7 @@ sh scripts/build-librns-targets.sh linux windows darwin android
 | Linux    | bin/librns.so                                                  |
 | Windows  | bin/windows/amd64/librns.dll                                   |
 | macOS    | bin/darwin/amd64/librns.dylib or bin/darwin/arm64/librns.dylib |
-| Android  | bin/android/<abi>/librns.so                                    |
+| Android  | bin/android/&lt;abi&gt;/librns.so                                    |
 
 Embedders should call rns_version() and compare to RNS_API_VERSION from the header they compiled against. Current ABI is **1.5**.
 
@@ -428,7 +428,7 @@ rns.nodeStart(node);
 | Platform | Output                       |
 | -------- | ---------------------------- |
 | Linux    | bin/librns.so                |
-| Android  | bin/android/<abi>/librns.so  |
+| Android  | bin/android/&lt;abi&gt;/librns.so  |
 | Windows  | bin/windows/amd64/librns.dll |
 
 ```bash

@@ -200,7 +200,7 @@ _ = n.OnNetworkAvailable()
 _ = n.RefreshPaths()    // re-request watched destinations
 ```
 
-Optional: n.EnableLinkAutoReconnect(node.LinkReconnectOptions{MaxAttempts: 5, Backoff: time.Second}) and n.RegisterLink(l).
+Optional: n.EnableLinkAutoReconnect(node.LinkReconnectOptions{'{'}MaxAttempts: 5, Backoff: time.Second{'}'}) and n.RegisterLink(l).
 
 ## Core types
 

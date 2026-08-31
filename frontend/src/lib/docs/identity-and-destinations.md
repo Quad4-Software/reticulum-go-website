@@ -114,8 +114,8 @@ Two kinds of material share the ratchet directory:
 
 | Kind                           | Path                                                                                | Contents                                              |
 | ------------------------------ | ----------------------------------------------------------------------------------- | ----------------------------------------------------- |
-| Local destination private keys | Path passed to EnableRatchets (pageserver uses storage/ratchets/{destination_hash}) | Signed msgpack list (signature + packed private keys) |
-| Known-peer public keys         | storage/ratchets/{destination_hash}                                                 | Python-compatible msgpack {ratchet, received}         |
+| Local destination private keys | Path passed to EnableRatchets (pageserver uses storage/ratchets/{'{'}destination_hash{'}'}) | Signed msgpack list (signature + packed private keys) |
+| Known-peer public keys         | storage/ratchets/{'{'}destination_hash{'}'}                                                 | Python-compatible msgpack {'{'}ratchet, received{'}'}         |
 
 EnableRatchetsInMemory keeps local private keys in RAM only. Known-peer public keys also stay in RAM when in_memory_storage or shared-instance client mode is on (Identity.RememberRatchet skips disk). Expired known-peer files are dropped after 30 days (RATCHET_EXPIRY). Clean skips destination-private signed files so they are not treated as peer records.
 
@@ -183,7 +183,7 @@ pkg/resolver resolves a human-readable full name string to a deterministic ident
 | -------------------------------------- | -------------------------------------------------------- |
 | Identity blobs                         | storage/identities/ (per hash in Go)                     |
 | Known destinations                     | storage/known_destinations/                              |
-| Known-peer ratchet public keys         | storage/ratchets/{destination_hash}                      |
+| Known-peer ratchet public keys         | storage/ratchets/{'{'}destination_hash{'}'}                      |
 | Local destination ratchet private keys | Path from EnableRatchets (often under storage/ratchets/) |
 
 Go writes identity files keyed by hash. Python may use per-name files. Go writes and loads Python-compatible known destination tables (16-byte keys) and still loads legacy Go hex-keyed files.
