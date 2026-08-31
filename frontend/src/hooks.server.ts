@@ -42,6 +42,15 @@ const SECURITY_HEADERS: Record<string, string> = {
 };
 
 export const handle: Handle = async ({ event, resolve }) => {
+	const path = event.url.pathname;
+	if (path === '/mirror/reticulum' || path.startsWith('/mirror/reticulum/')) {
+		const rest = path.slice('/mirror/reticulum'.length);
+		return new Response(null, {
+			status: 301,
+			headers: { Location: `/mirrors/reticulum${rest}${event.url.search}` }
+		});
+	}
+
 	const response = await resolve(event);
 	for (const [key, value] of Object.entries(SECURITY_HEADERS)) {
 		if (!response.headers.has(key)) {
