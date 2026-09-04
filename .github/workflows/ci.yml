@@ -29,14 +29,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - name: Harden runner
-        uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
-        with:
-          egress-policy: audit
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-          with:
-            persist-credentials: false
+        with:
+          persist-credentials: false
 
       - name: Setup Node.js
         run: sh scripts/ci/setup-node.sh "${CI_NODE_MAJOR}"
@@ -74,14 +70,10 @@ jobs:
     needs: [frontend]
     timeout-minutes: 30
     steps:
-      - name: Harden runner
-        uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
-        with:
-          egress-policy: audit
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-          with:
-            persist-credentials: false
+        with:
+          persist-credentials: false
 
       - name: Setup Node.js
         run: sh scripts/ci/setup-node.sh "${CI_NODE_MAJOR}"
@@ -104,14 +96,10 @@ jobs:
     needs: [build]
     timeout-minutes: 30
     steps:
-      - name: Harden runner
-        uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
-        with:
-          egress-policy: audit
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-          with:
-            persist-credentials: false
+        with:
+          persist-credentials: false
 
       - name: Build container image
         run: make docker-build
@@ -130,14 +118,10 @@ jobs:
           - target: frontend
             scan-ref: frontend
     steps:
-      - name: Harden runner
-        uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
-        with:
-          egress-policy: audit
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-          with:
-            persist-credentials: false
+        with:
+          persist-credentials: false
 
       - name: Filesystem scan
         uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
