@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { t } from 'svelte-i18n';
-	import { Shield } from 'lucide-svelte';
+	import { Shield } from '@lucide/svelte';
 	import { jsonLdScript, getPrivacyWebPageJsonLd } from '$lib/seo';
 </script>
 

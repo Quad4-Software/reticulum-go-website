@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { t } from 'svelte-i18n';
-	import { Copy, Check, ExternalLink, Download } from 'lucide-svelte';
+	import { Copy, Check, ExternalLink, Download } from '@lucide/svelte';
 	import Toast from '$lib/components/Toast.svelte';
 	import {
 		jsonLdScript,

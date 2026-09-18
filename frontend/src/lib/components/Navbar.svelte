@@ -3,7 +3,7 @@
 	import ThemeToggle from './ThemeToggle.svelte';
 	import { page } from '$app/state';
 	import { t, locale, locales } from 'svelte-i18n';
-	import { Languages, ChevronDown, Check, Menu, X, GitBranch } from 'lucide-svelte';
+	import { Languages, ChevronDown, Check, Menu, X, GitBranch } from '@lucide/svelte';
 	import { LOCALE_LABELS } from '$lib/site-config';
 
 	let { currentPath = '/', currentTheme = 'system' } = $props();

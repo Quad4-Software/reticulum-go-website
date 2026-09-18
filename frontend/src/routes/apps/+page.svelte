@@ -11,7 +11,7 @@
 		Store,
 		Layers,
 		Cpu
-	} from 'lucide-svelte';
+	} from '@lucide/svelte';
 	import { t } from 'svelte-i18n';
 
 	interface AppItem {

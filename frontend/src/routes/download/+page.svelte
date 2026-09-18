@@ -11,7 +11,7 @@
 		BookOpen,
 		Archive,
 		FlaskConical
-	} from 'lucide-svelte';
+	} from '@lucide/svelte';
 	import { RETICULUM_GO_GITHUB, RETICULUM_GO_SOURCE_ZIP_PATH } from '$lib/source-mirrors';
 	import {
 		RG_DOWNLOAD_SLOTS,

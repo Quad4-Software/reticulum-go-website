@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Monitor, Sun, Moon } from 'lucide-svelte';
+	import { Monitor, Sun, Moon } from '@lucide/svelte';
 	import { setTheme, type Theme } from '$lib/theme';
 
 	let { currentTheme = 'system', currentPath = '/' } = $props();

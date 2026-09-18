@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Bluetooth, FlaskConical, Network, Usb } from 'lucide-svelte';
+	import { Bluetooth, FlaskConical, Network, Usb } from '@lucide/svelte';
 	import { browser } from '$app/environment';
 	import { t } from 'svelte-i18n';
 	import {

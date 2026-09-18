@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Check, LoaderCircle } from 'lucide-svelte';
+	import { Check, LoaderCircle } from '@lucide/svelte';
 	import { t } from 'svelte-i18n';
 	import type { ProvisionResult } from '$lib/rnode-flasher';
 

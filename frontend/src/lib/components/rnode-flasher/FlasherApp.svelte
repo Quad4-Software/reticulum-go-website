@@ -8,7 +8,7 @@
 		LoaderCircle,
 		Radio,
 		Usb
-	} from 'lucide-svelte';
+	} from '@lucide/svelte';
 	import { onMount } from 'svelte';
 	import { t } from 'svelte-i18n';
 	import {

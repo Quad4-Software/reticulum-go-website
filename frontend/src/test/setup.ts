@@ -9,6 +9,9 @@ vi.mock('$app/navigation', () => ({
 	invalidate: vi.fn()
 }));
 
+URL.createObjectURL = vi.fn(() => 'blob:mock');
+URL.revokeObjectURL = vi.fn();
+
 if (typeof Element !== 'undefined' && !Element.prototype.animate) {
 	(Element.prototype as unknown as Record<string, unknown>).animate = vi.fn(() => ({
 		finish: vi.fn(),

@@ -17,7 +17,7 @@
 		Download,
 		Menu,
 		X
-	} from 'lucide-svelte';
+	} from '@lucide/svelte';
 	import { t, locale } from 'svelte-i18n';
 	import Search from '$lib/components/Search.svelte';
 	import { DOC_NAV } from '$lib/docs-config';

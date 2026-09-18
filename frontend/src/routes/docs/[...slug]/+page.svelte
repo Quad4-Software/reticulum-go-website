@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { locale, t } from 'svelte-i18n';
-	import { FileCode, FileType } from 'lucide-svelte';
+	import { FileCode, FileType } from '@lucide/svelte';
 	import { mount, tick, unmount } from 'svelte';
 	import { exportDoc } from '$lib/docs-service';
 	import { page } from '$app/state';

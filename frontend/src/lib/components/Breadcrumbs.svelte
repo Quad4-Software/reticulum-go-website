@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ChevronRight } from 'lucide-svelte';
+	import { ChevronRight } from '@lucide/svelte';
 	import { SITE_URL } from '$lib/site-config';
 	import { jsonLdScript } from '$lib/seo';
 

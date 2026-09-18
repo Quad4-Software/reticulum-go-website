@@ -37,7 +37,7 @@ describe('rnode flasher regressions', () => {
 				expect(src).toContain('/browser-icons/');
 				expect(src).toContain('IconCascade');
 			} else {
-				expect(src).toMatch(/lucide-svelte/);
+				expect(src).toMatch(/@lucide\/svelte/);
 			}
 		}
 		const cascade = readFileSync(resolve(root, 'lib/components/IconCascade.svelte'), 'utf8');

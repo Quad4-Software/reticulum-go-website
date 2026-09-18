@@ -16,7 +16,7 @@
 		BookOpen,
 		Layout,
 		ChevronRight
-	} from 'lucide-svelte';
+	} from '@lucide/svelte';
 	import {
 		REN_BROWSER_DOCKER,
 		REN_BROWSER_DOCS,

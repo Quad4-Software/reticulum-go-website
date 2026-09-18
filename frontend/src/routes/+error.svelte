@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { Home, BookOpen, Cpu, Mail, Globe } from 'lucide-svelte';
+	import { Home, BookOpen, Cpu, Mail, Globe } from '@lucide/svelte';
 
 	const navLinks = [
 		{ href: '/', label: 'Home', icon: Home },

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { AlertTriangle, Bluetooth, Network, Usb } from 'lucide-svelte';
+	import { AlertTriangle, Bluetooth, Network, Usb } from '@lucide/svelte';
 	import { browser } from '$app/environment';
 	import { onMount } from 'svelte';
 	import { t } from 'svelte-i18n';

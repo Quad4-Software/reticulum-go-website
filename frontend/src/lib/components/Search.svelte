@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Search as SearchIcon, FileText } from 'lucide-svelte';
+	import { Search as SearchIcon, FileText } from '@lucide/svelte';
 	import Fuse, { type FuseResultMatch } from 'fuse.js';
 	import { locale } from 'svelte-i18n';
 	import { marked } from 'marked';

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ArrowLeft, ExternalLink } from 'lucide-svelte';
+	import { ArrowLeft, ExternalLink } from '@lucide/svelte';
 	import { t } from 'svelte-i18n';
 	import { page } from '$app/state';
 	import MicronEditor from '$lib/components/MicronEditor.svelte';

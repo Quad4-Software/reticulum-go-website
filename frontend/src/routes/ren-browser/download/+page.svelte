@@ -10,7 +10,7 @@
 		ChevronRight,
 		Server,
 		Container
-	} from 'lucide-svelte';
+	} from '@lucide/svelte';
 	import {
 		DOWNLOAD_SLOTS,
 		REN_BROWSER_REPO,

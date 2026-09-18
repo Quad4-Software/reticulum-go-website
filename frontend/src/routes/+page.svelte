@@ -10,7 +10,7 @@
 		ShieldCheck,
 		Boxes,
 		Download
-	} from 'lucide-svelte';
+	} from '@lucide/svelte';
 	import { getRepoUpdatedAt, calculateTimeAgo } from '$lib/version';
 	import SupportedPlatforms from '$lib/components/SupportedPlatforms.svelte';
 

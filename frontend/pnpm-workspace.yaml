@@ -4,7 +4,7 @@ overrides:
   minimatch: '>=10.2.1'
   serialize-javascript: '>=7.0.3'
   tmp: '>=0.2.4'
-  fast-uri: '>=4.1.2'
+  fast-uri: '>=4.1.3'
   '@babel/core': '>=7.29.1 <8'
   '@babel/plugin-transform-modules-systemjs': '>=7.29.4 <8'
   uuid: '>=11.1.1'
@@ -28,7 +28,8 @@ minimumReleaseAgeExclude:
   - dompurify@3.4.13
   - typescript-eslint@8.66.0
 
-# extract-zip advisory cites 2.0.2 but npm still only has 2.0.1 (dev-only via @lhci/cli)
+# extract-zip advisories cite 2.0.2 but npm still only has 2.0.1 (dev-only via @lhci/cli)
 auditConfig:
   ignoreGhsas:
     - GHSA-jmr9-qjv8-65gv
+    - GHSA-7pqw-9j4j-h8q3

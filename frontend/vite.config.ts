@@ -88,8 +88,7 @@ export default defineConfig(({ command }) => {
 			fileParallelism: false,
 			include: ['src/**/*.{test,spec}.{js,ts,svelte}'],
 			benchmark: {
-				include: ['src/**/*.bench.ts'],
-				environment: 'node'
+				include: ['src/**/*.bench.ts']
 			},
 			coverage: {
 				provider: 'v8',

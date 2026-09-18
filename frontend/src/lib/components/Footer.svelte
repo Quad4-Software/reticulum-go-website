@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { getRepoInfo, calculateTimeAgo } from '$lib/version';
 	import { t } from 'svelte-i18n';
-	import { Rss } from 'lucide-svelte';
+	import { Rss } from '@lucide/svelte';
 	import { env } from '$env/dynamic/public';
 
 	const showCoolify = env.PUBLIC_SHOW_COOLIFY === 'true';

@@ -17,7 +17,7 @@
 		Type,
 		Undo2,
 		X
-	} from 'lucide-svelte';
+	} from '@lucide/svelte';
 	import { t } from 'svelte-i18n';
 	import { ensureMicronParser, convertMicron, clearMicronParserLoad } from '$lib/micron-parser';
 	import {

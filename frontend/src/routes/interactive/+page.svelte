@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Search as SearchIcon, Code, FileCode, ExternalLink, Radio } from 'lucide-svelte';
+	import { Search as SearchIcon, Code, FileCode, ExternalLink, Radio } from '@lucide/svelte';
 	import { t } from 'svelte-i18n';
 
 	interface InteractiveItem {

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { t } from 'svelte-i18n';
-	import { Copy, Check, ExternalLink } from 'lucide-svelte';
+	import { Copy, Check, ExternalLink } from '@lucide/svelte';
 	import Toast from '$lib/components/Toast.svelte';
 
 	const LXMF = 'f489752fbef161c64d65e385a4e9fc74';
