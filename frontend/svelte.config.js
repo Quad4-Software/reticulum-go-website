@@ -5,6 +5,7 @@ import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import { DOC_SLUGS } from './src/lib/docs-config.ts';
 import { highlight } from './mdsvex-highlight.js';
+import { escapeProse } from './mdsvex-escape.js';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -15,6 +16,7 @@ const config = {
 			extensions: ['.mdx', '.md'],
 			smartypants: false,
 			highlight: { highlighter: highlight },
+			remarkPlugins: [escapeProse],
 			rehypePlugins: [rehypeSlug, [rehypeAutolinkHeadings, { behavior: 'wrap' }]]
 		})
 	],
