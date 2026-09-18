@@ -12,3 +12,5 @@ data:
 javascript:
 # Apex org site is currently returning 503 from CI probes (reticulum-go.quad4.io still checked).
 https://quad4.io
+# Quad4 pacman repo for Arch is referenced in docs before the repo goes public.
+github.com/Quad4-Software/quad4-arch
