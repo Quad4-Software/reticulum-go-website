@@ -26,7 +26,7 @@ const config = {
 			precompress: false
 		}),
 		prerender: {
-			entries: [],
+			entries: ['*'],
 			handleUnseenRoutes: ({ routes, path }) => {
 				const values = [
 					...(Array.isArray(routes) ? routes : []),
