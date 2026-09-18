@@ -4,6 +4,7 @@ import { mdsvex } from 'mdsvex';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import { highlight } from './mdsvex-highlight.js';
+import { escapeProse } from './mdsvex-escape.js';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -14,6 +15,7 @@ const config = {
 			extensions: ['.mdx', '.md'],
 			smartypants: false,
 			highlight: { highlighter: highlight },
+			remarkPlugins: [escapeProse],
 			rehypePlugins: [rehypeSlug, [rehypeAutolinkHeadings, { behavior: 'wrap' }]]
 		})
 	],
