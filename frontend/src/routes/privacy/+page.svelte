@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { t } from 'svelte-i18n';
 	import { Shield } from '@lucide/svelte';
-	import { jsonLdScript, getPrivacyWebPageJsonLd } from '$lib/seo';
+	import { jsonLdScript, getPrivacyWebPageJsonLd, OG_IMAGE_URL } from '$lib/seo';
 </script>
 
 <svelte:head>
@@ -11,7 +11,7 @@
 	<meta property="og:url" content="https://reticulum-go.quad4.io/privacy" />
 	<meta property="og:title" content="{$t('privacy.title')} | Reticulum-Go" />
 	<meta property="og:description" content={$t('privacy.meta_description')} />
-	<meta property="og:image" content="https://reticulum-go.quad4.io/logo.svg" />
+	<meta property="og:image" content={OG_IMAGE_URL} />
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:title" content="{$t('privacy.title')} | Reticulum-Go" />
 	<meta name="twitter:description" content={$t('privacy.meta_description')} />

@@ -42,6 +42,8 @@
 
 <svelte:head>
 	<link rel="canonical" href={canonicalUrl} />
+	<meta property="og:url" content={canonicalUrl} />
+	<meta name="twitter:url" content={canonicalUrl} />
 	{#each hreflangLinks as link (link.lang)}
 		<link rel="alternate" hreflang={link.lang} href={link.href} />
 	{/each}

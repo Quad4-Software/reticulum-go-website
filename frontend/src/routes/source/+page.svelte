@@ -6,7 +6,8 @@
 		jsonLdScript,
 		getSourceWebPageJsonLd,
 		getBreadcrumbJsonLd,
-		getCanonicalUrl
+		getCanonicalUrl,
+		OG_IMAGE_URL
 	} from '$lib/seo';
 	import {
 		RETICULUM_GO_GITHUB,
@@ -60,7 +61,7 @@
 	<meta property="og:url" content="https://reticulum-go.quad4.io/source" />
 	<meta property="og:title" content="{$t('source.title')} | Reticulum-Go" />
 	<meta property="og:description" content={$t('source.meta_description')} />
-	<meta property="og:image" content="https://reticulum-go.quad4.io/logo.svg" />
+	<meta property="og:image" content={OG_IMAGE_URL} />
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:title" content="{$t('source.title')} | Reticulum-Go" />
 	<meta name="twitter:description" content={$t('source.meta_description')} />

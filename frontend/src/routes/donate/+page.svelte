@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { t } from 'svelte-i18n';
 	import Toast from '$lib/components/Toast.svelte';
-	import { jsonLdScript, getDonateWebPageJsonLd, RETICULUM_SITE } from '$lib/seo';
+	import { jsonLdScript, getDonateWebPageJsonLd, RETICULUM_SITE, OG_IMAGE_URL } from '$lib/seo';
 
 	const BMC = 'https://buymeacoffee.com/quad4';
 	const LIBERAPAY = 'https://liberapay.com/Quad4/';
@@ -46,7 +46,7 @@
 	<meta property="og:url" content="https://reticulum-go.quad4.io/donate" />
 	<meta property="og:title" content="{$t('donate.title')} | Reticulum-Go" />
 	<meta property="og:description" content={$t('donate.meta_description')} />
-	<meta property="og:image" content="https://reticulum-go.quad4.io/logo.svg" />
+	<meta property="og:image" content={OG_IMAGE_URL} />
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:title" content="{$t('donate.title')} | Reticulum-Go" />
 	<meta name="twitter:description" content={$t('donate.meta_description')} />

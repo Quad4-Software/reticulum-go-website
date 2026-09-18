@@ -26,7 +26,7 @@ describe('Footer', () => {
 	it('renders static columns and license', () => {
 		render(Footer);
 		expect(screen.getByText('Reticulum-Go')).toBeTruthy();
-		expect(screen.getByText(/Implementation License: Apache-2\.0/)).toBeTruthy();
+		expect(screen.getByText(/Implementation License: Reticulum License/)).toBeTruthy();
 		expect(screen.getByRole('heading', { name: 'Links' })).toBeTruthy();
 		expect(screen.getByRole('link', { name: 'Home' }).getAttribute('href')).toBe('/');
 		expect(screen.getByRole('link', { name: 'Source Code' }).getAttribute('href')).toBe('/source');

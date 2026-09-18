@@ -7,8 +7,7 @@
 	import Breadcrumbs from '$lib/components/Breadcrumbs.svelte';
 	import DocMeta from '$lib/components/DocMeta.svelte';
 	import { findDocMetaTable, parseDocMetaTable } from '$lib/doc-meta';
-	import { getCanonicalUrl } from '$lib/seo';
-	import { SITE_URL } from '$lib/site-config';
+	import { getCanonicalUrl, getBreadcrumbJsonLd, jsonLdScript, OG_IMAGE_URL } from '$lib/seo';
 
 	let { data } = $props();
 
@@ -37,6 +36,15 @@
 		{ label: 'Docs', href: '/docs' },
 		{ label: docTitle }
 	]);
+
+	const breadcrumbLd = $derived(
+		getBreadcrumbJsonLd(
+			breadcrumbItems.map((item) => ({
+				name: item.label,
+				url: item.href ? getCanonicalUrl(item.href) : pageUrl
+			}))
+		)
+	);
 
 	let proseEl: HTMLElement | undefined = $state();
 
@@ -89,12 +97,13 @@
 	<meta property="og:url" content={pageUrl} />
 	<meta property="og:title" content={`${docTitle} | Reticulum-Go Documentation`} />
 	<meta property="og:description" content={docDescription} />
-	<meta property="og:image" content={`${SITE_URL}/logo.svg`} />
+	<meta property="og:image" content={OG_IMAGE_URL} />
 	<meta property="twitter:card" content="summary_large_image" />
 	<meta property="twitter:url" content={pageUrl} />
 	<meta property="twitter:title" content={`${docTitle} | Reticulum-Go Documentation`} />
 	<meta property="twitter:description" content={docDescription} />
-	<meta property="twitter:image" content={`${SITE_URL}/logo.svg`} />
+	<meta property="twitter:image" content={OG_IMAGE_URL} />
+	{@html jsonLdScript(breadcrumbLd)}
 </svelte:head>
 
 <div class="flex flex-col gap-6">

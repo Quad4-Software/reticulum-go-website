@@ -77,7 +77,7 @@ describe('seo', () => {
 		expect(parsed.isBasedOn.url).toBe(RETICULUM_SITE);
 		expect(parsed.isBasedOn.author.name).toBe('Mark Qvist');
 		expect(parsed.sameAs).toContain(RETICULUM_SITE);
-		expect(parsed.license).toContain('LICENSE-2.0');
+		expect(parsed.license).toBe('https://reticulum.network/manual/license.html');
 	});
 
 	it('donate JSON-LD mentions the Mark Qvist share', () => {

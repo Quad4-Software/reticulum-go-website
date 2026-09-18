@@ -48,61 +48,61 @@ pnpm audit
 
 The project uses a root `Makefile` for common tasks. Run `make help` to list targets.
 
-| Target           | Description                          |
-|------------------|--------------------------------------|
-| `install`        | `pnpm install` in `frontend/`        |
-| `dev`            | Vite dev server                      |
-| `frontend-build` | Production build                     |
-| `validate`       | format, lint, check, test, audit     |
-| `format`         | Prettier                             |
-| `lint`           | ESLint                               |
-| `check`          | `svelte-check` / TypeScript          |
-| `test`           | Vitest (unit and route tests)        |
-| `audit`          | `pnpm audit`                         |
-| `update`         | `pnpm update`                        |
-| `update-latest`  | `pnpm update --latest`               |
-| `outdated`       | `pnpm outdated`                      |
-| `clean`          | Remove `frontend/build`              |
-| `docker-build`   | Build container image                |
-| `docker-run`     | Run container on port 3000           |
-| `docs-sync`      | Sync English docs from Reticulum-Go (`scripts/sync-docs.sh`) |
-| `check-docs`     | Validate docs nav, files, and internal links |
-| `docs-zip`       | Zip English docs into `releases/docs-en.zip` |
-| `docs-release`   | Same as docs workflow prep (see below) |
-| `locale-template`| New UI locale file (see below)       |
-| `update-micron-wasm` | Fetch latest Micron-Parser-Go WASM + refresh SHA-384 SRI |
-| `check-links`    | Probe external URLs (see Testing)    |
-| `bench`          | Vitest micro-benchmarks (see below)   |
-| `bundle-budget`  | Size limits on `frontend/build`       |
+| Target               | Description                                                  |
+| -------------------- | ------------------------------------------------------------ |
+| `install`            | `pnpm install` in `frontend/`                                |
+| `dev`                | Vite dev server                                              |
+| `frontend-build`     | Production build                                             |
+| `validate`           | format, lint, check, test, audit                             |
+| `format`             | Prettier                                                     |
+| `lint`               | ESLint                                                       |
+| `check`              | `svelte-check` / TypeScript                                  |
+| `test`               | Vitest (unit and route tests)                                |
+| `audit`              | `pnpm audit`                                                 |
+| `update`             | `pnpm update`                                                |
+| `update-latest`      | `pnpm update --latest`                                       |
+| `outdated`           | `pnpm outdated`                                              |
+| `clean`              | Remove `frontend/build`                                      |
+| `docker-build`       | Build container image                                        |
+| `docker-run`         | Run container on port 3000                                   |
+| `docs-sync`          | Sync English docs from Reticulum-Go (`scripts/sync-docs.sh`) |
+| `check-docs`         | Validate docs nav, files, and internal links                 |
+| `docs-zip`           | Zip English docs into `releases/docs-en.zip`                 |
+| `docs-release`       | Same as docs workflow prep (see below)                       |
+| `locale-template`    | New UI locale file (see below)                               |
+| `update-micron-wasm` | Fetch latest Micron-Parser-Go WASM + refresh SHA-384 SRI     |
+| `check-links`        | Probe external URLs (see Testing)                            |
+| `bench`              | Vitest micro-benchmarks (see below)                          |
+| `bundle-budget`      | Size limits on `frontend/build`                              |
 
 ### Task (optional)
 
 [Task](https://taskfile.dev/) v3 wraps documentation workflows:
 
-| Task | Description |
-|------|-------------|
-| `task format` | Prettier write in `frontend/` |
-| `task lint` | ESLint in `frontend/` |
-| `task check` | `svelte-check` / TypeScript |
-| `task test` | Vitest |
-| `task validate` | format, lint, check, test |
-| `task docs:check` | Validate docs nav, files, and internal `/docs/` links |
-| `task docs:sync` | Sync English docs from a Reticulum-Go checkout |
-| `task docs` | Sync then validate |
-| `task docs:zip` | Package `releases/docs-en.zip` |
-| `task docs:release` | Release metadata + docs zip (CI) |
-| `task wasm:micron` | Fetch latest Micron-Parser-Go WASM and refresh SHA-384 SRI |
-| `task dev` | Frontend Vite dev server |
+| Task                | Description                                                |
+| ------------------- | ---------------------------------------------------------- |
+| `task format`       | Prettier write in `frontend/`                              |
+| `task lint`         | ESLint in `frontend/`                                      |
+| `task check`        | `svelte-check` / TypeScript                                |
+| `task test`         | Vitest                                                     |
+| `task validate`     | format, lint, check, test                                  |
+| `task docs:check`   | Validate docs nav, files, and internal `/docs/` links      |
+| `task docs:sync`    | Sync English docs from a Reticulum-Go checkout             |
+| `task docs`         | Sync then validate                                         |
+| `task docs:zip`     | Package `releases/docs-en.zip`                             |
+| `task docs:release` | Release metadata + docs zip (CI)                           |
+| `task wasm:micron`  | Fetch latest Micron-Parser-Go WASM and refresh SHA-384 SRI |
+| `task dev`          | Frontend Vite dev server                                   |
 
 ### CI and release automation
 
 Workflows live under `.github/workflows/`:
 
-| Workflow | Triggers | Jobs |
-|----------|----------|------|
-| **CI** | push, PR, weekly schedule, manual | Frontend quality (lint, check, test, bench, audit, links), production build + bundle budget, Docker image build, Trivy on `master`/schedule |
-| **Release Docs** | version tags | Docs zip attached to GitHub release |
-| **Release with SBOM** | version tags | CycloneDX SBOM attached to GitHub release |
+| Workflow              | Triggers                          | Jobs                                                                                                                                        |
+| --------------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| **CI**                | push, PR, weekly schedule, manual | Frontend quality (lint, check, test, bench, audit, links), production build + bundle budget, Docker image build, Trivy on `master`/schedule |
+| **Release Docs**      | version tags                      | Docs zip attached to GitHub release                                                                                                         |
+| **Release with SBOM** | version tags                      | CycloneDX SBOM attached to GitHub release                                                                                                   |
 
 Actions are pinned to full commit SHAs (see the header comment in each workflow). Toolchain setup uses POSIX shell under `scripts/ci/`:
 
@@ -172,4 +172,4 @@ Edit the corresponding `frontend/src/lib/i18n/locales/<code>.json`. When English
 
 This website is licensed under the [Reticulum License](LICENSE).
 
-The [Reticulum-Go](https://github.com/Quad4-Software/Reticulum-Go) implementation is licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
+The [Reticulum-Go](https://github.com/Quad4-Software/Reticulum-Go) implementation is licensed under the [Reticulum License](https://github.com/Quad4-Software/Reticulum-Go/blob/master/LICENSE).

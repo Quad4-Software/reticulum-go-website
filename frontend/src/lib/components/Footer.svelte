@@ -50,7 +50,7 @@
 			</p>
 			<div class="flex flex-col gap-1">
 				<div class="flex items-center gap-3">
-					<p class="text-xs text-zinc-400">Implementation License: Apache-2.0</p>
+					<p class="text-xs text-zinc-400">Implementation License: Reticulum License</p>
 					{#if latestTag}
 						<span class="text-zinc-300 dark:text-zinc-700">•</span>
 						<a

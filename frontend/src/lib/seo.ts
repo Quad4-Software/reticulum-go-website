@@ -7,7 +7,10 @@ const JSON_LD_TYPE = 'application/ld+json';
 export const RETICULUM_SITE = 'https://reticulum.network';
 export const RETICULUM_GO_REPO = RETICULUM_GO_GITHUB;
 export const QUAD4_SITE = 'https://quad4.io';
-export const APACHE_2_LICENSE = 'https://www.apache.org/licenses/LICENSE-2.0';
+export const RETICULUM_GO_LICENSE = 'https://reticulum.network/manual/license.html';
+export const OG_IMAGE_PATH = '/og-image.png';
+export const OG_IMAGE_URL = `${SITE_URL}${OG_IMAGE_PATH}`;
+export const ICON_512_URL = `${SITE_URL}/icon-512.png`;
 
 export function jsonLdScript(json: string): string {
 	return `<script type="${JSON_LD_TYPE}">${escapeJsonForScript(json)}</script>`;
@@ -28,7 +31,7 @@ export function getOrganizationJsonLd(): string {
 	return buildJsonLd('Organization', {
 		name: 'Quad4',
 		url: QUAD4_SITE,
-		logo: `${SITE_URL}/logo.svg`,
+		logo: ICON_512_URL,
 		sameAs: [QUAD4_SITE, 'https://github.com/Quad4-Software'],
 		contactPoint: [
 			{
@@ -52,10 +55,10 @@ export function getSoftwareApplicationJsonLd(): string {
 		name: SITE_NAME,
 		description: SITE_DESCRIPTION,
 		url: SITE_URL,
-		image: `${SITE_URL}/logo.svg`,
+		image: OG_IMAGE_URL,
 		applicationCategory: 'DeveloperApplication',
 		operatingSystem: 'Web, Linux, macOS, Windows, BSD',
-		license: APACHE_2_LICENSE,
+		license: RETICULUM_GO_LICENSE,
 		codeRepository: RETICULUM_GO_REPO,
 		downloadUrl: `${SITE_URL}${RETICULUM_GO_SOURCE_ZIP_PATH}`,
 		isBasedOn: {
