@@ -8,10 +8,10 @@ Implementation: pkg/identity with primitives from pkg/cryptography.
 
 ### Key material
 
-| Component             | Size     | Purpose                |
-| --------------------- | -------- | ---------------------- |
+| Component | Size | Purpose |
+|-----------|------|---------|
 | X25519 private scalar | 32 bytes | ECDH, identity encrypt |
-| Ed25519 seed          | 32 bytes | Signing                |
+| Ed25519 seed | 32 bytes | Signing |
 
 Together these form the 512-bit keyset described in Reticulum documentation.
 
@@ -45,11 +45,11 @@ id, err := identity.LoadIdentityFile(path, nil)
 
 Config key identity_backend in [reticulum]:
 
-| Value          | Behavior                                                                                                                       |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| file (default) | 64-byte plaintext identity files                                                                                               |
-| secretservice  | Freedesktop Secret Service over D-Bus (GNOME Keyring, KDE Wallet Secret Service bridge, KeePassXC with Secret Service enabled) |
-| keyring        | Linux kernel keyring (user keyring, no D-Bus). Suitable for headless systemd user or system units                              |
+| Value | Behavior |
+|-------|----------|
+| file (default) | 64-byte plaintext identity files |
+| secretservice | Freedesktop Secret Service over D-Bus (GNOME Keyring, KDE Wallet Secret Service bridge, KeePassXC with Secret Service enabled) |
+| keyring | Linux kernel keyring (user keyring, no D-Bus). Suitable for headless systemd user or system units |
 
 With secretservice or keyring, ToFile stores the private blob in the backend and writes an 8-byte RSSI marker at the usual path. FromFile and LoadIdentityFile detect the marker and fetch the secret. If the backend is unavailable, persistence fails with a clear error (no silent plaintext fallback).
 
@@ -71,12 +71,12 @@ Long-term X25519 and Ed25519 material lives in pkg/securemem buffers with best-e
 
 ### What this protects against
 
-| Control                                                    | Helps against                                                                                                                                                                                                                                                 | Does not stop                                                                                                                                   |
-| ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| identity_backend = secretservice                           | Casual theft of the identity file path (backup copies, world-readable home dirs, malware that only reads ~/.reticulum-go/storage). Keyring unlock policies and KeePassXC master password raise the bar for offline disk images when the collection is locked. | Root or same-user malware that can talk to an unlocked Secret Service session. Compelled unlock. Physical access while the keyring is unlocked. |
-| identity_backend = keyring                                 | Same file-path theft cases without requiring D-Bus. Fits systemd units that have a user keyring.                                                                                                                                                              | Root or same-UID processes that can call keyctl. Keys may not survive reboot if persistent keyring is unavailable.                              |
-| pkg/securemem mlock + wipe                                 | Keys lingering in swap after process exit, casual core dumps of freed heap (with RLIMIT_CORE=0 in the sandbox), accidental retention after Close.                                                                                                             | Live process memory inspection by root or a debugger attached to the running daemon. Full cold-boot attacks on RAM.                             |
-| File permissions 0600 + encrypted disk (operator practice) | Other local users reading plaintext identity files. Disk theft when FDE is used and the volume is locked.                                                                                                                                                     | Attacks after the volume is unlocked and mounted.                                                                                               |
+| Control | Helps against | Does not stop |
+|---------|---------------|---------------|
+| identity_backend = secretservice | Casual theft of the identity file path (backup copies, world-readable home dirs, malware that only reads ~/.reticulum-go/storage). Keyring unlock policies and KeePassXC master password raise the bar for offline disk images when the collection is locked. | Root or same-user malware that can talk to an unlocked Secret Service session. Compelled unlock. Physical access while the keyring is unlocked. |
+| identity_backend = keyring | Same file-path theft cases without requiring D-Bus. Fits systemd units that have a user keyring. | Root or same-UID processes that can call keyctl. Keys may not survive reboot if persistent keyring is unavailable. |
+| pkg/securemem mlock + wipe | Keys lingering in swap after process exit, casual core dumps of freed heap (with RLIMIT_CORE=0 in the sandbox), accidental retention after Close. | Live process memory inspection by root or a debugger attached to the running daemon. Full cold-boot attacks on RAM. |
+| File permissions 0600 + encrypted disk (operator practice) | Other local users reading plaintext identity files. Disk theft when FDE is used and the volume is locked. | Attacks after the volume is unlocked and mounted. |
 
 None of these replace HSM-backed signing (RHB1 / NewIdentityWithSigner) for high-assurance signing material, or host firewall and sandbox policy for network exposure.
 
@@ -84,11 +84,11 @@ None of these replace HSM-backed signing (RHB1 / NewIdentityWithSigner) for high
 
 Reticulum-Go supports a 72-byte hardware-bound layout:
 
-| Field          | Size     |
-| -------------- | -------- |
-| Magic RHB1     | 4 bytes  |
-| Version        | 1 byte   |
-| Reserved       | 3 bytes  |
+| Field | Size |
+|-------|------|
+| Magic RHB1 | 4 bytes |
+| Version | 1 byte |
+| Reserved | 3 bytes |
 | X25519 private | 32 bytes |
 | Ed25519 public | 32 bytes |
 
@@ -112,10 +112,10 @@ When enabled, the destination rotates X25519 ratchet keys and puts the current 3
 
 Two kinds of material share the ratchet directory:
 
-| Kind                           | Path                                                                                | Contents                                              |
-| ------------------------------ | ----------------------------------------------------------------------------------- | ----------------------------------------------------- |
-| Local destination private keys | Path passed to EnableRatchets (pageserver uses storage/ratchets/{'{'}destination_hash{'}'}) | Signed msgpack list (signature + packed private keys) |
-| Known-peer public keys         | storage/ratchets/{'{'}destination_hash{'}'}                                                 | Python-compatible msgpack {'{'}ratchet, received{'}'}         |
+| Kind | Path | Contents |
+|------|------|----------|
+| Local destination private keys | Path passed to EnableRatchets (pageserver uses storage/ratchets/{destination_hash}) | Signed msgpack list (signature + packed private keys) |
+| Known-peer public keys | storage/ratchets/{destination_hash} | Python-compatible msgpack {ratchet, received} |
 
 EnableRatchetsInMemory keeps local private keys in RAM only. Known-peer public keys also stay in RAM when in_memory_storage or shared-instance client mode is on (Identity.RememberRatchet skips disk). Expired known-peer files are dropped after 30 days (RATCHET_EXPIRY). Clean skips destination-private signed files so they are not treated as peer records.
 
@@ -129,12 +129,12 @@ A destination is an application endpoint on the network. Implementation: pkg/des
 
 ### Destination types
 
-| Type   | Constant | Use                                                     |
-| ------ | -------- | ------------------------------------------------------- |
-| Single | SINGLE   | One-to-one application endpoint                         |
-| Group  | GROUP    | Shared-key messaging (Token PSK, not identity ratchets) |
-| Plain  | PLAIN    | Unencrypted endpoint (rare)                             |
-| Link   | LINK     | Link-mode endpoint                                      |
+| Type | Constant | Use |
+|------|----------|-----|
+| Single | SINGLE | One-to-one application endpoint |
+| Group | GROUP | Shared-key messaging (Token PSK, not identity ratchets) |
+| Plain | PLAIN | Unencrypted endpoint (rare) |
+| Link | LINK | Link-mode endpoint |
 
 ### Destination hash
 
@@ -179,11 +179,11 @@ pkg/resolver resolves a human-readable full name string to a deterministic ident
 
 ## Storage layout
 
-| Artifact                               | Path                                                     |
-| -------------------------------------- | -------------------------------------------------------- |
-| Identity blobs                         | storage/identities/ (per hash in Go)                     |
-| Known destinations                     | storage/known_destinations/                              |
-| Known-peer ratchet public keys         | storage/ratchets/{'{'}destination_hash{'}'}                      |
+| Artifact | Path |
+|----------|------|
+| Identity blobs | storage/identities/ (per hash in Go) |
+| Known destinations | storage/known_destinations/ |
+| Known-peer ratchet public keys | storage/ratchets/{destination_hash} |
 | Local destination ratchet private keys | Path from EnableRatchets (often under storage/ratchets/) |
 
 Go writes identity files keyed by hash. Python may use per-name files. Go writes and loads Python-compatible known destination tables (16-byte keys) and still loads legacy Go hex-keyed files.

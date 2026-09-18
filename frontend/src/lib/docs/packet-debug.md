@@ -60,14 +60,14 @@ JSON includes interface stats, path table rows, active link count, and transport
 
 New health kinds (also under each interface in interface_stats):
 
-| Name                     | Meaning                                             |
-| ------------------------ | --------------------------------------------------- |
-| announce_dup             | Duplicate announce ignored within TTL               |
-| path_resp_suppressed     | PATH_RESPONSE skipped because next hop is requestor |
-| path_req_dup             | Duplicate path request tag ignored                  |
-| path_req_no_cache        | Known path but no cached announce to answer with    |
-| path_resp_queued_skip    | PATH_RESPONSE already queued for same iface         |
-| link_relay_unknown_iface | Link relay dropped for unknown source iface         |
+| Name | Meaning |
+|------|---------|
+| announce_dup | Duplicate announce ignored within TTL |
+| path_resp_suppressed | PATH_RESPONSE skipped because next hop is requestor |
+| path_req_dup | Duplicate path request tag ignored |
+| path_req_no_cache | Known path but no cached announce to answer with |
+| path_resp_queued_skip | PATH_RESPONSE already queued for same iface |
+| link_relay_unknown_iface | Link relay dropped for unknown source iface |
 
 Exposed in rgosnap as health and per-interface fields on rgostatus -json.
 

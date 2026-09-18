@@ -1,7 +1,5 @@
 # Architecture
 
-## Scope
-
 This page explains how Reticulum-Go is structured, describing layers, control flow, persistence, and deployment patterns.
 
 For package-level detail see [Package map](/docs/package-map). For wire-level behavior see [Transport](/docs/transport) and [Interfaces](/docs/interfaces).
@@ -189,16 +187,16 @@ microvm/ packages a static guest rootfs and a host vsock bridge for nested or is
 
 ## Persistence and state
 
-| State                                  | Default location                                          | Notes                                                  |
-| -------------------------------------- | --------------------------------------------------------- | ------------------------------------------------------ |
-| Config                                 | ~/.reticulum-go/config                                    | INI format, Python-compatible keys                     |
-| Path table                             | storage/destination_table                                 | Optional RAM-only mode                                 |
-| Known destinations                     | storage/known_destinations                                | Writes and loads Python-compatible keys                |
-| Identities                             | storage/identities/                                       | Per-hash blobs                                         |
-| Known-peer ratchet public keys         | storage/ratchets/{'{'}destination_hash{'}'}                       | Python-compatible {'{'}ratchet, received{'}'}                  |
-| Local destination ratchet private keys | Path from EnableRatchets (pageserver: {'{'}destination_hash{'}'}) | Signed msgpack list, or RAM via EnableRatchetsInMemory |
-| Blackhole table                        | storage/blackhole                                         | msgpack                                                |
-| Transport identity                     | storage/transport_identity                                | Used when transport enabled                            |
+| State | Default location | Notes |
+|-------|------------------|-------|
+| Config | ~/.reticulum-go/config | INI format, Python-compatible keys |
+| Path table | storage/destination_table | Optional RAM-only mode |
+| Known destinations | storage/known_destinations | Writes and loads Python-compatible keys |
+| Identities | storage/identities/ | Per-hash blobs |
+| Known-peer ratchet public keys | storage/ratchets/{destination_hash} | Python-compatible {ratchet, received} |
+| Local destination ratchet private keys | Path from EnableRatchets (pageserver: {destination_hash}) | Signed msgpack list, or RAM via EnableRatchetsInMemory |
+| Blackhole table | storage/blackhole | msgpack |
+| Transport identity | storage/transport_identity | Used when transport enabled |
 
 ## Security boundaries
 
@@ -208,13 +206,13 @@ See [Cryptography](/docs/cryptography) and [Security](/docs/security).
 
 ## Extension points
 
-| Extension               | Mechanism                                                                                                      |
-| ----------------------- | -------------------------------------------------------------------------------------------------------------- |
-| Custom crypto for tests | cryptography.SetProvider                                                                                       |
-| Hardware signing        | identity.NewIdentityWithSigner with cryptography.Ed25519Signer                                                 |
-| Embedder lifecycle      | node.Node hooks and control API lifecycle routes                                                               |
-| New interface types     | Implement interfaces.Interface, register in fromconfig.go                                                      |
-| Non-Go clients          | Control API (out-of-process), librns (in-process C ABI), bindings/odin, or bindings/dart (FFI and Control API) |
+| Extension | Mechanism |
+|-----------|-----------|
+| Custom crypto for tests | cryptography.SetProvider |
+| Hardware signing | identity.NewIdentityWithSigner with cryptography.Ed25519Signer |
+| Embedder lifecycle | node.Node hooks and control API lifecycle routes |
+| New interface types | Implement interfaces.Interface, register in fromconfig.go |
+| Non-Go clients | Control API (out-of-process), librns (in-process C ABI), bindings/odin, or bindings/dart (FFI and Control API) |
 
 Adding a new interface type or changing on-wire layouts requires coordinated updates across implementations and crossref vectors.
 

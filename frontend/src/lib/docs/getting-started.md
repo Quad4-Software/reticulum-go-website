@@ -2,7 +2,7 @@
 
 ## Requirements
 
-- Go 1.26.5 or later
+- Go 1.27.1 or later
 - Make or Task (optional, for convenience targets)
 - A writable home directory for ~/.reticulum-go
 
@@ -68,7 +68,7 @@ make package-rpm
 make package-arch
 ```
 
-Arch Linux and CachyOS: add the Quad4 pacman repo from [arch](https://github.com/Quad4-Software/arch) (reticulum-go or reticulum-go-git). That is a Quad4-hosted repo, not AUR.
+Arch Linux and CachyOS: add the Quad4 pacman repo from [quad4-arch](https://github.com/Quad4-Software/quad4-arch) (reticulum-go or reticulum-go-git). That is a Quad4-hosted repo, not AUR.
 
 Full Make/Task target map: [Development and testing](/docs/development-and-testing#build-automation-reference).
 
@@ -82,7 +82,7 @@ task run
 go run ./cmd/reticulum-go
 ```
 
-On first start the daemon creates ~/.reticulum-go/ with a default config if none exists. Logs go to stderr by default. Set verbosity with [logging] loglevel (0 silent through 7 packets, default 4 info). Set [logging] destination = file|both and optional logfile to write to disk (default {'{'}config_dir{'}'}/logfile/reticulum.log). Daemon text logs, pageserver banner, and CLI tools color on TTY. Respect NO_COLOR and FORCE_COLOR / CLICOLOR_FORCE.
+On first start the daemon creates ~/.reticulum-go/ with a default config if none exists. Logs go to stderr by default. Set verbosity with [logging] loglevel (0 silent through 7 packets, default 4 info). Set [logging] destination = file|both and optional logfile to write to disk (default {config_dir}/logfile/reticulum.log). Daemon text logs, pageserver banner, and CLI tools color on TTY. Respect NO_COLOR and FORCE_COLOR / CLICOLOR_FORCE.
 
 Daemon flags:
 
@@ -226,7 +226,7 @@ control_api_host = 127.0.0.1
 control_api_port = 37430
 ```
 
-Generate a random 32-byte key and encode as hex. Clients send Authorization: Bearer &lt;rpc_key&gt;. See [Control API](/docs/control-api).
+Generate a random 32-byte key and encode as hex. Clients send Authorization: Bearer <rpc_key>. See [Control API](/docs/control-api).
 
 ## CLI utilities (status, identity, probe, path, copy, pageserver)
 
@@ -269,14 +269,14 @@ See [Security](/docs/security) for platform behavior.
 
 ## Next steps
 
-| Goal                                         | Document                                                                                                                         |
-| -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| Configure interfaces and rates               | [Configuration](/docs/configuration), [Interfaces](/docs/interfaces)                                                             |
-| Status / identity / probe / path / copy CLIs | [CLI utilities](/docs/utilities)                                                                                                 |
-| Write a Go app                               | [API reference](/docs/api-reference), [Examples](/docs/examples), [Embedding and WebAssembly](/docs/embedding-and-wasm)          |
-| Embed from C or Odin                         | [librns](/docs/librns), [Examples](/docs/examples)                                                                               |
-| Flutter / Dart                               | [librns Dart FFI](/docs/librns#dart-ffi-bindings), [Control API](/docs/control-api#dart-and-flutter), [Examples](/docs/examples) |
-| Talk to a running daemon                     | [Control API](/docs/control-api)                                                                                                 |
-| Run in Firecracker                           | [Firecracker microvm](/docs/microvm) (make microvm-up)                                                                           |
-| Use Python interop                           | [Compatibility](/docs/compatibility)                                                                                             |
-| Run examples                                 | [Examples](/docs/examples)                                                                                                       |
+| Goal | Document |
+|------|----------|
+| Configure interfaces and rates | [Configuration](/docs/configuration), [Interfaces](/docs/interfaces) |
+| Status / identity / probe / path / copy CLIs | [CLI utilities](/docs/utilities) |
+| Write a Go app | [API reference](/docs/api-reference), [Examples](/docs/examples), [Embedding and WebAssembly](/docs/embedding-and-wasm) |
+| Embed from C or Odin | [librns](/docs/librns), [Examples](/docs/examples) |
+| Flutter / Dart | [librns Dart FFI](/docs/librns#dart-ffi-bindings), [Control API](/docs/control-api#dart-and-flutter), [Examples](/docs/examples) |
+| Talk to a running daemon | [Control API](/docs/control-api) |
+| Run in Firecracker | [Firecracker microvm](/docs/microvm) (make microvm-up) |
+| Use Python interop | [Compatibility](/docs/compatibility) |
+| Run examples | [Examples](/docs/examples) |

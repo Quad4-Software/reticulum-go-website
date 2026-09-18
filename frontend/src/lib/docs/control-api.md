@@ -1,7 +1,5 @@
 # Control API
 
-## Scope
-
 pkg/controlapi exposes a localhost JSON and WebSocket API so applications in any language can use Reticulum destinations, announces, links, and requests without embedding the Go transport stack.
 
 The server is optional and disabled by default.
@@ -59,27 +57,27 @@ Requests without a valid bearer token are rejected.
 
 ## HTTP routes
 
-| Method | Path                                                 | Description                                                                          |
-| ------ | ---------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| GET    | /v1/health                                           | Liveness probe (process up, transport id, uptime). Not mesh integrity scoring        |
-| GET    | /v1/status                                           | Interface statistics, including Go local integrity counters when present             |
-| GET    | /v1/paths                                            | Path table snapshot                                                                  |
-| POST   | /v1/sessions                                         | Create session (identity)                                                            |
-| DELETE | /v1/sessions/{'{'}id{'}'}                                    | Tear down session                                                                    |
-| POST   | /v1/sessions/{'{'}id{'}'}/destinations                       | Register destination                                                                 |
-| POST   | /v1/sessions/{'{'}id{'}'}/destinations/{'{'}hash{'}'}/announce       | Send announce                                                                        |
-| POST   | /v1/sessions/{'{'}id{'}'}/destinations/{'{'}hash{'}'}/requests       | Bridge request path to WebSocket                                                     |
-| DELETE | /v1/sessions/{'{'}id{'}'}/destinations/{'{'}hash{'}'}/requests?path= | Deregister request path                                                              |
-| POST   | /v1/sessions/{'{'}id{'}'}/path/request                       | Request path to destination. Response includes wait_s. Repeats inside 20s return 429 |
-| GET    | /v1/sessions/{'{'}id{'}'}/events                             | WebSocket event stream                                                               |
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | /v1/health | Liveness probe (process up, transport id, uptime). Not mesh integrity scoring |
+| GET | /v1/status | Interface statistics, including Go local integrity counters when present |
+| GET | /v1/paths | Path table snapshot |
+| POST | /v1/sessions | Create session (identity) |
+| DELETE | /v1/sessions/{id} | Tear down session |
+| POST | /v1/sessions/{id}/destinations | Register destination |
+| POST | /v1/sessions/{id}/destinations/{hash}/announce | Send announce |
+| POST | /v1/sessions/{id}/destinations/{hash}/requests | Bridge request path to WebSocket |
+| DELETE | /v1/sessions/{id}/destinations/{hash}/requests?path= | Deregister request path |
+| POST | /v1/sessions/{id}/path/request | Request path to destination. Response includes wait_s. Repeats inside 20s return 429 |
+| GET | /v1/sessions/{id}/events | WebSocket event stream |
 
 Lifecycle routes (Go node integration):
 
-| Method | Path                        | Description         |
-| ------ | --------------------------- | ------------------- |
-| POST   | /v1/lifecycle/resume        | Resume after pause  |
-| POST   | /v1/lifecycle/pause         | Pause interfaces    |
-| POST   | /v1/lifecycle/refresh-paths | Refresh stale paths |
+| Method | Path | Description |
+|--------|------|-------------|
+| POST | /v1/lifecycle/resume | Resume after pause |
+| POST | /v1/lifecycle/pause | Pause interfaces |
+| POST | /v1/lifecycle/refresh-paths | Refresh stale paths |
 
 Binary fields (hashes, app data, link payloads) are hex- or base64-encoded as documented in pkg/controlapi/protocol.go.
 
@@ -87,30 +85,30 @@ Binary fields (hashes, app data, link payloads) are hex- or base64-encoded as do
 
 GET /v1/status mirrors shared-instance interface stats. Against a Reticulum-Go daemon each interface object may include:
 
-| JSON field               | Meaning                                                                                                |
-| ------------------------ | ------------------------------------------------------------------------------------------------------ |
-| type                     | Concrete Go type name (UDPInterface, TCPClientInterface, ...) matching Python type(interface).**name** |
-| held_announces           | Ingress-held announces (congestion hold)                                                               |
-| announce_queue           | Outgoing announces waiting for announce_cap                                                            |
-| ifac_fail                | IFAC verify failures                                                                                   |
-| hmac_fail                | Link HMAC failures                                                                                     |
-| announce_sig_fail        | Invalid announce signatures                                                                            |
-| unpack_fail              | Packet unpack failures                                                                                 |
-| announce_dup             | Duplicate announce ignored                                                                             |
-| path_resp_suppressed     | PATH_RESPONSE skipped (next hop is requestor)                                                          |
-| path_req_dup             | Duplicate path request tag ignored                                                                     |
-| path_req_no_cache        | Known path without cached announce                                                                     |
-| path_resp_queued_skip    | PATH_RESPONSE already queued for iface                                                                 |
-| link_relay_unknown_iface | Link relay dropped unknown source iface                                                                |
-| integrity_fail_rate      | Windowed fails / (fails + accepted)                                                                    |
-| stale_closes             | Links closed after going stale                                                                         |
-| link_stale_close         | Same lifetime total as exposed on the iface                                                            |
-| keepalive_timeout        | Transitions into keepalive stale                                                                       |
-| clients                  | Spawned peer count (I2P parent)                                                                        |
-| i2p_connectable          | Connectable I2P server tunnel enabled                                                                  |
-| i2p_b32                  | Published *.b32.i2p endpoint when connectable                                                          |
-| tunnelstate              | I2P peer tunnel label (Creating Tunnel, Tunnel Active, Tunnel Unresponsive)                            |
-| i2p_last_error           | Last SAM dial or stream error text for an I2P peer                                                     |
+| JSON field | Meaning |
+|------------|---------|
+| type | Concrete Go type name (UDPInterface, TCPClientInterface, ...) matching Python type(interface).__name__ |
+| held_announces | Ingress-held announces (congestion hold) |
+| announce_queue | Outgoing announces waiting for announce_cap |
+| ifac_fail | IFAC verify failures |
+| hmac_fail | Link HMAC failures |
+| announce_sig_fail | Invalid announce signatures |
+| unpack_fail | Packet unpack failures |
+| announce_dup | Duplicate announce ignored |
+| path_resp_suppressed | PATH_RESPONSE skipped (next hop is requestor) |
+| path_req_dup | Duplicate path request tag ignored |
+| path_req_no_cache | Known path without cached announce |
+| path_resp_queued_skip | PATH_RESPONSE already queued for iface |
+| link_relay_unknown_iface | Link relay dropped unknown source iface |
+| integrity_fail_rate | Windowed fails / (fails + accepted) |
+| stale_closes | Links closed after going stale |
+| link_stale_close | Same lifetime total as exposed on the iface |
+| keepalive_timeout | Transitions into keepalive stale |
+| clients | Spawned peer count (I2P parent) |
+| i2p_connectable | Connectable I2P server tunnel enabled |
+| i2p_b32 | Published *.b32.i2p endpoint when connectable |
+| tunnelstate | I2P peer tunnel label (Creating Tunnel, Tunnel Active, Tunnel Unresponsive) |
+| i2p_last_error | Last SAM dial or stream error text for an I2P peer |
 
 These counters are local observability only. They do not change packet accept or reject policy. For scored findings use reticulum-go slow. For a full path and health dump use reticulum-go snapshot. See [Security](/docs/security#local-mesh-health-observe-only), [packet-debug](/docs/packet-debug), and [CLI utilities](/docs/utilities#rgoslow).
 
@@ -142,33 +140,33 @@ GET /v1/sessions/{id}/events (WebSocket)
 
 Server to client JSON event type values:
 
-| Event                  | Meaning                                   |
-| ---------------------- | ----------------------------------------- |
-| announce               | Remote announce received                  |
-| link.established       | Link is active                            |
-| link.failed            | Outbound link failed                      |
-| link.data              | Data received on link                     |
-| link.closed            | Link closed                               |
-| link.remote_identified | Peer identified on link                   |
-| request.incoming       | Request arrived on registered path        |
-| request.response       | Outbound link.request succeeded           |
-| request.failed         | Outbound link.request failed or timed out |
-| resource.started       | Resource transfer started                 |
-| resource.concluded     | Resource transfer finished                |
-| command.error          | WebSocket command could not be applied    |
+| Event | Meaning |
+|-------|---------|
+| announce | Remote announce received |
+| link.established | Link is active |
+| link.failed | Outbound link failed |
+| link.data | Data received on link |
+| link.closed | Link closed |
+| link.remote_identified | Peer identified on link |
+| request.incoming | Request arrived on registered path |
+| request.response | Outbound link.request succeeded |
+| request.failed | Outbound link.request failed or timed out |
+| resource.started | Resource transfer started |
+| resource.concluded | Resource transfer finished |
+| command.error | WebSocket command could not be applied |
 
 Client to server command type values:
 
-| Command             | Meaning                                                                                                 |
-| ------------------- | ------------------------------------------------------------------------------------------------------- |
+| Command | Meaning |
+|---------|---------|
 | subscribe_announces | Subscribe to announces. Empty filter means all. Non-empty filter must be an exact 16-byte dest hash hex |
-| link.open           | Open outbound link                                                                                      |
-| link.send           | Send on link                                                                                            |
-| link.close          | Close link                                                                                              |
-| link.request        | Outbound request on established link                                                                    |
-| link.send_resource  | Send payload as a link resource (base64). Keep payloads small                                           |
-| link.identify       | Identify session identity on link                                                                       |
-| request.respond     | Answer a request. Optional filename for NomadNet [name, bytes]                                          |
+| link.open | Open outbound link |
+| link.send | Send on link |
+| link.close | Close link |
+| link.request | Outbound request on established link |
+| link.send_resource | Send payload as a link resource (base64). Keep payloads small |
+| link.identify | Identify session identity on link |
+| request.respond | Answer a request. Optional filename for NomadNet [name, bytes] |
 
 Full type definitions: pkg/controlapi/protocol.go.
 
@@ -184,7 +182,7 @@ Use link.identify after the link is active. The peer receives link.remote_identi
 
 ## Requests via API
 
-Register a request path with POST .../destinations/{'{'}hash{'}'}/requests. Incoming requests appear as request.incoming. Respond with request.respond before the handler timeout.
+Register a request path with POST .../destinations/{hash}/requests. Incoming requests appear as request.incoming. Respond with request.respond before the handler timeout.
 
 Outbound: after link.established, send link.request. Completion arrives as request.response or request.failed.
 
@@ -220,14 +218,14 @@ examples/control-client/client.py is a Python reference client for the API.
 
 ## Implementation files
 
-| File         | Role                    |
-| ------------ | ----------------------- |
-| server.go    | HTTP server and routing |
-| session.go   | Session state           |
-| protocol.go  | Request and event types |
-| ws.go        | WebSocket handling      |
-| auth.go      | Bearer validation       |
-| lifecycle.go | Lifecycle routes        |
+| File | Role |
+|------|------|
+| server.go | HTTP server and routing |
+| session.go | Session state |
+| protocol.go | Request and event types |
+| ws.go | WebSocket handling |
+| auth.go | Bearer validation |
+| lifecycle.go | Lifecycle routes |
 
 Daemon wiring: cmd/reticulum-go/main.go starts controlapi.Server when enabled.
 

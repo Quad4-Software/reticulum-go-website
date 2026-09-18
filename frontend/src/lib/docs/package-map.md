@@ -12,67 +12,67 @@ This page maps each package to its responsibility and primary entry points. For 
 
 Wire packet serialization, header types 1 and 2, hashing, receipts.
 
-| Item       | Detail                              |
-| ---------- | ----------------------------------- |
-| Key types  | Packet, PacketReceipt               |
-| Constants  | MTU = 500                           |
+| Item | Detail |
+|------|--------|
+| Key types | Packet, PacketReceipt |
+| Constants | MTU = 500 |
 | Main files | packet.go, receipt.go, constants.go |
 
 ### pkg/identity
 
 Key generation, recall, sign and verify, encrypt and decrypt, ratchets, optional Secret Service persistence.
 
-| Item             | Detail                                                                                          |
-| ---------------- | ----------------------------------------------------------------------------------------------- |
-| Key types        | Identity                                                                                        |
-| Hardware signing | NewIdentityWithSigner, RHB1 descriptor in hardware_bound.go                                     |
-| At-rest store    | pkg/identity/store (file or Freedesktop Secret Service), RSSI markers                           |
-| Main files       | identity.go, identity_signer.go, hardware_bound.go, known_persist.go, known_ratchets.go, store/ |
+| Item | Detail |
+|------|--------|
+| Key types | Identity |
+| Hardware signing | NewIdentityWithSigner, RHB1 descriptor in hardware_bound.go |
+| At-rest store | pkg/identity/store (file or Freedesktop Secret Service), RSSI markers |
+| Main files | identity.go, identity_signer.go, hardware_bound.go, known_persist.go, known_ratchets.go, store/ |
 
 ### pkg/securemem
 
 Best-effort locked buffers for long-term identity private keys (mlock, wipe on close).
 
-| Item       | Detail                         |
-| ---------- | ------------------------------ |
-| Key types  | Buf                            |
+| Item | Detail |
+|------|--------|
+| Key types | Buf |
 | Main files | buf.go, wipe.go, alloc_unix.go |
 
 ### pkg/cryptography
 
 Single integration point for primitives. See [Cryptography](/docs/cryptography).
 
-| Item       | Detail                                                  |
-| ---------- | ------------------------------------------------------- |
-| Key types  | CryptoProvider, Ed25519Signer                           |
-| Extension  | SetProvider, ActiveProvider                             |
+| Item | Detail |
+|------|--------|
+| Key types | CryptoProvider, Ed25519Signer |
+| Extension | SetProvider, ActiveProvider |
 | Main files | provider.go, stdlib_provider.go, curve/AES/HKDF helpers |
 
 ### pkg/destination
 
 Application-facing destinations (SINGLE, GROUP, PLAIN, LINK).
 
-| Item       | Detail                       |
-| ---------- | ---------------------------- |
-| Key types  | Destination, RequestHandler  |
+| Item | Detail |
+|------|--------|
+| Key types | Destination, RequestHandler |
 | Main files | destination.go, constants.go |
 
 ### pkg/announce
 
 Announce construction, signing, handler registration.
 
-| Item       | Detail                  |
-| ---------- | ----------------------- |
-| Key types  | Announce, Handler       |
+| Item | Detail |
+|------|--------|
+| Key types | Announce, Handler |
 | Main files | announce.go, handler.go |
 
 ### pkg/transport
 
 Routing engine: path table, announces, forwarding, links, persistence.
 
-| Item       | Detail                                                                 |
-| ---------- | ---------------------------------------------------------------------- |
-| Key types  | Transport, PathInfo                                                    |
+| Item | Detail |
+|------|--------|
+| Key types | Transport, PathInfo |
 | Main files | transport.go, ingress.go, relay.go, path_selection.go, path_persist.go |
 
 See [Transport](/docs/transport).
@@ -81,20 +81,20 @@ See [Transport](/docs/transport).
 
 Encrypted bidirectional links, request/response, channel and resource integration.
 
-| Item         | Detail                                                    |
-| ------------ | --------------------------------------------------------- |
-| Key types    | Link                                                      |
+| Item | Detail |
+|------|--------|
+| Key types | Link |
 | Entry points | HandleIncomingLinkRequest, Reestablish, WatchAndReconnect |
-| Main files   | link.go, link_path_recovery.go, reconnect.go              |
+| Main files | link.go, link_path_recovery.go, reconnect.go |
 
 ### pkg/pathfinder
 
 Per-link path lookup table used inside links.
 
-| Item      | Detail           |
-| --------- | ---------------- |
+| Item | Detail |
+|------|--------|
 | Key types | PathFinder, Path |
-| Main file | pathfinder.go    |
+| Main file | pathfinder.go |
 
 ## Data transfer and messaging
 
@@ -102,27 +102,27 @@ Per-link path lookup table used inside links.
 
 Reliable message delivery over a link.
 
-| Item       | Detail                   |
-| ---------- | ------------------------ |
-| Key types  | Channel, Envelope        |
+| Item | Detail |
+|------|--------|
+| Key types | Channel, Envelope |
 | Main files | channel.go, constants.go |
 
 ### pkg/buffer
 
 Stream buffer over channel with bzip2 compression.
 
-| Item       | Detail                  |
-| ---------- | ----------------------- |
-| Key types  | Buffer                  |
+| Item | Detail |
+|------|--------|
+| Key types | Buffer |
 | Main files | buffer.go, constants.go |
 
 ### pkg/resource
 
 Multi-part file transfer, hashmaps, RESOURCE_PRF, bzip2.
 
-| Item       | Detail                                           |
-| ---------- | ------------------------------------------------ |
-| Key types  | Resource, Advertisement                          |
+| Item | Detail |
+|------|--------|
+| Key types | Resource, Advertisement |
 | Main files | resource.go, advertisement.go, bzip2_compress.go |
 
 ## Network interfaces
@@ -131,12 +131,12 @@ Multi-part file transfer, hashmaps, RESOURCE_PRF, bzip2.
 
 All interface implementations and factory.
 
-| Item         | Detail                                                           |
-| ------------ | ---------------------------------------------------------------- |
-| Key types    | Interface, BaseInterface                                         |
-| Factory      | NewFromConfigWithContext in fromconfig.go                        |
-| Reconnect    | reconnect.go                                                     |
-| Lifecycle    | lifecycle.go (Enable, Disable, Detach)                           |
+| Item | Detail |
+|------|--------|
+| Key types | Interface, BaseInterface |
+| Factory | NewFromConfigWithContext in fromconfig.go |
+| Reconnect | reconnect.go |
+| Lifecycle | lifecycle.go (Enable, Disable, Detach) |
 | Go-only QUIC | quic.go, quic_tls.go (QUICClientInterface / QUICServerInterface) |
 
 See [Interfaces](/docs/interfaces).
@@ -145,28 +145,28 @@ See [Interfaces](/docs/interfaces).
 
 Interface Access Code mask and unmask.
 
-| Item      | Detail                   |
-| --------- | ------------------------ |
+| Item | Detail |
+|------|--------|
 | Key types | Identity (IFAC identity) |
-| Main file | ifac.go                  |
+| Main file | ifac.go |
 
 ### pkg/i2p
 
 I2P SAM client, destinations, tunnels.
 
-| Item       | Detail                                           |
-| ---------- | ------------------------------------------------ |
-| Key types  | Controller, Destination, Tunnel                  |
+| Item | Detail |
+|------|--------|
+| Key types | Controller, Destination, Tunnel |
 | Main files | sam.go, controller.go, destination.go, tunnel.go |
 
 ### pkg/backbone
 
 Multiplexed I/O hub for backbone TCP.
 
-| Item       | Detail                                |
-| ---------- | ------------------------------------- |
-| Key types  | Hub, Backend                          |
-| Backends   | auto, epoll, kqueue, io_uring, go     |
+| Item | Detail |
+|------|--------|
+| Key types | Hub, Backend |
+| Backends | auto, epoll, kqueue, io_uring, go |
 | Main files | backbone.go, hub.go, platform pollers |
 
 ## Node orchestration and embedding
@@ -175,103 +175,103 @@ Multiplexed I/O hub for backbone TCP.
 
 Embedder API: transport plus interfaces plus lifecycle.
 
-| Item       | Detail                                                            |
-| ---------- | ----------------------------------------------------------------- |
-| Key types  | Node, PauseMode, LinkReconnectOptions                             |
-| Lifecycle  | OnNetworkAvailable, OnNetworkLost, RefreshPaths, ReloadInterfaces |
-| Main files | node.go, lifecycle.go, reload.go, wiring.go, netmon.go            |
+| Item | Detail |
+|------|--------|
+| Key types | Node, PauseMode, LinkReconnectOptions |
+| Lifecycle | OnNetworkAvailable, OnNetworkLost, RefreshPaths, ReloadInterfaces |
+| Main files | node.go, lifecycle.go, reload.go, wiring.go, netmon.go |
 
 ### pkg/sharedinstance
 
 Python share_instance equivalent.
 
-| Item       | Detail                         |
-| ---------- | ------------------------------ |
-| Key types  | Instance, Hooks                |
-| Entry      | Attach(cfg, tr, hooks)         |
-| Framing    | SendFramed / RecvFramed        |
+| Item | Detail |
+|------|--------|
+| Key types | Instance, Hooks |
+| Entry | Attach(cfg, tr, hooks) |
+| Framing | SendFramed / RecvFramed |
 | Main files | instance.go, rpc.go, mpconn.go |
 
 ### pkg/cli
 
 Subcommand dispatch for the unified reticulum-go binary (Main, RunStatus, RunID, RunProbe, RunPath, RunCP, RunPageserver, RunZen).
 
-| Item  | Detail                           |
-| ----- | -------------------------------- |
+| Item | Detail |
+|------|--------|
 | Entry | Main(opts) from cmd/reticulum-go |
-| Docs  | [CLI utilities](/docs/utilities) |
+| Docs | [CLI utilities](/docs/utilities) |
 
 ### pkg/zenfix
 
 Static analyzer for path and link footguns. Used by reticulum-go zen.
 
-| Item  | Detail                                                                                                                |
-| ----- | --------------------------------------------------------------------------------------------------------------------- |
-| Entry | zenfix.Run(opts)                                                                                                      |
-| Rules | AllRules in rules.go, checkers in analyze.go / python.go                                                              |
-| Docs  | [CLI utilities](/docs/utilities#rgozen), [Development and testing](/docs/development-and-testing#static-footgun-scan) |
+| Item | Detail |
+|------|--------|
+| Entry | zenfix.Run(opts) |
+| Rules | AllRules in rules.go, checkers in analyze.go / python.go |
+| Docs | [CLI utilities](/docs/utilities#rgozen), [Development and testing](/docs/development-and-testing#static-footgun-scan) |
 
 ### pkg/pageserver
 
 NomadNet-style page and file server used by reticulum-go pageserver.
 
-| Item          | Detail                               |
-| ------------- | ------------------------------------ |
-| Entry         | pageserver.Run via cli.RunPageserver |
-| Dynamic pages | pkg/pageserver/dynamicpage           |
-| Sample tree   | examples/pageserver/                 |
+| Item | Detail |
+|------|--------|
+| Entry | pageserver.Run via cli.RunPageserver |
+| Dynamic pages | pkg/pageserver/dynamicpage |
+| Sample tree | examples/pageserver/ |
 
 ### pkg/health
 
 Node-local mesh integrity and link-health counters. Used by drop-site instrumentation and ops surfaces. Counters never leave the node unless the operator exports them via status RPC or the control API.
 
-| Item       | Detail                                                                                                                                  |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| Key types  | Registry, Snapshot, Kind                                                                                                                |
-| Entry      | health.Inc, health.Default                                                                                                              |
-| Main files | registry.go, kind.go, window.go                                                                                                         |
-| Docs       | [Security](/docs/security#local-mesh-health-observe-only), [CLI utilities](/docs/utilities#rgoslow), [packet-debug](/docs/packet-debug) |
+| Item | Detail |
+|------|--------|
+| Key types | Registry, Snapshot, Kind |
+| Entry | health.Inc, health.Default |
+| Main files | registry.go, kind.go, window.go |
+| Docs | [Security](/docs/security#local-mesh-health-observe-only), [CLI utilities](/docs/utilities#rgoslow), [packet-debug](/docs/packet-debug) |
 
 ### pkg/protect
 
 Go-only local DoS / overload gates (IDS detect, IPS prevent, smart auto). Wired from transport and interfaces when dos_protection is set.
 
-| Item        | Detail                                                                                                                                                                                             |
-| ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Key types   | Engine, Mode, Decision, Reason, AutoPhase                                                                                                                                                          |
-| Entry       | protect.ConfigureFromConfig, protect.AdmitPacket, AdmitConn, AdmitCrypto, AdmitHandshake, AdmitResource                                                                                            |
-| Persistence | storage/dos_protect.mpack (msgpack baselines and auto phase)                                                                                                                                       |
-| Main files  | engine.go, adaptive.go, auto.go, store.go, window.go, mode.go                                                                                                                                      |
-| Docs        | [Configuration](/docs/configuration#dos_protection-go-only), [Security](/docs/security#dos-protection-local-idsips), [Development and testing](/docs/development-and-testing#dos_protection-tests) |
+| Item | Detail |
+|------|--------|
+| Key types | Engine, Mode, Decision, Reason, AutoPhase |
+| Entry | protect.ConfigureFromConfig, protect.AdmitPacket, AdmitConn, AdmitCrypto, AdmitHandshake, AdmitResource |
+| Persistence | storage/dos_protect.mpack (msgpack baselines and auto phase) |
+| Main files | engine.go, adaptive.go, auto.go, store.go, window.go, mode.go |
+| Docs | [Configuration](/docs/configuration#dos_protection-go-only), [Security](/docs/security#dos-protection-local-idsips), [Development and testing](/docs/development-and-testing#dos_protection-tests) |
 
 ### pkg/rnsutil
 
 Helpers and RPC client for CLI utilities (reticulum-go status, slow, id, probe, …).
 
-| Item        | Detail                                            |
-| ----------- | ------------------------------------------------- |
-| RPC         | DialRPC, GetInterfaceStats, path and link helpers |
-| Identity    | .rsg / .rsm / .rfe create and verify              |
-| Probe       | WaitPath, SendProbe                               |
-| Slow report | AnalyzeSlow, integrity and bottleneck findings    |
-| Docs        | [CLI utilities](/docs/utilities)                  |
+| Item | Detail |
+|------|--------|
+| RPC | DialRPC, GetInterfaceStats, path and link helpers |
+| Identity | .rsg / .rsm / .rfe create and verify |
+| Probe | WaitPath, SendProbe |
+| Slow report | AnalyzeSlow, integrity and bottleneck findings |
+| Docs | [CLI utilities](/docs/utilities) |
 
 ### pkg/wasm
 
 JavaScript bridge for browser builds (//go:build js && wasm).
 
-| Item       | Detail                |
-| ---------- | --------------------- |
-| Entry      | RegisterJSFunctions   |
+| Item | Detail |
+|------|--------|
+| Entry | RegisterJSFunctions |
 | Main files | wasm.go, lifecycle.go |
 
 ### pkg/controlapi
 
 Localhost JSON and WebSocket control plane.
 
-| Item       | Detail                                    |
-| ---------- | ----------------------------------------- |
-| Key types  | Server                                    |
+| Item | Detail |
+|------|--------|
+| Key types | Server |
 | Main files | server.go, session.go, protocol.go, ws.go |
 
 See [Control API](/docs/control-api).
@@ -280,14 +280,14 @@ See [Control API](/docs/control-api).
 
 C ABI facade for in-process embed. Pure Go core. CGO shims in pkg/librns/capi.
 
-| Item       | Detail                                                  |
-| ---------- | ------------------------------------------------------- |
-| Header     | include/rns.h                                           |
-| Shared lib | task build-librns produces bin/librns.so                |
-| Smoke      | bindings/c/examples/smoke                               |
-| Odin       | bindings/odin (task test-odin)                          |
-| Zig        | bindings/zig (task test-zig)                            |
-| C++        | bindings/cpp (task test-cpp)                            |
+| Item | Detail |
+|------|--------|
+| Header | include/rns.h |
+| Shared lib | task build-librns produces bin/librns.so |
+| Smoke | bindings/c/examples/smoke |
+| Odin | bindings/odin (task test-odin) |
+| Zig | bindings/zig (task test-zig) |
+| C++ | bindings/cpp (task test-cpp) |
 | Main files | node.go, identity.go, destination.go, link.go, queue.go |
 
 See [librns](/docs/librns).
@@ -296,12 +296,12 @@ See [librns](/docs/librns).
 
 Idiomatic Odin package over librns.so. Not a Go import path. Use -collection:rns=bindings/odin and import rns "rns:rns".
 
-| Item     | Detail                                       |
-| -------- | -------------------------------------------- |
-| Package  | bindings/odin/rns                            |
-| Tests    | bindings/odin/tests                          |
-| Build    | task test-odin or make -C bindings/odin test |
-| Platform | Linux (links system:rns)                     |
+| Item | Detail |
+|------|--------|
+| Package | bindings/odin/rns |
+| Tests | bindings/odin/tests |
+| Build | task test-odin or make -C bindings/odin test |
+| Platform | Linux (links system:rns) |
 
 See [librns](/docs/librns#odin-bindings).
 
@@ -309,12 +309,12 @@ See [librns](/docs/librns#odin-bindings).
 
 Idiomatic Zig package over librns.so. Not a Go import path. Depend on bindings/zig from build.zig.zon and @import("rns").
 
-| Item     | Detail                                     |
-| -------- | ------------------------------------------ |
-| Package  | bindings/zig (module rns)                  |
-| Tests    | bindings/zig/tests                         |
-| Build    | task test-zig or make -C bindings/zig test |
-| Platform | Linux (links -lrns)                        |
+| Item | Detail |
+|------|--------|
+| Package | bindings/zig (module rns) |
+| Tests | bindings/zig/tests |
+| Build | task test-zig or make -C bindings/zig test |
+| Platform | Linux (links -lrns) |
 
 See [librns](/docs/librns#zig-bindings).
 
@@ -322,13 +322,13 @@ See [librns](/docs/librns#zig-bindings).
 
 Idiomatic C++17 RAII package over librns.so. Not a Go import path. Include rns/rns.hpp and link librns plus the event trampoline (or the rns_cpp CMake target).
 
-| Item     | Detail                                     |
-| -------- | ------------------------------------------ |
-| Package  | bindings/cpp/include/rns                   |
-| Tests    | bindings/cpp/tests                         |
-| Build    | task test-cpp or make -C bindings/cpp test |
-| Platform | Linux (links -lrns)                        |
-| Standard | C++17 and up                               |
+| Item | Detail |
+|------|--------|
+| Package | bindings/cpp/include/rns |
+| Tests | bindings/cpp/tests |
+| Build | task test-cpp or make -C bindings/cpp test |
+| Platform | Linux (links -lrns) |
+| Standard | C++17 and up |
 
 See [librns](/docs/librns#c-bindings).
 
@@ -336,11 +336,11 @@ See [librns](/docs/librns#c-bindings).
 
 Dart package rns_control with librns FFI (ffi.dart) and a Control API client. Path dependency for Flutter apps.
 
-| Item      | Detail                                                                          |
-| --------- | ------------------------------------------------------------------------------- |
-| Package   | bindings/dart (name: rns_control)                                               |
-| FFI       | Linux, Android, Windows via librns (package:rns_control/ffi.dart)               |
-| Tests     | dart test / task test-dart                                                      |
+| Item | Detail |
+|------|--------|
+| Package | bindings/dart (name: rns_control) |
+| FFI | Linux, Android, Windows via librns (package:rns_control/ffi.dart) |
+| Tests | dart test / task test-dart |
 | Platforms | Flutter mobile and desktop (events need dart:io). FFI needs shipped native libs |
 
 See [Control API](/docs/control-api#dart-and-flutter).
@@ -351,27 +351,27 @@ See [Control API](/docs/control-api#dart-and-flutter).
 
 LXStamper-compatible proof-of-work. Used by discovery (20 rounds). Delivery/propagation/peering round constants are exported for apps without importing reticulum-go-protocols.
 
-| Item       | Detail                                                                                               |
-| ---------- | ---------------------------------------------------------------------------------------------------- |
-| Key funcs  | StampWorkblock, StampValid, StampValue, MeetsCost, GenerateStamp, GenerateStampCPU, GenerateStampGPU |
-| GPU        | OpenCL ICD (NVIDIA/AMD/Intel), auto with CPU fallback (`RNS_LXSTAMP_BACKEND=auto\|cpu\|gpu`)         |
-| Main files | stamper.go, backend.go, generate_cpu.go, gpu_opencl.go                                               |
+| Item | Detail |
+|------|--------|
+| Key funcs | StampWorkblock, StampValid, StampValue, MeetsCost, GenerateStamp, GenerateStampCPU |
+| Backend | Parallel CPU only. The former opt-in OpenCL path was removed |
+| Main files | stamper.go, backend.go, generate_cpu.go, workblock.go |
 
 ### pkg/discovery
 
 rnstransport wire constants, announce codec, InterfaceDiscovery, InterfaceAnnouncer, autoconnect persist helpers. PoW via pkg/lxstamper.
 
-| Item       | Detail                                                                             |
-| ---------- | ---------------------------------------------------------------------------------- |
-| Key types  | InterfaceDiscovery, InterfaceAnnouncer, Info                                       |
+| Item | Detail |
+|------|--------|
+| Key types | InterfaceDiscovery, InterfaceAnnouncer, Info |
 | Main files | discovery.go, interface_discovery.go, interface_announcer.go, autoconnect_store.go |
 
 ### pkg/blackhole
 
 Blackhole table semantics, merge, encode for /list, announce filtering. Federation publish and updater live in pkg/transport / pkg/node.
 
-| Item      | Detail       |
-| --------- | ------------ |
+| Item | Detail |
+|------|--------|
 | Key types | Table, Entry |
 | Main file | blackhole.go |
 
@@ -379,10 +379,10 @@ Blackhole table semantics, merge, encode for /list, announce filtering. Federati
 
 Token-bucket limiter, ingress and egress announce controls.
 
-| Item      | Detail                  |
-| --------- | ----------------------- |
+| Item | Detail |
+|------|--------|
 | Key types | Limiter, IngressControl |
-| Main file | rate.go                 |
+| Main file | rate.go |
 
 ## Configuration and shared types
 
@@ -390,18 +390,18 @@ Token-bucket limiter, ingress and egress announce controls.
 
 Canonical INI parser and writer.
 
-| Item      | Detail                                                           |
-| --------- | ---------------------------------------------------------------- |
+| Item | Detail |
+|------|--------|
 | Functions | LoadConfig, SaveConfig, DefaultConfig, InitConfig, GetConfigPath |
-| Main file | config.go                                                        |
+| Main file | config.go |
 
 ### pkg/common
 
 Shared config structs, path types, IFAC helpers, persistence utilities.
 
-| Item       | Detail                                             |
-| ---------- | -------------------------------------------------- |
-| Key types  | ReticulumConfig, InterfaceConfig, Path             |
+| Item | Detail |
+|------|--------|
+| Key types | ReticulumConfig, InterfaceConfig, Path |
 | Main files | types.go, config.go, interfaces.go, persistence.go |
 
 ### pkg/config (legacy)
@@ -414,19 +414,19 @@ Older standalone config struct. New code should use pkg/reticulumconfig.
 
 Post-startup OS restrictions.
 
-| Item       | Detail                                                  |
-| ---------- | ------------------------------------------------------- |
-| Entry      | Apply(cfg), SetExecRlimits, StartLimited, OutputLimited |
-| Main files | sandbox.go, paths.go, platform-specific files           |
+| Item | Detail |
+|------|--------|
+| Entry | Apply(cfg), SetExecRlimits, StartLimited, OutputLimited |
+| Main files | sandbox.go, paths.go, platform-specific files |
 
 ### pkg/debug
 
 Structured logging with debug levels 0 (silent) through 7 (packets). Default is 4 (info).
 
-| Item      | Detail                   |
-| --------- | ------------------------ |
+| Item | Detail |
+|------|--------|
 | Functions | Init, Log, SetDebugLevel |
-| Main file | debug.go                 |
+| Main file | debug.go |
 
 ## Utilities
 
@@ -434,9 +434,9 @@ Structured logging with debug levels 0 (silent) through 7 (packets). Default is 
 
 Deterministic identity resolution from a full name string (SHA-256).
 
-| Item      | Detail      |
-| --------- | ----------- |
-| Key type  | Resolver    |
+| Item | Detail |
+|------|--------|
+| Key type | Resolver |
 | Main file | resolver.go |
 
 ## Internal packages (not stable for importers)
@@ -449,34 +449,34 @@ Re-exports pkg/reticulumconfig for the daemon.
 
 Filesystem persistence under ~/.reticulum-go/storage/.
 
-| Item       | Detail                |
-| ---------- | --------------------- |
-| Key type   | Manager               |
+| Item | Detail |
+|------|--------|
+| Key type | Manager |
 | Main files | manager.go, atomic.go |
 
 ## Command binaries
 
-| Path                      | Binary       | Role                                                                                                                |
-| ------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------- |
-| cmd/reticulum-go          | reticulum-go | Daemon and tools (status, id, probe, path, cp, pageserver). Legacy rgo* names are thin wrappers / install symlinks. |
-| cmd/rgostatus … cmd/rgocp | (wrappers)   | Call into pkg/cli for compatibility with old build scripts                                                          |
-| cmd/reticulum-wasm        | WASM module  | Browser entry                                                                                                       |
+| Path | Binary | Role |
+|------|--------|------|
+| cmd/reticulum-go | reticulum-go | Daemon and tools (status, id, probe, path, cp, pageserver). Legacy rgo* names are thin wrappers / install symlinks. |
+| cmd/rgostatus … cmd/rgocp | (wrappers) | Call into pkg/cli for compatibility with old build scripts |
+| cmd/reticulum-wasm | WASM module | Browser entry |
 
 CLI dispatch lives in pkg/cli. Pageserver logic lives in pkg/pageserver.
 
 ## Suggested import paths for applications
 
-| Task                         | Packages                                                     |
-| ---------------------------- | ------------------------------------------------------------ |
-| Embed full node              | pkg/node, pkg/reticulumconfig, pkg/destination, pkg/identity |
-| Embed from C / FFI           | pkg/librns (or link librns.so + include/rns.h)               |
-| Embed from Odin              | bindings/odin (import rns "rns:rns", link librns.so)         |
-| Flutter / Dart FFI           | bindings/dart (package:rns_control/ffi.dart)                 |
-| Flutter / Dart Control API   | bindings/dart (package:rns_control)                          |
-| Low-level transport only     | pkg/transport, pkg/interfaces, pkg/packet                    |
-| Crypto only                  | pkg/cryptography, pkg/identity                               |
-| Browser                      | pkg/wasm (compiled), WebSocket interface                     |
-| Out-of-process non-Go client | Control API (pkg/controlapi on the daemon)                   |
+| Task | Packages |
+|------|----------|
+| Embed full node | pkg/node, pkg/reticulumconfig, pkg/destination, pkg/identity |
+| Embed from C / FFI | pkg/librns (or link librns.so + include/rns.h) |
+| Embed from Odin | bindings/odin (import rns "rns:rns", link librns.so) |
+| Flutter / Dart FFI | bindings/dart (package:rns_control/ffi.dart) |
+| Flutter / Dart Control API | bindings/dart (package:rns_control) |
+| Low-level transport only | pkg/transport, pkg/interfaces, pkg/packet |
+| Crypto only | pkg/cryptography, pkg/identity |
+| Browser | pkg/wasm (compiled), WebSocket interface |
+| Out-of-process non-Go client | Control API (pkg/controlapi on the daemon) |
 
 Do not import internal/ from outside this module.
 

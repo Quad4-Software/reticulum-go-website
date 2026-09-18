@@ -33,30 +33,30 @@ Transport.SendPacket -> Send -> ProcessOutgoing -> wire
 
 ## Supported types
 
-| Config type                           | Status          | File                                   |
-| ------------------------------------- | --------------- | -------------------------------------- |
-| UDPInterface                          | Complete        | udp.go                                 |
-| TCPClientInterface                    | Complete        | tcp.go                                 |
-| TCPServerInterface                    | Complete        | tcp.go                                 |
-| AutoInterface                         | Complete        | auto.go, auto_rescan.go, auto_roam.go  |
-| I2PInterface                          | Complete        | i2p.go (SAM in pkg/i2p)                |
-| BackboneInterface                     | Complete        | backbone.go                            |
-| BackboneClientInterface               | Complete        | backbone_client.go                     |
-| PipeInterface                         | Complete        | pipe.go                                |
-| SerialInterface                       | Complete        | serial.go                              |
-| LocalInterface / LocalServerInterface | Complete        | local.go, sharedinstance               |
-| WebSocketInterface                    | Go-only         | websocket_native.go, websocket_wasm.go |
-| QUICClientInterface                   | Go-only         | quic.go, quic_tls.go                   |
-| QUICServerInterface                   | Go-only         | quic.go, quic_tls.go                   |
-| WebTransportClientInterface           | Go-only         | webtransport.go                        |
-| WebTransportServerInterface           | Go-only         | webtransport.go                        |
-| DNSRendezvousInterface                | Go-only         | dns_rendezvous.go                      |
-| VSOCKClientInterface                  | Go-only (Linux) | vsock.go                               |
-| VSOCKServerInterface                  | Go-only (Linux) | vsock.go                               |
-| HTTPSClientInterface                  | Go-only         | https.go                               |
-| HTTPSServerInterface                  | Go-only         | https.go                               |
-| Modem73Interface                      | Complete        | modem73.go                             |
-| SDRInterface                          | Complete        | sdr.go, pkg/sdr                        |
+| Config type | Status | File |
+|---------------|--------|------|
+| UDPInterface | Complete | udp.go |
+| TCPClientInterface | Complete | tcp.go |
+| TCPServerInterface | Complete | tcp.go |
+| AutoInterface | Complete | auto.go, auto_rescan.go, auto_roam.go |
+| I2PInterface | Complete | i2p.go (SAM in pkg/i2p) |
+| BackboneInterface | Complete | backbone.go |
+| BackboneClientInterface | Complete | backbone_client.go |
+| PipeInterface | Complete | pipe.go |
+| SerialInterface | Complete | serial.go |
+| LocalInterface / LocalServerInterface | Complete | local.go, sharedinstance |
+| WebSocketInterface | Go-only | websocket_native.go, websocket_wasm.go |
+| QUICClientInterface | Go-only | quic.go, quic_tls.go |
+| QUICServerInterface | Go-only | quic.go, quic_tls.go |
+| WebTransportClientInterface | Go-only | webtransport.go |
+| WebTransportServerInterface | Go-only | webtransport.go |
+| DNSRendezvousInterface | Go-only | dns_rendezvous.go |
+| VSOCKClientInterface | Go-only (Linux) | vsock.go |
+| VSOCKServerInterface | Go-only (Linux) | vsock.go |
+| HTTPSClientInterface | Go-only | https.go |
+| HTTPSServerInterface | Go-only | https.go |
+| Modem73Interface | Complete | modem73.go |
+| SDRInterface | Complete | sdr.go, pkg/sdr |
 
 ## Not implemented
 
@@ -117,7 +117,7 @@ Device values: mock (always), rtltcp, rtlsdr (build tag sdr_rtlsdr), hackrf (bui
 
 Default builds need no USB libraries. Burst modem is Go-native and is not air-compatible with Modem73 OFDM.
 
-Math-backed RF channel: pkg/sdr/channel.go (FreeSpacePathLossDB, thermal noise, AWGN via Box-Muller, SimDevice). Validated by SNR measurement and FSPL exploratory checks.
+Math-backed RF channel: pkg/sdr/channel.go (FreeSpacePathLossDB, thermal noise, AWGN via Box-Muller, SimDevice). Validated by SNR measurement and FSPL property checks.
 
 Live: RUN_LIVE_SDR=1 with tests/interop/sdr_live_test.go. Optional SDR_DEVICE / SDR_ADDRESS for hardware probes.
 
@@ -161,16 +161,16 @@ Configuration:
 
 ## External interface plugins
 
-Python loads .py modules from {'{'}config_dir{'}'}/interfaces/. Reticulum-Go keeps the same discovery path but uses process isolation and in-process factories instead of executing Python:
+Python loads .py modules from {config_dir}/interfaces/. Reticulum-Go keeps the same discovery path but uses process isolation and in-process factories instead of executing Python:
 
 1. interfaces.RegisterExternalFactory(typeName, factory) for embedders
-2. {'{'}config_dir{'}'}/interfaces/{'{'}Type{'}'}.json (or .manifest) with driver and command (pipe)
-3. Executable {'{'}config_dir{'}'}/interfaces/{'{'}Type{'}'} used as a PipeInterface command
+2. {config_dir}/interfaces/{Type}.json (or .manifest) with driver and command (pipe)
+3. Executable {config_dir}/interfaces/{Type} used as a PipeInterface command
 
 Example manifest:
 
 ```json
-{ "driver": "pipe", "command": "/usr/local/bin/my-rns-iface", "respawn_delay": 5 }
+{"driver": "pipe", "command": "/usr/local/bin/my-rns-iface", "respawn_delay": 5}
 ```
 
 Config:
@@ -183,7 +183,7 @@ enabled = yes
 
 ## LocalInterface
 
-Local shared-instance access uses HDLC over TCP (127.0.0.1:port) or abstract Unix (@rns/&lt;name&gt;).
+Local shared-instance access uses HDLC over TCP (127.0.0.1:port) or abstract Unix (@rns/<name>).
 
 Two configuration paths:
 
@@ -201,7 +201,7 @@ Requirements:
 - Explicit target_address or target_host (same policy as Python forward_ip)
 - Open binds do not adopt the source address of the first inbound packet
 
-Optional reconnect when max_reconnect_tries &gt; 0 is a Go extension. Python does not reconnect UDP by default.
+Optional reconnect when max_reconnect_tries > 0 is a Go extension. Python does not reconnect UDP by default.
 
 ## TCP client and server
 
@@ -230,11 +230,11 @@ Features:
 
 Modes match Python RNS wire values (full 0x01 through internal 0x07). Set with mode or interface_mode on an interface block.
 
-| Mode                          | Effect (summary)                                             |
-| ----------------------------- | ------------------------------------------------------------ |
-| full                          | Default. Normal announce and path behavior                   |
-| access_point                  | Does not rebroadcast announces                               |
-| gateway / roaming / internal  | Participate in unknown-path discovery (DISCOVER_PATHS_FOR)   |
+| Mode | Effect (summary) |
+|------|------------------|
+| full | Default. Normal announce and path behavior |
+| access_point | Does not rebroadcast announces |
+| gateway / roaming / internal | Participate in unknown-path discovery (DISCOVER_PATHS_FOR) |
 | boundary / roaming / internal | Extra announce forward filters vs next-hop mode (RNS 1.3.6+) |
 
 recursive_prs = yes forces unknown-path discovery on any mode. announces_from_internal = no blocks rebroadcast of announces learned via an internal-mode next hop.
@@ -255,13 +255,13 @@ Go and Python interop lives in tests/interop/i2p_live_test.go (RUN_LIVE_INTEROP=
 
 Backbone interfaces multiplex many TCP streams through pkg/backbone hubs. Select poller backend with backbone_io in [reticulum]:
 
-| Value    | Platform               |
-| -------- | ---------------------- |
-| auto     | Best available         |
-| epoll    | Linux                  |
-| kqueue   | BSD, macOS             |
+| Value | Platform |
+|-------|----------|
+| auto | Best available |
+| epoll | Linux |
+| kqueue | BSD, macOS |
 | io_uring | Linux (when available) |
-| go       | Portable fallback      |
+| go | Portable fallback |
 
 ## WebSocketInterface
 
@@ -376,7 +376,7 @@ context_id / cid is the peer CID (1 is Local on Linux). Not available on non-Lin
 Go-only TLS long-poll packet underlay for restrictive networks where only HTTPS egress works. Not WebTransport or HTTP/3.
 
 - Default path /rns
-- Client POST {'{'}path{'}'}/send and long-poll GET {'{'}path{'}'}/poll
+- Client POST {path}/send and long-poll GET {path}/poll
 - Peer id header X-RNS-Peer
 - Same TLS options as QUIC (cert_file, key_file, peer_key, sni)
 - long_poll_sec default 25
@@ -416,14 +416,14 @@ Details: [Cryptography](/docs/cryptography#ifac).
 
 ## Reconnect behavior
 
-| Aspect                                                      | Python RNS                     | Reticulum-Go                                                  |
-| ----------------------------------------------------------- | ------------------------------ | ------------------------------------------------------------- |
-| TCP / backbone / QUIC / WebTransport / HTTPS / VSOCK client | Yes for TCP/backbone, 5 s wait | Yes via reconnect.go                                          |
-| Serial                                                      | Yes, 5 s wait                  | Yes with max_reconnect_tries                                  |
-| I2P                                                         | Yes, 15 s wait                 | Yes in i2p.go                                                 |
-| UDP / DNS rendezvous                                        | No                             | UDP when max_reconnect_tries &gt; 0. DNS re-resolves on interval |
-| Default max tries                                           | Unlimited (None)               | Unlimited (-1 or omitted)                                     |
-| After exhaustion                                            | Teardown                       | Teardown (Stop)                                               |
+| Aspect | Python RNS | Reticulum-Go |
+|--------|------------|--------------|
+| TCP / backbone / QUIC / WebTransport / HTTPS / VSOCK client | Yes for TCP/backbone, 5 s wait | Yes via reconnect.go |
+| Serial | Yes, 5 s wait | Yes with max_reconnect_tries |
+| I2P | Yes, 15 s wait | Yes in i2p.go |
+| UDP / DNS rendezvous | No | UDP when max_reconnect_tries > 0. DNS re-resolves on interval |
+| Default max tries | Unlimited (None) | Unlimited (-1 or omitted) |
+| After exhaustion | Teardown | Teardown (Stop) |
 
 ConnectivityNotifier hooks allow embedders to observe reconnect state (Go-only).
 
@@ -439,7 +439,7 @@ Tests: interface_lifecycle_test.go, reload_e2e_test.go.
 
 ## Rate and ingress settings
 
-Per-interface keys announce_cap, announce_rate__, ingress_control, and ic__ feed pkg/rate limiters consumed by transport ingress handlers. announce_cap also sizes the outgoing announce queue drained when bandwidth is available.
+Per-interface keys announce_cap, announce_rate_*, ingress_control, and ic_* feed pkg/rate limiters consumed by transport ingress handlers. announce_cap also sizes the outgoing announce queue drained when bandwidth is available.
 
 ## Operational notes
 
@@ -451,23 +451,23 @@ Per-interface keys announce_cap, announce_rate__, ingress_control, and ic__ feed
 
 ## Testing
 
-| Test                      | Env / command                                                                 |
-| ------------------------- | ----------------------------------------------------------------------------- |
-| IFAC live                 | RUN_LIVE_INTEROP=1, tests/interop/ifac_live_test.go                           |
-| Pipe live                 | RUN_LIVE_INTEROP=1, tests/interop/pipe_live_test.go                           |
-| Serial live               | RUN_LIVE_INTEROP=1, tests/interop/serial_live_test.go                         |
-| DNS rendezvous live       | RUN_LIVE_INTEROP=1, tests/interop/dns_rendezvous_live_test.go                 |
-| VSOCK live                | RUN_LIVE_INTEROP=1, tests/interop/vsock_live_test.go (Linux)                  |
-| HTTPS live                | RUN_LIVE_INTEROP=1, tests/interop/https_live_test.go                          |
-| QUIC / WebTransport live  | RUN_LIVE_INTEROP=1, tests/interop/quic_live_test.go                           |
-| Shared RPC live           | RUN_LIVE_INTEROP=1, tests/interop/shared_rpc_live_test.go                     |
-| Auto live                 | tests/interop/auto_live_test.go                                               |
-| Backbone live             | tests/interop/backbone_live_test.go                                           |
-| I2P live                  | RUN_LIVE_I2P=1 (directory peers fetched at runtime)                           |
-| I2P Go and Python interop | RUN_LIVE_INTEROP=1 plus reachable SAM, tests/interop/i2p_live_test.go         |
-| Race (Stop vs Send)       | go test -race ./pkg/interfaces/ -run Race plus DNS/VSOCK/HTTPS/I2P unit tests |
-| Goroutine leak            | go test ./pkg/interfaces/ -run NoGoroutineLeak                                |
-| Fuzz (examples)           | go test ./pkg/interfaces/ -run '^$' -fuzz=FuzzParseRNSTXT -fuzztime=20s       |
+| Test | Env / command |
+|------|---------------|
+| IFAC live | RUN_LIVE_INTEROP=1, tests/interop/ifac_live_test.go |
+| Pipe live | RUN_LIVE_INTEROP=1, tests/interop/pipe_live_test.go |
+| Serial live | RUN_LIVE_INTEROP=1, tests/interop/serial_live_test.go |
+| DNS rendezvous live | RUN_LIVE_INTEROP=1, tests/interop/dns_rendezvous_live_test.go |
+| VSOCK live | RUN_LIVE_INTEROP=1, tests/interop/vsock_live_test.go (Linux) |
+| HTTPS live | RUN_LIVE_INTEROP=1, tests/interop/https_live_test.go |
+| QUIC / WebTransport live | RUN_LIVE_INTEROP=1, tests/interop/quic_live_test.go |
+| Shared RPC live | RUN_LIVE_INTEROP=1, tests/interop/shared_rpc_live_test.go |
+| Auto live | tests/interop/auto_live_test.go |
+| Backbone live | tests/interop/backbone_live_test.go |
+| I2P live | RUN_LIVE_I2P=1 (directory peers fetched at runtime) |
+| I2P Go and Python interop | RUN_LIVE_INTEROP=1 plus reachable SAM, tests/interop/i2p_live_test.go |
+| Race (Stop vs Send) | go test -race ./pkg/interfaces/ -run Race plus DNS/VSOCK/HTTPS/I2P unit tests |
+| Goroutine leak | go test ./pkg/interfaces/ -run NoGoroutineLeak |
+| Fuzz (examples) | go test ./pkg/interfaces/ -run '^$' -fuzz=FuzzParseRNSTXT -fuzztime=20s |
 
 Fuzz targets cover TXT parsing (FuzzParseRNSTXT), HTTPS path/long-poll normalization, WebTransport path/mode, VSOCK CID and HDLC decode, Serial HDLC, peer-key pins, and I2P SAM message or destination resolve (pkg/i2p).
 

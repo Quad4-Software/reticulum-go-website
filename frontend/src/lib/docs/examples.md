@@ -7,60 +7,60 @@ Pair this page with the [API reference](/docs/api-reference).
 
 ## Which Example to Open
 
-| Goal                            | Start Here                                                                             |
-| :------------------------------ | :------------------------------------------------------------------------------------- |
-| Smallest stack bring-up         | examples/minimal                                                                       |
-| Announce callbacks              | examples/announce                                                                      |
-| Encrypted link packets          | examples/link                                                                          |
-| Minimal resource send           | examples/resources                                                                     |
-| File list and download          | examples/filetransfer                                                                  |
-| Prove-all echo                  | examples/echo                                                                          |
-| Page request client             | examples/page-downloader                                                               |
-| Pages and files over Reticulum  | reticulum-go pageserver or examples/pageserver                                         |
-| Browser WebSocket client        | examples/wasm                                                                          |
-| Python talking to the daemon    | examples/control-client                                                                |
-| C / FFI smoke test              | bindings/c/examples/smoke                                                              |
-| C librns page fetch             | bindings/c/examples/page-fetch                                                         |
-| C librns pageserver             | bindings/c/examples/pageserver                                                         |
-| Odin librns smoke               | bindings/odin/examples/smoke                                                           |
-| Odin librns page fetch          | bindings/odin/examples/page-fetch                                                      |
-| Odin librns pageserver          | bindings/odin/examples/pageserver                                                      |
-| Zig librns smoke                | bindings/zig/examples/smoke                                                            |
-| Zig librns page fetch           | bindings/zig/examples/page-fetch                                                       |
-| Zig librns pageserver           | bindings/zig/examples/pageserver                                                       |
-| C++ librns smoke                | bindings/cpp/examples/smoke                                                            |
-| C++ librns page fetch           | bindings/cpp/examples/page-fetch                                                       |
-| C++ librns pageserver           | bindings/cpp/examples/pageserver                                                       |
-| Rust librns smoke               | bindings/rust/examples/smoke                                                           |
-| Rust librns page fetch          | bindings/rust/examples/page-fetch                                                      |
-| Rust librns pageserver          | bindings/rust/examples/pageserver                                                      |
-| Python librns smoke             | bindings/python/examples/smoke                                                         |
-| Python librns page fetch        | bindings/python/examples/page-fetch                                                    |
-| Python librns pageserver        | bindings/python/examples/pageserver                                                    |
-| Lua librns smoke                | bindings/lua/examples/smoke                                                            |
-| Lua librns page fetch           | bindings/lua/examples/page-fetch                                                       |
-| Lua librns pageserver           | bindings/lua/examples/pageserver                                                       |
-| Swift librns smoke              | bindings/swift/examples/smoke                                                          |
-| Swift librns page fetch         | bindings/swift/examples/page-fetch                                                     |
-| Swift librns pageserver         | bindings/swift/examples/pageserver                                                     |
-| Java librns smoke               | bindings/java/examples/smoke                                                           |
-| Java librns page fetch          | bindings/java/examples/page-fetch                                                      |
-| Java librns pageserver          | bindings/java/examples/pageserver                                                      |
-| Kotlin librns smoke             | bindings/kotlin/examples/smoke                                                         |
-| Kotlin librns page fetch        | bindings/kotlin/examples/page-fetch                                                    |
-| Kotlin librns pageserver        | bindings/kotlin/examples/pageserver                                                    |
-| Dart librns FFI smoke           | bindings/dart/examples/smoke                                                           |
-| Odin librns bindings            | bindings/odin                                                                          |
-| Zig librns bindings             | bindings/zig                                                                           |
-| C++ librns bindings             | bindings/cpp                                                                           |
-| Rust librns bindings            | bindings/rust                                                                          |
-| Python librns bindings          | bindings/python                                                                        |
-| Lua librns bindings             | bindings/lua                                                                           |
-| Swift librns bindings           | bindings/swift                                                                         |
-| Java librns bindings            | bindings/java                                                                          |
-| Kotlin librns bindings          | bindings/kotlin                                                                        |
-| Dart librns FFI and Control API | bindings/dart                                                                          |
-| Operator CLIs                   | reticulum-go status \| id \| probe \| path \| cp then [CLI Utilities](/docs/utilities) |
+| Goal | Start Here |
+| :--- | :--- |
+| Smallest stack bring-up | examples/minimal |
+| Announce callbacks | examples/announce |
+| Encrypted link packets | examples/link |
+| Minimal resource send | examples/resources |
+| File list and download | examples/filetransfer |
+| Prove-all echo | examples/echo |
+| Page request client | examples/page-downloader |
+| Pages and files over Reticulum | reticulum-go pageserver or examples/pageserver |
+| Browser WebSocket client | examples/wasm |
+| Python talking to the daemon | examples/control-client |
+| C / FFI smoke test | bindings/c/examples/smoke |
+| C librns page fetch | bindings/c/examples/page-fetch |
+| C librns pageserver | bindings/c/examples/pageserver |
+| Odin librns smoke | bindings/odin/examples/smoke |
+| Odin librns page fetch | bindings/odin/examples/page-fetch |
+| Odin librns pageserver | bindings/odin/examples/pageserver |
+| Zig librns smoke | bindings/zig/examples/smoke |
+| Zig librns page fetch | bindings/zig/examples/page-fetch |
+| Zig librns pageserver | bindings/zig/examples/pageserver |
+| C++ librns smoke | bindings/cpp/examples/smoke |
+| C++ librns page fetch | bindings/cpp/examples/page-fetch |
+| C++ librns pageserver | bindings/cpp/examples/pageserver |
+| Rust librns smoke | bindings/rust/examples/smoke |
+| Rust librns page fetch | bindings/rust/examples/page-fetch |
+| Rust librns pageserver | bindings/rust/examples/pageserver |
+| Python librns smoke | bindings/python/examples/smoke |
+| Python librns page fetch | bindings/python/examples/page-fetch |
+| Python librns pageserver | bindings/python/examples/pageserver |
+| Lua librns smoke | bindings/lua/examples/smoke |
+| Lua librns page fetch | bindings/lua/examples/page-fetch |
+| Lua librns pageserver | bindings/lua/examples/pageserver |
+| Swift librns smoke | bindings/swift/examples/smoke |
+| Swift librns page fetch | bindings/swift/examples/page-fetch |
+| Swift librns pageserver | bindings/swift/examples/pageserver |
+| Java librns smoke | bindings/java/examples/smoke |
+| Java librns page fetch | bindings/java/examples/page-fetch |
+| Java librns pageserver | bindings/java/examples/pageserver |
+| Kotlin librns smoke | bindings/kotlin/examples/smoke |
+| Kotlin librns page fetch | bindings/kotlin/examples/page-fetch |
+| Kotlin librns pageserver | bindings/kotlin/examples/pageserver |
+| Dart librns FFI smoke | bindings/dart/examples/smoke |
+| Odin librns bindings | bindings/odin |
+| Zig librns bindings | bindings/zig |
+| C++ librns bindings | bindings/cpp |
+| Rust librns bindings | bindings/rust |
+| Python librns bindings | bindings/python |
+| Lua librns bindings | bindings/lua |
+| Swift librns bindings | bindings/swift |
+| Java librns bindings | bindings/java |
+| Kotlin librns bindings | bindings/kotlin |
+| Dart librns FFI and Control API | bindings/dart |
+| Operator CLIs | reticulum-go status \| id \| probe \| path \| cp then [CLI Utilities](/docs/utilities) |
 
 ## minimal
 
@@ -137,8 +137,8 @@ Preferred: reticulum-go pageserver (built into the main binary). Sample pages an
 
 Serves:
 
-- /page/ for HTML pages
-- /file/ for static files
+* /page/ for HTML pages
+* /file/ for static files
 
 Live interoperability is tested via tests/interop/pageserver_live_test.go when RUN_LIVE_INTEROP=1 is set.
 
@@ -319,7 +319,7 @@ make -C bindings/cpp/examples/pageserver
 
 ## Rust / Python / Lua / Swift / Java / Kotlin / Dart examples
 
-Each language binding keeps demos under bindings/&lt;lang&gt;/examples/.
+Each language binding keeps demos under bindings/<lang>/examples/.
 
 ```bash
 task build-librns
@@ -413,10 +413,10 @@ Most examples keep their own go.mod with a replace pointing at the repository ro
 
 ## Related Documents
 
-- [API Reference](/docs/api-reference)
-- [Getting Started](/docs/getting-started)
-- [Links, channels, and resources](/docs/links-channels-and-resources)
-- [Embedding and WebAssembly](/docs/embedding-and-wasm)
-- [Control API](/docs/control-api)
-- [librns](/docs/librns)
-- [CLI Utilities](/docs/utilities)
+* [API Reference](/docs/api-reference)
+* [Getting Started](/docs/getting-started)
+* [Links, channels, and resources](/docs/links-channels-and-resources)
+* [Embedding and WebAssembly](/docs/embedding-and-wasm)
+* [Control API](/docs/control-api)
+* [librns](/docs/librns)
+* [CLI Utilities](/docs/utilities)

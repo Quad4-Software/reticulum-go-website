@@ -1,7 +1,5 @@
 # Cryptography
 
-## Scope
-
 This document is the canonical cryptography reference for Reticulum-Go. It supports security reviews and correct use of APIs. For vulnerability reporting and CI practices see [Security](/docs/security).
 
 Implementation code:
@@ -23,15 +21,15 @@ On-wire layouts match the Python reference. Changing algorithms or sizes without
 
 ## Primitive inventory
 
-| Primitive    | Role                                                     | Implementation                                      |
-| ------------ | -------------------------------------------------------- | --------------------------------------------------- |
-| X25519       | Static identity DH, ephemeral ECDH, ratchets, IFAC input | golang.org/x/crypto/curve25519 via pkg/cryptography |
-| Ed25519      | Identity signatures, IFAC inner identity                 | crypto/ed25519 via pkg/cryptography                 |
-| SHA-256      | Hashes, destination construction, digests                | crypto/sha256                                       |
-| HKDF-SHA256  | Identity encrypt keys, IFAC derivation                   | golang.org/x/crypto/hkdf                            |
-| AES-256-CBC  | Identity tokens, link traffic where reference uses CBC   | crypto/aes, PKCS#7 in pkg/cryptography              |
-| HMAC-SHA256  | Identity ciphertext authentication                       | crypto/hmac                                         |
-| Random bytes | Key generation, IVs                                      | crypto/rand                                         |
+| Primitive | Role | Implementation |
+|-----------|------|----------------|
+| X25519 | Static identity DH, ephemeral ECDH, ratchets, IFAC input | golang.org/x/crypto/curve25519 via pkg/cryptography |
+| Ed25519 | Identity signatures, IFAC inner identity | crypto/ed25519 via pkg/cryptography |
+| SHA-256 | Hashes, destination construction, digests | crypto/sha256 |
+| HKDF-SHA256 | Identity encrypt keys, IFAC derivation | golang.org/x/crypto/hkdf |
+| AES-256-CBC | Identity tokens, link traffic where reference uses CBC | crypto/aes, PKCS#7 in pkg/cryptography |
+| HMAC-SHA256 | Identity ciphertext authentication | crypto/hmac |
+| Random bytes | Key generation, IVs | crypto/rand |
 
 Pinned extended module: golang.org/x/crypto (version in go.mod, currently v0.52.0).
 
@@ -117,7 +115,7 @@ Local private keys:
 - EnableRatchets(path) loads or creates a signed msgpack list at that path
 - EnableRatchetsInMemory keeps the list in RAM and writes nothing
 
-Announces carry the current 32-byte public key when enabled. Peers persist that public key under storage/ratchets/{'{'}destination_hash{'}'} as {'{'}ratchet, received{'}'} (Python layout) unless in-memory or shared-instance mode is on. Destination.Encrypt for SINGLE destinations uses Identity.GetRatchet(destHash) when a non-expired key exists. EnforceRatchets rejects identity-key ciphertext. Links do not use this mechanism.
+Announces carry the current 32-byte public key when enabled. Peers persist that public key under storage/ratchets/{destination_hash} as {ratchet, received} (Python layout) unless in-memory or shared-instance mode is on. Destination.Encrypt for SINGLE destinations uses Identity.GetRatchet(destHash) when a non-expired key exists. EnforceRatchets rejects identity-key ciphertext. Links do not use this mechanism.
 
 ## GROUP Token keys
 
@@ -136,21 +134,21 @@ cryptography.SetProvider replaces the active provider for tests or experiments. 
 
 ## Verification
 
-| Method                | Location                                                                                                                      |
-| --------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| Automated cross tests | tests/crossref, package tests under pkg/                                                                                      |
-| Live interop          | tests/interop                                                                                                                 |
-| External spec         | [Reticulum manual](https://reticulum.network/manual/reference.html), [crypto overview](https://reticulum.network/crypto.html) |
+| Method | Location |
+|--------|----------|
+| Automated cross tests | tests/crossref, package tests under pkg/ |
+| Live interop | tests/interop |
+| External spec | [Reticulum manual](https://reticulum.network/manual/reference.html), [crypto overview](https://reticulum.network/crypto.html) |
 
 Parity claims are listed in [Compatibility](/docs/compatibility).
 
 ## Protocol constants
 
-| Item                 | Value                                   |
-| -------------------- | --------------------------------------- |
-| Curve                | Curve25519 (X25519 + Ed25519)           |
-| KEYSIZE              | 512 bits (256 encryption + 256 signing) |
-| TRUNCATED_HASHLENGTH | 128 bits                                |
-| RATCHETSIZE          | 256 bits                                |
-| RATCHET_EXPIRY       | 2 592 000 seconds (30 days)             |
-| Default MTU          | 500 bytes (pkg/packet.MTU)              |
+| Item | Value |
+|------|-------|
+| Curve | Curve25519 (X25519 + Ed25519) |
+| KEYSIZE | 512 bits (256 encryption + 256 signing) |
+| TRUNCATED_HASHLENGTH | 128 bits |
+| RATCHETSIZE | 256 bits |
+| RATCHET_EXPIRY | 2 592 000 seconds (30 days) |
+| Default MTU | 500 bytes (pkg/packet.MTU) |

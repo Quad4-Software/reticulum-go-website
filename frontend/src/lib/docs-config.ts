@@ -55,6 +55,7 @@ export const DOC_NAV: DocNavSection[] = [
 		title: 'Reference',
 		items: [
 			{ title: 'Compatibility', slug: 'compatibility' },
+			{ title: 'Deviations', slug: 'deviations' },
 			{ title: 'Security', slug: 'security' },
 			{ title: 'Development and testing', slug: 'development-and-testing' },
 			{ title: 'Interop timeline', slug: 'interop-timeline' }

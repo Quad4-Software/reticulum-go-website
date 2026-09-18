@@ -1,17 +1,15 @@
 # Security
 
-## Scope
-
 This page summarizes security practices for Reticulum-Go. The repository root [SECURITY.md](https://github.com/Quad4-Software/Reticulum-Go/blob/master/SECURITY.md) remains the authoritative source for reporting contacts and detailed CI paths. [Cryptography](/docs/cryptography) covers algorithms and key handling.
 
 ## Reporting vulnerabilities
 
 Report security issues privately before public disclosure.
 
-| Channel        | Contact                          |
-| -------------- | -------------------------------- |
+| Channel | Contact |
+|---------|---------|
 | Reticulum LXMF | f489752fbef161c64d65e385a4e9fc74 |
-| Email          | security@quad4.io                |
+| Email | security@quad4.io |
 
 Include enough detail to reproduce the issue: component, expected behavior, actual behavior, and environment.
 
@@ -42,14 +40,14 @@ sandbox_extra_paths adds operator paths (serial devices, custom binaries, TLS fi
 
 Packaged systemd units add ProtectSystem, ProtectKernel*, LockPersonality, RestrictRealtime, RestrictSUIDSGID, and UMask=0077. They do not switch to a dedicated user. An optional drop-in example lives at /usr/share/doc/reticulum-go/reticulum-go.user.conf.example.
 
-| OS           | Mechanism                                           | Effect                                                                                                                                                       |
-| ------------ | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Linux        | Landlock, seccomp-bpf, PR_SET_NO_NEW_PRIVS, rlimits | Whitelists config and storage paths (including $XDG_RUNTIME_DIR for Secret Service), denies high-risk syscalls such as ptrace/mount/module load, limits caps |
-| OpenBSD      | unveil, pledge                                      | Restricts visible paths and syscalls                                                                                                                         |
-| FreeBSD      | cap_enter, rlimits                                  | Capability mode after resource limits                                                                                                                        |
-| Darwin       | rlimits                                             | Memory, FD, core dump, stack, process limits                                                                                                                 |
-| Windows      | Job object                                          | Limits breakaway, processes, working set                                                                                                                     |
-| Other / WASM | no-op                                               | Logs unsupported, continues                                                                                                                                  |
+| OS | Mechanism | Effect |
+|----|-----------|--------|
+| Linux | Landlock, seccomp-bpf, PR_SET_NO_NEW_PRIVS, rlimits | Whitelists config and storage paths (including $XDG_RUNTIME_DIR for Secret Service), denies high-risk syscalls such as ptrace/mount/module load, limits caps |
+| OpenBSD | unveil, pledge | Restricts visible paths and syscalls |
+| FreeBSD | cap_enter, rlimits | Capability mode after resource limits |
+| Darwin | rlimits | Memory, FD, core dump, stack, process limits |
+| Windows | Job object | Limits breakaway, processes, working set |
+| Other / WASM | no-op | Logs unsupported, continues |
 
 Landlock requires Linux kernel 5.13 or newer. Older kernels skip Landlock gracefully where possible. Seccomp soft-fails on install error or ENOSYS.
 
@@ -73,7 +71,7 @@ Application code should use pkg/cryptography and pkg/identity. IFAC configuratio
 
 **Actions pinning.** Third-party actions are pinned to full commit SHAs. Dependabot proposes weekly Action updates (.github/dependabot.yml).
 
-**Tree integrity.** Root file reticulum-go.rsm is an rnid signed message embedding SHA-256 hashes of tracked files (excluding vendor/ trees). CI verifies signer e46112d44649266d71fe2193e00a4710 and rechecks bytes at job start and end (make tree-rsm-verify).
+**Tree integrity.** Root file reticulum-go.rsm is an rnid signed message embedding SHA-256 hashes of tracked files (excluding vendor/ trees). CI verifies signer e318cbc04468bd574db2b4523dddd710 and rechecks bytes at job start and end (make tree-rsm-verify).
 
 ## Releases
 
@@ -93,12 +91,12 @@ SBOMs (SPDX and CycloneDX) are attached to tagged releases via Trivy (task sbom)
 
 ## Static analysis in development
 
-| Tool        | Purpose                                     |
-| ----------- | ------------------------------------------- |
-| Gosec       | Go security linter                          |
+| Tool | Purpose |
+|------|---------|
+| Gosec | Go security linter |
 | govulncheck | Go vulnerability database with reachability |
-| Trivy       | Filesystem and dependency scan              |
-| revive      | Style and lint (make lint)                  |
+| Trivy | Filesystem and dependency scan |
+| revive | Style and lint (make lint) |
 
 Run locally:
 
@@ -128,12 +126,12 @@ Go-only. Config key dos_protection in [reticulum] (default off). Implementation:
 
 This is **node-local** overload control. It is off until you opt in, because a false positive on a public transport drops path requests and can freeze a shared UDP interface. Mesh announce and path-request de-dup still run in Transport. When enabled it sheds work on this process so floods, accept storms, crypto spam, handshake spam, resource pile-ups, and memory pressure do not freeze the daemon. It is not a network-wide IDS and does not stop Sybil join storms across the mesh (for example mass fake peers on an anonymity overlay). Pair it with IFAC, careful public-face exposure, and operator policy.
 
-| Mode    | Effect                                                                                                        |
-| ------- | ------------------------------------------------------------------------------------------------------------- |
-| off     | No gates                                                                                                      |
-| detect  | Observe and warn only                                                                                         |
-| prevent | Observe, warn, and block or shed                                                                              |
-| auto    | Learn baselines quietly, persist them, arm prevent, relearn on interface set change or moderate traffic drift |
+| Mode | Effect |
+|------|--------|
+| off | No gates |
+| detect | Observe and warn only |
+| prevent | Observe, warn, and block or shed |
+| auto | Learn baselines quietly, persist them, arm prevent, relearn on interface set change or moderate traffic drift |
 
 Adaptive baselines use EWMA of once-per-second peak pps/bps. Flood samples are ignored while learning so an attack cannot become the quiet baseline. Persistence path: storage/dos_protect.mpack.
 
@@ -157,14 +155,14 @@ Counters increment at existing drop and fail sites (IFAC verify, link HMAC, unpa
 
 Operators see the numbers through:
 
-| Surface                             | What you get                                                                                   |
-| ----------------------------------- | ---------------------------------------------------------------------------------------------- |
-| reticulum-go status                 | Per-interface integrity totals and fail rate when non-zero                                     |
-| reticulum-go status -json           | Same fields in JSON (ifac_fail, hmac_fail, integrity_fail_rate, stale_closes, announce_dup, …) |
-| reticulum-go snapshot (rgosnap)     | Paths, active links, and full transport health JSON including path drop counters               |
-| reticulum-go slow                   | Scored findings such as integrity_burst, auth_pressure, link_degraded, ingress_pressure        |
-| Control API GET /v1/status          | Integrity and drop fields on each interface object                                             |
-| Shared-instance RPC interface_stats | Same msgpack keys (Go daemon only populates them)                                              |
+| Surface | What you get |
+|---------|----------------|
+| reticulum-go status | Per-interface integrity totals and fail rate when non-zero |
+| reticulum-go status -json | Same fields in JSON (ifac_fail, hmac_fail, integrity_fail_rate, stale_closes, announce_dup, …) |
+| reticulum-go snapshot (rgosnap) | Paths, active links, and full transport health JSON including path drop counters |
+| reticulum-go slow | Scored findings such as integrity_burst, auth_pressure, link_degraded, ingress_pressure |
+| Control API GET /v1/status | Integrity and drop fields on each interface object |
+| Shared-instance RPC interface_stats | Same msgpack keys (Go daemon only populates them) |
 
 Scoring prefers fail ratios and bitrate-aware thresholds. High latency alone on a low-bitrate radio is not treated as critical. There is no auto blackhole or auto interface offline in this release. The operator decides whether to adjust IFAC keys, enable ingress control, blackhole an identity, or take an interface down.
 
@@ -195,5 +193,5 @@ Link establishment also records expected_hops on both initiator and responder. I
 - [CLI utilities](/docs/utilities) for status and slow health findings
 - [Packet debug](/docs/packet-debug) for dump, snapshot, and Wireshark
 - [SECURITY.md](https://github.com/Quad4-Software/Reticulum-Go/blob/master/SECURITY.md) full policy text
-- [Compatibility](/docs/compatibility) for RNS 1.5.2 interop
+- [Compatibility](/docs/compatibility) for RNS 1.5.4 interop
 - [Package map](/docs/package-map#pkgprotect) for pkg/protect

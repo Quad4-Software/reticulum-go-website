@@ -55,17 +55,17 @@ The host process owns clearnet. The guest joins the mesh through the Microvm Gue
 
 ## Layout
 
-| Path                           | Role                                         |
-| ------------------------------ | -------------------------------------------- |
-| microvm/up.sh                  | One-shot prepare + start                     |
-| microvm/fetch-kernel.sh        | Download out/vmlinux                         |
-| microvm/build-rootfs.sh        | Build out/rootfs.ext4                        |
-| microvm/run.sh                 | Start Firecracker                            |
-| microvm/run-host-bridge.sh     | Host reticulum + vsock pipe                  |
-| microvm/stop.sh                | Stop guest, pasta, and host bridge           |
+| Path | Role |
+|------|------|
+| microvm/up.sh | One-shot prepare + start |
+| microvm/fetch-kernel.sh | Download out/vmlinux |
+| microvm/build-rootfs.sh | Build out/rootfs.ext4 |
+| microvm/run.sh | Start Firecracker |
+| microvm/run-host-bridge.sh | Host reticulum + vsock pipe |
+| microvm/stop.sh | Stop guest, pasta, and host bridge |
 | microvm/guest/reticulum.config | Guest config (VSOCK hub, persistent storage) |
-| microvm/host-bridge.config     | Host config (vsock pipe + your hubs)         |
-| microvm/out/                   | Kernel, rootfs, sockets, logs (gitignored)   |
+| microvm/host-bridge.config | Host config (vsock pipe + your hubs) |
+| microvm/out/ | Kernel, rootfs, sockets, logs (gitignored) |
 
 ## Networking modes
 
@@ -109,13 +109,13 @@ Guest storage lives on the rootfs under /etc/reticulum/storage (next to the gues
 
 ## Makefile and Task
 
-| Make                 | Task                 | Action                                                                    |
-| -------------------- | -------------------- | ------------------------------------------------------------------------- |
-| make microvm-up      | task microvm:up      | Fetch kernel if needed, build rootfs if needed, start guest + host bridge |
-| make microvm-stop    | task microvm:stop    | Stop guest and host bridge                                                |
-| make microvm-kernel  | task microvm:kernel  | Fetch kernel only                                                         |
-| make microvm-rootfs  | task microvm:rootfs  | Build rootfs only                                                         |
-| make microvm-rebuild | task microvm:rebuild | Force kernel+rootfs rebuild then up                                       |
+| Make | Task | Action |
+|------|------|--------|
+| make microvm-up | task microvm:up | Fetch kernel if needed, build rootfs if needed, start guest + host bridge |
+| make microvm-stop | task microvm:stop | Stop guest and host bridge |
+| make microvm-kernel | task microvm:kernel | Fetch kernel only |
+| make microvm-rootfs | task microvm:rootfs | Build rootfs only |
+| make microvm-rebuild | task microvm:rebuild | Force kernel+rootfs rebuild then up |
 
 ## Logs
 
