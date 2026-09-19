@@ -158,6 +158,7 @@ export default defineConfig(({ command }) => {
 					]
 				},
 				workbox: {
+					navigateFallback: '/',
 					maximumFileSizeToCacheInBytes: 8 * 1024 * 1024,
 					globPatterns: [
 						'client/**/*.{js,css,ico,png,svg,webp,webmanifest,wasm}',
@@ -236,6 +237,7 @@ export default defineConfig(({ command }) => {
 				kit: {
 					adapterFallback: 'index.html',
 					spa: {
+						fallbackMapping: '/',
 						fallbackRevision: async () => Date.now().toString()
 					},
 					includeVersionFile: false
