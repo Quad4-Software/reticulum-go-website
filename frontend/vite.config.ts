@@ -76,9 +76,7 @@ export default defineConfig(({ command }) => {
 		wasmSri = {};
 	}
 	return {
-		resolve: {
-			conditions: isTest ? ['browser'] : []
-		},
+		resolve: isTest ? { conditions: ['browser'] } : {},
 		define: {
 			'import.meta.env.VITE_WASM_SHA256': JSON.stringify(wasmSha256),
 			'import.meta.env.VITE_WASM_SRI': JSON.stringify(wasmSri)
@@ -126,6 +124,8 @@ export default defineConfig(({ command }) => {
 			sveltekit(),
 			...SvelteKitPWA({
 				registerType: 'autoUpdate',
+				scope: '/',
+				buildBase: '/',
 				manifest: {
 					name: 'Reticulum-Go',
 					short_name: 'Reticulum-Go',
