@@ -127,6 +127,10 @@
 								data-sveltekit-preload-data="false"
 								data-sveltekit-preload-code="false"
 								aria-current={$locale === l ? 'true' : undefined}
+								onclick={(event) => {
+									event.preventDefault();
+									locale.set(l);
+								}}
 								class="w-full flex items-center justify-between gap-3 px-4 py-2.5 text-left text-sm transition-colors {$locale ===
 								l
 									? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white font-medium'

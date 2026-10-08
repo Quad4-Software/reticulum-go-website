@@ -4,12 +4,23 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
+import { execSync } from 'node:child_process';
 import { sveltekit } from '@sveltejs/kit/vite';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig, type Plugin } from 'vite';
 import { SvelteKitPWA } from '@vite-pwa/sveltekit';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+function gitSha(): string {
+	const env = process.env.GIT_SHA?.trim();
+	if (env) return env;
+	try {
+		return execSync('git rev-parse HEAD', { cwd: __dirname }).toString().trim();
+	} catch {
+		return 'master';
+	}
+}
 
 /**
  * Vite 8 + @sveltejs/kit 2.69 can load `*.server.*` / `$lib/server` during the
@@ -79,7 +90,8 @@ export default defineConfig(({ command }) => {
 		resolve: isTest ? { conditions: ['browser'] } : {},
 		define: {
 			'import.meta.env.VITE_WASM_SHA256': JSON.stringify(wasmSha256),
-			'import.meta.env.VITE_WASM_SRI': JSON.stringify(wasmSri)
+			'import.meta.env.VITE_WASM_SRI': JSON.stringify(wasmSri),
+			'import.meta.env.VITE_GIT_SHA': JSON.stringify(gitSha())
 		},
 		test: {
 			environment: 'jsdom',

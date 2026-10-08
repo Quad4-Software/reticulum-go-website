@@ -1,3 +1,4 @@
+import { building } from '$app/environment';
 import type { LayoutServerLoad } from './$types';
 import { locale, waitLocale } from 'svelte-i18n';
 import { DEFAULT_LOCALE, isLocaleSupported } from '$lib/site-config';
@@ -10,6 +11,16 @@ function isSupportedTheme(value: string | null): value is 'light' | 'dark' | 'sy
 }
 
 export const load: LayoutServerLoad = async ({ url, cookies }) => {
+	if (building) {
+		locale.set(DEFAULT_LOCALE);
+		await waitLocale(DEFAULT_LOCALE);
+		return {
+			currentLocale: DEFAULT_LOCALE,
+			currentTheme: 'system',
+			isDark: false,
+			currentPath: url.pathname
+		};
+	}
 	const queryLocale = url.searchParams.get('lang');
 	const cookieLocale = cookies.get('locale') ?? null;
 	const currentLocale =

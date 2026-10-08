@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import '../app.css';
 	import '../lib/i18n';
+	import { building } from '$app/environment';
 	import { page } from '$app/state';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import Footer from '$lib/components/Footer.svelte';
@@ -21,7 +22,7 @@
 
 	const canonicalUrl = $derived(getCanonicalUrl(page.url.pathname));
 	const hreflangLinks = $derived(getHreflangLinks(page.url.pathname));
-	const isPopout = $derived(page.url.searchParams.get('popout') === '1');
+	const isPopout = $derived(!building && page.url.searchParams.get('popout') === '1');
 	const isSourcePage = $derived(
 		page.url.pathname === '/source' || page.url.pathname.startsWith('/source/')
 	);

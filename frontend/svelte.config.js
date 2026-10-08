@@ -26,26 +26,27 @@ const config = {
 			register: false
 		},
 		adapter: adapter({
-			fallback: 'index.html', // SPA mode
+			fallback: '404.html',
 			pages: 'build',
 			assets: 'build',
 			precompress: false,
 			strict: true
 		}),
 		prerender: {
+			handleMissingId: 'warn',
 			entries: ['*', ...DOC_SLUGS.map((slug) => `/docs/${slug}`)],
 			handleUnseenRoutes: ({ routes }) => {
-				const safeRoutes = routes.filter((r) => typeof r === 'string');
-				const ignorable = (r) =>
-					r === '/docs' ||
-					r.startsWith('/docs/') ||
-					r === '/mirrors/reticulum' ||
-					r.startsWith('/mirrors/reticulum/') ||
-					r === '/sitemap.xml' ||
-					r === '/llms.txt' ||
-					r === '/llms-full.txt' ||
-					r === '/api/agent';
-				const unseen = safeRoutes.filter((r) => !ignorable(r));
+				const ignorable = new Set([
+					'/set-locale',
+					'/set-theme',
+					'/api/repo-info',
+					'/api/reticulum-go/releases',
+					'/api/ren-browser/releases',
+					'/download/reticulum-go.zip'
+				]);
+				const unseen = routes
+					.filter((r) => typeof r === 'string')
+					.filter((r) => !ignorable.has(r));
 				if (unseen.length === 0) return;
 				throw new Error(`Unseen prerenderable routes: ${unseen.join(', ')}`);
 			}
