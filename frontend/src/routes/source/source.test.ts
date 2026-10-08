@@ -17,7 +17,7 @@ function read(rel: string) {
 
 describe('source page', () => {
 	it('exposes official and mirror hubs plus site zip download', () => {
-		expect(RETICULUM_GO_SOURCE_ZIP_PATH).toBe('/download/reticulum-go.zip');
+		expect(RETICULUM_GO_SOURCE_ZIP_PATH).toContain('github.com/Quad4-Software/Reticulum-Go/archive');
 		expect(RETICULUM_GO_GITHUB).toContain('github.com/Quad4-Software/Reticulum-Go');
 		expect(RETICULUM_GO_LAVAFORGE).toContain('lavaforge.org');
 		expect(RETICULUM_GO_RNS_CLONE).toContain('git clone rns://');
@@ -47,7 +47,6 @@ describe('startup caches', () => {
 		const hooks = read('src/hooks.server.ts');
 		expect(hooks).toContain('ensureSourceZip');
 		expect(hooks).toContain('ensureDocsSynced');
-		expect(hooks).toContain('ensureReticulumSiteMirror');
 		expect(hooks).toContain('export const init');
 	});
 
@@ -55,7 +54,6 @@ describe('startup caches', () => {
 		const docker = readFileSync(resolve(root, '../Dockerfile'), 'utf8');
 		expect(docker).toContain('SOURCE_ZIP_CACHE_DIR=/tmp/reticulum-go-source-cache');
 		expect(docker).toContain('DOCS_CACHE_DIR=/tmp/reticulum-go-docs-cache');
-		expect(docker).toContain('RETICULUM_SITE_MIRROR_CACHE_DIR=/tmp/reticulum-site-mirror-cache');
 	});
 });
 

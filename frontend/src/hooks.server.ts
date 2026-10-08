@@ -1,7 +1,6 @@
 import type { Handle, ServerInit } from '@sveltejs/kit';
 import { ensureSourceZip } from '$lib/server/source-zip';
 import { ensureDocsSynced } from '$lib/server/docs-sync';
-import { ensureReticulumSiteMirror } from '$lib/server/reticulum-site-mirror';
 
 export const init: ServerInit = async () => {
 	ensureSourceZip().catch((err) => {
@@ -9,9 +8,6 @@ export const init: ServerInit = async () => {
 	});
 	ensureDocsSynced().catch((err) => {
 		console.error('[docs-sync] startup fetch failed', err);
-	});
-	ensureReticulumSiteMirror().catch((err) => {
-		console.error('[reticulum-mirror] startup fetch failed', err);
 	});
 };
 
@@ -31,26 +27,17 @@ const SECURITY_HEADERS: Record<string, string> = {
 		"form-action 'self'",
 		"frame-ancestors 'none'",
 		"object-src 'none'",
-		"img-src 'self' data: blob:",
+			"img-src 'self' data: blob: https://cdn.statically.io",
 		"font-src 'self' data:",
 		"style-src 'self' 'unsafe-inline'",
 		"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'",
 		"worker-src 'self' blob:",
-		"connect-src 'self' https://api.github.com https://raw.githubusercontent.com",
+		"connect-src 'self' https://api.github.com https://raw.githubusercontent.com https://cdn.jsdelivr.net https://cdn.statically.io",
 		'upgrade-insecure-requests'
 	].join('; ')
 };
 
 export const handle: Handle = async ({ event, resolve }) => {
-	const path = event.url.pathname;
-	if (path === '/mirror/reticulum' || path.startsWith('/mirror/reticulum/')) {
-		const rest = path.slice('/mirror/reticulum'.length);
-		return new Response(null, {
-			status: 301,
-			headers: { Location: `/mirrors/reticulum${rest}${event.url.search}` }
-		});
-	}
-
 	const response = await resolve(event);
 	for (const [key, value] of Object.entries(SECURITY_HEADERS)) {
 		if (!response.headers.has(key)) {

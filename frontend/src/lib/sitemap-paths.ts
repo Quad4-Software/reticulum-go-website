@@ -13,7 +13,6 @@ export const SITEMAP_PATHS = [
 	'/download',
 	'/privacy',
 	'/interactive',
-	'/mirrors/reticulum',
 	'/tools',
 	'/tools/micron-editor',
 	'/tools/rnode-flasher',

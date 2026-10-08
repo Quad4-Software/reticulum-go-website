@@ -1,13 +1,7 @@
 import { SITE_URL, SITE_DESCRIPTION } from '$lib/site-config';
 import { DOC_SLUGS } from '$lib/docs-config';
 import { RETICULUM_GO_GITHUB as RETICULUM_GO_REPO } from '$lib/source-mirrors';
-import {
-	RETICULUM_MIRROR_MANUAL,
-	RETICULUM_MIRROR_MANUAL_ZEN,
-	RETICULUM_MIRROR_PATH,
-	RETICULUM_MIRROR_ZEN,
-	RETICULUM_WEBSITE_REPO
-} from '$lib/reticulum-mirror';
+const RETICULUM_WEBSITE_REPO = 'https://github.com/markqvist/reticulum_website';
 
 export const RETICULUM_HOME = 'https://reticulum.network/';
 export const RETICULUM_ZEN = 'https://reticulum.network/zenofreticulum.html';
@@ -67,7 +61,7 @@ This file is for language models and agents. Prefer it over guessing. The Reticu
 
 - Read the Zen before inventing architecture metaphors: ${RETICULUM_ZEN}
 - Manual Zen (protocol philosophy in the Sphinx manual): ${RETICULUM_MANUAL_ZEN}
-- Local unofficial mirror of reticulum.network (same pages, slim banner): ${SITE_URL}${RETICULUM_MIRROR_PATH}
+- Official site and manual: ${RETICULUM_HOME}
 - Protocol authority: Python RNS reference and manual (${RETICULUM_MANUAL})
 - Compatibility target documented here: Python RNS 1.3.8
 - Reticulum is not one network. It is a tool to build thousands of networks.
@@ -92,7 +86,7 @@ ${AGENT_MUST_NOT.map((line) => `- ${line}`).join('\n')}
 - [Crypto overview](${RETICULUM_CRYPTO}): Cryptographic primitives overview
 - [Communications hardware](${RETICULUM_HARDWARE}): RNode and carriers
 - [Reticulum License](${RETICULUM_LICENSE}): Reference implementation license page
-- [Unofficial mirror on this host](${SITE_URL}${RETICULUM_MIRROR_PATH}): Cached copy of ${RETICULUM_WEBSITE_REPO} docs tree (site, manuals, PDF/EPUB). Prefer upstream when reachable.
+- [Official website](${RETICULUM_HOME}): ${RETICULUM_WEBSITE_REPO} docs tree (site, manuals, PDF/EPUB).
 ## This project (Reticulum-Go website)
 
 - [Site home](${SITE_URL}/): Product and WASM entry
@@ -149,8 +143,8 @@ Keep the Zen in mind:
 
 Canonical Zen page: ${RETICULUM_ZEN}
 Manual Zen: ${RETICULUM_MANUAL_ZEN}
-Local mirror (when upstream is hard to reach): ${SITE_URL}${RETICULUM_MIRROR_ZEN} and ${SITE_URL}${RETICULUM_MIRROR_MANUAL_ZEN}
-Mirrored manual root: ${SITE_URL}${RETICULUM_MIRROR_MANUAL}
+Design docs: ${RETICULUM_ZEN} and ${RETICULUM_MANUAL_ZEN}
+Manual root: ${RETICULUM_MANUAL}
 ## Verified technical anchors (do not invent beyond these without checking docs)
 
 - Destination hashes are 16 bytes (128-bit truncated SHA-256), shown as 32 hex characters.
@@ -185,7 +179,7 @@ ${AGENT_MUST_NOT.map((line) => `- ${line}`).join('\n')}
 - ${RETICULUM_CRYPTO}
 - ${RETICULUM_HARDWARE}
 - ${RETICULUM_LICENSE}
-- Mirror on this site: ${SITE_URL}${RETICULUM_MIRROR_PATH} (from ${RETICULUM_WEBSITE_REPO})
+- Official site: ${RETICULUM_HOME} (from ${RETICULUM_WEBSITE_REPO})
 
 ## Reticulum-Go documentation on this site
 
@@ -217,7 +211,7 @@ ${siteDocLinks()}
 - ${SITE_URL}/llms.txt
 - ${SITE_URL}/llms-full.txt
 - ${SITE_URL}/api/agent
-- ${SITE_URL}${RETICULUM_MIRROR_PATH}
+- ${RETICULUM_HOME}
 `;
 }
 
@@ -241,9 +235,6 @@ export type AgentContextPayload = {
 		reticulum_understanding: string;
 		reticulum_reference: string;
 		reticulum_go_repo: string;
-		reticulum_mirror: string;
-		reticulum_mirror_zen: string;
-		reticulum_mirror_manual: string;
 	};
 	markdown: {
 		llms_txt: string;
@@ -272,10 +263,7 @@ export function buildAgentContextPayload(): AgentContextPayload {
 			reticulum_whatis: RETICULUM_WHATIS,
 			reticulum_understanding: RETICULUM_UNDERSTANDING,
 			reticulum_reference: RETICULUM_REFERENCE,
-			reticulum_go_repo: RETICULUM_GO_REPO,
-			reticulum_mirror: `${SITE_URL}${RETICULUM_MIRROR_PATH}`,
-			reticulum_mirror_zen: `${SITE_URL}${RETICULUM_MIRROR_ZEN}`,
-			reticulum_mirror_manual: `${SITE_URL}${RETICULUM_MIRROR_MANUAL}`
+			reticulum_go_repo: RETICULUM_GO_REPO
 		},
 		markdown: {
 			llms_txt: buildLlmsTxt(),

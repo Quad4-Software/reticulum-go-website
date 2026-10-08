@@ -41,7 +41,6 @@ ENV PORT=3000 \
     PUBLIC_SHOW_COOLIFY=true \
     SOURCE_ZIP_CACHE_DIR=/tmp/reticulum-go-source-cache \
     DOCS_CACHE_DIR=/tmp/reticulum-go-docs-cache \
-    RETICULUM_SITE_MIRROR_CACHE_DIR=/tmp/reticulum-site-mirror-cache
 
 USER node
 

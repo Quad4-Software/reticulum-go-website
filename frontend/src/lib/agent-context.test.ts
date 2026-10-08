@@ -16,11 +16,11 @@ describe('agent context', () => {
 		expect(text).toContain(RETICULUM_ZEN);
 		expect(text).toContain(RETICULUM_MANUAL);
 		expect(text).toContain(RETICULUM_WHATIS);
-		expect(text).toContain('/mirrors/reticulum');
+		expect(text).toContain('reticulum.network');
 		expect(text).toContain('does not replace');
 		expect(text).toContain('/api/agent');
 		expect(text).toContain('/source');
-		expect(text).toContain('/download/reticulum-go.zip');
+		expect(text).toContain('archive/refs/heads/master.zip');
 		expect(text).toContain('DOCS_CACHE_DIR');
 		expect(text).toContain('rns://06a54b505bb67b25ef3f8097e8001edc/public/Reticulum-Go');
 		expect(text).toContain('lavaforge.org/Ivan/Reticulum-Go');
