@@ -29,7 +29,7 @@ CGO_ENABLED=0 go build -ldflags="-s -w" -o bin/reticulum-go ./cmd/reticulum-go
 
 ## Install to PATH
 
-The root [install.sh](../../install.sh) script can fetch a release binary or build from source, pick GOAMD64=v3 on capable linux/amd64 CPUs, and install systemd, OpenRC, runit, or dinit service files:
+The root [install.sh](https://github.com/Quad4-Software/Reticulum-Go/blob/master/install.sh) script can fetch a release binary or build from source, pick GOAMD64=v3 on capable linux/amd64 CPUs, and install systemd, OpenRC, runit, or dinit service files:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Quad4-Software/Reticulum-Go/master/install.sh | sh

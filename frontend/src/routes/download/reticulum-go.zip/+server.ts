@@ -1,6 +1,8 @@
 import { error, type RequestHandler } from '@sveltejs/kit';
 import { getSourceZipMeta, openSourceZipStream } from '$lib/server/source-zip';
 
+export const prerender = false;
+
 export const GET: RequestHandler = async ({ url }) => {
 	if (url.searchParams.get('meta') === '1') {
 		const meta = (await getSourceZipMeta()) ?? null;

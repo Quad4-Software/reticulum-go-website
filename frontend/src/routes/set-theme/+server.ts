@@ -1,5 +1,7 @@
 import { redirect } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
+
+export const prerender = false;
 import { safeRedirectTarget } from '$lib/security';
 
 const SUPPORTED_THEMES = new Set(['light', 'dark', 'system']);

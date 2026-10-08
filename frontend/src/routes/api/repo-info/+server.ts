@@ -1,5 +1,7 @@
 import { json, type RequestHandler } from '@sveltejs/kit';
 
+export const prerender = false;
+
 const API_BASE = 'https://api.github.com';
 const REPO_OWNER = 'Quad4-Software';
 const REPO_NAME = 'Reticulum-Go';

@@ -1,6 +1,7 @@
 import { access, mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { tmpdir } from 'node:os';
+import { fileURLToPath } from 'node:url';
 import { marked } from 'marked';
 import { RETICULUM_GO_GITHUB } from '$lib/source-mirrors';
 import { isSafeDocSlug, sanitizeHtml } from '$lib/server/sanitize-html';
@@ -24,6 +25,8 @@ type GithubContentItem = {
 	download_url?: string | null;
 	sha?: string;
 };
+
+const LOCAL_DOCS_DIR = join(dirname(fileURLToPath(import.meta.url)), '../docs');
 
 function cacheDir(): string {
 	return process.env.DOCS_CACHE_DIR?.trim() || join(tmpdir(), 'reticulum-go-docs-cache');
@@ -53,10 +56,7 @@ async function pathExists(path: string): Promise<boolean> {
 export function rewriteDocLinks(markdown: string, githubBlobBase = GITHUB_BLOB): string {
 	return markdown
 		.replace(/\]\(([a-z0-9-]+)\.md(#[a-zA-Z0-9_-]*)?\)/g, '](/docs/$1$2)')
-		.replace(/\]\(\.\.\/\.\.\/README\.md\)/g, `](${githubBlobBase}/README.md)`)
-		.replace(/\]\(\.\.\/\.\.\/COMPATIBILITY\.md\)/g, `](${githubBlobBase}/COMPATIBILITY.md)`)
-		.replace(/\]\(\.\.\/\.\.\/SECURITY\.md\)/g, `](${githubBlobBase}/SECURITY.md)`)
-		.replace(/\]\(\.\.\/\.\.\/LICENSE\)/g, `](${githubBlobBase}/LICENSE)`);
+		.replace(/\]\(\.\.\/\.\.\/([^)]+)\)/g, `](${githubBlobBase}/$1)`);
 }
 
 export function extractDocTitle(markdown: string, fallbackSlug: string): string {
@@ -82,17 +82,25 @@ export async function getDocsSyncMeta(): Promise<DocsSyncMeta | null> {
 export async function getCachedDocMarkdown(slug: string): Promise<string | null> {
 	if (!isSafeDocSlug(slug)) return null;
 	const filename = `${slug}.md`;
-	const path = docPath(filename);
-	if (!(await pathExists(path))) return null;
+	const cached = join(docPath(filename));
+	if (await pathExists(cached)) {
+		try {
+			return await readFile(cached, 'utf8');
+		} catch {
+			return null;
+		}
+	}
+	const local = join(LOCAL_DOCS_DIR, filename);
+	if (!(await pathExists(local))) return null;
 	try {
-		return await readFile(path, 'utf8');
+		return await readFile(local, 'utf8');
 	} catch {
 		return null;
 	}
 }
 
 export async function renderDocMarkdown(markdown: string): Promise<string> {
-	const raw = marked.parse(markdown, { async: false }) as string;
+	const raw = marked.parse(rewriteDocLinks(markdown), { async: false }) as string;
 	const highlighted = await highlightMarkedCodeBlocks(raw);
 	return sanitizeHtml(highlighted);
 }

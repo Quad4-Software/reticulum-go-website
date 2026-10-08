@@ -1,4 +1,6 @@
 import { json, type RequestHandler } from '@sveltejs/kit';
+
+export const prerender = false;
 import { getRenBrowserReleases } from '$lib/server/ren-browser-releases';
 
 export const GET: RequestHandler = async () => {

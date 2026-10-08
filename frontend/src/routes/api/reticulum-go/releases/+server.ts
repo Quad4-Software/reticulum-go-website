@@ -1,4 +1,6 @@
 import { json, type RequestHandler } from '@sveltejs/kit';
+
+export const prerender = false;
 import { getReticulumGoReleases } from '$lib/server/reticulum-go-releases';
 
 export const GET: RequestHandler = async () => {

@@ -1,6 +1,6 @@
 # Development and testing
 
-See [CONTRIBUTING.md](../../CONTRIBUTING.md) for commit format, git hooks, pull request checklist, and CI overview.
+See [CONTRIBUTING.md](https://github.com/Quad4-Software/Reticulum-Go/blob/master/CONTRIBUTING.md) for commit format, git hooks, pull request checklist, and CI overview.
 
 ## Development environment
 
