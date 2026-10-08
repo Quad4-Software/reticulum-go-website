@@ -24,7 +24,7 @@
 	const hreflangLinks = $derived(getHreflangLinks(page.url.pathname));
 	const isPopout = $derived(!building && page.url.searchParams.get('popout') === '1');
 	const isSourcePage = $derived(
-		page.url.pathname === '/source' || page.url.pathname.startsWith('/source/')
+		page.url.pathname === '/source/' || page.url.pathname.startsWith('/source/')
 	);
 
 	let clientDark = $state<boolean | null>(null);

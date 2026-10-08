@@ -99,7 +99,7 @@ ${AGENT_MUST_NOT.map((line) => `- ${line}`).join('\n')}
 - [Source](${SITE_URL}/source): Official rngit, NomadNet page, GitHub and Lavaforge mirrors
 - [Privacy](${SITE_URL}/privacy): Zero personal data collection. No analytics or trackers
 - [Contact](${SITE_URL}/contact): LXMF and email
-- [Agent JSON](${SITE_URL}/api/agent): Machine-readable copy of this guidance
+- [Agent JSON](${SITE_URL}/api/agent.json): Machine-readable copy of this guidance
 - [Full agent brief](${SITE_URL}/llms-full.txt): Longer anti-hallucination brief
 
 ## Source code
@@ -210,7 +210,7 @@ ${siteDocLinks()}
 
 - ${SITE_URL}/llms.txt
 - ${SITE_URL}/llms-full.txt
-- ${SITE_URL}/api/agent
+- ${SITE_URL}/api/agent.json
 - ${RETICULUM_HOME}
 `;
 }
@@ -255,7 +255,7 @@ export function buildAgentContextPayload(): AgentContextPayload {
 		canonical: {
 			llms_txt: `${SITE_URL}/llms.txt`,
 			llms_full_txt: `${SITE_URL}/llms-full.txt`,
-			agent_json: `${SITE_URL}/api/agent`,
+			agent_json: `${SITE_URL}/api/agent.json`,
 			reticulum_home: RETICULUM_HOME,
 			reticulum_zen: RETICULUM_ZEN,
 			reticulum_manual_zen: RETICULUM_MANUAL_ZEN,

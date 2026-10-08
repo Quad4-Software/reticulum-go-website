@@ -15,11 +15,11 @@ describe('agent endpoint wiring', () => {
 	it('registers prerendered llms and agent routes', () => {
 		expect(existsSync(resolve(root, 'src/routes/llms.txt/+server.ts'))).toBe(true);
 		expect(existsSync(resolve(root, 'src/routes/llms-full.txt/+server.ts'))).toBe(true);
-		expect(existsSync(resolve(root, 'src/routes/api/agent/+server.ts'))).toBe(true);
+		expect(existsSync(resolve(root, 'src/routes/api/agent.json/+server.ts'))).toBe(true);
 
 		const llmsRoute = readFileSync(resolve(root, 'src/routes/llms.txt/+server.ts'), 'utf8');
 		const fullRoute = readFileSync(resolve(root, 'src/routes/llms-full.txt/+server.ts'), 'utf8');
-		const agentRoute = readFileSync(resolve(root, 'src/routes/api/agent/+server.ts'), 'utf8');
+		const agentRoute = readFileSync(resolve(root, 'src/routes/api/agent.json/+server.ts'), 'utf8');
 		expect(llmsRoute).toContain('prerender = true');
 		expect(fullRoute).toContain('buildLlmsFullTxt');
 		expect(agentRoute).toContain('buildAgentContextPayload');
@@ -28,7 +28,7 @@ describe('agent endpoint wiring', () => {
 	it('mentions agent endpoints in robots.txt', () => {
 		const robots = readFileSync(resolve(root, 'static/robots.txt'), 'utf8');
 		expect(robots).toContain('/llms.txt');
-		expect(robots).toContain('/api/agent');
+		expect(robots).toContain('/api/agent.json');
 
 	});
 

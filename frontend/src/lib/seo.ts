@@ -101,7 +101,7 @@ export function getWebSiteJsonLd(): string {
 			url: QUAD4_SITE
 		},
 		inLanguage: [...LOCALES],
-		relatedLink: [`${SITE_URL}/llms.txt`, `${SITE_URL}/llms-full.txt`, `${SITE_URL}/api/agent`],
+		relatedLink: [`${SITE_URL}/llms.txt`, `${SITE_URL}/llms-full.txt`, `${SITE_URL}/api/agent.json`],
 		potentialAction: {
 			'@type': 'SearchAction',
 			target: {

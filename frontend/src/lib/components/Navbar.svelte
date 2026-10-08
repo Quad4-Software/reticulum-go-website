@@ -88,16 +88,16 @@
 				>
 				<a
 					href="/donate"
-					aria-current={page.url.pathname === '/donate' ? 'page' : undefined}
+					aria-current={page.url.pathname === '/donate/' ? 'page' : undefined}
 					class="hover:text-zinc-900 dark:hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00ADD8] rounded {navClass(
-						page.url.pathname === '/donate'
+						page.url.pathname === '/donate/'
 					)}">{$t('common.donate')}</a
 				>
 				<a
 					href="/contact"
-					aria-current={page.url.pathname === '/contact' ? 'page' : undefined}
+					aria-current={page.url.pathname === '/contact/' ? 'page' : undefined}
 					class="hover:text-zinc-900 dark:hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00ADD8] rounded {navClass(
-						page.url.pathname === '/contact'
+						page.url.pathname === '/contact/'
 					)}">{$t('common.contact')}</a
 				>
 			</div>
@@ -221,27 +221,27 @@
 				<a
 					href="/donate"
 					onclick={closeMenu}
-					aria-current={page.url.pathname === '/donate' ? 'page' : undefined}
+					aria-current={page.url.pathname === '/donate/' ? 'page' : undefined}
 					class="py-2.5 px-3 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00ADD8] {navClass(
-						page.url.pathname === '/donate',
+						page.url.pathname === '/donate/',
 						true
 					)}">{$t('common.donate')}</a
 				>
 				<a
 					href="/contact"
 					onclick={closeMenu}
-					aria-current={page.url.pathname === '/contact' ? 'page' : undefined}
+					aria-current={page.url.pathname === '/contact/' ? 'page' : undefined}
 					class="py-2.5 px-3 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00ADD8] {navClass(
-						page.url.pathname === '/contact',
+						page.url.pathname === '/contact/',
 						true
 					)}">{$t('common.contact')}</a
 				>
 				<a
 					href="/source"
 					onclick={closeMenu}
-					aria-current={page.url.pathname === '/source' ? 'page' : undefined}
+					aria-current={page.url.pathname === '/source/' ? 'page' : undefined}
 					class="sm:hidden flex items-center gap-2 py-2.5 px-3 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00ADD8] {navClass(
-						page.url.pathname === '/source',
+						page.url.pathname === '/source/',
 						true
 					)}"
 				>

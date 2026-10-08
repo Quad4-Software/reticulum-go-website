@@ -3,6 +3,7 @@ import { locale, waitLocale } from 'svelte-i18n';
 import type { LayoutLoad } from './$types';
 
 export const prerender = true;
+export const trailingSlash = 'always';
 export const ssr = true;
 export const csr = true;
 

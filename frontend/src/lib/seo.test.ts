@@ -155,6 +155,6 @@ describe('seo', () => {
 	it('advertises llms.txt on the website JSON-LD', () => {
 		const parsed = JSON.parse(getWebSiteJsonLd()) as { relatedLink?: string[] };
 		expect(parsed.relatedLink).toContain(`${SITE_URL}/llms.txt`);
-		expect(parsed.relatedLink).toContain(`${SITE_URL}/api/agent`);
+		expect(parsed.relatedLink).toContain(`${SITE_URL}/api/agent.json`);
 	});
 });
