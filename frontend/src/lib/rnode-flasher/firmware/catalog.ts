@@ -6,7 +6,9 @@ import type { CatalogEntry, FirmwareArtifact, FirmwareCatalog, FirmwareSourceId 
 import { FlasherError } from '../errors';
 import seedCatalogJson from '../../../../static/rnode-firmware/catalog.json';
 
-const CATALOG_URL = '/rnode-firmware/catalog.json';
+import { binary } from '$lib/cdn';
+
+const CATALOG_URL = binary('/rnode-firmware/catalog.json');
 
 /** Catalog baked into the app bundle for first paint and offline fallback. */
 export function getSeedCatalog(): FirmwareCatalog {
@@ -61,7 +63,9 @@ export async function loadCatalogArtifact(entry: CatalogEntry): Promise<Firmware
 			'Pick another source or upload a local firmware file'
 		);
 	}
-	const url = entry.path.startsWith('/') ? entry.path : `/rnode-firmware/${entry.path}`;
+	const url = entry.path.startsWith('http')
+		? entry.path
+		: binary(`/rnode-firmware/${entry.path}`);
 	const res = await fetch(url);
 	if (!res.ok) {
 		throw new FlasherError(

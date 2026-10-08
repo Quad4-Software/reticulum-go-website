@@ -3,6 +3,7 @@ import { SvelteMap } from 'svelte/reactivity';
 import { ensureWasmMatchesDeployedBuild } from './wasm-version-guard';
 import { loadWasmExec } from './wasm-exec-loader';
 import { fetchWasmWithSri } from './wasm-sri';
+import { binary } from './cdn';
 import {
 	loadIdentity,
 	saveIdentity,
@@ -442,7 +443,7 @@ class ReticulumService {
 
 		const go = new window.Go();
 		try {
-			const buffer = await fetchWasmWithSri('/reticulum-go.wasm', { cache: 'no-cache' });
+			const buffer = await fetchWasmWithSri(binary('/reticulum-go.wasm'), { cache: 'no-cache' }, '/reticulum-go.wasm');
 			this.wasmSizeBytes = buffer.byteLength;
 			const result = await WebAssembly.instantiate(buffer, go.importObject);
 			go.run(result.instance);

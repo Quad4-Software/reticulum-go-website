@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { asset } from '$lib/cdn';
 	import { t } from 'svelte-i18n';
 	import {
 		Download,
@@ -88,12 +89,12 @@
 
 		<section class="max-w-5xl mx-auto px-4">
 			<img
-				src="/ren-browser/desktop/light/home.png"
+				src={asset("/ren-browser/desktop/light/home.png")}
 				alt={$t('ren_browser.hero_alt')}
 				class="w-full rounded-2xl border border-zinc-200 shadow-sm dark:hidden aspect-[16/10] object-cover"
 			/>
 			<img
-				src="/ren-browser/desktop/dark/home.png"
+				src={asset("/ren-browser/desktop/dark/home.png")}
 				alt={$t('ren_browser.hero_alt')}
 				class="w-full rounded-2xl border border-zinc-800 shadow-sm hidden dark:block aspect-[16/10] object-cover"
 			/>
@@ -125,12 +126,12 @@
 			{#each gallery as shot (shot.key)}
 				<figure class="space-y-3">
 					<img
-						src={`/ren-browser/desktop/light/${shot.file}.png`}
+						src={asset(`/ren-browser/desktop/light/${shot.file}.png`)}
 						alt={$t(`ren_browser.gallery.${shot.key}`)}
 						class="w-full rounded-2xl border border-zinc-200 shadow-sm dark:hidden aspect-[16/10] object-cover"
 					/>
 					<img
-						src={`/ren-browser/desktop/dark/${shot.file}.png`}
+						src={asset(`/ren-browser/desktop/dark/${shot.file}.png`)}
 						alt={$t(`ren_browser.gallery.${shot.key}`)}
 						class="w-full rounded-2xl border border-zinc-800 shadow-sm hidden dark:block aspect-[16/10] object-cover"
 					/>
@@ -156,12 +157,12 @@
 			{#each mobileShots as shot (shot.key)}
 				<figure class="w-40 sm:w-48 space-y-3">
 					<img
-						src={`/ren-browser/mobile/light/${shot.file}.png`}
+						src={asset(`/ren-browser/mobile/light/${shot.file}.png`)}
 						alt={$t(`ren_browser.gallery.${shot.key}`)}
 						class="w-full rounded-2xl border border-zinc-200 shadow-sm dark:hidden aspect-[9/19.5] object-cover"
 					/>
 					<img
-						src={`/ren-browser/mobile/dark/${shot.file}.png`}
+						src={asset(`/ren-browser/mobile/dark/${shot.file}.png`)}
 						alt={$t(`ren_browser.gallery.${shot.key}`)}
 						class="w-full rounded-2xl border border-zinc-800 shadow-sm hidden dark:block aspect-[9/19.5] object-cover"
 					/>

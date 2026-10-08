@@ -4,6 +4,7 @@
  * module graph that freezes a false browser flag.
  */
 import { fetchWasmWithSri } from './wasm-sri';
+import { binary } from './cdn';
 import { sanitizeHtml } from './sanitize-html';
 
 export const MICRON_WASM_PATH = '/micron-parser-go.wasm';
@@ -102,7 +103,7 @@ export function ensureMicronParser(): Promise<void> {
 		}
 
 		const go = new window.Go();
-		const buffer = await fetchWasmWithSri(MICRON_WASM_PATH, { cache: 'no-cache' });
+		const buffer = await fetchWasmWithSri(binary(MICRON_WASM_PATH), { cache: 'no-cache' }, MICRON_WASM_PATH);
 		const result = await WebAssembly.instantiate(buffer, go.importObject);
 		// Do not await go.run. Micron registers globals then blocks on select{}.
 		void go.run(result.instance);

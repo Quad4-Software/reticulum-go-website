@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { asset } from '$lib/cdn';
 	import { onMount } from 'svelte';
 	import { getRepoInfo, calculateTimeAgo } from '$lib/version';
 	import { t } from 'svelte-i18n';
@@ -196,7 +197,7 @@
 					class="hover:opacity-80 transition-opacity"
 				>
 					<img
-						src="/coolify.svg"
+						src={asset("/coolify.svg")}
 						alt="Coolify"
 						width="16"
 						height="16"

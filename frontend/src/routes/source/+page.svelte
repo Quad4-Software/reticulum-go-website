@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { asset } from '$lib/cdn';
 	import { t } from 'svelte-i18n';
 	import { Copy, Check, ExternalLink, Download } from '@lucide/svelte';
 	import Toast from '$lib/components/Toast.svelte';
@@ -107,7 +108,7 @@
 					class="inline-flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-white p-2 shadow-sm ring-1 ring-zinc-200 dark:bg-zinc-900 dark:ring-zinc-700"
 				>
 					<img
-						src="/source-icons/reticulum.png"
+						src={asset("/source-icons/reticulum.png")}
 						alt=""
 						width="64"
 						height="64"
@@ -214,7 +215,7 @@
 					class="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white shadow-sm ring-1 ring-zinc-200 transition group-hover:ring-[#00ADD8]/50 dark:bg-zinc-900 dark:ring-zinc-700"
 				>
 					<img
-						src="/source-icons/github.svg"
+						src={asset("/source-icons/github.svg")}
 						alt=""
 						width="28"
 						height="28"
@@ -259,7 +260,7 @@
 					class="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white shadow-sm ring-1 ring-zinc-200 transition group-hover:ring-[#00ADD8]/50 dark:bg-zinc-900 dark:ring-zinc-700"
 				>
 					<img
-						src="/source-icons/lavaforge.svg"
+						src={asset("/source-icons/lavaforge.svg")}
 						alt=""
 						width="28"
 						height="28"

@@ -1,3 +1,4 @@
+import { asset } from '$lib/cdn';
 import { formatDownloadSize, isDownloadableAssetName } from '$lib/download-utils';
 
 export { formatDownloadSize, isDownloadableAssetName };
@@ -57,7 +58,7 @@ export type RgDownloadSlot = {
 export const RG_DOWNLOAD_SLOTS: readonly RgDownloadSlot[] = [
 	{
 		id: 'windows_amd64',
-		icon: '/platform-icons/windows11.svg',
+		icon: asset('/platform-icons/windows11.svg'),
 		titleKey: 'reticulum_download.slots.windows_amd64.title',
 		hintKey: 'reticulum_download.slots.windows_amd64.hint',
 		primary: 'reticulum-go-windows-amd64.exe',
@@ -65,7 +66,7 @@ export const RG_DOWNLOAD_SLOTS: readonly RgDownloadSlot[] = [
 	},
 	{
 		id: 'windows_arm64',
-		icon: '/platform-icons/windows11.svg',
+		icon: asset('/platform-icons/windows11.svg'),
 		titleKey: 'reticulum_download.slots.windows_arm64.title',
 		hintKey: 'reticulum_download.slots.windows_arm64.hint',
 		primary: 'reticulum-go-windows-arm64.exe',
@@ -73,7 +74,7 @@ export const RG_DOWNLOAD_SLOTS: readonly RgDownloadSlot[] = [
 	},
 	{
 		id: 'windows_386',
-		icon: '/platform-icons/windows10.svg',
+		icon: asset('/platform-icons/windows10.svg'),
 		titleKey: 'reticulum_download.slots.windows_386.title',
 		hintKey: 'reticulum_download.slots.windows_386.hint',
 		primary: 'reticulum-go-windows-386.exe',
@@ -82,7 +83,7 @@ export const RG_DOWNLOAD_SLOTS: readonly RgDownloadSlot[] = [
 	},
 	{
 		id: 'windows_7',
-		icon: '/platform-icons/windows7.svg',
+		icon: asset('/platform-icons/windows7.svg'),
 		titleKey: 'reticulum_download.slots.windows_7.title',
 		hintKey: 'reticulum_download.slots.windows_7.hint',
 		primary: 'reticulum-go-windows-amd64-win7.exe',
@@ -91,7 +92,7 @@ export const RG_DOWNLOAD_SLOTS: readonly RgDownloadSlot[] = [
 	},
 	{
 		id: 'windows_xp',
-		icon: '/platform-icons/windowsxp.svg',
+		icon: asset('/platform-icons/windowsxp.svg'),
 		titleKey: 'reticulum_download.slots.windows_xp.title',
 		hintKey: 'reticulum_download.slots.windows_xp.hint',
 		primary: 'reticulum-go-windows-386-winxp.exe',
@@ -100,7 +101,7 @@ export const RG_DOWNLOAD_SLOTS: readonly RgDownloadSlot[] = [
 	},
 	{
 		id: 'linux_amd64',
-		icon: '/platform-icons/ubuntu.svg',
+		icon: asset('/platform-icons/ubuntu.svg'),
 		titleKey: 'reticulum_download.slots.linux_amd64.title',
 		hintKey: 'reticulum_download.slots.linux_amd64.hint',
 		primary: 'reticulum-go-linux-amd64',
@@ -108,7 +109,7 @@ export const RG_DOWNLOAD_SLOTS: readonly RgDownloadSlot[] = [
 	},
 	{
 		id: 'linux_arm64',
-		icon: '/platform-icons/raspberrypi.svg',
+		icon: asset('/platform-icons/raspberrypi.svg'),
 		titleKey: 'reticulum_download.slots.linux_arm64.title',
 		hintKey: 'reticulum_download.slots.linux_arm64.hint',
 		primary: 'reticulum-go-linux-arm64',
@@ -116,7 +117,7 @@ export const RG_DOWNLOAD_SLOTS: readonly RgDownloadSlot[] = [
 	},
 	{
 		id: 'linux_arm',
-		icon: '/platform-icons/raspberrypi.svg',
+		icon: asset('/platform-icons/raspberrypi.svg'),
 		titleKey: 'reticulum_download.slots.linux_arm.title',
 		hintKey: 'reticulum_download.slots.linux_arm.hint',
 		primary: 'reticulum-go-linux-arm',
@@ -124,7 +125,7 @@ export const RG_DOWNLOAD_SLOTS: readonly RgDownloadSlot[] = [
 	},
 	{
 		id: 'linux_386',
-		icon: '/platform-icons/ubuntu.svg',
+		icon: asset('/platform-icons/ubuntu.svg'),
 		titleKey: 'reticulum_download.slots.linux_386.title',
 		hintKey: 'reticulum_download.slots.linux_386.hint',
 		primary: 'reticulum-go-linux-386',
@@ -133,7 +134,7 @@ export const RG_DOWNLOAD_SLOTS: readonly RgDownloadSlot[] = [
 	},
 	{
 		id: 'linux_riscv64',
-		icon: '/platform-icons/riscv.svg',
+		icon: asset('/platform-icons/riscv.svg'),
 		titleKey: 'reticulum_download.slots.linux_riscv64.title',
 		hintKey: 'reticulum_download.slots.linux_riscv64.hint',
 		primary: 'reticulum-go-linux-riscv64',
@@ -142,7 +143,7 @@ export const RG_DOWNLOAD_SLOTS: readonly RgDownloadSlot[] = [
 	},
 	{
 		id: 'macos_arm',
-		icon: '/platform-icons/apple.svg',
+		icon: asset('/platform-icons/apple.svg'),
 		titleKey: 'reticulum_download.slots.macos_arm.title',
 		hintKey: 'reticulum_download.slots.macos_arm.hint',
 		primary: 'reticulum-go-darwin-arm64',
@@ -150,7 +151,7 @@ export const RG_DOWNLOAD_SLOTS: readonly RgDownloadSlot[] = [
 	},
 	{
 		id: 'macos_intel',
-		icon: '/platform-icons/apple.svg',
+		icon: asset('/platform-icons/apple.svg'),
 		titleKey: 'reticulum_download.slots.macos_intel.title',
 		hintKey: 'reticulum_download.slots.macos_intel.hint',
 		primary: 'reticulum-go-darwin-amd64',
@@ -158,7 +159,7 @@ export const RG_DOWNLOAD_SLOTS: readonly RgDownloadSlot[] = [
 	},
 	{
 		id: 'freebsd',
-		icon: '/platform-icons/freebsd.svg',
+		icon: asset('/platform-icons/freebsd.svg'),
 		titleKey: 'reticulum_download.slots.freebsd.title',
 		hintKey: 'reticulum_download.slots.freebsd.hint',
 		primary: 'reticulum-go-freebsd-amd64',
@@ -171,7 +172,7 @@ export const RG_DOWNLOAD_SLOTS: readonly RgDownloadSlot[] = [
 	},
 	{
 		id: 'wasm',
-		icon: '/platform-icons/wasm.svg',
+		icon: asset('/platform-icons/wasm.svg'),
 		titleKey: 'reticulum_download.slots.wasm.title',
 		hintKey: 'reticulum_download.slots.wasm.hint',
 		primary: 'reticulum-go-js-wasm.wasm',

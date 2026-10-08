@@ -87,12 +87,16 @@ export async function verifyWasmSri(wasmPath: string, buffer: ArrayBuffer): Prom
 /**
  * Fetches a WASM module and verifies SHA-384 SRI before returning bytes.
  */
-export async function fetchWasmWithSri(wasmPath: string, init?: RequestInit): Promise<ArrayBuffer> {
+export async function fetchWasmWithSri(
+	wasmPath: string,
+	init?: RequestInit,
+	sriPath: string = wasmPath
+): Promise<ArrayBuffer> {
 	const response = await fetch(wasmPath, init);
 	if (!response.ok) {
 		throw new Error(`Failed to fetch ${wasmPath} (HTTP ${response.status})`);
 	}
 	const buffer = await response.arrayBuffer();
-	await verifyWasmSri(wasmPath, buffer);
+	await verifyWasmSri(sriPath, buffer);
 	return buffer;
 }
