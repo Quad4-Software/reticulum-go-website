@@ -1,6 +1,6 @@
 import { SITE_URL, SITE_DESCRIPTION } from '$lib/site-config';
 import { DOC_SLUGS } from '$lib/docs-config';
-import { RETICULUM_GO_GITHUB as RETICULUM_GO_REPO } from '$lib/source-mirrors';
+import { RETICULUM_GO_GITHUB as RETICULUM_GO_REPO, RETICULUM_GO_SOURCE_ZIP_PATH } from '$lib/source-mirrors';
 const RETICULUM_WEBSITE_REPO = 'https://github.com/markqvist/reticulum_website';
 
 export const RETICULUM_HOME = 'https://reticulum.network/';
@@ -105,7 +105,7 @@ ${AGENT_MUST_NOT.map((line) => `- ${line}`).join('\n')}
 ## Source code
 
 - [Source hubs](${SITE_URL}/source): Official rngit over Reticulum (git clone + NomadNet Micron page), GitHub and Lavaforge mirrors
-- [Download source zip](${SITE_URL}/download/reticulum-go.zip): Latest GitHub release tag zip, cached by the site at startup (not committed to this repo)
+- [Download source zip](${RETICULUM_GO_SOURCE_ZIP_PATH}): Latest GitHub release tag zip (not committed to this repo)
 - Docs pages prefer English markdown refreshed from Reticulum-Go \`docs/en\` at server startup (cached under DOCS_CACHE_DIR)
 - [rngit (official)](rns://06a54b505bb67b25ef3f8097e8001edc/public/Reticulum-Go): \`git clone rns://06a54b505bb67b25ef3f8097e8001edc/public/Reticulum-Go\` and NomadNet page \`132f67e79d9b24aad014e93015fb858f:/page/index.mu\`
 - [GitHub mirror](${RETICULUM_GO_REPO}): Public GitHub mirror

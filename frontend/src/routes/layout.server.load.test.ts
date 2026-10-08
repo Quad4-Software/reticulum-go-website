@@ -10,6 +10,8 @@ type LayoutLoadResult = {
 const localeSet = vi.fn();
 const waitLocaleMock = vi.fn().mockResolvedValue(undefined);
 
+vi.mock('$app/environment', () => ({ building: false }));
+
 vi.mock('svelte-i18n', () => ({
 	locale: { set: localeSet },
 	waitLocale: waitLocaleMock

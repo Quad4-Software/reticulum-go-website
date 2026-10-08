@@ -60,7 +60,7 @@ export function getSoftwareApplicationJsonLd(): string {
 		operatingSystem: 'Web, Linux, macOS, Windows, BSD',
 		license: RETICULUM_GO_LICENSE,
 		codeRepository: RETICULUM_GO_REPO,
-		downloadUrl: `${SITE_URL}${RETICULUM_GO_SOURCE_ZIP_PATH}`,
+		downloadUrl: RETICULUM_GO_SOURCE_ZIP_PATH,
 		isBasedOn: {
 			'@type': 'SoftwareApplication',
 			name: 'Reticulum',

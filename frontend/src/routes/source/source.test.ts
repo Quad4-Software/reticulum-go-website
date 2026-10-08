@@ -79,6 +79,6 @@ describe('layout source spacing', () => {
 		const layout = read('src/routes/+layout.svelte');
 		expect(layout).toContain('isSourcePage');
 		expect(layout).toContain('pt-3 pb-8');
-		expect(layout).toContain("pathname === '/source'");
+		expect(layout).toContain("pathname === '/source/'");
 	});
 });

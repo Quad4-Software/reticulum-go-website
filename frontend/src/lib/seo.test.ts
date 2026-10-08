@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { SITE_DESCRIPTION, SITE_URL } from './site-config';
+import { RETICULUM_GO_SOURCE_ZIP_PATH } from './source-mirrors';
 import {
 	buildJsonLd,
 	getBreadcrumbJsonLd,
@@ -73,7 +74,7 @@ describe('seo', () => {
 			license: string;
 		};
 		expect(parsed.description).toBe(SITE_DESCRIPTION);
-		expect(parsed.downloadUrl).toBe(`${SITE_URL}/download/reticulum-go.zip`);
+		expect(parsed.downloadUrl).toBe(RETICULUM_GO_SOURCE_ZIP_PATH);
 		expect(parsed.isBasedOn.url).toBe(RETICULUM_SITE);
 		expect(parsed.isBasedOn.author.name).toBe('Mark Qvist');
 		expect(parsed.sameAs).toContain(RETICULUM_SITE);
