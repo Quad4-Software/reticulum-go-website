@@ -11,8 +11,8 @@
 		Boxes,
 		Download
 	} from '@lucide/svelte';
-	import { getRepoUpdatedAt, calculateTimeAgo } from '$lib/version';
-	import SupportedPlatforms from '$lib/components/SupportedPlatforms.svelte';
+	import { getRepoUpdatedAt, calculateTimeAgo } from '#lib/version.ts';
+	import SupportedPlatforms from '#lib/components/SupportedPlatforms.svelte';
 
 	let repoUpdatedAt = $state<string | null>(null);
 	let timeAgo = $derived.by(() => calculateTimeAgo(repoUpdatedAt));

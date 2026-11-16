@@ -1,22 +1,22 @@
 <script lang="ts">
-	import { asset } from '$lib/cdn';
+	import { asset } from '#lib/cdn.ts';
 	import { t } from 'svelte-i18n';
 	import { Copy, Check, ExternalLink, Download } from '@lucide/svelte';
-	import Toast from '$lib/components/Toast.svelte';
+	import Toast from '#lib/components/Toast.svelte';
 	import {
 		jsonLdScript,
 		getSourceWebPageJsonLd,
 		getBreadcrumbJsonLd,
 		getCanonicalUrl,
 		OG_IMAGE_URL
-	} from '$lib/seo';
+	} from '#lib/seo.ts';
 	import {
 		RETICULUM_GO_GITHUB,
 		RETICULUM_GO_LAVAFORGE,
 		RETICULUM_GO_RNS_CLONE,
 		RETICULUM_GO_RNGIT_PAGE,
 		RETICULUM_GO_SOURCE_ZIP_PATH
-	} from '$lib/source-mirrors';
+	} from '#lib/source-mirrors.ts';
 
 	let { data } = $props();
 

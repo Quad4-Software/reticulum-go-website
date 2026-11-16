@@ -6,7 +6,7 @@ import type { CatalogEntry, FirmwareArtifact, FirmwareCatalog, FirmwareSourceId 
 import { FlasherError } from '../errors';
 import seedCatalogJson from '../../../../static/rnode-firmware/catalog.json';
 
-import { binary } from '$lib/cdn';
+import { binary } from '#lib/cdn.ts';
 
 const CATALOG_URL = binary('/rnode-firmware/catalog.json');
 

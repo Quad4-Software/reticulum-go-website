@@ -1,4 +1,4 @@
-import { formatDownloadSize, isDownloadableAssetName } from '$lib/download-utils';
+import { formatDownloadSize, isDownloadableAssetName } from '#lib/download-utils.ts';
 
 export { formatDownloadSize };
 

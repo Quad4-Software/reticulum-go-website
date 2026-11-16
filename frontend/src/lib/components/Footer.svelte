@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { asset } from '$lib/cdn';
+	import { asset } from '#lib/cdn.ts';
 	import { onMount } from 'svelte';
-	import { getRepoInfo, calculateTimeAgo } from '$lib/version';
+	import { getRepoInfo, calculateTimeAgo } from '#lib/version.ts';
 	import { t } from 'svelte-i18n';
 	import { Rss } from '@lucide/svelte';
-	import { env } from '$env/dynamic/public';
+	import { PUBLIC_SHOW_COOLIFY } from '$app/env/public';
 
-	const showCoolify = env.PUBLIC_SHOW_COOLIFY === 'true';
+	const showCoolify = PUBLIC_SHOW_COOLIFY;
 	const currentYear = new Date().getFullYear();
 	let latestTag = $state<string | null>(null);
 	let repoUpdatedAt = $state<string | null>(null);

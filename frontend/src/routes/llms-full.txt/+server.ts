@@ -1,4 +1,4 @@
-import { buildLlmsFullTxt, markdownResponse } from '$lib/agent-context';
+import { buildLlmsFullTxt, markdownResponse } from '#lib/agent-context.ts';
 
 export const prerender = true;
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import IdentityCard from '$lib/components/IdentityCard.svelte';
+	import IdentityCard from '#lib/components/IdentityCard.svelte';
 </script>
 
 <div class="max-w-2xl mx-auto py-12">

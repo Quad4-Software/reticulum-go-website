@@ -1,7 +1,7 @@
 <script lang="ts">
-	import IdentityCard from '$lib/components/IdentityCard.svelte';
-	import Toast from '$lib/components/Toast.svelte';
-	import { reticulum } from '$lib/reticulum.svelte';
+	import IdentityCard from '#lib/components/IdentityCard.svelte';
+	import Toast from '#lib/components/Toast.svelte';
+	import { reticulum } from '#lib/reticulum.svelte.ts';
 	import { onMount } from 'svelte';
 
 	let messageInput = $state('');

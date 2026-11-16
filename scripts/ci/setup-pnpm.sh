@@ -3,7 +3,7 @@
 # Shims go under a user-writable bin dir so CI runners without write access to /usr/local/bin work.
 set -eu
 
-PNPM_VERSION="${PNPM_VERSION:-11.10.0}"
+PNPM_VERSION="${PNPM_VERSION:-12.21.0}"
 PNPM_BIN_DIR="${PNPM_BIN_DIR:-${HOME}/.local/bin}"
 
 mkdir -p "${PNPM_BIN_DIR}"

@@ -1,5 +1,5 @@
 import type { PageServerLoad } from './$types';
-import { getRenBrowserReleases } from '$lib/server/ren-browser-releases';
+import { getRenBrowserReleases } from '#lib/server/ren-browser-releases.ts';
 
 export const load: PageServerLoad = async () => {
 	const releases = await getRenBrowserReleases();

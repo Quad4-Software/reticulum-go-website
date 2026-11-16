@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { reticulum } from '$lib/reticulum.svelte';
+	import { reticulum } from '#lib/reticulum.svelte.ts';
 
 	const peers = $derived(Array.from(reticulum.peers.values()));
 </script>

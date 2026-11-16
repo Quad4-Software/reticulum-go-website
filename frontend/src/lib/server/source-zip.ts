@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
-import { RETICULUM_GO_GITHUB, RETICULUM_GO_SOURCE_ZIP_PATH } from '$lib/source-mirrors';
+import { RETICULUM_GO_GITHUB, RETICULUM_GO_SOURCE_ZIP_PATH } from '#lib/source-mirrors.ts';
 
 export { RETICULUM_GO_SOURCE_ZIP_PATH as SOURCE_ZIP_DOWNLOAD_PATH };
 

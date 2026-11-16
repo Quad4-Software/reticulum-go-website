@@ -10,7 +10,7 @@ const fakeDbState = {
 	>()
 };
 
-vi.mock('$lib/db', () => ({
+vi.mock('#lib/db.ts', () => ({
 	db: {
 		savePeer: vi.fn(async (peer) => {
 			fakeDbState.peers.set(peer.hash, peer);
@@ -21,9 +21,9 @@ vi.mock('$lib/db', () => ({
 	}
 }));
 
-let fakeStoredIdentity: import('$lib/identity').Identity | null = null;
+let fakeStoredIdentity: import('#lib/identity.ts').Identity | null = null;
 
-vi.mock('$lib/identity', () => ({
+vi.mock('#lib/identity.ts', () => ({
 	loadIdentity: vi.fn(async () => fakeStoredIdentity),
 	saveIdentity: vi.fn(async (identity) => {
 		fakeStoredIdentity = identity;
@@ -94,7 +94,7 @@ describe('PeersListHarness – UI reactivity to onPeerDiscovered', () => {
 	});
 
 	it('shows the peers section once init() resolves (proves the {#if reticulum.initialized} gate)', async () => {
-		const { reticulum } = await import('$lib/reticulum.svelte');
+		const { reticulum } = await import('#lib/reticulum.svelte.ts');
 		reticulum.peers.clear();
 		reticulum.peersVersion = 0;
 		reticulum.initialized = false;
@@ -113,7 +113,7 @@ describe('PeersListHarness – UI reactivity to onPeerDiscovered', () => {
 	});
 
 	it('re-renders the list when an announce arrives via window.onPeerDiscovered', async () => {
-		const { reticulum } = await import('$lib/reticulum.svelte');
+		const { reticulum } = await import('#lib/reticulum.svelte.ts');
 		reticulum.peers.clear();
 		reticulum.peersVersion = 0;
 		reticulum.initialized = false;

@@ -2,12 +2,12 @@
 	import { locale, t } from 'svelte-i18n';
 	import { FileCode, FileType } from '@lucide/svelte';
 	import { mount, tick, unmount } from 'svelte';
-	import { exportDoc } from '$lib/docs-service';
+	import { exportDoc } from '#lib/docs-service.ts';
 	import { page } from '$app/state';
-	import Breadcrumbs from '$lib/components/Breadcrumbs.svelte';
-	import DocMeta from '$lib/components/DocMeta.svelte';
-	import { findDocMetaTable, parseDocMetaTable } from '$lib/doc-meta';
-	import { getCanonicalUrl, getBreadcrumbJsonLd, jsonLdScript, OG_IMAGE_URL } from '$lib/seo';
+	import Breadcrumbs from '#lib/components/Breadcrumbs.svelte';
+	import DocMeta from '#lib/components/DocMeta.svelte';
+	import { findDocMetaTable, parseDocMetaTable } from '#lib/doc-meta.ts';
+	import { getCanonicalUrl, getBreadcrumbJsonLd, jsonLdScript, OG_IMAGE_URL } from '#lib/seo.ts';
 
 	let { data } = $props();
 

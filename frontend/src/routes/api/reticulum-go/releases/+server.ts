@@ -1,7 +1,7 @@
 import { json, type RequestHandler } from '@sveltejs/kit';
 
 export const prerender = false;
-import { getReticulumGoReleases } from '$lib/server/reticulum-go-releases';
+import { getReticulumGoReleases } from '#lib/server/reticulum-go-releases.ts';
 
 export const GET: RequestHandler = async () => {
 	const snapshot = await getReticulumGoReleases();

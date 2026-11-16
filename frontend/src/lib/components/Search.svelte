@@ -5,8 +5,8 @@
 	import { marked } from 'marked';
 	import { tick } from 'svelte';
 	import { goto } from '$app/navigation';
-	import { sanitizeHtml } from '$lib/sanitize-html';
-	import { schedulePreload } from '$lib/preload';
+	import { sanitizeHtml } from '#lib/sanitize-html.ts';
+	import { schedulePreload } from '#lib/preload.ts';
 
 	interface DocItem {
 		slug: string;

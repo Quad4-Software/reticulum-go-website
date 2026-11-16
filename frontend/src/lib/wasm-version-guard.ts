@@ -1,4 +1,4 @@
-import { browser } from '$app/environment';
+import { browser } from '$app/env';
 import { clearAllCaches } from './wasm-cache';
 
 export const WASM_SKEW_KEY = 'reticulum-wasm-skew';

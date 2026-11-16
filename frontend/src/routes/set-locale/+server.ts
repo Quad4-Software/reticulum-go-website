@@ -2,8 +2,8 @@ import { redirect } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
 export const prerender = false;
-import { isLocaleSupported } from '$lib/site-config';
-import { safeRedirectTarget } from '$lib/security';
+import { isLocaleSupported } from '#lib/site-config.ts';
+import { safeRedirectTarget } from '#lib/security.ts';
 
 export const GET: RequestHandler = ({ url, cookies }) => {
 	const requestedLocale = url.searchParams.get('locale');

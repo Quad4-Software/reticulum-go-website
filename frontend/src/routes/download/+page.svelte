@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { t } from 'svelte-i18n';
-	import { browser } from '$app/environment';
+	import { browser } from '$app/env';
 	import {
 		ArrowLeft,
 		Download,
@@ -12,7 +12,7 @@
 		Archive,
 		FlaskConical
 	} from '@lucide/svelte';
-	import { RETICULUM_GO_GITHUB, RETICULUM_GO_SOURCE_ZIP_PATH } from '$lib/source-mirrors';
+	import { RETICULUM_GO_GITHUB, RETICULUM_GO_SOURCE_ZIP_PATH } from '#lib/source-mirrors.ts';
 	import {
 		RG_DOWNLOAD_SLOTS,
 		RETICULUM_GO_RELEASES_REPO,
@@ -24,7 +24,7 @@
 		formatDownloadSize,
 		type RgDownloadSlotId,
 		type RgRelease
-	} from '$lib/reticulum-go-download';
+	} from '#lib/reticulum-go-download.ts';
 
 	let { data } = $props();
 

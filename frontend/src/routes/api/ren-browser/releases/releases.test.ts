@@ -54,7 +54,7 @@ describe('GET /api/ren-browser/releases', () => {
 	beforeEach(async () => {
 		vi.resetModules();
 		vi.stubGlobal('fetch', vi.fn());
-		const mod = await import('$lib/server/ren-browser-releases');
+		const mod = await import('#lib/server/ren-browser-releases.ts');
 		mod.__resetRenBrowserReleaseCacheForTests();
 	});
 

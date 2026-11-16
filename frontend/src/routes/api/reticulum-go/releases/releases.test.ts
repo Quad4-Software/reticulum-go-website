@@ -51,7 +51,7 @@ describe('GET /api/reticulum-go/releases', () => {
 	beforeEach(async () => {
 		vi.resetModules();
 		vi.stubGlobal('fetch', vi.fn());
-		const mod = await import('$lib/server/reticulum-go-releases');
+		const mod = await import('#lib/server/reticulum-go-releases.ts');
 		mod.__resetReticulumGoReleaseCacheForTests();
 	});
 

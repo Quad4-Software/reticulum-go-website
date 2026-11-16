@@ -6,7 +6,7 @@ import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import { highlight } from './mdsvex-highlight.js';
 import { escapeProse } from './mdsvex-escape.js';
 
-/** @type {import('@sveltejs/kit').Config} */
+/** @type {import('@sveltejs/kit/vite').Config} */
 const config = {
 	extensions: ['.svelte', '.mdx', '.md'],
 	preprocess: [
@@ -15,25 +15,21 @@ const config = {
 			extensions: ['.mdx', '.md'],
 			smartypants: false,
 			highlight: { highlighter: highlight },
-			remarkPlugins: [escapeProse],
-			rehypePlugins: [rehypeSlug, [rehypeAutolinkHeadings, { behavior: 'wrap' }]]
+			remarkPlugins: /** @type {any} */ ([escapeProse]),
+			rehypePlugins: /** @type {any} */ ([rehypeSlug, [rehypeAutolinkHeadings, { behavior: 'wrap' }]])
 		})
 	],
 
-	kit: {
-		adapter: adapter({
-			out: 'build',
-			precompress: false
-		}),
-		prerender: {
-			entries: ['*'],
-			handleUnseenRoutes: ({ routes, path }) => {
-				const values = [
-					...(Array.isArray(routes) ? routes : []),
-					...(typeof path === 'string' ? [path] : [])
-				].filter((r) => typeof r === 'string');
-				if (values.every((r) => r === '/sitemap.xml')) return 'ignore';
-				return 'fail';
+	adapter: adapter({
+		out: 'build',
+		precompress: false
+	}),
+	prerender: {
+		entries: ['*'],
+		handleUnseenRoutes: ({ routes }) => {
+			const unseen = routes.filter((r) => r !== '/sitemap.xml');
+			if (unseen.length > 0) {
+				throw new Error(`Unseen prerenderable routes: ${unseen.join(', ')}`);
 			}
 		}
 	}

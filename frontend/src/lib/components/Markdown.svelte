@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { marked } from 'marked';
-	import { sanitizeHtml } from '$lib/sanitize-html';
+	import { sanitizeHtml } from '#lib/sanitize-html.ts';
 
 	let { content = '' } = $props();
 

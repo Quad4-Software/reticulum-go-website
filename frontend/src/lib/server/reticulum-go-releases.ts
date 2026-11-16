@@ -1,10 +1,10 @@
-import type { RgAsset, RgRelease, RgReleasesSnapshot } from '$lib/reticulum-go-download';
-import { isDownloadableAssetName } from '$lib/download-utils';
+import type { RgAsset, RgRelease, RgReleasesSnapshot } from '#lib/reticulum-go-download.ts';
+import { isDownloadableAssetName } from '#lib/download-utils.ts';
 import {
 	createReleaseFetcher,
 	type GitHubAsset,
 	type GitHubRelease
-} from '$lib/server/github-releases';
+} from '#lib/server/github-releases.ts';
 
 const REPO_OWNER = 'Quad4-Software';
 const REPO_NAME = 'Reticulum-Go';

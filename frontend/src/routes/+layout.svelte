@@ -2,12 +2,12 @@
 	import { onMount } from 'svelte';
 	import '../app.css';
 	import '../lib/i18n';
-	import { building } from '$app/environment';
+	import { building } from '$app/env';
 	import { page } from '$app/state';
-	import Navbar from '$lib/components/Navbar.svelte';
-	import Footer from '$lib/components/Footer.svelte';
-	import PwaClient from '$lib/components/PwaClient.svelte';
-	import { initTheme, isDark as isDarkStore, applyDarkClass, type Theme } from '$lib/theme';
+	import Navbar from '#lib/components/Navbar.svelte';
+	import Footer from '#lib/components/Footer.svelte';
+	import PwaClient from '#lib/components/PwaClient.svelte';
+	import { initTheme, isDark as isDarkStore, applyDarkClass, type Theme } from '#lib/theme.ts';
 	import {
 		getOrganizationJsonLd,
 		getSoftwareApplicationJsonLd,
@@ -15,8 +15,8 @@
 		getCanonicalUrl,
 		getHreflangLinks,
 		jsonLdScript
-	} from '$lib/seo';
-	import { preloadPrimaryRoutes } from '$lib/preload';
+	} from '#lib/seo.ts';
+	import { preloadPrimaryRoutes } from '#lib/preload.ts';
 
 	let { children, data } = $props();
 

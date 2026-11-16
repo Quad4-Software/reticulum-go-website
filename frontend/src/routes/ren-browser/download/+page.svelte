@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { t } from 'svelte-i18n';
-	import { browser } from '$app/environment';
+	import { browser } from '$app/env';
 	import {
 		ArrowLeft,
 		Download,
@@ -25,7 +25,7 @@
 		formatDownloadSize,
 		type DownloadSlotId,
 		type RenBrowserRelease
-	} from '$lib/ren-browser-download';
+	} from '#lib/ren-browser-download.ts';
 
 	let { data } = $props();
 

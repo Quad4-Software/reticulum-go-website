@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { DOC_SLUGS } from '$lib/docs-config';
+import { DOC_SLUGS } from '#lib/docs-config.ts';
 
 const root = resolve(import.meta.dirname, '../..');
 

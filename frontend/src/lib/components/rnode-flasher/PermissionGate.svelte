@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { AlertTriangle, Bluetooth, Network, Usb } from '@lucide/svelte';
-	import { browser } from '$app/environment';
+	import { browser } from '$app/env';
 	import { onMount } from 'svelte';
 	import { t } from 'svelte-i18n';
 	import {
@@ -14,7 +14,7 @@
 		needsBraveEnableHelp,
 		probeEnvironment,
 		serialCapability
-	} from '$lib/rnode-flasher';
+	} from '#lib/rnode-flasher/index.ts';
 
 	let serialCap = $derived(browser ? serialCapability() : 'unknown');
 	let bluetoothCap = $derived(browser ? bluetoothCapability() : 'unknown');

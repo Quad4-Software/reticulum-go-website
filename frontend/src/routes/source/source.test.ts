@@ -7,7 +7,7 @@ import {
 	RETICULUM_GO_RNS_CLONE,
 	RETICULUM_GO_RNGIT_PAGE,
 	RETICULUM_GO_SOURCE_ZIP_PATH
-} from '$lib/source-mirrors';
+} from '#lib/source-mirrors.ts';
 
 const root = resolve(import.meta.dirname, '../../..');
 

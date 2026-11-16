@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Download, LoaderCircle, Upload } from '@lucide/svelte';
 	import { t } from 'svelte-i18n';
-	import { FIRMWARE_SOURCES, type CatalogEntry, type FirmwareSourceId } from '$lib/rnode-flasher';
+	import { FIRMWARE_SOURCES, type CatalogEntry, type FirmwareSourceId } from '#lib/rnode-flasher/index.ts';
 
 	interface Props {
 		source: FirmwareSourceId;

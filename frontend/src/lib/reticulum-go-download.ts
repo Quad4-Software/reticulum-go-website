@@ -1,5 +1,5 @@
-import { asset } from '$lib/cdn';
-import { formatDownloadSize, isDownloadableAssetName } from '$lib/download-utils';
+import { asset } from '#lib/cdn.ts';
+import { formatDownloadSize, isDownloadableAssetName } from '#lib/download-utils.ts';
 
 export { formatDownloadSize, isDownloadableAssetName };
 

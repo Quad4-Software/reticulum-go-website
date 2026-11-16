@@ -1,5 +1,5 @@
 import type { RequestHandler } from './$types';
-import { buildAgentContextPayload, jsonResponse } from '$lib/agent-context';
+import { buildAgentContextPayload, jsonResponse } from '#lib/agent-context.ts';
 
 export const prerender = true;
 

@@ -1,6 +1,6 @@
-import { SITE_URL, SITE_DESCRIPTION } from '$lib/site-config';
-import { DOC_SLUGS } from '$lib/docs-config';
-import { RETICULUM_GO_GITHUB as RETICULUM_GO_REPO, RETICULUM_GO_SOURCE_ZIP_PATH } from '$lib/source-mirrors';
+import { SITE_URL, SITE_DESCRIPTION } from '#lib/site-config.ts';
+import { DOC_SLUGS } from '#lib/docs-config.ts';
+import { RETICULUM_GO_GITHUB as RETICULUM_GO_REPO, RETICULUM_GO_SOURCE_ZIP_PATH } from '#lib/source-mirrors.ts';
 const RETICULUM_WEBSITE_REPO = 'https://github.com/markqvist/reticulum_website';
 
 export const RETICULUM_HOME = 'https://reticulum.network/';

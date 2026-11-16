@@ -1,5 +1,5 @@
 import type { PageServerLoad } from './$types';
-import { extractDocTitle, getCachedDocMarkdown, renderDocMarkdown } from '$lib/server/docs-sync';
+import { extractDocTitle, getCachedDocMarkdown, renderDocMarkdown } from '#lib/server/docs-sync.ts';
 
 function cleanSlug(slug: string): string {
 	return slug.endsWith('/') ? slug.slice(0, -1) : slug;

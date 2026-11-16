@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { ArrowLeft } from '@lucide/svelte';
 	import { t } from 'svelte-i18n';
-	import FlasherApp from '$lib/components/rnode-flasher/FlasherApp.svelte';
+	import FlasherApp from '#lib/components/rnode-flasher/FlasherApp.svelte';
 </script>
 
 <svelte:head>

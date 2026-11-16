@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { t } from 'svelte-i18n';
 	import { Shield } from '@lucide/svelte';
-	import { jsonLdScript, getPrivacyWebPageJsonLd, OG_IMAGE_URL } from '$lib/seo';
+	import { jsonLdScript, getPrivacyWebPageJsonLd, OG_IMAGE_URL } from '#lib/seo.ts';
 </script>
 
 <svelte:head>

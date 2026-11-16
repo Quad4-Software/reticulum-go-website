@@ -1,8 +1,8 @@
-import { building } from '$app/environment';
+import { building } from '$app/env';
 import type { LayoutServerLoad } from './$types';
 import { locale, waitLocale } from 'svelte-i18n';
-import { DEFAULT_LOCALE, isLocaleSupported } from '$lib/site-config';
-import { safeRedirectTarget } from '$lib/security';
+import { DEFAULT_LOCALE, isLocaleSupported } from '#lib/site-config.ts';
+import { safeRedirectTarget } from '#lib/security.ts';
 
 const SUPPORTED_THEMES = new Set(['light', 'dark', 'system']);
 

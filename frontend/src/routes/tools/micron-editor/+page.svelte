@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { ArrowLeft, ExternalLink } from '@lucide/svelte';
 	import { t } from 'svelte-i18n';
-	import { building } from '$app/environment';
+	import { building } from '$app/env';
 	import { page } from '$app/state';
-	import MicronEditor from '$lib/components/MicronEditor.svelte';
+	import MicronEditor from '#lib/components/MicronEditor.svelte';
 
 	const isPopout = $derived(!building && page.url.searchParams.get('popout') === '1');
 </script>

@@ -3,9 +3,9 @@ import { dirname, join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { marked } from 'marked';
-import { RETICULUM_GO_GITHUB } from '$lib/source-mirrors';
-import { isSafeDocSlug, sanitizeHtml } from '$lib/server/sanitize-html';
-import { highlightMarkedCodeBlocks } from '$lib/code-highlight';
+import { RETICULUM_GO_GITHUB } from '#lib/source-mirrors.ts';
+import { isSafeDocSlug, sanitizeHtml } from '#lib/server/sanitize-html.ts';
+import { highlightMarkedCodeBlocks } from '#lib/code-highlight.ts';
 
 const REPO_OWNER = 'Quad4-Software';
 const REPO_NAME = 'Reticulum-Go';

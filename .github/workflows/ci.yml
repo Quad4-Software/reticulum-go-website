@@ -21,7 +21,7 @@ permissions:
   contents: read
 
 env:
-  CI_NODE_MAJOR: '24'
+  CI_NODE_MAJOR: '26'
 
 jobs:
   frontend:

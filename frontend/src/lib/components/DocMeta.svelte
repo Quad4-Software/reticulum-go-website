@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Calendar, ChevronDown, FileText, Hash, Tag, User } from '@lucide/svelte';
-	import type { DocMetaField } from '$lib/doc-meta';
+	import type { DocMetaField } from '#lib/doc-meta.ts';
 
 	let { fields = [] as DocMetaField[] } = $props();
 

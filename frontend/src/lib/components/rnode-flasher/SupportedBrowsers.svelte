@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { asset } from '$lib/cdn';
-	import IconCascade from '$lib/components/IconCascade.svelte';
+	import { asset } from '#lib/cdn.ts';
+	import IconCascade from '#lib/components/IconCascade.svelte';
 
 	const browsers = [
 		{

@@ -1,5 +1,5 @@
 import { init, register, getLocaleFromNavigator, locale } from 'svelte-i18n';
-import { browser } from '$app/environment';
+import { browser } from '$app/env';
 import { invalidate } from '$app/navigation';
 import { LOCALES, DEFAULT_LOCALE, isLocaleSupported } from '../site-config';
 

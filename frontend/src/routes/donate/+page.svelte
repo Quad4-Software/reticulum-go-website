@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { t } from 'svelte-i18n';
-	import Toast from '$lib/components/Toast.svelte';
-	import { jsonLdScript, getDonateWebPageJsonLd, RETICULUM_SITE, OG_IMAGE_URL } from '$lib/seo';
+	import Toast from '#lib/components/Toast.svelte';
+	import { jsonLdScript, getDonateWebPageJsonLd, RETICULUM_SITE, OG_IMAGE_URL } from '#lib/seo.ts';
 
 	const BMC = 'https://buymeacoffee.com/quad4';
 	const LIBERAPAY = 'https://liberapay.com/Quad4/';

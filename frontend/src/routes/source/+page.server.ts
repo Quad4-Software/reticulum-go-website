@@ -1,5 +1,5 @@
 import type { PageServerLoad } from './$types';
-import { getSourceZipMeta } from '$lib/server/source-zip';
+import { getSourceZipMeta } from '#lib/server/source-zip.ts';
 
 export const load: PageServerLoad = async () => {
 	const meta = await getSourceZipMeta();

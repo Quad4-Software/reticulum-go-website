@@ -21,7 +21,10 @@ export function schedulePreload(href: string): void {
 	if (shouldSkip(href) || pending.has(href)) return;
 	pending.add(href);
 	try {
-		void Promise.all([preloadCode(href), preloadData(href)])
+		void Promise.all([
+			preloadCode(href as Parameters<typeof preloadCode>[0]),
+			preloadData(href as Parameters<typeof preloadData>[0])
+		])
 			.catch(() => {})
 			.finally(() => {
 				pending.delete(href);

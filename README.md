@@ -19,8 +19,8 @@ Then open your browser at `http://localhost:3000`
 
 ### Prerequisites
 
-- Node.js v24
-- [pnpm](https://pnpm.io/) 11.10.0
+- Node.js v26
+- [pnpm](https://pnpm.io/) 12.21.0
 
 ### Setup
 
@@ -106,7 +106,7 @@ Workflows live under `.github/workflows/`:
 
 Actions are pinned to full commit SHAs (see the header comment in each workflow). Toolchain setup uses POSIX shell under `scripts/ci/`:
 
-- `setup-node.sh` installs Node from nodejs.org `latest-v{N}.x` with SHA256 verification (default major **24**; pass a different major as the first argument).
+- `setup-node.sh` installs Node from nodejs.org `latest-v{N}.x` with SHA256 verification (default major **26**; pass a different major as the first argument).
 - `setup-pnpm.sh` enables corepack and activates pnpm (version defaults to match `frontend/package.json` `packageManager`).
 - `setup-trivy.sh` installs a pinned `.deb` when a workflow needs a standalone Trivy binary (local or custom runners).
 - `ci-node-path.sh` exports `/usr/local/bin` on `PATH`.

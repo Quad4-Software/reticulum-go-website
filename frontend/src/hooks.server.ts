@@ -1,6 +1,6 @@
-import type { Handle, ServerInit } from '@sveltejs/kit';
-import { ensureSourceZip } from '$lib/server/source-zip';
-import { ensureDocsSynced } from '$lib/server/docs-sync';
+import type { Handle, ServerInit } from '@sveltejs/kit/hooks';
+import { ensureSourceZip } from '#lib/server/source-zip.ts';
+import { ensureDocsSynced } from '#lib/server/docs-sync.ts';
 
 export const init: ServerInit = async () => {
 	ensureSourceZip().catch((err) => {

@@ -1,5 +1,5 @@
 import { error, type RequestHandler } from '@sveltejs/kit';
-import { getSourceZipMeta, openSourceZipStream } from '$lib/server/source-zip';
+import { getSourceZipMeta, openSourceZipStream } from '#lib/server/source-zip.ts';
 
 export const prerender = false;
 

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { reticulum } from '$lib/reticulum.svelte';
-	import { loadIdentity, clearIdentity } from '$lib/identity';
+	import { reticulum } from '#lib/reticulum.svelte.ts';
+	import { loadIdentity, clearIdentity } from '#lib/identity.ts';
 
 	let wsUrl = $state('wss://socket.quad4.io/ws');
 	let userName = $state('');

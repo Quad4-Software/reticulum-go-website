@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { t } from 'svelte-i18n';
-	import IconCascade from '$lib/components/IconCascade.svelte';
+	import IconCascade from '#lib/components/IconCascade.svelte';
 
 	const platforms = [
 		{

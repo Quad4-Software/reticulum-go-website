@@ -1,4 +1,4 @@
-import { browser } from '$app/environment';
+import { browser } from '$app/env';
 import { saveDoc, getDoc, getAllDocsForLang, hasAnyDocs } from './db';
 
 const rawModules = import.meta.glob('./docs/**/*.{md,mdx}', { query: '?raw', import: 'default' });

@@ -2,11 +2,11 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, cleanup, screen, waitFor } from '@testing-library/svelte';
 import Footer from './Footer.svelte';
 
-vi.mock('$env/dynamic/public', () => ({
-	env: { PUBLIC_SHOW_COOLIFY: 'false' }
+vi.mock('$app/env/public', () => ({
+	PUBLIC_SHOW_COOLIFY: false
 }));
 
-vi.mock('$lib/version', () => ({
+vi.mock('#lib/version.ts', () => ({
 	getRepoInfo: vi.fn().mockResolvedValue({
 		latest_tag: 'v9.9.9',
 		updated_at: '2024-01-01T00:00:00Z'

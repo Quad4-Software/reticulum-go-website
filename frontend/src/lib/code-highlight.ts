@@ -1,5 +1,5 @@
 import { createHighlighter, type Highlighter } from 'shiki';
-import { sanitizeHighlightHtml } from '$lib/sanitize-html';
+import { sanitizeHighlightHtml } from '#lib/sanitize-html.ts';
 
 const LANGS = [
 	'go',

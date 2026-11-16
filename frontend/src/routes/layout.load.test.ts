@@ -8,7 +8,7 @@ vi.mock('svelte-i18n', () => ({
 	waitLocale: waitLocaleMock
 }));
 
-vi.mock('$lib/i18n', () => ({}));
+vi.mock('#lib/i18n/index.ts', () => ({}));
 
 describe('+layout load', () => {
 	beforeEach(() => {

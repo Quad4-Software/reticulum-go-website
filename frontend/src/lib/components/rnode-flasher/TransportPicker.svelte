@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { Bluetooth, FlaskConical, Network, Usb } from '@lucide/svelte';
-	import { browser } from '$app/environment';
+	import { browser } from '$app/env';
 	import { t } from 'svelte-i18n';
 	import {
 		bluetoothCapability,
 		ipCapability,
 		serialCapability,
 		type TransportKind
-	} from '$lib/rnode-flasher';
+	} from '#lib/rnode-flasher/index.ts';
 
 	interface Props {
 		disabled: boolean;

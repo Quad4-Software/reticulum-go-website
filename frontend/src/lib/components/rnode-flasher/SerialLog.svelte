@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { ScrollText } from '@lucide/svelte';
 	import { t } from 'svelte-i18n';
-	import type { LogLine } from '$lib/rnode-flasher';
+	import type { LogLine } from '#lib/rnode-flasher/index.ts';
 
 	interface Props {
 		logs: LogLine[];

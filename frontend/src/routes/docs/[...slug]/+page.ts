@@ -1,9 +1,9 @@
 import { error, redirect } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
-import { browser } from '$app/environment';
+import { browser } from '$app/env';
 import { get } from 'svelte/store';
 import { locale } from 'svelte-i18n';
-import { syncDoc } from '$lib/docs-service';
+import { syncDoc } from '#lib/docs-service.ts';
 
 function extractTitleFromSlug(slug: string): string {
 	const cleanSlug = slug.split('/').pop() || slug;

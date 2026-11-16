@@ -5,10 +5,11 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { execSync } from 'node:child_process';
-import { sveltekit } from '@sveltejs/kit/vite';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig, type Plugin } from 'vite';
-import { SvelteKitPWA } from '@vite-pwa/sveltekit';
+import { withPwa } from '@vite-pwa/sveltekit';
+import staticConfig from './svelte.config.static.js';
+import nodeConfig from './svelte.config.node.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -133,11 +134,11 @@ export default defineConfig(({ command }) => {
 		plugins: [
 			stubServerOnlyOnClient(),
 			tailwindcss(),
-			sveltekit(),
-			...SvelteKitPWA({
+			...withPwa(process.env.SVELTEKIT_ADAPTER === 'node' ? nodeConfig : staticConfig, {
 				registerType: 'autoUpdate',
 				scope: '/',
 				buildBase: '/',
+				maximumFileSizeToCacheInBytes: 8 * 1024 * 1024,
 				manifest: {
 					name: 'Reticulum-Go',
 					short_name: 'Reticulum-Go',
@@ -169,9 +170,8 @@ export default defineConfig(({ command }) => {
 						}
 					]
 				},
-				workbox: {
+				generateSW: {
 					navigateFallback: '/',
-					maximumFileSizeToCacheInBytes: 8 * 1024 * 1024,
 					globPatterns: [
 						'client/**/*.{js,css,ico,png,svg,webp,webmanifest,wasm}',
 						'prerendered/**/*.{html,json,xml,js}'

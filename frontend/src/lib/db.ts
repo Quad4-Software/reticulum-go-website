@@ -1,4 +1,4 @@
-import { browser } from '$app/environment';
+import { browser } from '$app/env';
 import type { Peer, ChatMessage } from './reticulum.svelte';
 
 /** Application store; name is distinct from WASM-internal IndexedDB usage. */

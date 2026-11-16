@@ -66,7 +66,7 @@ function escapeSvelte(html) {
 
 /**
  * Resolve a fence language to a Shiki-loaded id.
- * @param {string | undefined} lang
+ * @param {string | null | undefined} lang
  * @param {Awaited<ReturnType<typeof createHighlighter>>} highlighter
  */
 function resolveLang(lang, highlighter) {
@@ -81,7 +81,7 @@ function resolveLang(lang, highlighter) {
 /**
  * mdsvex highlight.highlighter: build-time Shiki HTML, dual light/dark themes.
  * @param {string} code
- * @param {string | undefined} lang
+ * @param {string | null | undefined} lang
  */
 export async function highlight(code, lang) {
 	const highlighter = await getHighlighter();

@@ -19,7 +19,7 @@
 		X
 	} from '@lucide/svelte';
 	import { t } from 'svelte-i18n';
-	import { ensureMicronParser, convertMicron, clearMicronParserLoad } from '$lib/micron-parser';
+	import { ensureMicronParser, convertMicron, clearMicronParserLoad } from '#lib/micron-parser.ts';
 	import {
 		DEFAULT_MICRON_SAMPLE,
 		loadMicronEditorState,
@@ -30,7 +30,7 @@
 		tabDownloadName,
 		sanitizeTabName,
 		type MicronTab
-	} from '$lib/micron-editor-state';
+	} from '#lib/micron-editor-state.ts';
 	import {
 		findMicronColors,
 		findMicronColorAt,
@@ -38,7 +38,7 @@
 		hex6ToMicron,
 		replaceMicronColorAt,
 		type MicronColorMatch
-	} from '$lib/micron-colors';
+	} from '#lib/micron-colors.ts';
 
 	type LoadStatus = 'loading' | 'ready' | 'error';
 

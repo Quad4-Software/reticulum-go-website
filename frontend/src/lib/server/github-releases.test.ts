@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { createReleaseFetcher, type GitHubRelease } from '$lib/server/github-releases';
+import { createReleaseFetcher, type GitHubRelease } from '#lib/server/github-releases.ts';
 
 type TestRelease = {
 	tag: string;

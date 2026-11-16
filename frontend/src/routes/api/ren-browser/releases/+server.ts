@@ -1,7 +1,7 @@
 import { json, type RequestHandler } from '@sveltejs/kit';
 
 export const prerender = false;
-import { getRenBrowserReleases } from '$lib/server/ren-browser-releases';
+import { getRenBrowserReleases } from '#lib/server/ren-browser-releases.ts';
 
 export const GET: RequestHandler = async () => {
 	const snapshot = await getRenBrowserReleases();

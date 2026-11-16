@@ -8,7 +8,7 @@ import {
 	findSbomAssets,
 	formatDownloadSize,
 	type RenBrowserRelease
-} from '$lib/ren-browser-download';
+} from '#lib/ren-browser-download.ts';
 
 const sampleRelease: RenBrowserRelease = {
 	tag: 'v0.2.1',

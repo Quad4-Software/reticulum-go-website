@@ -9,6 +9,8 @@ overrides:
   '@babel/plugin-transform-modules-systemjs': '>=7.29.4 <8'
   uuid: '>=11.1.1'
   workbox-build: 7.4.1
+  basic-ftp: '>=6.2.4'
+  postcss-selector-parser: '>=6.1.5'
 
 allowBuilds:
   esbuild: true
@@ -29,7 +31,9 @@ minimumReleaseAgeExclude:
   - typescript-eslint@8.66.0
 
 # extract-zip advisories cite 2.0.2 but npm still only has 2.0.1 (dev-only via @lhci/cli)
+# deepmerge has no patched release; mergeObject() is only fed trusted locale/config data
 auditConfig:
   ignoreGhsas:
     - GHSA-jmr9-qjv8-65gv
     - GHSA-7pqw-9j4j-h8q3
+    - GHSA-gcqx-w48m-w2h4

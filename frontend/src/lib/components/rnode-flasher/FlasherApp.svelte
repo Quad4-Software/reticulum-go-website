@@ -24,7 +24,7 @@
 		type FirmwareSourceId,
 		type SessionSnapshot,
 		type TransportKind
-	} from '$lib/rnode-flasher';
+	} from '#lib/rnode-flasher/index.ts';
 	import FirmwarePicker from './FirmwarePicker.svelte';
 	import TransportPicker from './TransportPicker.svelte';
 	import FlashProgress from './FlashProgress.svelte';

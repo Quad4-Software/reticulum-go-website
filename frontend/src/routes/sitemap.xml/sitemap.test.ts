@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { SITE_URL } from '$lib/site-config';
-import { SITEMAP_PATHS } from '$lib/sitemap-paths';
+import { SITE_URL } from '#lib/site-config.ts';
+import { SITEMAP_PATHS } from '#lib/sitemap-paths.ts';
 import { GET } from './+server';
 
 describe('GET /sitemap.xml', () => {

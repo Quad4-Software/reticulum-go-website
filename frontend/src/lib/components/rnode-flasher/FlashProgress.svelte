@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Cpu, LoaderCircle } from '@lucide/svelte';
 	import { t } from 'svelte-i18n';
-	import type { DeviceIdentity, FlashProgress, SessionPhase } from '$lib/rnode-flasher';
+	import type { DeviceIdentity, FlashProgress, SessionPhase } from '#lib/rnode-flasher/index.ts';
 
 	interface Props {
 		progress: FlashProgress | null;

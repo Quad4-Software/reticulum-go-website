@@ -8,7 +8,7 @@ import {
 	findSbomAssets,
 	isDownloadableAssetName,
 	type RgRelease
-} from '$lib/reticulum-go-download';
+} from '#lib/reticulum-go-download.ts';
 
 const sampleRelease: RgRelease = {
 	tag: 'v1.0.1',

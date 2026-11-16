@@ -1,4 +1,4 @@
-import { DOC_SLUGS } from '$lib/docs-config';
+import { DOC_SLUGS } from '#lib/docs-config.ts';
 
 export const SITEMAP_PATHS = [
 	'/',

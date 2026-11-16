@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { asset } from '$lib/cdn';
+	import { asset } from '#lib/cdn.ts';
 	import { t } from 'svelte-i18n';
 	import {
 		Download,
@@ -22,7 +22,7 @@
 		REN_BROWSER_DOCKER,
 		REN_BROWSER_DOCS,
 		REN_BROWSER_REPO
-	} from '$lib/ren-browser-download';
+	} from '#lib/ren-browser-download.ts';
 
 	const features = [
 		{ key: 'nomadnet', icon: Globe },

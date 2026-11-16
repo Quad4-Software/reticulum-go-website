@@ -1,5 +1,5 @@
-import { SITE_URL } from '$lib/site-config';
-import { SITEMAP_PATHS } from '$lib/sitemap-paths';
+import { SITE_URL } from '#lib/site-config.ts';
+import { SITEMAP_PATHS } from '#lib/sitemap-paths.ts';
 
 export const prerender = true;
 

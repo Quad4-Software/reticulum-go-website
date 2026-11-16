@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { LOCALES } from '$lib/site-config';
+import { LOCALES } from '#lib/site-config.ts';
 
 const bundles = import.meta.glob<{ default: Record<string, unknown> }>('./locales/*.json', {
 	eager: true
