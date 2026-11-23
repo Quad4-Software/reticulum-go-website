@@ -50,7 +50,7 @@
 		"fake-indexeddb": "^6.2.8",
 		"globals": "^17.14.0",
 		"jsdom": "^31.0.1",
-		"mdsvex": "^0.12.8",
+		"mdsvex": "^1.0.1",
 		"postcss": "^8.5.33",
 		"prettier": "^3.10.1",
 		"prettier-plugin-svelte": "^4.1.1",
